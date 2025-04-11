@@ -174,14 +174,22 @@ public class UsuarioTests
     {
         Assert.ThrowsException<ArgumentNullException>(() => Usuario.ValidarContraseña(""));
     }
+    
     [TestMethod]
     public void ValidarContraseñaValorSoloEspacios_LanzaArgumentNullException()
     {
         Assert.ThrowsException<ArgumentNullException>(() => Usuario.ValidarContraseña("    "));
     }
+    
     [TestMethod]
     public void validarContraseñaMenosDeOchoCaracteres_LanzaArgumentException()
     {
         Assert.ThrowsException<ArgumentException>(() => Usuario.ValidarContraseña("Corta1!"));
+    }
+    
+    [TestMethod]
+    public void validarContraseñaSinMinuscula_LanzaArgumentException()
+    {
+        Assert.ThrowsException<ArgumentException>(() => Usuario.ValidarContraseña("MAYUSCULAS1!"));
     }
 }
