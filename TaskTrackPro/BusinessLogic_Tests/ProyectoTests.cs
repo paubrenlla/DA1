@@ -41,5 +41,16 @@ public class ProyectoTests
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
     }
     
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void ProyectoConstructorConFechaInicioIncorrecta()
+    {
+        string nombre = "Proyecto A";
+        string descripcion = "En esta fecha salió el Xenoblade";
+        DateTime fechaInicio = new DateTime(2010, 6, 10);
+
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+    }
+    
 }
 
