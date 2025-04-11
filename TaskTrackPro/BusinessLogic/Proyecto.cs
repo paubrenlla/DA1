@@ -7,6 +7,9 @@ public class Proyecto
     public DateTime FechaInicio { get; set; }
     public Proyecto(string nombre, string descripcion, DateTime fechaInicio)
     {
+        if (fechaInicio.Date < DateTime.Now.Date)
+            throw new ArgumentException("La fecha de inicio no puede ser anterior a hoy.");
+        
         if (string.IsNullOrWhiteSpace(nombre))
             throw new ArgumentException("El nombre no puede ser nulo o vacío.");
         
