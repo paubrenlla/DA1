@@ -192,4 +192,10 @@ public class UsuarioTests
     {
         Assert.ThrowsException<ArgumentException>(() => Usuario.ValidarContraseña("MAYUSCULAS1!"));
     }
+    
+    [TestMethod]
+    public void validarContraseñaSinMayuscula_LanzaArgumentException()
+    {
+        Assert.ThrowsException<ArgumentException>(() => Usuario.ValidarContraseña("minusculas1!"));
+    }
 }
