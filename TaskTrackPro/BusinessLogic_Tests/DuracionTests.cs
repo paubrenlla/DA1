@@ -1,3 +1,5 @@
+using BusinessLogic;
+
 namespace BusinessLogic_Tests
 {
     [TestClass]
@@ -9,25 +11,22 @@ namespace BusinessLogic_Tests
             Duracion duracion = new Duracion(5, TipoDuracion.Dias);
             Assert.IsNotNull(duracion);
         }
+
+        [TestMethod]
+        public void ConstructorConCantidadInvalida_LanzaExcepcion()
+        {
+            Assert.ThrowsException<ArgumentException>(() =>
+            {
+                var duracion = new Duracion(-5, TipoDuracion.Horas);
+            });
+
+
+
+        }
     }
 }
 
-public enum TipoDuracion
-{
-    Dias,
-    Horas
-}
 
-public class Duracion
-{
-    private int Cantidad { get; set; }
-    private TipoDuracion Tipo { get; set; }
 
-    public Duracion(int cantidad, TipoDuracion tipo)
-    {
-        Cantidad = cantidad;
-        Tipo = tipo;
-    }
-}
 
 
