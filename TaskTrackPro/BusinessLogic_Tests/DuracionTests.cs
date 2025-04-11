@@ -12,4 +12,22 @@ namespace BusinessLogic_Tests
     }
 }
 
+public enum TipoDuracion
+{
+    Dias,
+    Horas
+}
+
+public class Duracion
+{
+    private int Cantidad { get; set; }
+    private TipoDuracion Tipo { get; set; }
+
+    public Duracion(int cantidad, TipoDuracion tipo)
+    {
+        Cantidad = cantidad;
+        Tipo = tipo;
+    }
+}
+
 
