@@ -220,4 +220,10 @@ public class UsuarioTests
     {
         Assert.ThrowsException<ArgumentException>(() => Usuario.ValidarContraseña("SinCEspecial1"));
     }
+    
+    [TestMethod]
+    public void ValidarContraseñaContrasenaValida()
+    {
+        Usuario.ValidarContraseña("EsValida1!"); 
+    }
 }
