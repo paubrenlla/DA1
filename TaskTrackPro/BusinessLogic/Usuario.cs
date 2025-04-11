@@ -73,4 +73,11 @@ public class Usuario
             _fechaNacimiento = value;
         }
     }
+    
+    //Metodos
+    public static void ValidarContraseña(string value)
+    {
+        if (value == null)
+            throw new ArgumentNullException(nameof(value), "La pwd es requerida");
+    }
 }
