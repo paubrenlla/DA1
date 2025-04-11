@@ -19,5 +19,16 @@ public class ProyectoTests
         Assert.AreEqual(fechaInicio, proyecto.FechaInicio);
     }
     
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void ProyectoConstructorConDescripcionLarga()
+    {
+        string nombre = "Proyecto A";
+        string descripcionLarga = new string('a', 401);
+        DateTime fechaInicio = DateTime.Today;
+
+        Proyecto proyecto = new Proyecto(nombre, descripcionLarga, fechaInicio);
+    }
+    
 }
 
