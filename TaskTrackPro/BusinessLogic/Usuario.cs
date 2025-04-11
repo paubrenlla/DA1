@@ -79,5 +79,7 @@ public class Usuario
     {
         if (string.IsNullOrWhiteSpace(value))
             throw new ArgumentNullException(nameof(value), "La pwd es requerida");
+        if (value.Length < 8)
+            throw new ArgumentException(nameof(value), "La pwd debe tener al menos 8 caracteres");
     }
 }
