@@ -7,6 +7,9 @@ public class Proyecto
     public DateTime FechaInicio { get; set; }
     public Proyecto(string nombre, string descripcion, DateTime fechaInicio)
     {
+        if (string.IsNullOrWhiteSpace(nombre))
+            throw new ArgumentException("El nombre no puede ser nulo o vacío.");
+        
         if (descripcion.Length > 400)
             throw new ArgumentException("La descripción no puede superar los 400 caracteres.");
         
