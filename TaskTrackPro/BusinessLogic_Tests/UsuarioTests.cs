@@ -168,4 +168,10 @@ public class UsuarioTests
     {
         Assert.ThrowsException<ArgumentNullException>(() => Usuario.ValidarContraseña(null));
     }
+    
+    [TestMethod]
+    public void ValidarContraseñaValorVacia_LanzaArgumentNullException()
+    {
+        Assert.ThrowsException<ArgumentNullException>(() => Usuario.ValidarContraseña(""));
+    }
 }
