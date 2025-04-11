@@ -79,5 +79,7 @@ public class Usuario
     {
         if (value == null)
             throw new ArgumentNullException(nameof(value), "La pwd es requerida");
+        if (value == "")
+            throw new ArgumentNullException(nameof(value), "La pwd es requerida");
     }
 }
