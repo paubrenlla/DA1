@@ -214,4 +214,10 @@ public class UsuarioTests
     {
         Assert.ThrowsException<ArgumentException>(() => Usuario.ValidarContraseña("SinNumero!"));
     }
+    
+    [TestMethod]
+    public void validarContraseñaSinCaracterEspecial_LanzaArgumentException()
+    {
+        Assert.ThrowsException<ArgumentException>(() => Usuario.ValidarContraseña("SinCEspecial1"));
+    }
 }
