@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace BusinessLogic;
 
 public class Usuario
@@ -81,5 +83,7 @@ public class Usuario
             throw new ArgumentNullException(nameof(value), "La pwd es requerida");
         if (value.Length < 8)
             throw new ArgumentException(nameof(value), "La pwd debe tener al menos 8 caracteres");
+        if (!Regex.IsMatch(value, @"^(?=.*[a-z])"))
+            throw new ArgumentException("La pwd debe tener al menos una letra minuscula");
     }
 }
