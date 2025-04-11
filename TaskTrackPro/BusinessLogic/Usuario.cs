@@ -85,5 +85,7 @@ public class Usuario
             throw new ArgumentException(nameof(value), "La pwd debe tener al menos 8 caracteres");
         if (!Regex.IsMatch(value, @"^(?=.*[a-z])"))
             throw new ArgumentException("La pwd debe tener al menos una letra minuscula");
+        if (!Regex.IsMatch(value, @"^(?=.*[A-Z])"))
+            throw new ArgumentException("La pwd debe tener al menos una letra mayúscula");
     }
 }
