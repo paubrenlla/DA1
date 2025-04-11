@@ -30,5 +30,16 @@ public class ProyectoTests
         Proyecto proyecto = new Proyecto(nombre, descripcionLarga, fechaInicio);
     }
     
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void ProyectoConstructorSinNombre()
+    {
+        string nombre = "";
+        string descripcion = "Este proyecto no tiene nombre omg";
+        DateTime fechaInicio = DateTime.Today;
+
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+    }
+    
 }
 
