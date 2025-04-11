@@ -89,5 +89,7 @@ public class Usuario
             throw new ArgumentException("La pwd debe tener al menos una letra mayúscula");
         if (!Regex.IsMatch(value, @"^(?=.*\d)"))
             throw new ArgumentException("La pwd debe tener al menos un número");
+        if (!Regex.IsMatch(value, @"^(?=.*[\W_])"))
+            throw new ArgumentException("La pwd debe tener al menos un caractér especial");
     }
 }
