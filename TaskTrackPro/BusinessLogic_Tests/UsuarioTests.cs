@@ -179,4 +179,9 @@ public class UsuarioTests
     {
         Assert.ThrowsException<ArgumentNullException>(() => Usuario.ValidarContraseña("    "));
     }
+    [TestMethod]
+    public void validarContraseñaMenosDeOchoCaracteres_LanzaArgumentException()
+    {
+        Assert.ThrowsException<ArgumentException>(() => Usuario.ValidarContraseña("Corta1!"));
+    }
 }
