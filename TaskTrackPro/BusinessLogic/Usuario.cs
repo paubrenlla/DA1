@@ -77,9 +77,7 @@ public class Usuario
     //Metodos
     public static void ValidarContraseña(string value)
     {
-        if (string.IsNullOrEmpty(value))
-            throw new ArgumentNullException(nameof(value), "La pwd es requerida");
-        if (value == "    ")
+        if (string.IsNullOrWhiteSpace(value))
             throw new ArgumentNullException(nameof(value), "La pwd es requerida");
     }
 }
