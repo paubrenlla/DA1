@@ -58,8 +58,7 @@ public class Usuario
         get => _pwd;
         set
         {
-            if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentNullException("La contraseña es requerida y no puede estar vacía.", nameof(value));
+            ValidarContraseña(value);
             _pwd = value;
         }
     }
