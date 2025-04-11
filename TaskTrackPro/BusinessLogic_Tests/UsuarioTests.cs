@@ -162,5 +162,10 @@ public class UsuarioTests
         Assert.ThrowsException<ArgumentNullException>(() => u.Pwd = null);
     }
     
-    
+    //Validar contraseña
+    [TestMethod]
+    public void ValidarContraseñaValorNulo_LanzaArgumentNullException()
+    {
+        Assert.ThrowsException<ArgumentNullException>(() => Usuario.ValidarContraseña(null));
+    }
 }
