@@ -29,6 +29,8 @@ namespace BusinessLogic_Tests
                 var duracion = new Duracion(5, tipoInvalido);
             });
         }
+        
+        
     }
 }
 
