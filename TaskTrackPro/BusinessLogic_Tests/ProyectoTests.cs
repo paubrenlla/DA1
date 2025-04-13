@@ -52,5 +52,21 @@ public class ProyectoTests
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
     }
     
+    [TestMethod]
+    public void AgregarTareaAlProyecto()
+    {
+        string nombre = "Proyecto A";
+        string descripcion = "Este es un proyecto para el TDD jeje";
+        DateTime fechaInicio = DateTime.Today;
+
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+
+        var tarea = new Tarea("Tarea de prueba", "Descripción", DateTime.Now.AddDays(1));
+        
+        proyecto.agregarTarea(tarea);
+        
+        Assert.AreEqual(1, proyecto.TareasAsociadas.Count);
+        Assert.AreSame(tarea, proyecto.TareasAsociadas[0]);
+    }
 }
 
