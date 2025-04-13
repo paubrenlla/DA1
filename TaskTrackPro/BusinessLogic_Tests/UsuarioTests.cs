@@ -226,4 +226,57 @@ public class UsuarioTests
     {
         Usuario.ValidarContraseña("EsValida1!"); 
     }
+    
+    //Validar email
+    [TestMethod]
+    public void ValidarEmailEmailValido_NoLanzaExcepcion()
+    {
+        Usuario.ValidarEmail("correo@example.com");
+        Usuario.ValidarEmail("usuario.email+alias@subdominio.dominio.com");
+        Usuario.ValidarEmail("nombre.apellido@dominio.co");
+        Usuario.ValidarEmail("email@dominio.io");
+    }
+    
+    [TestMethod]
+    public void ValidarEmailEmailNulo_LanzaArgumentNullException()
+    {
+        Assert.ThrowsException<ArgumentNullException>(() => Usuario.ValidarEmail(null));
+    }
+
+    [TestMethod]
+    public void ValidarEmailEmailVacio_LanzaArgumentNullException()
+    {
+        Assert.ThrowsException<ArgumentNullException>(() => Usuario.ValidarEmail(""));
+    }
+    
+    [TestMethod]
+    public void ValidarEmailEmailSinArroba_LanzaArgumentException()
+    {
+        Assert.ThrowsException<ArgumentException>(() => Usuario.ValidarEmail("correo.example.com"));
+    }
+
+    [TestMethod]
+    public void ValidarEmailEmailSinDominio_LanzaArgumentException()
+    {
+        Assert.ThrowsException<ArgumentException>(() => Usuario.ValidarEmail("correo@"));
+    }
+
+    [TestMethod]
+    public void ValidarEmailEmailSinTLD_LanzaArgumentException()
+    {
+        Assert.ThrowsException<ArgumentException>(() => Usuario.ValidarEmail("correo@dominio"));
+    }
+
+    [TestMethod]
+    public void ValidarEmailEmailConEspacios_LanzaArgumentException()
+    {
+        Assert.ThrowsException<ArgumentException>(() => Usuario.ValidarEmail("correo @dominio.com"));
+    }
+
+    [TestMethod]
+    public void ValidarEmailEmailConGuionValido_NoLanzaExcepcion()
+    {
+        Usuario.ValidarEmail("correo@mi-dominio.com"); 
+        Usuario.ValidarEmail("correo@sub_dominio.com");
+    }
 }

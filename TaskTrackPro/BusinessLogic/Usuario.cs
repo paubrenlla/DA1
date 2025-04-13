@@ -25,8 +25,7 @@ public class Usuario
         get => _email;
         set
         {
-            if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentNullException("El email es requerido y no puede estar vacío.", nameof(value));
+            ValidarEmail(value);
             _email = value;
         }
     }
@@ -37,7 +36,7 @@ public class Usuario
         set
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentNullException("El nombre es requerido y no puede estar vacío.", nameof(value));
+                throw new ArgumentNullException(nameof(value), "El nombre es requerido y no puede estar vacío.");
             _nombre = value;
         }
     }
@@ -48,7 +47,7 @@ public class Usuario
         set
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentNullException("El apellido es requerido y no puede estar vacío.", nameof(value));
+                throw new ArgumentNullException(nameof(value), "El apellido es requerido y no puede estar vacío.");
             _apellido = value;
         }
     }
@@ -90,5 +89,14 @@ public class Usuario
             throw new ArgumentException("La pwd debe tener al menos un número");
         if (!Regex.IsMatch(value, @"^(?=.*[\W_])"))
             throw new ArgumentException("La pwd debe tener al menos un caractér especial");
+    }
+    
+    public static void ValidarEmail(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            throw new ArgumentNullException(nameof(value), "El email no puede ser nulo o vacío.");
+
+        if (!Regex.IsMatch(value, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}$"))
+            throw new ArgumentException("El email no tiene un formato válido.");
     }
 }
