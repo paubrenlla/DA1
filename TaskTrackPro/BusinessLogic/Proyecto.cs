@@ -11,13 +11,7 @@ public class Proyecto
     public List<Tarea> TareasAsociadas { get; set; }
     public List<Usuario> Miembros { get; set; }
     
-    public class Usuario
-    {
-        public Usuario(string correo, string nombre, string apellido, string pwd, DateTime fechaNacimiento)
-        {
-        
-        }
-    }
+    
 
     public Proyecto(string nombre, string descripcion, DateTime fechaInicio)
     {
