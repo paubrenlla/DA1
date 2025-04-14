@@ -90,6 +90,7 @@ public class ProyectoTests
     }
     
     [TestMethod]
+    
     public void EliminarTareaDelProyectoConVariasTareas()
     {
         string nombre = "Proyecto A";
@@ -112,6 +113,20 @@ public class ProyectoTests
 
         Assert.AreEqual(3, proyecto.TareasAsociadas.Count);
         Assert.IsFalse(proyecto.TareasAsociadas.Contains(tarea));
+    }
+    
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void EliminarTareaQueNoExisteEnElProyecto()
+    {
+        string nombre = "Proyecto A";
+        string descripcion = "Este es un proyecto para el TDD jeje";
+        DateTime fechaInicio = DateTime.Today;
+
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+        var tarea = new Tarea("Tarea a eliminar", "Descripción");
+        
+        proyecto.eliminarTarea(tarea);
     }
 
 }
