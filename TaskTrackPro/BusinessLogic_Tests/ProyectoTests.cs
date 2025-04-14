@@ -11,6 +11,7 @@ public class ProyectoTests
         string nombre = "Proyecto A";
         string descripcion = "Este es un proyecto para el TDD jej";
         DateTime fechaInicio = DateTime.Today;
+        
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
 
@@ -50,6 +51,25 @@ public class ProyectoTests
         DateTime fechaInicio = new DateTime(2010, 6, 10);
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+    }
+
+    [TestMethod]
+    public void ProyectosConsecutivosConIDCorrecta()
+    {
+        string nombre = "Proyecto A";
+        string descripcion = "este proyecto deberia tener ID 1";
+        DateTime fechaInicio = DateTime.Today;
+        
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+        
+        Assert.AreEqual(1, proyecto.Id);
+        
+        nombre = "Proyecto B";
+        descripcion = "este proyecto deberia tener ID 2";
+        
+        Proyecto proyecto2 = new Proyecto(nombre, descripcion, fechaInicio);
+        
+        Assert.AreEqual(2,proyecto2.Id);
     }
     
     [TestMethod]
