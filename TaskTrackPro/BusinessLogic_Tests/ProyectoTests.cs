@@ -128,6 +128,21 @@ public class ProyectoTests
         
         proyecto.eliminarTarea(tarea);
     }
+    
+    [TestMethod]
+    public void AgregarMiembroAProyecto()
+    {
+        string nombre = "Proyecto A";
+        string descripcion = "Este es un proyecto para el TDD jeje";
+        DateTime fechaInicio = DateTime.Today;
+
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+        Usuario user = new Usuario("gandalf@gmail.com", "Gandalf", "El Gris", "ganadlfsape123", DateTime.Today);
+
+        proyecto.agregarMiembro(user);
+        
+        Assert.AreEqual(1, proyecto.Miembros.Count);
+    }
 
 }
 
