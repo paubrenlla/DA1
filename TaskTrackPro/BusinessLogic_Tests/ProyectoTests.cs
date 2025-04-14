@@ -90,6 +90,22 @@ public class ProyectoTests
     }
     
     [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AgregarTareaQueYaExisteEnElProyecto()
+    {
+        string nombre = "Proyecto A";
+        string descripcion = "Este es un proyecto para el TDD jeje";
+        DateTime fechaInicio = DateTime.Today;
+
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+
+        var tarea = new Tarea("Tarea de prueba", "Descripción");
+        
+        proyecto.agregarTarea(tarea);
+        proyecto.agregarTarea(tarea);
+    }
+    
+    [TestMethod]
     
     public void EliminarTareaDelProyectoConVariasTareas()
     {
