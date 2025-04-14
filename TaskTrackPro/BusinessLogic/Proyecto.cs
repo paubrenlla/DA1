@@ -50,6 +50,10 @@ public class Proyecto
 
     public void agregarMiembro(Usuario user)
     {
+        if (Miembros.Contains(user))
+        {
+            throw new ArgumentException("Este usuario ya es miembro del proyecto.");
+        }
         Miembros.Add(user);
     }
 }
