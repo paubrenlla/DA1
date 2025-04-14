@@ -137,11 +137,12 @@ public class ProyectoTests
         DateTime fechaInicio = DateTime.Today;
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
-        Usuario user = new Usuario("gandalf@gmail.com", "Gandalf", "El Gris", "ganadlfsape123", DateTime.Today);
+        Proyecto.Usuario user = new Proyecto.Usuario("gandalf@gmail.com", "Gandalf", "El Gris", "ganadlfsape123", DateTime.Today);
 
         proyecto.agregarMiembro(user);
         
         Assert.AreEqual(1, proyecto.Miembros.Count);
+        Assert.AreSame(user, proyecto.Miembros[0]);
     }
 
 }

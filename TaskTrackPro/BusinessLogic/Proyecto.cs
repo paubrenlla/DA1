@@ -9,6 +9,16 @@ public class Proyecto
     public string? Descripcion { get; set; }
     public DateTime FechaInicio { get; set; }
     public List<Tarea> TareasAsociadas { get; set; }
+    public List<Usuario> Miembros { get; set; }
+    
+    public class Usuario
+    {
+        public Usuario(string correo, string nombre, string apellido, string pwd, DateTime fechaNacimiento)
+        {
+        
+        }
+    }
+
     public Proyecto(string nombre, string descripcion, DateTime fechaInicio)
     {
         if (fechaInicio.Date < DateTime.Now.Date)
@@ -24,6 +34,7 @@ public class Proyecto
         Descripcion = descripcion;
         FechaInicio = fechaInicio;
         TareasAsociadas = new List<Tarea>();
+        Miembros = new List<Usuario>();
     }
 
     public void agregarTarea(Tarea tarea)
@@ -37,5 +48,10 @@ public class Proyecto
             throw new ArgumentException("No existe la tarea en este proyecto");
 
         TareasAsociadas.Remove(tarea);
+    }
+
+    public void agregarMiembro(Usuario user)
+    {
+        Miembros.Add(user);
     }
 }
