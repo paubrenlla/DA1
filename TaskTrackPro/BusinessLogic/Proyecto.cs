@@ -31,4 +31,8 @@ public class Proyecto
         TareasAsociadas.Add(tarea);
     }
     
+    public void eliminarTarea(Tarea tarea)
+    {
+        TareasAsociadas.Remove(tarea);
+    }
 }
