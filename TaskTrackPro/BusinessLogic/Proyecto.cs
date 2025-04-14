@@ -59,6 +59,9 @@ public class Proyecto
     
     public void eliminarMiembro(Usuario user)
     {
+        if (!Miembros.Contains(user))
+            throw new ArgumentException("Este usuario no es integrante del proyecto.");
+
         Miembros.Remove(user);
     }
 }
