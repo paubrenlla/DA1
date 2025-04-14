@@ -2,6 +2,9 @@
 
 public class Proyecto
 {
+    private static int _contadorId = 0; // contador compartido entre todas las instancias
+
+    public int Id { get; }
     public string? Nombre { get; set; }
     public string? Descripcion { get; set; }
     public DateTime FechaInicio { get; set; }
@@ -16,7 +19,7 @@ public class Proyecto
         
         if (descripcion.Length > 400)
             throw new ArgumentException("La descripción no puede superar los 400 caracteres.");
-        
+        Id = _contadorId++;
         Nombre = nombre;
         Descripcion = descripcion;
         FechaInicio = fechaInicio;
