@@ -33,6 +33,9 @@ public class Proyecto
     
     public void eliminarTarea(Tarea tarea)
     {
+        if (!TareasAsociadas.Contains(tarea))
+            throw new ArgumentException("No existe la tarea en este proyecto");
+
         TareasAsociadas.Remove(tarea);
     }
 }
