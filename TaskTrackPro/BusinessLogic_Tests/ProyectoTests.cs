@@ -161,6 +161,21 @@ public class ProyectoTests
         Assert.AreSame(user, proyecto.Miembros[0]);
         
     }
+    
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AgregarMiembroYaExisteEnProyecto()
+    {
+        string nombre = "Proyecto A";
+        string descripcion = "Este es un proyecto para el TDD jeje";
+        DateTime fechaInicio = DateTime.Today;
+
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+        Usuario user = new Usuario("gandalf@gmail.com", "Gandalf", "El Gris", "ganadlfsape123", DateTime.Today);
+
+        proyecto.agregarMiembro(user);
+        proyecto.agregarMiembro(user);
+    }
 
 }
 
