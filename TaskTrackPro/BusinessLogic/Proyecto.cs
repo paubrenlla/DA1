@@ -56,4 +56,9 @@ public class Proyecto
         }
         Miembros.Add(user);
     }
+    
+    public void eliminarMiembro(Usuario user)
+    {
+        Miembros.Remove(user);
+    }
 }
