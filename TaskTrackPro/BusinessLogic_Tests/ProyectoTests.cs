@@ -61,7 +61,7 @@ public class ProyectoTests
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
 
-        var tarea = new Tarea("Tarea de prueba", "Descripción", DateTime.Now.AddDays(1));
+        var tarea = new Tarea("Tarea de prueba", "Descripción");
         
         proyecto.agregarTarea(tarea);
         
@@ -69,4 +69,5 @@ public class ProyectoTests
         Assert.AreSame(tarea, proyecto.TareasAsociadas[0]);
     }
 }
+
 

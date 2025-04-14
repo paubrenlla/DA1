@@ -5,6 +5,7 @@ public class Proyecto
     public string? Nombre { get; set; }
     public string? Descripcion { get; set; }
     public DateTime FechaInicio { get; set; }
+    public List<Tarea> TareasAsociadas { get; set; }
     public Proyecto(string nombre, string descripcion, DateTime fechaInicio)
     {
         if (fechaInicio.Date < DateTime.Now.Date)
@@ -19,5 +20,22 @@ public class Proyecto
         Nombre = nombre;
         Descripcion = descripcion;
         FechaInicio = fechaInicio;
+        TareasAsociadas = new List<Tarea>();
+    }
+
+    public void agregarTarea(Tarea tarea)
+    {
+        TareasAsociadas.Add(tarea);
+    }
+}
+
+public class Tarea
+{
+    public string? Titulo { get; set; }
+    public string? Descripcion { get; set; }
+
+    public Tarea(string titulo, string descripcion)
+    {
+        
     }
 }
