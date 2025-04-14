@@ -33,6 +33,10 @@ public class Proyecto
 
     public void agregarTarea(Tarea tarea)
     {
+        if (TareasAsociadas.Contains(tarea))
+        {
+            throw new ArgumentException("La tarea ya existe en el proyecto.");
+        }
         TareasAsociadas.Add(tarea);
     }
     
