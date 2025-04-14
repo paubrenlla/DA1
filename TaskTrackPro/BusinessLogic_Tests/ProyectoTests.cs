@@ -88,6 +88,32 @@ public class ProyectoTests
         Assert.AreEqual(1, proyecto.TareasAsociadas.Count);
         Assert.AreSame(tarea, proyecto.TareasAsociadas[0]);
     }
+    
+    [TestMethod]
+    public void EliminarTareaDelProyectoConVariasTareas()
+    {
+        string nombre = "Proyecto A";
+        string descripcion = "Este es un proyecto para el TDD jeje";
+        DateTime fechaInicio = DateTime.Today;
+
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+        var tarea = new Tarea("Tarea a eliminar", "Descripción");
+        var tarea2 = new Tarea("Otra tarea a eliminar", "Descripción");
+        var tarea3 = new Tarea("Ootra tarea a eliminar", "Descripción");
+        var tarea4 = new Tarea("Oootra tarea a eliminar", "Descripción");
+
+        proyecto.agregarTarea(tarea);
+        proyecto.agregarTarea(tarea2);
+        proyecto.agregarTarea(tarea3);
+        proyecto.agregarTarea(tarea4);
+        Assert.AreEqual(4, proyecto.TareasAsociadas.Count);
+
+        proyecto.eliminarTarea(tarea);
+
+        Assert.AreEqual(3, proyecto.TareasAsociadas.Count);
+        Assert.IsFalse(proyecto.TareasAsociadas.Contains(tarea));
+    }
+
 }
 
 
