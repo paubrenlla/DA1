@@ -195,6 +195,20 @@ public class ProyectoTests
         Assert.AreEqual(0, proyecto.Miembros.Count);
         Assert.IsFalse(proyecto.Miembros.Contains(user));
     }
+    
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void EliminarMiembroQueNoExisteEnElProyecto()
+    {
+        string nombre = "Proyecto A";
+        string descripcion = "Este es un proyecto para el TDD jeje";
+        DateTime fechaInicio = DateTime.Today;
+
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+        Usuario user = new Usuario("gandalf@gmail.com", "Gandalf", "El Gris", "ganadlfsape123", DateTime.Today);
+
+        proyecto.eliminarMiembro(user);
+    }
 
 }
 
