@@ -28,14 +28,3 @@ public class Proyecto
         TareasAsociadas.Add(tarea);
     }
 }
-
-public class Tarea
-{
-    public string? Titulo { get; set; }
-    public string? Descripcion { get; set; }
-
-    public Tarea(string titulo, string descripcion)
-    {
-        
-    }
-}
