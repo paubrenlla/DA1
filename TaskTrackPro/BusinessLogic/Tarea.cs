@@ -30,7 +30,12 @@ public class Tarea
     public string Descripcion
     {
         get => _descripcion;
-        set => _descripcion = value;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentNullException(nameof(value), "La descripción es requerido y no puede estar vacío.");
+            _descripcion = value;
+        }
     }
     
     public DateTime? FechaInicio
