@@ -161,4 +161,13 @@ public class DBTests
         Assert.IsFalse(db.ListaProyectos.Contains(proyecto));
     }
     
+    [TestMethod]
+    public void AgregarRecurso()
+    {
+        DB db = new DB();
+        Recurso recurso = new Recurso();
+        db.agregarRecurso(recurso);
+        Assert.AreEqual(1, db.ListaRecursos.Count);
+        Assert.AreSame(recurso, db.ListaRecursos[0]);
+    }
 }
