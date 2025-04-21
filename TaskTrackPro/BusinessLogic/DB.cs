@@ -39,6 +39,8 @@ public class DB
 
     public void eliminarUsuario(Usuario user)
     {
+        if (AdministradoresSistema.Contains(user))
+            throw new ArgumentException("El usuario es administrador");
         ListaUsuarios.Remove(user);
     }
 }
