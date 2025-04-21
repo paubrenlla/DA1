@@ -20,4 +20,9 @@ public class DB
         AdministradoresSistema.Add(user);
         ListaUsuarios.Add(user);
     }
+    
+    public void agregarUsuario(Usuario user)
+    {
+        ListaUsuarios.Add(user);
+    }
 }
