@@ -58,6 +58,23 @@ public class DBTests
     }
     
     [TestMethod]
+    public void EliminarUsuario()
+    {
+        Usuario user = new Usuario();
+        DB db = new DB(user);
+        
+        Usuario user2 = new Usuario();
+        
+        db.agregarUsuario(user2);
+        Assert.AreEqual(2, db.ListaUsuarios.Count);
+        Assert.AreSame(user2, db.ListaUsuarios[1]);
+        
+        db.eliminarUsuario(user2);
+        Assert.AreEqual(1, db.ListaUsuarios.Count);
+        Assert.IsFalse(db.ListaUsuarios.Contains(user2));
+    }
+    
+    [TestMethod]
     public void AgregarAdmin()
     {
         Usuario user = new Usuario();
