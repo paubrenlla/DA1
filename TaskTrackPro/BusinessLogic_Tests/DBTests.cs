@@ -134,4 +134,14 @@ public class DBTests
         Assert.AreEqual(1, db.ListaProyectos.Count);
         Assert.AreSame(proyecto, db.ListaProyectos[0]);
     }
+    
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AgregarProyectoYaExistenteEnElSistema()
+    {
+        DB db = new DB();
+        Proyecto proyecto = new Proyecto();
+        db.agregarProyecto(proyecto);
+        db.agregarProyecto(proyecto);
+    }
 }
