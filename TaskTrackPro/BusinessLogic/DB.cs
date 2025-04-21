@@ -28,7 +28,8 @@ public class DB
     
     public void agregarAdmin(Usuario user)
     {
-        agregarUsuario(user);
+        if (!ListaUsuarios.Contains(user))
+            agregarUsuario(user);
         AdministradoresSistema.Add(user);
     }
 }
