@@ -14,14 +14,14 @@ namespace BusinessLogic_Tests
             Duracion duracion = new Duracion(2, TipoDuracion.Dias);
             bool esCritica = false;
 
-            Tarea tarea = new Tarea(titulo, descripcion, fechaInicio, duracion, esCritica);
+            Tarea tarea1 = new Tarea(titulo, descripcion, fechaInicio, duracion, esCritica);
 
-            Assert.AreEqual(titulo, tarea.Titulo);
-            Assert.AreEqual(descripcion, tarea.Descripcion);
-            Assert.AreEqual(fechaInicio, tarea.FechaInicio);
-            Assert.AreEqual(duracion, tarea.Duracion);
-            Assert.AreEqual(esCritica, tarea.EsCritica);
-            Assert.AreEqual(EstadoTarea.Pendiente, tarea.Estado.Valor);
+            Assert.AreEqual(titulo, tarea1.Titulo);
+            Assert.AreEqual(descripcion, tarea1.Descripcion);
+            Assert.AreEqual(fechaInicio, tarea1.FechaInicio);
+            Assert.AreEqual(duracion, tarea1.Duracion);
+            Assert.AreEqual(esCritica, tarea1.EsCritica);
+            Assert.AreEqual(Tarea.EstadoTarea.Pendiente, tarea1.EstadoActual.Valor);
         }
     }
 }
