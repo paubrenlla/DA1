@@ -100,6 +100,16 @@ public class DBTests
     }
     
     [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void EliminarUsuarioQueEsAdmin()
+    {
+        Usuario user = new Usuario();
+        DB db = new DB(user);
+        
+        db.eliminarUsuario(user);
+    }
+    
+    [TestMethod]
     public void AgregarAdminQueYaEraUsuarioComun()
     {
         Usuario user = new Usuario();
@@ -116,13 +126,12 @@ public class DBTests
     }
     
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void EliminarUsuarioQueEsAdmin()
+    public void AgregarProyecto()
     {
-        Usuario user = new Usuario();
-        DB db = new DB(user);
-        
-        db.eliminarUsuario(user);
+        DB db = new DB();
+        Proyecto proyecto = new Proyecto();
+        db.agregarProyecto(proyecto);
+        Assert.AreEqual(1, db.ListaProyectos.Count);
+        Assert.AreSame(proyecto, db.ListaProyectos[0]);
     }
-    
 }
