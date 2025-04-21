@@ -22,7 +22,9 @@ public class DB
     }
     
     public void agregarUsuario(Usuario user)
-    {
+    {        
+        if (ListaUsuarios.Contains(user))
+            throw new ArgumentException("Usuario ya existe");
         ListaUsuarios.Add(user);
     }
     
