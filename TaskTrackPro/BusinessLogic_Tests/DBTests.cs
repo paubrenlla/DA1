@@ -45,6 +45,21 @@ public class DBTests
         Assert.AreSame(user2, db.ListaUsuarios[1]);
     }
     
+    [TestMethod]
+    public void AgregarAdmin()
+    {
+        Usuario user = new Usuario();
+        DB db = new DB(user);
+        
+        Usuario user2 = new Usuario();
+        
+        db.agregarAdmin(user2);
+        Assert.AreEqual(2, db.AdministradoresSistema.Count);
+        Assert.AreSame(user2, db.AdministradoresSistema[1]);
+        Assert.AreEqual(2, db.ListaUsuarios.Count);
+        Assert.AreSame(user2, db.ListaUsuarios[1]);
+    }
+    
     
     
 }
