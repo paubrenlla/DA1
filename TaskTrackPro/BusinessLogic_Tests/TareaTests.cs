@@ -21,7 +21,7 @@ namespace BusinessLogic_Tests
             Assert.AreEqual(fechaInicio, tarea1.FechaInicio);
             Assert.AreEqual(duracion, tarea1.Duracion);
             Assert.AreEqual(esCritica, tarea1.EsCritica);
-            Assert.AreEqual(Tarea.EstadoTarea.Pendiente, tarea1.EstadoActual.Valor);
+            Assert.AreEqual(TipoEstadoTarea.Pendiente, tarea1.EstadoActual.Valor);
         }
     }
 }

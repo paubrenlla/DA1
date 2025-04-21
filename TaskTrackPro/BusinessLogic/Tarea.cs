@@ -50,10 +50,6 @@ public class Tarea
         set => _estadoActual = value;
     }
     
-
-
-
-
     public Tarea(string titulo, string descripcion, DateTime? fechaInicio, Duracion duracion, bool esCritica)
     {
         Id = ++_contadorId;
@@ -62,39 +58,7 @@ public class Tarea
         FechaInicio = fechaInicio;
         Duracion = duracion;
         EsCritica = esCritica;
-        EstadoActual = new Estado(EstadoTarea.Pendiente);  // Inicializamos como Pendiente
+        EstadoActual = new Estado(TipoEstadoTarea.Pendiente);  // Inicializamos como Pendiente
     }
-
-    public class Estado
-    {
-        private EstadoTarea _valor;
-        private DateTime? _fecha;
-
-        public EstadoTarea Valor
-        {
-            get { return _valor; }
-        }
-
-        public DateTime? Fecha
-        {
-            get { return _fecha; }
-        }
-
-        // Constructor de Estado
-        public Estado(EstadoTarea valor)
-        {
-            _valor = valor;
-            _fecha = valor == EstadoTarea.Efectuada ? DateTime.Now : null;
-        }
-
-    }
-    
-    public enum EstadoTarea
-    {
-        Pendiente,
-        Bloqueada,
-        Efectuada
-    }
-
 }
 
