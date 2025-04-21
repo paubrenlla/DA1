@@ -144,4 +144,21 @@ public class DBTests
         db.agregarProyecto(proyecto);
         db.agregarProyecto(proyecto);
     }
+    
+    [TestMethod]
+    public void EliminarProyecto()
+    {
+        DB db = new DB();
+        
+        Proyecto proyecto = new Proyecto();
+        db.agregarProyecto(proyecto);
+        
+        Assert.AreEqual(1, db.ListaProyectos.Count);
+        Assert.AreSame(proyecto, db.ListaProyectos[0]);
+        
+        db.eliminarProyecto(proyecto);
+        Assert.AreEqual(0, db.ListaProyectos.Count);
+        Assert.IsFalse(db.ListaProyectos.Contains(proyecto));
+    }
+    
 }
