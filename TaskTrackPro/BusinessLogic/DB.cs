@@ -55,4 +55,9 @@ public class DB
     {
         ListaProyectos.Remove(proyecto);
     }
+
+    public void agregarRecurso(Recurso recurso)
+    {
+        ListaRecursos.Add(recurso);
+    }
 }
