@@ -36,4 +36,9 @@ public class DB
             throw new ArgumentException("El usuario ya es administrador");
         AdministradoresSistema.Add(user);
     }
+
+    public void eliminarUsuario(Usuario user)
+    {
+        ListaUsuarios.Remove(user);
+    }
 }
