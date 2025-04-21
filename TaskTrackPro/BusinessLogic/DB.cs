@@ -62,4 +62,9 @@ public class DB
             throw new ArgumentException("Este recurso ya existe"); 
         ListaRecursos.Add(recurso);
     }
+
+    public void eliminarRecurso(Recurso recurso)
+    {
+        ListaRecursos.Remove(recurso);
+    }
 }
