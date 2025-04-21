@@ -43,4 +43,9 @@ public class DB
             throw new ArgumentException("El usuario es administrador");
         ListaUsuarios.Remove(user);
     }
+
+    public void agregarProyecto(Proyecto proyecto)
+    {
+        ListaProyectos.Add(proyecto);
+    }
 }
