@@ -25,4 +25,10 @@ public class DB
     {
         ListaUsuarios.Add(user);
     }
+    
+    public void agregarAdmin(Usuario user)
+    {
+        agregarUsuario(user);
+        AdministradoresSistema.Add(user);
+    }
 }
