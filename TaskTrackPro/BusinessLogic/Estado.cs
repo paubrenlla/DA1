@@ -4,22 +4,32 @@ public class Estado
 {
     private TipoEstadoTarea _valor;
     private DateTime? _fecha;
-
+    
     public TipoEstadoTarea Valor
     {
-        get { return _valor; }
+        get => _valor;
+        set => _valor = value;
     }
 
     public DateTime? Fecha
     {
-        get { return _fecha; }
+        get => _fecha;
+        set => _fecha = value;
     }
+    
+    
 
     // Constructor de Estado
     public Estado(TipoEstadoTarea valor)
     {
-        _valor = valor;
-        _fecha = valor == TipoEstadoTarea.Efectuada ? DateTime.Now : null;
+        Valor = valor;
+        Fecha = valor == TipoEstadoTarea.Efectuada ? DateTime.Now : null;
+    }
+
+    public void  MarcarComoEfectuada(DateTime fecha)
+    {
+        Valor = TipoEstadoTarea.Efectuada;
+        Fecha = fecha;
     }
 
 }

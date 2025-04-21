@@ -69,7 +69,7 @@ namespace BusinessLogic_Tests
                 new Duracion(2, TipoDuracion.Dias),
                 false
             );
-            tarea.EstadoActual.MarcarComoEfectuada();
+            tarea.EstadoActual.MarcarComoEfectuada(DateTime.Today);
 
 
             Assert.AreEqual(TipoEstadoTarea.Efectuada, tarea.EstadoActual.Valor);
