@@ -1,4 +1,6 @@
-﻿namespace BusinessLogic_Tests;
+﻿using BusinessLogic;
+
+namespace BusinessLogic_Tests;
 
 [TestClass]
 public class DBTests
@@ -14,32 +16,4 @@ public class DBTests
         Assert.AreEqual(0, db.ListaUsuarios.Count);
     }
     
-}
-
-public class DB
-{
-    public List<Usuario> AdministradoresSistema { get; set; }
-    public List<Proyecto> ListaProyectos { get; set; }
-    public List<Recurso> ListaRecursos { get; set; }
-    public List<Usuario> ListaUsuarios { get; set; }
-
-    public DB()
-    {
-        AdministradoresSistema = new List<Usuario>();
-        ListaProyectos = new List<Proyecto>();
-        ListaRecursos = new List<Recurso>();
-        ListaUsuarios = new List<Usuario>();
-    }
-}
-
-public class Recurso
-{
-}
-
-public class Proyecto
-{
-}
-
-public class Usuario
-{
 }
