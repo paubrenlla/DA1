@@ -51,6 +51,13 @@ namespace BusinessLogic_Tests
             });
         }
         
+        public void ConstructorConDescripcionVacio_DeberiaLanzarExcepcion()
+        {
+            Assert.ThrowsException<ArgumentNullException>(() =>
+            {
+                Tarea tarea = new Tarea("Tarea1", "", DateTime.Today, new Duracion(1, TipoDuracion.Dias), true);
+            });
+        }
         
         
         
