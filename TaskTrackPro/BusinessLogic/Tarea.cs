@@ -19,7 +19,12 @@ public class Tarea
     public string Titulo
     {
         get => _titulo;
-        set => _titulo = value;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentNullException(nameof(value), "El titulo es requerido y no puede estar vacío.");
+            _titulo = value;
+        }
     }
     
     public string Descripcion

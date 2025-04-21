@@ -27,7 +27,7 @@ namespace BusinessLogic_Tests
         [TestMethod]
         public void ConstructorConTituloNulo_DeberiaLanzarExcepcion()
         {
-            Assert.ThrowsException<ArgumentException>(() =>
+            Assert.ThrowsException<ArgumentNullException>(() =>
             {
                 Tarea tarea = new Tarea(null, "Descripción", DateTime.Today, new Duracion(1, TipoDuracion.Dias), true);
             });
