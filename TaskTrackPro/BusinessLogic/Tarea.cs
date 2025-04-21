@@ -70,5 +70,18 @@ public class Tarea
         EsCritica = esCritica;
         EstadoActual = new Estado(TipoEstadoTarea.Pendiente);  // Inicializamos como Pendiente
     }
+
+    public void modificarEstado(TipoEstadoTarea nuevoEstado, DateTime fecha)
+    {   
+        if (nuevoEstado == TipoEstadoTarea.Efectuada)
+        {
+            EstadoActual.MarcarComoEfectuada(fecha);
+        }
+        else
+        {
+            EstadoActual.Valor = nuevoEstado;
+            EstadoActual.Fecha = fecha;
+        }
+    }
 }
 
