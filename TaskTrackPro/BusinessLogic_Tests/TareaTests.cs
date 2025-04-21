@@ -32,7 +32,30 @@ namespace BusinessLogic_Tests
                 Tarea tarea = new Tarea(null, "Descripción", DateTime.Today, new Duracion(1, TipoDuracion.Dias), true);
             });
         }
+        
+        [TestMethod]
+        public void ConstructorConTituloVacio_DeberiaLanzarExcepcion()
+        {
+            Assert.ThrowsException<ArgumentNullException>(() =>
+            {
+                Tarea tarea = new Tarea("", "Descripción", DateTime.Today, new Duracion(1, TipoDuracion.Dias), true);
+            });
+        }
+        
+        [TestMethod]
+        public void ConstructorConDescripcionNula_DeberiaLanzarExcepcion()
+        {
+            Assert.ThrowsException<ArgumentNullException>(() =>
+            {
+                Tarea tarea = new Tarea("Tarea1", null, DateTime.Today, new Duracion(1, TipoDuracion.Dias), true);
+            });
+        }
+        
+        
+        
+        
     }
+    
     
     
 }
