@@ -14,4 +14,10 @@ public class DB
         ListaRecursos = new List<Recurso>();
         ListaUsuarios = new List<Usuario>();
     }
+
+    public DB(Usuario user) : this()
+    {
+        AdministradoresSistema.Add(user);
+        ListaUsuarios.Add(user);
+    }
 }
