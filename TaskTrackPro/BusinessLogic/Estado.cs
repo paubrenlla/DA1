@@ -18,8 +18,7 @@ public class Estado
     }
     
     
-
-    // Constructor de Estado
+    
     public Estado(TipoEstadoTarea valor)
     {
         Valor = valor;
@@ -31,5 +30,7 @@ public class Estado
         Valor = TipoEstadoTarea.Efectuada;
         Fecha = fecha;
     }
+    
+    
 
 }

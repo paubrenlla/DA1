@@ -70,14 +70,26 @@ namespace BusinessLogic_Tests
                 false
             );
             tarea.EstadoActual.MarcarComoEfectuada(DateTime.Today);
-
-
             Assert.AreEqual(TipoEstadoTarea.Efectuada, tarea.EstadoActual.Valor);
             Assert.IsNotNull(tarea.EstadoActual.Fecha);
             Assert.IsTrue(tarea.EstadoActual.Fecha.Value.Date == DateTime.Today);
         }
 
-
+        [TestMethod]
+        public void ModificarElEstadoDeTarea() 
+            // Se modifica el estado de Pendiente a Bloqueada y se valida que la fecha es correcta
+        {
+            var tarea = new Tarea(
+                "Reinstalar los servidores de la ORT",
+                "Reinstalar los servidores de la ORT para la clase de Sistemas Operativos",
+                DateTime.Today.AddDays(20),
+                new Duracion(40, TipoDuracion.Horas),
+                true
+            );
+            tarea.modificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Today);
+            Assert.AreEqual(TipoEstadoTarea.Bloqueada, tarea.EstadoActual.Valor);
+            Assert.IsTrue(tarea.EstadoActual.Fecha.Value.Date == DateTime.Today);
+        }
 
 
     }
