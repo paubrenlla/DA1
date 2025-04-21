@@ -44,6 +44,18 @@ public class DBTests
         Assert.AreEqual(2, db.ListaUsuarios.Count);
         Assert.AreSame(user2, db.ListaUsuarios[1]);
     }
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AgregarUsarioQueYaExisteEnElSistema()
+    {
+        Usuario user = new Usuario();
+        DB db = new DB(user);
+        
+        Usuario user2 = new Usuario();
+        
+        db.agregarUsuario(user2);
+        db.agregarUsuario(user2);
+    }
     
     [TestMethod]
     public void AgregarAdmin()
