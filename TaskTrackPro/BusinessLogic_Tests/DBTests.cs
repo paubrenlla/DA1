@@ -16,3 +16,30 @@ public class DBTests
     
 }
 
+public class DB
+{
+    public List<Usuario> AdministradoresSistema { get; set; }
+    public List<Proyecto> ListaProyectos { get; set; }
+    public List<Recurso> ListaRecursos { get; set; }
+    public List<Usuario> ListaUsuarios { get; set; }
+
+    public DB()
+    {
+        AdministradoresSistema = new List<Usuario>();
+        ListaProyectos = new List<Proyecto>();
+        ListaRecursos = new List<Recurso>();
+        ListaUsuarios = new List<Usuario>();
+    }
+}
+
+public class Recurso
+{
+}
+
+public class Proyecto
+{
+}
+
+public class Usuario
+{
+}
