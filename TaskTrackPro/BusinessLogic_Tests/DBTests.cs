@@ -170,4 +170,14 @@ public class DBTests
         Assert.AreEqual(1, db.ListaRecursos.Count);
         Assert.AreSame(recurso, db.ListaRecursos[0]);
     }
+    
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AgregarRecursoYaExistenteEnElSistema()
+    {
+        DB db = new DB();
+        Recurso recurso = new Recurso();
+        db.agregarRecurso(recurso);
+        db.agregarRecurso(recurso);
+    }
 }
