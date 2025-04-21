@@ -180,4 +180,18 @@ public class DBTests
         db.agregarRecurso(recurso);
         db.agregarRecurso(recurso);
     }
+    
+    [TestMethod]
+    public void EliminarRecurso()
+    {
+        DB db = new DB();
+        Recurso recurso = new Recurso();
+        db.agregarRecurso(recurso);
+        Assert.AreEqual(1, db.ListaRecursos.Count);
+        Assert.AreSame(recurso, db.ListaRecursos[0]);
+        
+        db.eliminarRecurso(recurso);
+        Assert.AreEqual(0, db.ListaRecursos.Count);
+        Assert.IsFalse(db.ListaRecursos.Contains(recurso));
+    }
 }
