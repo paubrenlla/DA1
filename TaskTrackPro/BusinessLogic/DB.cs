@@ -32,6 +32,8 @@ public class DB
     {
         if (!ListaUsuarios.Contains(user))
             agregarUsuario(user);
+        if (AdministradoresSistema.Contains(user))
+            throw new ArgumentException("El usuario ya es administrador");
         AdministradoresSistema.Add(user);
     }
 }
