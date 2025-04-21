@@ -10,7 +10,7 @@ namespace BusinessLogic_Tests
         {
             string titulo = "Leer artículo";
             string descripcion = "Leer artículo de investigación para clase";
-            DateTime? fechaInicio = DateTime.Today;
+            DateTime fechaInicio = DateTime.Today;
             Duracion duracion = new Duracion(2, TipoDuracion.Dias);
             bool esCritica = false;
 
@@ -50,7 +50,7 @@ namespace BusinessLogic_Tests
                 Tarea tarea = new Tarea("Tarea1", null, DateTime.Today, new Duracion(1, TipoDuracion.Dias), true);
             });
         }
-        
+        [TestMethod]
         public void ConstructorConDescripcionVacio_DeberiaLanzarExcepcion()
         {
             Assert.ThrowsException<ArgumentNullException>(() =>
@@ -59,10 +59,27 @@ namespace BusinessLogic_Tests
             });
         }
         
-        
-        
-        
-        
+        [TestMethod]
+        public void MarcarComoEfectuada_DeberiaCambiarEstadoYAsignarFecha()
+        {
+            var tarea = new Tarea(
+                "Leer artículo",
+                "Leer artículo de investigación para clase",
+                DateTime.Today,
+                new Duracion(2, TipoDuracion.Dias),
+                false
+            );
+            tarea.EstadoActual.MarcarComoEfectuada();
+
+
+            Assert.AreEqual(TipoEstadoTarea.Efectuada, tarea.EstadoActual.Valor);
+            Assert.IsNotNull(tarea.EstadoActual.Fecha);
+            Assert.IsTrue(tarea.EstadoActual.Fecha.Value.Date == DateTime.Today);
+        }
+
+
+
+
     }
     
     

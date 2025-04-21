@@ -6,7 +6,7 @@ public class Tarea
     private int _id;
     private string _titulo;
     private string _descripcion;
-    private DateTime? _fechaInicio;
+    private DateTime _fechaInicio;
     private Duracion _duracion;
     private bool _esCritica;
     private Estado _estadoActual;
@@ -38,7 +38,7 @@ public class Tarea
         }
     }
     
-    public DateTime? FechaInicio
+    public DateTime FechaInicio
     {
         get => _fechaInicio;
         set => _fechaInicio = value;
@@ -60,7 +60,7 @@ public class Tarea
         set => _estadoActual = value;
     }
     
-    public Tarea(string titulo, string descripcion, DateTime? fechaInicio, Duracion duracion, bool esCritica)
+    public Tarea(string titulo, string descripcion, DateTime fechaInicio, Duracion duracion, bool esCritica)
     {
         Id = ++_contadorId;
         Titulo = titulo;
