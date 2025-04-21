@@ -23,5 +23,16 @@ namespace BusinessLogic_Tests
             Assert.AreEqual(esCritica, tarea1.EsCritica);
             Assert.AreEqual(TipoEstadoTarea.Pendiente, tarea1.EstadoActual.Valor);
         }
+
+        [TestMethod]
+        public void ConstructorConTituloNulo_DeberiaLanzarExcepcion()
+        {
+            Assert.ThrowsException<ArgumentException>(() =>
+            {
+                Tarea tarea = new Tarea(null, "Descripción", DateTime.Today, new Duracion(1, TipoDuracion.Dias), true);
+            });
+        }
     }
+    
+    
 }
