@@ -58,6 +58,8 @@ public class DB
 
     public void agregarRecurso(Recurso recurso)
     {
+        if (ListaRecursos.Contains(recurso))
+            throw new ArgumentException("Este recurso ya existe"); 
         ListaRecursos.Add(recurso);
     }
 }
