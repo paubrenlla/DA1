@@ -46,6 +46,8 @@ public class DB
 
     public void agregarProyecto(Proyecto proyecto)
     {
+        if (ListaProyectos.Contains(proyecto))
+            throw new ArgumentException("El proyecto ya existe");
         ListaProyectos.Add(proyecto);
     }
 }
