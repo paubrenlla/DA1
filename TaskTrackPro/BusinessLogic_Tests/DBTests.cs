@@ -115,4 +115,14 @@ public class DBTests
         Assert.AreSame(user2, db.ListaUsuarios[1]);
     }
     
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void EliminarUsuarioQueEsAdmin()
+    {
+        Usuario user = new Usuario();
+        DB db = new DB(user);
+        
+        db.eliminarUsuario(user);
+    }
+    
 }
