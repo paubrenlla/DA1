@@ -73,6 +73,16 @@ public class DBTests
     }
     
     [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AgregarAdminQueYaExisteEnElSistema()
+    {
+        Usuario user = new Usuario();
+        DB db = new DB(user);
+        
+        db.agregarAdmin(user);
+    }
+    
+    [TestMethod]
     public void AgregarAdminQueYaEraUsuarioComun()
     {
         Usuario user = new Usuario();
