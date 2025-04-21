@@ -50,4 +50,9 @@ public class DB
             throw new ArgumentException("El proyecto ya existe");
         ListaProyectos.Add(proyecto);
     }
+
+    public void eliminarProyecto(Proyecto proyecto)
+    {
+        ListaProyectos.Remove(proyecto);
+    }
 }
