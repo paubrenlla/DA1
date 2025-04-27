@@ -153,7 +153,7 @@ public class ProyectoTests
         DateTime fechaInicio = DateTime.Today;
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
-        Usuario user = new Usuario("gandalf@gmail.com", "Gandalf", "El Gris", "ganadlfsape123", DateTime.Today);
+        Usuario user = new Usuario("gandalf@gmail.com", "Gandalf", "El Gris", "ganadlfSape123!", new DateTime(2000, 01, 01));
 
         proyecto.agregarMiembro(user);
         
@@ -185,7 +185,7 @@ public class ProyectoTests
         DateTime fechaInicio = DateTime.Today;
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
-        Usuario user = new Usuario("gandalf@gmail.com", "Gandalf", "El Gris", "ganadlfsape123", DateTime.Today);
+        Usuario user = new Usuario("gandalf@gmail.com", "Gandalf", "El Gris", "ganadlfSape123!", new DateTime(2000, 01, 01));
         
         proyecto.agregarMiembro(user);
         Assert.AreEqual(1, proyecto.Miembros.Count);
