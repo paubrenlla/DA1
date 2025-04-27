@@ -19,7 +19,7 @@ public class DBTests
     [TestMethod]
     public void ConstructorConUsarioAdmin()
     {
-        Usuario user = new Usuario();
+        Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         DB db = new DB(user);
         
         Assert.AreEqual(1, db.AdministradoresSistema.Count);
@@ -33,12 +33,12 @@ public class DBTests
     [TestMethod]
     public void AgregarUsarioComun()
     {
-        Usuario user = new Usuario();
+        Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         DB db = new DB(user);
         
         Assert.AreEqual(1, db.ListaUsuarios.Count);
         
-        Usuario user2 = new Usuario();
+        Usuario user2 = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         
         db.agregarUsuario(user2);
         Assert.AreEqual(2, db.ListaUsuarios.Count);
@@ -48,10 +48,10 @@ public class DBTests
     [ExpectedException(typeof(ArgumentException))]
     public void AgregarUsarioQueYaExisteEnElSistema()
     {
-        Usuario user = new Usuario();
+        Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         DB db = new DB(user);
         
-        Usuario user2 = new Usuario();
+        Usuario user2 = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         
         db.agregarUsuario(user2);
         db.agregarUsuario(user2);
@@ -60,10 +60,10 @@ public class DBTests
     [TestMethod]
     public void EliminarUsuario()
     {
-        Usuario user = new Usuario();
+        Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         DB db = new DB(user);
         
-        Usuario user2 = new Usuario();
+        Usuario user2 = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         
         db.agregarUsuario(user2);
         Assert.AreEqual(2, db.ListaUsuarios.Count);
@@ -77,10 +77,10 @@ public class DBTests
     [TestMethod]
     public void AgregarAdmin()
     {
-        Usuario user = new Usuario();
+        Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         DB db = new DB(user);
         
-        Usuario user2 = new Usuario();
+        Usuario user2 = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         
         db.agregarAdmin(user2);
         Assert.AreEqual(2, db.AdministradoresSistema.Count);
@@ -93,7 +93,7 @@ public class DBTests
     [ExpectedException(typeof(ArgumentException))]
     public void AgregarAdminQueYaExisteEnElSistema()
     {
-        Usuario user = new Usuario();
+        Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         DB db = new DB(user);
         
         db.agregarAdmin(user);
@@ -103,7 +103,7 @@ public class DBTests
     [ExpectedException(typeof(ArgumentException))]
     public void EliminarUsuarioQueEsAdmin()
     {
-        Usuario user = new Usuario();
+        Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         DB db = new DB(user);
         
         db.eliminarUsuario(user);
@@ -112,10 +112,10 @@ public class DBTests
     [TestMethod]
     public void AgregarAdminQueYaEraUsuarioComun()
     {
-        Usuario user = new Usuario();
+        Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         DB db = new DB(user);
         
-        Usuario user2 = new Usuario();
+        Usuario user2 = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         
         db.agregarUsuario(user2);
         db.agregarAdmin(user2);
@@ -129,7 +129,13 @@ public class DBTests
     public void AgregarProyecto()
     {
         DB db = new DB();
-        Proyecto proyecto = new Proyecto();
+        string nombre = "Proyecto A";
+        string descripcion = "Este es un proyecto para el TDD jej";
+        DateTime fechaInicio = DateTime.Today;
+        
+
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+        
         db.agregarProyecto(proyecto);
         Assert.AreEqual(1, db.ListaProyectos.Count);
         Assert.AreSame(proyecto, db.ListaProyectos[0]);
@@ -140,7 +146,14 @@ public class DBTests
     public void AgregarProyectoYaExistenteEnElSistema()
     {
         DB db = new DB();
-        Proyecto proyecto = new Proyecto();
+        
+        string nombre = "Proyecto A";
+        string descripcion = "Este es un proyecto para el TDD jej";
+        DateTime fechaInicio = DateTime.Today;
+        
+
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+        
         db.agregarProyecto(proyecto);
         db.agregarProyecto(proyecto);
     }
@@ -150,7 +163,13 @@ public class DBTests
     {
         DB db = new DB();
         
-        Proyecto proyecto = new Proyecto();
+        string nombre = "Proyecto A";
+        string descripcion = "Este es un proyecto para el TDD jej";
+        DateTime fechaInicio = DateTime.Today;
+        
+
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+        
         db.agregarProyecto(proyecto);
         
         Assert.AreEqual(1, db.ListaProyectos.Count);
