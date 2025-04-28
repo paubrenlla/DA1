@@ -1,10 +1,20 @@
 ﻿using BusinessLogic;
+using System.Reflection;
+
 
 namespace BusinessLogic_Tests;
 
 [TestClass]
 public class ProyectoTests
 {
+    [TestInitialize]
+    public void Setup()
+    {
+        typeof(Proyecto)
+            .GetField("_contadorId", BindingFlags.Static | BindingFlags.NonPublic)
+            ?.SetValue(null, 1);
+    }
+    
     [TestMethod]
     public void ProyectoConstructorConDatosCorrectos()
     {
