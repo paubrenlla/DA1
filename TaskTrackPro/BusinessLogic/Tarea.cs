@@ -10,6 +10,9 @@ public class Tarea
     private Duracion _duracion;
     private bool _esCritica;
     private Estado _estadoActual;
+    private List<Tarea> _tareasDependencia = new List<Tarea>();
+
+    public IReadOnlyList<Tarea> TareasDependencia => _tareasDependencia.AsReadOnly();
     
     public int Id
     {
