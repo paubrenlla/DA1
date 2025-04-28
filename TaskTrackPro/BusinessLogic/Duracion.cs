@@ -32,4 +32,9 @@ public class Duracion
             _tipo = value;
         }
     }
+
+    public override string ToString()
+    {
+        return $"{Cantidad};    {Tipo.ToString().ToLower()}"; 
+    }
 }

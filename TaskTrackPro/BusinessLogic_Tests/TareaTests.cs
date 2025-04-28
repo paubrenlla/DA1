@@ -92,6 +92,14 @@ namespace BusinessLogic_Tests
             Assert.IsTrue(tarea.EstadoActual.Fecha.Value.Date == DateTime.Today);
         }
         
+        [TestMethod]
+        public void NuevaTarea_TieneListaDeDependenciasVacia()
+        {
+            var tarea = new Tarea("Tarea Principal", "Descripción", DateTime.Today, new Duracion(1, TipoDuracion.Dias), false);
+            Assert.IsNotNull(tarea.TareasDependencia);
+            Assert.AreEqual(0, tarea.TareasDependencia.Count);
+        }
+        
     }
     
     

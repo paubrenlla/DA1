@@ -30,7 +30,16 @@ public class Estado
         Valor = TipoEstadoTarea.Efectuada;
         Fecha = fecha;
     }
-    
-    
 
+    public override string ToString()
+    {
+        if (Valor == TipoEstadoTarea.Efectuada)
+        {
+            return $"Estado: {Valor}, Fecha: {Fecha?.ToString("dd/MM/yyyy")}";
+        }
+        else 
+        {
+            return $"Estado: {Valor}";
+        }
+    }
 }
