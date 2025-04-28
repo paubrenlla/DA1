@@ -100,6 +100,18 @@ namespace BusinessLogic_Tests
             Assert.AreEqual(0, tarea.TareasDependencia.Count);
         }
         
+        [TestMethod]
+        public void AgregarDependencia_DeberiaPonerEstadoBloqueada()
+        {
+            var tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, new Duracion(1, TipoDuracion.Dias), false);
+            var tareaDependencia = new Tarea("Tarea Dependiente", "Descripción dependencia", DateTime.Today, new Duracion(1, TipoDuracion.Dias), false);
+
+            tareaPrincipal.AgregarDependencia(tareaDependencia);
+
+            Assert.AreEqual(1, tareaPrincipal.TareasDependencia.Count);
+            Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaPrincipal.EstadoActual.Valor);
+        }
+        
     }
     
     
