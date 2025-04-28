@@ -89,5 +89,32 @@ public class Tarea
         _tareasDependencia.Add(tarea);
         modificarEstado(TipoEstadoTarea.Bloqueada,DateTime.Now);
     }
+    public void ActualizarEstadoSegunDependencias()
+    {
+        if (_tareasDependencia.Count == 0) 
+            return;
+
+        // Verifica si todas las dependencias (directas e indirectas) están efectuadas
+        bool todasEfectuadas = VerificarDependenciasCompletadas(_tareasDependencia);
+
+        EstadoActual.Valor = todasEfectuadas ? TipoEstadoTarea.Pendiente : TipoEstadoTarea.Bloqueada;
+    }
+
+// Método recursivo para verificar dependencias anidadas
+    private bool VerificarDependenciasCompletadas(IEnumerable<Tarea> dependencias)
+    {
+        foreach (var tarea in dependencias)
+        {
+            // Si la tarea dependiente no está efectuada, retorna false inmediatamente
+            if (tarea.EstadoActual.Valor != TipoEstadoTarea.Efectuada)
+                return false;
+
+            // Si la tarea dependiente tiene sus propias dependencias, verifica recursivamente
+            if (tarea._tareasDependencia.Count > 0 && !VerificarDependenciasCompletadas(tarea._tareasDependencia))
+                return false;
+        }
+
+        return true; // Todas las dependencias (anidadas) están efectuadas
+    }
 }
 

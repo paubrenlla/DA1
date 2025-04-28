@@ -122,15 +122,34 @@ namespace BusinessLogic_Tests
             tareaPrincipal.AgregarDependencia(tareaDependencia1);
             tareaPrincipal.AgregarDependencia(tareaDependencia2);
 
-            // Simulamos que las dependencias se terminan
-            tareaDependencia1.modificarEstado(TipoEstadoTarea.Terminada, DateTime.Today);
-            tareaDependencia2.modificarEstado(TipoEstadoTarea.Terminada, DateTime.Today);
+            // Simulamos que las dependencias directas se terminan
+            tareaDependencia1.modificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
+            tareaDependencia2.modificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
 
             tareaPrincipal.ActualizarEstadoSegunDependencias();
 
             Assert.AreEqual(TipoEstadoTarea.Pendiente, tareaPrincipal.EstadoActual.Valor);
         }
         
+        [TestMethod]
+        public void ActualizarEstado_DependenciaAnidadaBloqueada_EstadoBloqueado()
+        {
+            var tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, new Duracion(1, TipoDuracion.Dias), false);
+            var tareaDependencia1 = new Tarea("Dependencia 1", "Desc 1", DateTime.Today, new Duracion(1, TipoDuracion.Dias), false);
+            var tareaDependencia2 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, new Duracion(1, TipoDuracion.Dias), false);
+            var tareaDependencia3 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, new Duracion(1, TipoDuracion.Dias), false);
+           
+            tareaDependencia1.modificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
+            tareaDependencia2.modificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Today);
+         
+            tareaDependencia2.AgregarDependencia(tareaDependencia3); // Dependencia anidada no efectuada
+            tareaPrincipal.AgregarDependencia(tareaDependencia1);
+            tareaPrincipal.AgregarDependencia(tareaDependencia2);
+
+            tareaPrincipal.ActualizarEstadoSegunDependencias();
+            Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaPrincipal.EstadoActual.Valor);
+        }
+
     }
     
     
