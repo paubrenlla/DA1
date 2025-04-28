@@ -81,6 +81,13 @@ public class Tarea
             EstadoActual.Fecha = fecha;
         }
     
-    
+    public void AgregarDependencia(Tarea tarea)
+    {
+        if (tarea == null)
+            throw new ArgumentNullException(nameof(tarea));
+
+        _tareasDependencia.Add(tarea);
+        modificarEstado(TipoEstadoTarea.Bloqueada,DateTime.Now);
+    }
 }
 

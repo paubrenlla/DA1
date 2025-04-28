@@ -112,6 +112,8 @@ namespace BusinessLogic_Tests
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaPrincipal.EstadoActual.Valor);
         }
         
+        
+        
     }
     
     
