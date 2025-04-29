@@ -187,7 +187,7 @@ public class DBTests
         string nombre = "Auto";
         string tipo = "Vehiculo";
         string descripcion = "Auto de la empresa";
-        Recurso recurso = new Recurso(nombre, tipo, descripcion);
+        Recurso recurso = new Recurso(nombre, tipo, descripcion, false);
         db.agregarRecurso(recurso);
         Assert.AreEqual(1, db.ListaRecursos.Count);
         Assert.AreSame(recurso, db.ListaRecursos[0]);
@@ -201,7 +201,7 @@ public class DBTests
         string nombre = "Auto";
         string tipo = "Vehiculo";
         string descripcion = "Auto de la empresa";
-        Recurso recurso = new Recurso(nombre, tipo, descripcion);
+        Recurso recurso = new Recurso(nombre, tipo, descripcion, false);
         db.agregarRecurso(recurso);
         db.agregarRecurso(recurso);
     }
@@ -213,7 +213,7 @@ public class DBTests
         string nombre = "Auto";
         string tipo = "Vehiculo";
         string descripcion = "Auto de la empresa";
-        Recurso recurso = new Recurso(nombre, tipo, descripcion);
+        Recurso recurso = new Recurso(nombre, tipo, descripcion, false);
         db.agregarRecurso(recurso);
         Assert.AreEqual(1, db.ListaRecursos.Count);
         Assert.AreSame(recurso, db.ListaRecursos[0]);

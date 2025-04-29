@@ -6,9 +6,11 @@ public class Recurso
     public string Nombre { get; set; }
     public string Tipo { get; set; }
     public string Descripcion { get; set; }
+    
+    public bool sePuedeCompartir { get; set; }
     public int Id { get; set; }
 
-    public Recurso(string nombre, string tipo, string descripcion)
+    public Recurso(string nombre, string tipo, string descripcion, bool sePuedeCompartir)
     {
         if (string.IsNullOrEmpty(nombre)) 
             throw new ArgumentNullException("Se debe ingresar un nombre.");
