@@ -10,6 +10,8 @@ public class Recurso
 
     public Recurso(string nombre, string tipo, string descripcion)
     {
+        if (string.IsNullOrEmpty(nombre)) 
+            throw new ArgumentNullException("Se debe ingresar un nombre.");
         Id = _contadorId++;
         Nombre = nombre;
         Tipo = tipo;
