@@ -34,6 +34,13 @@ public class RecursoTests
     }
     
     [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void CreoRecursoSinTipo()
+    {
+        Recurso recurso = new Recurso("Auto", "", "Auto de la empresa");
+    }
+    
+    [TestMethod]
     public void RecursosConsecutivosConIDCorrecta()
     {
         string nombre = "Auto";
