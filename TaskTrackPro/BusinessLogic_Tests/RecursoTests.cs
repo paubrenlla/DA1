@@ -56,6 +56,16 @@ public class RecursoTests
         Recurso recurso2 = new Recurso(nombre2, tipo2, descripcion2, false);
         Assert.AreEqual(2,recurso2.Id);
     }
+   
+    [TestMethod]
+    public void RecursoPasaASerExclusivo()
+    {
+        //TODO
+    }
     
-    
+    [TestMethod]
+    public void RecursoPasaAEstarEnUso()
+    {
+        //TODO
+    }
 }
