@@ -162,6 +162,16 @@ public class RecursoTests
         recurso.ConsumirRecurso(5); 
         Assert.AreEqual(8, recurso.CantidadEnUso);
     }
+    
+    [TestMethod]
+    public void LiberarRecurso_ActualizaCantidadEnUso()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        recurso.CantidadEnUso = 8;
+
+        recurso.LiberarRecurso(3);
+        Assert.AreEqual(5, recurso.CantidadEnUso);
+    }
    
     [TestMethod]
     public void RecursoPasaASerExclusivo()
