@@ -53,4 +53,8 @@ public class Recurso
         }
     }
     
+    public void LiberarRecurso(int cantidad)
+    {
+        CantidadEnUso -= cantidad;
+    }
 }
