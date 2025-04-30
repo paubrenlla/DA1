@@ -174,14 +174,13 @@ public class RecursoTests
     }
    
     [TestMethod]
-    public void RecursoPasaASerExclusivo()
+    public void HacerRecursoExclusivoDeProyecto_ActualizaProyecto()
     {
-        //TODO
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        Proyecto proyecto = new Proyecto("Proyecto", "Descripcion", DateTime.Now);
+
+        recurso.HacerRecursoExclusivoDeProyecto(proyecto);
+        Assert.AreEqual(proyecto, recurso.ProyectoAlQuePertenece);
     }
     
-    [TestMethod]
-    public void RecursoPasaAEstarEnUso()
-    {
-        //TODO
-    }
 }
