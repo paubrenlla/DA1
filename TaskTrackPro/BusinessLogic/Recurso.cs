@@ -57,4 +57,9 @@ public class Recurso
     {
         CantidadEnUso -= cantidad;
     }
+    
+    public void HacerRecursoExclusivoDeProyecto(Proyecto proyecto)
+    {
+        ProyectoAlQuePertenece = proyecto;
+    }
 }
