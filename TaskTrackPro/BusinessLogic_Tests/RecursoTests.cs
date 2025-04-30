@@ -124,7 +124,7 @@ public class RecursoTests
     public void EstaDisponible_DevuelveTrueSiSePuedeCompartir()
     {
         Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", true, 10);
-        Assert.IsTrue(recurso.estaDisponible(5));
+        Assert.IsTrue(recurso.EstaDisponible(5));
     }
 
     [TestMethod]
@@ -132,7 +132,7 @@ public class RecursoTests
     {
         Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
         recurso.CantidadEnUso = 3;
-        Assert.IsTrue(recurso.estaDisponible(5));
+        Assert.IsTrue(recurso.EstaDisponible(5));
     }
 
     [TestMethod]
@@ -140,7 +140,7 @@ public class RecursoTests
     {
         Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
         recurso.CantidadEnUso = 8;
-        Assert.IsFalse(recurso.estaDisponible(5)); 
+        Assert.IsFalse(recurso.EstaDisponible(5)); 
     }
    
     [TestMethod]
