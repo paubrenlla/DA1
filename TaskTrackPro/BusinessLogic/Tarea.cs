@@ -7,7 +7,7 @@ public class Tarea
     private string _titulo;
     private string _descripcion;
     private DateTime _fechaInicio;
-    private Duracion _duracion;
+    private TimeSpan _duracion;
     private bool _esCritica;
     private Estado _estadoActual;
     private List<Tarea> _tareasDependencia = new List<Tarea>();
@@ -47,7 +47,7 @@ public class Tarea
         set => _fechaInicio = value;
     }
     
-    public Duracion Duracion
+    public TimeSpan Duracion
     {
         get => _duracion;
         set => _duracion = value;
@@ -63,7 +63,7 @@ public class Tarea
         set => _estadoActual = value;
     }
     
-    public Tarea(string titulo, string descripcion, DateTime fechaInicio, Duracion duracion, bool esCritica)
+    public Tarea(string titulo, string descripcion, DateTime fechaInicio, TimeSpan duracion, bool esCritica)
     {
         Id = ++_contadorId;
         Titulo = titulo;
