@@ -62,4 +62,9 @@ public class Recurso
     {
         ProyectoAlQuePertenece = proyecto;
     }
+    
+    public void HacerRecursoGlobal()
+    {
+        ProyectoAlQuePertenece = null;
+    }
 }
