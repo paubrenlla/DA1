@@ -142,6 +142,26 @@ public class RecursoTests
         recurso.CantidadEnUso = 8;
         Assert.IsFalse(recurso.EstaDisponible(5)); 
     }
+    
+    [TestMethod]
+    public void ConsumirRecurso_ActualizaCantidadEnUso()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        recurso.CantidadEnUso = 3;
+
+        recurso.ConsumirRecurso(5);
+        Assert.AreEqual(8, recurso.CantidadEnUso);
+    }
+
+    [TestMethod]
+    public void ConsumirRecurso_NoActualizaSiNoDisponible()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        recurso.CantidadEnUso = 8;
+
+        recurso.ConsumirRecurso(5); 
+        Assert.AreEqual(8, recurso.CantidadEnUso);
+    }
    
     [TestMethod]
     public void RecursoPasaASerExclusivo()
