@@ -183,4 +183,16 @@ public class RecursoTests
         Assert.AreEqual(proyecto, recurso.ProyectoAlQuePertenece);
     }
     
+    [TestMethod]
+    public void HacerRecursoGlobal_DejaElRecursoSinProyecto()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10, null);
+        Proyecto proyecto = new Proyecto("Proyecto", "Descripcion", DateTime.Now);
+        recurso.HacerRecursoExclusivoDeProyecto(proyecto);
+
+        recurso.HacerRecursoGlobal();
+
+        Assert.IsNull(recurso.ProyectoAlQuePertenece);
+    }
+    
 }
