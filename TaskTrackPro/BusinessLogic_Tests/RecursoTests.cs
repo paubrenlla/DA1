@@ -116,8 +116,31 @@ public class RecursoTests
         string nombre2 = "Auto2";
         string tipo2 = "Vehiculo";
         string descripcion2 = "Segundo auto de la empresa";
-        Recurso recurso2 = new Recurso(nombre2, tipo2, descripcion2, false, 2, null);
+        Recurso recurso2 = new Recurso(nombre2, tipo2, descripcion2, false, 2);
         Assert.AreEqual(2,recurso2.Id);
+    }
+    
+    [TestMethod]
+    public void EstaDisponible_DevuelveTrueSiSePuedeCompartir()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", true, 10);
+        Assert.IsTrue(recurso.estaDisponible(5));
+    }
+
+    [TestMethod]
+    public void EstaDisponible_DevuelveTrueSiHayCantidadSuficiente()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        recurso.CantidadEnUso = 3;
+        Assert.IsTrue(recurso.estaDisponible(5));
+    }
+
+    [TestMethod]
+    public void EstaDisponible_DevuelveFalseSiNoHayCantidadSuficiente()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        recurso.CantidadEnUso = 8;
+        Assert.IsFalse(recurso.estaDisponible(5)); 
     }
    
     [TestMethod]
