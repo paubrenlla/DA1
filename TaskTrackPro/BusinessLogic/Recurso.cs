@@ -34,6 +34,15 @@ public class Recurso
         CantidadDelRecurso = cantidadDelRecurso;
         CantidadEnUso = 0;
         ProyectoAlQuePertenece = proyectoAlQuePertenece;
-
     }
+    
+    public bool estaDisponible(int cantidad)
+    {
+        if(SePuedeCompartir)
+        {
+            return true;
+        }
+        return CantidadEnUso + cantidad < CantidadDelRecurso;
+    }
+    
 }
