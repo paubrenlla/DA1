@@ -45,4 +45,12 @@ public class Recurso
         return CantidadEnUso + cantidad < CantidadDelRecurso;
     }
     
+    public void ConsumirRecurso(int cantidad)
+    {
+        if(EstaDisponible(cantidad))
+        {
+            CantidadEnUso += cantidad;
+        }
+    }
+    
 }
