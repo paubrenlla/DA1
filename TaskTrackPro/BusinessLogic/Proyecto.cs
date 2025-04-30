@@ -11,6 +11,8 @@ public class Proyecto
     public List<Tarea> TareasAsociadas { get; set; }
     public List<Usuario> Miembros { get; set; }
     
+    public List<Recurso> RecursosAsociados { get; set; }
+    
     
 
     public Proyecto(string nombre, string descripcion, DateTime fechaInicio)
@@ -29,6 +31,7 @@ public class Proyecto
         FechaInicio = fechaInicio;
         TareasAsociadas = new List<Tarea>();
         Miembros = new List<Usuario>();
+        RecursosAsociados = new List<Recurso>();
     }
 
     public void agregarTarea(Tarea tarea)
@@ -63,5 +66,10 @@ public class Proyecto
             throw new ArgumentException("Este usuario no es integrante del proyecto.");
 
         Miembros.Remove(user);
+    }
+
+    public void agregarRecurso(Recurso recurso)
+    {
+        RecursosAsociados.Add(recurso);
     }
 }

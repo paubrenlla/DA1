@@ -81,6 +81,21 @@ public class ProyectoTests
         
         Assert.AreEqual(2,proyecto2.Id);
     }
+
+    [TestMethod]
+    public void AgregarRecursoAlProyecto()
+    {
+        string nombre = "Proyecto A";
+        string descripcion = "Este es un proyecto para el TDD jeje";
+        DateTime fechaInicio = DateTime.Today;
+
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+        Recurso recurso = new Recurso();
+        proyecto.agregarRecurso(recurso);
+        Assert.AreEqual(1, proyecto.RecursosAsociados.Count);
+        Assert.AreEqual(recurso, proyecto.RecursosAsociados[0]);
+    }    
+    
     
     [TestMethod]
     public void AgregarTareaAlProyecto()
