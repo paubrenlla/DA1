@@ -96,6 +96,21 @@ public class ProyectoTests
         Assert.AreEqual(recurso, proyecto.RecursosAsociados[0]);
     }    
     
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AgregarRecursoQueYaExisteEnElProyecto()
+    {
+        string nombre = "Proyecto A";
+        string descripcion = "Este es un proyecto para el TDD jeje";
+        DateTime fechaInicio = DateTime.Today;
+
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+
+        Recurso recurso = new Recurso();
+        
+        proyecto.agregarRecurso(recurso);
+        proyecto.agregarRecurso(recurso);
+    }
     
     [TestMethod]
     public void AgregarTareaAlProyecto()

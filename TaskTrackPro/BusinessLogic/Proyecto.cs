@@ -70,6 +70,10 @@ public class Proyecto
 
     public void agregarRecurso(Recurso recurso)
     {
+        if (RecursosAsociados.Contains(recurso))
+        {
+            throw new ArgumentException("El recurso ya es parte del proyecto.");
+        }
         RecursosAsociados.Add(recurso);
     }
 }
