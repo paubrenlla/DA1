@@ -92,7 +92,7 @@ public class ProyectoTests
         DateTime fechaInicio = DateTime.Today;
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
-        Recurso recurso = new Recurso();
+        Recurso recurso = new Recurso("Auto","Vehiculo","Auto de la empresa",false,1);
         proyecto.agregarRecurso(recurso);
         Assert.AreEqual(1, proyecto.RecursosAsociados.Count);
         Assert.AreEqual(recurso, proyecto.RecursosAsociados[0]);
@@ -108,7 +108,7 @@ public class ProyectoTests
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
 
-        Recurso recurso = new Recurso();
+        Recurso recurso = new Recurso("Auto","Vehiculo","Auto de la empresa",false,1);
         
         proyecto.agregarRecurso(recurso);
         proyecto.agregarRecurso(recurso);
