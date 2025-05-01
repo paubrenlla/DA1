@@ -159,7 +159,6 @@ namespace BusinessLogic_Tests
     var duracionInvalida = TimeSpan.FromMinutes(59);
     var tarea = new Tarea("Título", "Descripción", DateTime.Now, duracionInvalida, false);
     }
-
     }
     
     

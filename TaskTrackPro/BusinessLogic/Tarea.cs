@@ -46,11 +46,17 @@ public class Tarea
         get => _fechaInicio;
         set => _fechaInicio = value;
     }
-    
+
     public TimeSpan Duracion
     {
         get => _duracion;
-        set => _duracion = value;
+        set
+        {
+            if (value < TimeSpan.FromHours(1))
+                throw new ArgumentOutOfRangeException(nameof(value), "La duración debe ser al menos de 1 hora.");
+
+            _duracion = value;
+        }
     }
     public bool EsCritica
     {
