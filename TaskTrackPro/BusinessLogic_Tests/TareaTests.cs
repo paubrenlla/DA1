@@ -151,6 +151,14 @@ namespace BusinessLogic_Tests
             tareaPrincipal.ActualizarEstadoSegunDependencias();
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaPrincipal.EstadoActual.Valor);
         }
+    
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentOutOfRangeException))]
+    public void Tarea_DuracionMenorAUnaHora_LanzaExcepcion()
+    {
+    var duracionInvalida = TimeSpan.FromMinutes(59);
+    var tarea = new Tarea("Título", "Descripción", DateTime.Now, duracionInvalida, false);
+    }
 
     }
     
