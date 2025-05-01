@@ -13,6 +13,7 @@ public class Tarea
     private List<Tarea> _tareasDependencia = new List<Tarea>();
 
     public IReadOnlyList<Tarea> TareasDependencia => _tareasDependencia.AsReadOnly();
+    private static readonly TimeSpan DuracionMinimaTarea = TimeSpan.FromHours(1);
     
     public int Id
     {
@@ -52,9 +53,8 @@ public class Tarea
         get => _duracion;
         set
         {
-            if (value < TimeSpan.FromHours(1))
-                throw new ArgumentOutOfRangeException(nameof(value), "La duración debe ser al menos de 1 hora.");
-
+            if (value < DuracionMinimaTarea )
+                throw new ArgumentOutOfRangeException(nameof(value), "La duración mínima es de 1 hora.");
             _duracion = value;
         }
     }
