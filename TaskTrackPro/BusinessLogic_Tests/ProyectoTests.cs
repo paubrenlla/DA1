@@ -7,6 +7,8 @@ namespace BusinessLogic_Tests;
 [TestClass]
 public class ProyectoTests
 {
+    private static readonly TimeSpan VALID_TIMESPAN = new TimeSpan(6, 5, 0, 0);
+    
     [TestInitialize]
     public void Setup()
     {
@@ -121,7 +123,7 @@ public class ProyectoTests
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
 
-        var tarea = new Tarea("Tarea de prueba", "Descripción");
+        var tarea = new Tarea("Tarea de prueba", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
         
         proyecto.agregarTarea(tarea);
         
@@ -139,7 +141,7 @@ public class ProyectoTests
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
 
-        var tarea = new Tarea("Tarea de prueba", "Descripción");
+        var tarea = new Tarea("Tarea de prueba", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
         
         proyecto.agregarTarea(tarea);
         proyecto.agregarTarea(tarea);
@@ -154,10 +156,10 @@ public class ProyectoTests
         DateTime fechaInicio = DateTime.Today;
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
-        var tarea = new Tarea("Tarea a eliminar", "Descripción");
-        var tarea2 = new Tarea("Otra tarea a eliminar", "Descripción");
-        var tarea3 = new Tarea("Ootra tarea a eliminar", "Descripción");
-        var tarea4 = new Tarea("Oootra tarea a eliminar", "Descripción");
+        var tarea = new Tarea("Tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
+        var tarea2 = new Tarea("Otra tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
+        var tarea3 = new Tarea("Ootra tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
+        var tarea4 = new Tarea("Oootra tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
 
         proyecto.agregarTarea(tarea);
         proyecto.agregarTarea(tarea2);
@@ -180,7 +182,7 @@ public class ProyectoTests
         DateTime fechaInicio = DateTime.Today;
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
-        var tarea = new Tarea("Tarea a eliminar", "Descripción");
+        var tarea = new Tarea("Tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
         
         proyecto.eliminarTarea(tarea);
     }
