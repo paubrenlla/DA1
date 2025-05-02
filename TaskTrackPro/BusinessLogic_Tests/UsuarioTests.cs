@@ -279,4 +279,14 @@ public class UsuarioTests
         Usuario.ValidarEmail("correo@mi-dominio.com"); 
         Usuario.ValidarEmail("correo@sub_dominio.com");
     }
+    
+    
+    [TestMethod]
+
+    public void ValidarMetodoEncriptacion()
+    {
+        string cadenaEncriptada = "RXNWYWxpZGExIQ==";
+        string cadenaEncriptadaPorUsuario= Usuario.EncriptarPassword("EsValida1!");
+        Assert.AreEqual(cadenaEncriptada, cadenaEncriptadaPorUsuario);
+    }
 }
