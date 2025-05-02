@@ -11,11 +11,14 @@ public class Tarea
     private bool _esCritica;
     private Estado _estadoActual;
     private List<Tarea> _tareasDependencia = new List<Tarea>();
+    private List<Tarea> _tareasSucesoras = new List<Tarea>();
+
     public DateTime EarlyStart { get; set; }
     public DateTime EarlyFinish { get; set; }
 
 
     public IReadOnlyList<Tarea> TareasDependencia => _tareasDependencia.AsReadOnly();
+    public IReadOnlyList<Tarea> TareasSucesoras => _tareasSucesoras.AsReadOnly();
     private static readonly TimeSpan duracionMinimaTarea = TimeSpan.FromHours(1);
     
     public int Id
@@ -96,6 +99,7 @@ public class Tarea
             throw new ArgumentNullException(nameof(tarea));
 
         _tareasDependencia.Add(tarea);
+        tarea._tareasSucesoras.Add(this);
         modificarEstado(TipoEstadoTarea.Bloqueada,DateTime.Now);
     }
     public void ActualizarEstadoSegunDependencias()
