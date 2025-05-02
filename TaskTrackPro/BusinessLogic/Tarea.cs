@@ -11,6 +11,9 @@ public class Tarea
     private bool _esCritica;
     private Estado _estadoActual;
     private List<Tarea> _tareasDependencia = new List<Tarea>();
+    public DateTime EarlyStart { get; set; }
+    public DateTime EarlyFinish { get; set; }
+
 
     public IReadOnlyList<Tarea> TareasDependencia => _tareasDependencia.AsReadOnly();
     private static readonly TimeSpan duracionMinimaTarea = TimeSpan.FromHours(1);

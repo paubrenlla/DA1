@@ -82,4 +82,58 @@ public class Proyecto
         var tareas = new List<Tarea>(TareasAsociadas.Where(t => t.TareasDependencia.Count == 0));
         return tareas;
     }
+    private bool TodasLasDependenciasFueronProcesadas(Tarea tareaQueLeSigue)
+    {
+        return tareaQueLeSigue.TareasDependencia.All(p => p.EarlyFinish != DateTime.MinValue);
+    }
+    public void CalcularTiemposTempranos()
+    {
+        CalcularEarlyTimes();    
+    }
+
+    private void CalcularEarlyTimes()
+    {
+        foreach (Tarea tarea in TareasAsociadas)
+        {
+            tarea.EarlyStart = DateTime.MinValue;
+            tarea.EarlyFinish = DateTime.MinValue;
+        }
+
+        Queue<Tarea> pendientes = new Queue<Tarea>(TareasSinDependencia());
+
+        while (pendientes.Count > 0)
+        {
+            Tarea tarea = pendientes.Dequeue();
+
+            if (tarea.TareasDependencia.Count == 0)
+            {
+                tarea.EarlyStart = FechaInicio;
+            }
+            else
+            {
+                DateTime maxFinish = DateTime.MinValue;
+                foreach (Tarea pre in tarea.TareasDependencia)
+                {
+                    if (pre.EarlyFinish > maxFinish)
+                        maxFinish = pre.EarlyFinish;
+                }
+                tarea.EarlyStart = maxFinish;
+            }
+
+            tarea.EarlyFinish = tarea.EarlyStart + tarea.Duracion;
+
+            foreach (Tarea tareaQueLeSigue in TareasAsociadas)
+            {
+                if (tareaQueLeSigue.TareasDependencia.Contains(tarea))
+                {
+                    if (TodasLasDependenciasFueronProcesadas(tareaQueLeSigue))
+                    {
+                        pendientes.Enqueue(tareaQueLeSigue);
+                    }
+                }
+            }
+        }
+    }
+
+  
 }

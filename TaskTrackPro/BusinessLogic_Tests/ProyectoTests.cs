@@ -273,7 +273,45 @@ public class ProyectoTests
         Assert.AreSame(tareaDependencia, tareasSinDependencia[0]);
         
     }
+    
+    [TestMethod]
+    public void CalcularEarlyTimes_TareaSinPredecesores()
+    {
+        var hoy = DateTime.Today;
+        var proyecto = new Proyecto("Test", "Descripción", hoy);
 
+        var tarea = new Tarea("T1", "Desc", hoy, TimeSpan.FromDays(3), false);
+
+        proyecto.agregarTarea(tarea);
+
+        proyecto.CalcularTiemposTempranos();
+
+        Assert.AreEqual(hoy, tarea.EarlyStart);
+        Assert.AreEqual(hoy.AddDays(3), tarea.EarlyFinish);
+    }
+    
+    [TestMethod]
+    public void CalcularEarlyTimes_TareaConPredecesor()
+    {
+        var hoy = DateTime.Today;
+        var proyecto = new Proyecto("Test", "Desc", hoy);
+
+        var t1 = new Tarea("T1", "Desc", hoy, TimeSpan.FromDays(3), false);
+        var t2 = new Tarea("T2", "Desc", hoy, TimeSpan.FromDays(2), false);
+
+        t2.AgregarDependencia(t1);
+
+        proyecto.agregarTarea(t1);
+        proyecto.agregarTarea(t2);
+
+        proyecto.CalcularTiemposTempranos();
+
+        Assert.AreEqual(hoy, t1.EarlyStart);
+        Assert.AreEqual(hoy.AddDays(3), t1.EarlyFinish);
+    
+        Assert.AreEqual(hoy.AddDays(3), t2.EarlyStart);
+        Assert.AreEqual(hoy.AddDays(5), t2.EarlyFinish);
+    }
 }
 
 
