@@ -58,7 +58,7 @@ public class Usuario
         set
         {
             ValidarContraseña(value);
-            _pwd = value;
+            _pwd = EncriptarPassword(value);
         }
     }
 
