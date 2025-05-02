@@ -76,4 +76,10 @@ public class Proyecto
         }
         RecursosAsociados.Add(recurso);
     }
+
+    public List<Tarea> TareasSinDependencia()
+    {
+        var tareas = new List<Tarea>(TareasAsociadas.Where(t => t.TareasDependencia.Count == 0));
+        return tareas;
+    }
 }

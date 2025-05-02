@@ -252,6 +252,28 @@ public class ProyectoTests
         proyecto.eliminarMiembro(user);
     }
 
+    [TestMethod]
+    public void ListarTareasSinDependencias()
+    {
+        string nombre = "Proyecto A";
+        string descripcion = "Este es un proyecto para el TDD jeje";
+        DateTime fechaInicio = DateTime.Today;
+
+        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
+        
+        var tarea = new Tarea("Tarea ", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
+        var tareaDependencia = new Tarea("Dependencia", "Desc", DateTime.Today, VALID_TIMESPAN, false);
+        tarea.AgregarDependencia(tareaDependencia);
+        
+        proyecto.agregarTarea(tarea);
+        proyecto.agregarTarea(tareaDependencia);
+
+        List<Tarea> tareasSinDependencia = proyecto.TareasSinDependencia();
+        Assert.AreEqual(1, tareasSinDependencia.Count);
+        Assert.AreSame(tareaDependencia, tareasSinDependencia[0]);
+        
+    }
+
 }
 
 

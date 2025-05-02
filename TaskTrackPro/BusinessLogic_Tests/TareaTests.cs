@@ -159,6 +159,9 @@ namespace BusinessLogic_Tests
     var duracionInvalida = TimeSpan.FromMinutes(59);
     var tarea = new Tarea("Título", "Descripción", DateTime.Now, duracionInvalida, false);
     }
+    
+    
+    //TODO HACER TEST DE QUE TAREA NO PUEDE TENER FECHA DE INICIO MENOR A FECH DE INICIO DE PROYECTO
     }
     
     
