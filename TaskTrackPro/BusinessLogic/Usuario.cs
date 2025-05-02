@@ -99,4 +99,12 @@ public class Usuario
         if (!Regex.IsMatch(value, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}$"))
             throw new ArgumentException("El email no tiene un formato válido.");
     }
+    
+    
+    //Encriptar contraseña en base64
+    public static string EncriptarPassword(string passwordTextoPlano)
+    {
+        var passwordBytes = System.Text.Encoding.UTF8.GetBytes(passwordTextoPlano);
+        return System.Convert.ToBase64String(passwordBytes);
+    }
 }
