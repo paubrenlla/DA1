@@ -289,4 +289,15 @@ public class UsuarioTests
         string cadenaEncriptadaPorUsuario= Usuario.EncriptarPassword("EsValida1!");
         Assert.AreEqual(cadenaEncriptada, cadenaEncriptadaPorUsuario);
     }
+    
+    [TestMethod]
+    public void UsuarioEsCreadoConPassEncriptada()
+    {
+        string passEcriptada = "RXNWYWxpZGExIQ==";
+        string passNoEncriptada= "EsValida1!";
+
+        Usuario u = new Usuario("example@email.com", "Nombre", "Apellido",passNoEncriptada, new DateTime(2000, 1, 1));
+        Assert.AreEqual(passEcriptada, u.Pwd);
+    }
+
 }
