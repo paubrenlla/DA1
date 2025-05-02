@@ -14,7 +14,7 @@ public class UsuarioTests
         Assert.AreEqual(u.Email, "example@email.com");
         Assert.AreEqual(u.Nombre, "Nombre");
         Assert.AreEqual(u.Apellido, "Apellido");
-        Assert.AreEqual(u.Pwd, "EsValida1!");
+        Assert.AreEqual(u.Pwd, "RXNWYWxpZGExIQ==");
         Assert.AreEqual(u.FechaNacimiento, new DateTime(2000, 01, 01));
     }
 
@@ -161,7 +161,7 @@ public class UsuarioTests
     {
         Usuario u = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
         u.Pwd = "NuevaEsValida1!";
-        Assert.AreEqual("NuevaEsValida1!", u.Pwd);
+        Assert.AreEqual("TnVldmFFc1ZhbGlkYTEh", u.Pwd);
     }
 
     [TestMethod]

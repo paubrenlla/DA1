@@ -35,11 +35,7 @@ public class Recurso
         CantidadEnUso = 0;
         ProyectoAlQuePertenece = proyectoAlQuePertenece;
     }
-
-    public Recurso()
-    {
-        throw new NotImplementedException();
-    }
+    
 
     public bool EstaDisponible(int cantidad)
     {
