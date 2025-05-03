@@ -312,6 +312,33 @@ public class ProyectoTests
         Assert.AreEqual(hoy.AddDays(3), t2.EarlyStart);
         Assert.AreEqual(hoy.AddDays(5), t2.EarlyFinish);
     }
+    
+    [TestMethod]
+    public void CalcularTiemposTardios_ConTareasLineales_CalculaCorrectamente()
+    {
+        var inicio = DateTime.Today.AddDays(1);
+        var duracion = TimeSpan.FromHours(2);
+
+        var t1 = new Tarea("T1", "desc", inicio, duracion, false);
+        var t2 = new Tarea("T2", "desc", inicio.AddHours(3), duracion, false);
+        var t3 = new Tarea("T3", "desc", inicio.AddHours(6), duracion, false);
+
+        t2.AgregarDependencia(t1);
+        t3.AgregarDependencia(t2);
+
+        var proyecto = new Proyecto("Proyecto", "desc", inicio);
+        proyecto.agregarTarea(t1);
+        proyecto.agregarTarea(t2);
+        proyecto.agregarTarea(t3);
+
+        proyecto.CalcularTiemposTempranos();
+        proyecto.CalcularTiemposTardios();
+
+        Assert.AreEqual(t1.EarlyStart, t1.LateStart);
+        Assert.AreEqual(t2.EarlyStart, t2.LateStart);
+        Assert.AreEqual(t3.EarlyStart, t3.LateStart);
+    }
+
 }
 
 

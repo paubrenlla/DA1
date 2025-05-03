@@ -14,7 +14,9 @@ public class Tarea
     private List<Tarea> _tareasSucesoras = new List<Tarea>();
 
     public DateTime EarlyStart { get; set; }
+    public DateTime LateStart { get; set; }
     public DateTime EarlyFinish { get; set; }
+    public DateTime LateFinish { get; set; }
 
 
     public IReadOnlyList<Tarea> TareasDependencia => _tareasDependencia.AsReadOnly();
