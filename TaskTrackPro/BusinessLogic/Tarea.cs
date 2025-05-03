@@ -12,6 +12,9 @@ public class Tarea
     private Estado _estadoActual;
     private List<Tarea> _tareasDependencia = new List<Tarea>();
     private List<Tarea> _tareasSucesoras = new List<Tarea>();
+    private TimeSpan _holgura;
+    
+
 
     public DateTime EarlyStart { get; set; }
     public DateTime LateStart { get; set; }
@@ -75,6 +78,11 @@ public class Tarea
     {
         get => _estadoActual;
         set => _estadoActual = value;
+    }
+    public TimeSpan Holgura
+    {
+        get => _holgura;
+        set => _holgura = value;
     }
     
     public Tarea(string titulo, string descripcion, DateTime fechaInicio, TimeSpan duracion, bool esCritica)

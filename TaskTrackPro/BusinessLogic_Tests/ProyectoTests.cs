@@ -338,6 +338,43 @@ public class ProyectoTests
         Assert.AreEqual(t2.EarlyStart, t2.LateStart);
         Assert.AreEqual(t3.EarlyStart, t3.LateStart);
     }
+    
+    [TestMethod]
+    public void CalcularRutaCriticaSoloDevuelvaTareasConHolguraCero()
+    {
+        DateTime inicio = DateTime.Today.AddDays(1);
+        TimeSpan duracion = TimeSpan.FromHours(2);
+
+        Tarea t1 = new Tarea("T1", "desc", inicio, duracion, false);
+        Tarea t2 = new Tarea("T2", "desc", inicio, duracion, false);
+        Tarea t3 = new Tarea("T3", "desc", inicio, duracion, false);
+        Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
+
+        t2.AgregarDependencia(t1);
+        t3.AgregarDependencia(t1);
+        t4.AgregarDependencia(t2);
+        t4.AgregarDependencia(t3);
+
+        Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
+        proyecto.agregarTarea(t1);
+        proyecto.agregarTarea(t2);
+        proyecto.agregarTarea(t3);
+        proyecto.agregarTarea(t4);
+
+        List<Tarea> rutaCritica = proyecto.CalcularRutaCritica();
+
+        Assert.AreEqual(4, rutaCritica.Count);
+        Assert.AreEqual(TimeSpan.Zero, t1.Holgura);
+        Assert.AreEqual(TimeSpan.Zero, t2.Holgura);
+        Assert.AreEqual(TimeSpan.Zero, t3.Holgura);
+        Assert.AreEqual(TimeSpan.Zero, t4.Holgura);
+        CollectionAssert.Contains(rutaCritica, t1);
+        CollectionAssert.Contains(rutaCritica, t2);
+        CollectionAssert.Contains(rutaCritica, t3);
+        CollectionAssert.Contains(rutaCritica, t4);
+        
+    }
+
 
 }
 

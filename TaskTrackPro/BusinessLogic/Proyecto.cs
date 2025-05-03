@@ -177,6 +177,19 @@ public class Proyecto
             }
         }
     }
+    public List<Tarea> CalcularRutaCritica()
+    {
+        CalcularTiemposTempranos();
+        CalcularTiemposTardios();
+
+        foreach (Tarea tarea in TareasAsociadas)
+        {
+            tarea.Holgura = tarea.LateStart - tarea.EarlyStart;
+        }
+
+        return TareasAsociadas.Where(t => t.Holgura == TimeSpan.Zero).ToList();
+    }
+
 
 
   
