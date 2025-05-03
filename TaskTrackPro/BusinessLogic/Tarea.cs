@@ -11,8 +11,10 @@ public class Tarea
     private bool _esCritica;
     private Estado _estadoActual;
     private List<Tarea> _tareasDependencia = new List<Tarea>();
+    private List<Tarea> _tareasSucesoras = new List<Tarea>();
 
     public IReadOnlyList<Tarea> TareasDependencia => _tareasDependencia.AsReadOnly();
+    public IReadOnlyList<Tarea> TareasSucesoras => _tareasSucesoras.AsReadOnly();
     private static readonly TimeSpan duracionMinimaTarea = TimeSpan.FromHours(1);
     
     public int Id
@@ -85,7 +87,7 @@ public class Tarea
     {   
             EstadoActual.Valor = nuevoEstado;
             EstadoActual.Fecha = fecha;
-        }
+    }
     
     public void AgregarDependencia(Tarea tarea)
     {
@@ -93,6 +95,7 @@ public class Tarea
             throw new ArgumentNullException(nameof(tarea));
 
         _tareasDependencia.Add(tarea);
+        tarea._tareasSucesoras.Add(this);
         modificarEstado(TipoEstadoTarea.Bloqueada,DateTime.Now);
     }
     public void ActualizarEstadoSegunDependencias()
@@ -121,6 +124,16 @@ public class Tarea
         }
 
         return true; // Todas las dependencias (anidadas) están efectuadas
+    }
+
+    public void MarcarTareaComoCompletada()
+    {
+        modificarEstado(TipoEstadoTarea.Efectuada, DateTime.Now);
+
+        foreach (Tarea tarea in TareasSucesoras)
+        {
+            tarea.ActualizarEstadoSegunDependencias();
+        }
     }
 }
 
