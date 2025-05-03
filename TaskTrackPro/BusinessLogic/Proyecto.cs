@@ -76,4 +76,121 @@ public class Proyecto
         }
         RecursosAsociados.Add(recurso);
     }
+
+    public List<Tarea> TareasSinDependencia()
+    {
+        var tareas = new List<Tarea>(TareasAsociadas.Where(t => t.TareasDependencia.Count == 0));
+        return tareas;
+    }
+    private bool TodasLasDependenciasFueronProcesadas(Tarea tareaQueLeSigue)
+    {
+        return tareaQueLeSigue.TareasDependencia.All(p => p.EarlyFinish != DateTime.MinValue);
+    }
+
+    private bool TodasLasSucesorasFueronProcesadas(Tarea tareaQueLeSigue)
+    {
+        return tareaQueLeSigue.TareasSucesoras.All(s => s.LateStart != DateTime.MaxValue);
+
+    }
+    public void CalcularTiemposTempranos()
+    {
+        CalcularEarlyTimes();    
+    }
+
+    private void CalcularEarlyTimes()
+    {
+        foreach (Tarea tarea in TareasAsociadas)
+        {
+            tarea.EarlyStart = DateTime.MinValue;
+            tarea.EarlyFinish = DateTime.MinValue;
+        }
+
+        Queue<Tarea> pendientes = new Queue<Tarea>(TareasSinDependencia());
+
+        while (pendientes.Count > 0)
+        {
+            Tarea tarea = pendientes.Dequeue();
+
+            if (tarea.TareasDependencia.Count == 0)
+            {
+                tarea.EarlyStart = FechaInicio;
+            }
+            else
+            {
+                DateTime maxFinish = DateTime.MinValue;
+                foreach (Tarea pre in tarea.TareasDependencia)
+                {
+                    if (pre.EarlyFinish > maxFinish)
+                        maxFinish = pre.EarlyFinish;
+                }
+                tarea.EarlyStart = maxFinish;
+            }
+
+            tarea.EarlyFinish = tarea.EarlyStart + tarea.Duracion;
+
+            foreach (Tarea tareaQueLeSigue in TareasAsociadas)
+            {
+                if (tareaQueLeSigue.TareasDependencia.Contains(tarea))
+                {
+                    if (TodasLasDependenciasFueronProcesadas(tareaQueLeSigue))
+                    {
+                        pendientes.Enqueue(tareaQueLeSigue);
+                    }
+                }
+            }
+        }
+    }
+    public void CalcularTiemposTardios()
+    {
+        DateTime finProyecto = TareasAsociadas.Max(t => t.EarlyFinish);
+
+        foreach (Tarea tarea in TareasAsociadas)
+        {
+            tarea.LateStart = DateTime.MaxValue;
+            tarea.LateFinish = DateTime.MaxValue;
+        }
+
+        Queue<Tarea> pendientes = new Queue<Tarea>(TareasAsociadas.Where(t => t.TareasSucesoras.Count == 0));
+    
+        foreach (Tarea tarea in pendientes)
+        {
+            tarea.LateFinish = finProyecto;
+            tarea.LateStart = tarea.LateFinish - tarea.Duracion;
+        }
+
+        while (pendientes.Count > 0)
+        {
+            Tarea tarea = pendientes.Dequeue();
+
+            foreach (Tarea predecesora in tarea.TareasDependencia)
+            {
+                if (predecesora.LateFinish > tarea.LateStart)
+                {
+                    predecesora.LateFinish = tarea.LateStart;
+                    predecesora.LateStart = predecesora.LateFinish - predecesora.Duracion;
+                }
+
+                if (TodasLasSucesorasFueronProcesadas(predecesora))
+                {
+                    pendientes.Enqueue(predecesora);
+                }
+            }
+        }
+    }
+    public List<Tarea> CalcularRutaCritica()
+    {
+        CalcularTiemposTempranos();
+        CalcularTiemposTardios();
+
+        foreach (Tarea tarea in TareasAsociadas)
+        {
+            tarea.Holgura = tarea.LateStart - tarea.EarlyStart;
+        }
+
+        return TareasAsociadas.Where(t => t.Holgura == TimeSpan.Zero).ToList();
+    }
+
+
+
+  
 }

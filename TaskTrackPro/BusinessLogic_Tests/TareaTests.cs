@@ -159,6 +159,24 @@ namespace BusinessLogic_Tests
     var duracionInvalida = TimeSpan.FromMinutes(59);
     var tarea = new Tarea("Título", "Descripción", DateTime.Now, duracionInvalida, false);
     }
+    
+    [TestMethod]
+    public void AgregarDependencia_AgregaSucesoraCorrectamente()
+    {
+        var inicio = DateTime.Today.AddDays(1);
+        var duracion = TimeSpan.FromHours(2);
+
+        var tarea1 = new Tarea("Tarea 1", "Desc", inicio, duracion, false);
+        var tarea2 = new Tarea("Tarea 2", "Desc", inicio.AddHours(3), duracion, false);
+
+        tarea2.AgregarDependencia(tarea1);
+
+        Assert.IsTrue(tarea2.TareasDependencia.Contains(tarea1));
+        Assert.IsTrue(tarea1.TareasSucesoras.Contains(tarea2));
+    }
+
+    
+    //TODO HACER TEST DE QUE TAREA NO PUEDE TENER FECHA DE INICIO MENOR A FECH DE INICIO DE PROYECTO
     }
     
     
