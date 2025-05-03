@@ -152,27 +152,55 @@ namespace BusinessLogic_Tests
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaPrincipal.EstadoActual.Valor);
         }
     
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
-    public void Tarea_DuracionMenorAUnaHora_LanzaExcepcion()
-    {
-    var duracionInvalida = TimeSpan.FromMinutes(59);
-    var tarea = new Tarea("Título", "Descripción", DateTime.Now, duracionInvalida, false);
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Tarea_DuracionMenorAUnaHora_LanzaExcepcion()
+        {
+        var duracionInvalida = TimeSpan.FromMinutes(59);
+        var tarea = new Tarea("Título", "Descripción", DateTime.Now, duracionInvalida, false);
+        }
+
+        [TestMethod]
+        public void AgregarDependencia_AgregaSucesoraCorrectamente()
+        {
+            var inicio = DateTime.Today.AddDays(1);
+            var duracion = TimeSpan.FromHours(2);
+
+            var tarea1 = new Tarea("Tarea 1", "Desc", inicio, duracion, false);
+            var tarea2 = new Tarea("Tarea 2", "Desc", inicio.AddHours(3), duracion, false);
+
+            tarea2.AgregarDependencia(tarea1);
+
+            Assert.IsTrue(tarea2.TareasDependencia.Contains(tarea1));
+            Assert.IsTrue(tarea1.TareasSucesoras.Contains(tarea2));
+        }
+
+        [TestMethod]
+        public void MarcarTareaComoCompletada_SinSucesoras_EstableceEstadoEfectuadaYFecha()
+        {
+            var tarea = new Tarea("Tarea sin sucesoras", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
+
+            tarea.MarcarTareaComoCompletada();
+
+            Assert.AreEqual(TipoEstadoTarea.Efectuada, tarea.EstadoActual.Valor);
+            Assert.IsNotNull(tarea.EstadoActual.Fecha);
+            Assert.AreEqual(DateTime.Today, tarea.EstadoActual.Fecha.Value.Date);
+        }
+
+        [TestMethod]
+        public void MarcarTareaComoCompletada_ConSucesoras_ActualizaEstadoDeSucesoras()
+        {
+            var tareaPrincipal = new Tarea("Tarea principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
+            var tareaSucesora = new Tarea("Tarea sucesora", "Descripción sucesora", DateTime.Today, VALID_TIMESPAN, false);
+
+            tareaSucesora.AgregarDependencia(tareaPrincipal);
+            Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaSucesora.EstadoActual.Valor);
+
+            tareaPrincipal.MarcarTareaComoCompletada();
+
+            Assert.AreEqual(TipoEstadoTarea.Efectuada, tareaPrincipal.EstadoActual.Valor);
+            Assert.AreEqual(TipoEstadoTarea.Pendiente, tareaSucesora.EstadoActual.Valor);
+        }
+
     }
-    }
-    
-    
-    
-
-
-
-
-
-
-
 }
-    
-
-
-
-
