@@ -7,6 +7,7 @@ namespace BusinessLogic_Tests;
 [TestClass]
 public class ProyectoTests
 {
+    private static Recurso recurso = new Recurso("Recurso", "Tipo", "Descripcion", true, 5);
     private static readonly TimeSpan VALID_TIMESPAN = new TimeSpan(6, 5, 0, 0);
     
     [TestInitialize]
@@ -92,7 +93,6 @@ public class ProyectoTests
         DateTime fechaInicio = DateTime.Today;
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
-        Recurso recurso = new Recurso();
         proyecto.agregarRecurso(recurso);
         Assert.AreEqual(1, proyecto.RecursosAsociados.Count);
         Assert.AreEqual(recurso, proyecto.RecursosAsociados[0]);
@@ -107,8 +107,6 @@ public class ProyectoTests
         DateTime fechaInicio = DateTime.Today;
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
-
-        Recurso recurso = new Recurso();
         
         proyecto.agregarRecurso(recurso);
         proyecto.agregarRecurso(recurso);
