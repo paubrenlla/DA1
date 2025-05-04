@@ -67,7 +67,7 @@ namespace BusinessLogic_Tests
         [TestMethod]
         public void MarcarComoEfectuada_DeberiaCambiarEstadoYAsignarFecha()
         {
-            var tarea = new Tarea(
+            Tarea tarea = new Tarea(
                 "Leer artículo",
                 "Leer artículo de investigación para clase",
                 DateTime.Today,
@@ -84,7 +84,7 @@ namespace BusinessLogic_Tests
         public void ModificarElEstadoDeTarea()
             // Se modifica el estado de Pendiente a Bloqueada y se valida que la fecha es correcta
         {
-            var tarea = new Tarea(
+            Tarea tarea = new Tarea(
                 "Reinstalar los servidores de la ORT",
                 "Reinstalar los servidores de la ORT para la clase de Sistemas Operativos",
                 DateTime.Today.AddDays(20),
@@ -99,7 +99,7 @@ namespace BusinessLogic_Tests
         [TestMethod]
         public void NuevaTarea_TieneListaDeDependenciasVacia()
         {
-            var tarea = new Tarea("Tarea Principal", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tarea = new Tarea("Tarea Principal", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
             Assert.IsNotNull(tarea.TareasDependencia);
             Assert.AreEqual(0, tarea.TareasDependencia.Count);
         }
@@ -107,8 +107,8 @@ namespace BusinessLogic_Tests
         [TestMethod]
         public void AgregarDependencia_DeberiaPonerEstadoBloqueada()
         {
-            var tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
-            var tareaDependencia = new Tarea("Tarea Dependiente", "Descripción dependencia", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaDependencia = new Tarea("Tarea Dependiente", "Descripción dependencia", DateTime.Today, VALID_TIMESPAN, false);
 
             tareaPrincipal.AgregarDependencia(tareaDependencia);
 
@@ -119,9 +119,9 @@ namespace BusinessLogic_Tests
         [TestMethod]
         public void TodasLasDependenciasTerminadas_DeberiaCambiarAEstadoPendiente()
         {
-            var tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
-            var tareaDependencia1 = new Tarea("Dependencia 1", "Desc 1", DateTime.Today, VALID_TIMESPAN, false);
-            var tareaDependencia2 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaDependencia1 = new Tarea("Dependencia 1", "Desc 1", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaDependencia2 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
 
             tareaPrincipal.AgregarDependencia(tareaDependencia1);
             tareaPrincipal.AgregarDependencia(tareaDependencia2);
@@ -138,10 +138,10 @@ namespace BusinessLogic_Tests
         [TestMethod]
         public void ActualizarEstado_DependenciaAnidadaBloqueada_EstadoBloqueado()
         {
-            var tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
-            var tareaDependencia1 = new Tarea("Dependencia 1", "Desc 1", DateTime.Today, VALID_TIMESPAN, false);
-            var tareaDependencia2 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
-            var tareaDependencia3 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaDependencia1 = new Tarea("Dependencia 1", "Desc 1", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaDependencia2 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaDependencia3 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
            
             tareaDependencia1.modificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
             tareaDependencia2.modificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Today);
@@ -158,18 +158,18 @@ namespace BusinessLogic_Tests
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Tarea_DuracionMenorAUnaHora_LanzaExcepcion()
         {
-        var duracionInvalida = TimeSpan.FromMinutes(59);
-        var tarea = new Tarea("Título", "Descripción", DateTime.Now, duracionInvalida, false);
+        TimeSpan duracionInvalida = TimeSpan.FromMinutes(59);
+        Tarea tarea = new Tarea("Título", "Descripción", DateTime.Now, duracionInvalida, false);
         }
 
         [TestMethod]
         public void AgregarDependencia_AgregaSucesoraCorrectamente()
         {
-            var inicio = DateTime.Today.AddDays(1);
-            var duracion = TimeSpan.FromHours(2);
+            DateTime inicio = DateTime.Today.AddDays(1);
+            TimeSpan duracion = TimeSpan.FromHours(2);
 
-            var tarea1 = new Tarea("Tarea 1", "Desc", inicio, duracion, false);
-            var tarea2 = new Tarea("Tarea 2", "Desc", inicio.AddHours(3), duracion, false);
+            Tarea tarea1 = new Tarea("Tarea 1", "Desc", inicio, duracion, false);
+            Tarea tarea2 = new Tarea("Tarea 2", "Desc", inicio.AddHours(3), duracion, false);
 
             tarea2.AgregarDependencia(tarea1);
 
@@ -180,7 +180,7 @@ namespace BusinessLogic_Tests
         [TestMethod]
         public void MarcarTareaComoCompletada_SinSucesoras_EstableceEstadoEfectuadaYFecha()
         {
-            var tarea = new Tarea("Tarea sin sucesoras", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tarea = new Tarea("Tarea sin sucesoras", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
 
             tarea.MarcarTareaComoCompletada();
 
@@ -192,8 +192,8 @@ namespace BusinessLogic_Tests
         [TestMethod]
         public void MarcarTareaComoCompletada_ConSucesoras_ActualizaEstadoDeSucesoras()
         {
-            var tareaPrincipal = new Tarea("Tarea principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
-            var tareaSucesora = new Tarea("Tarea sucesora", "Descripción sucesora", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaPrincipal = new Tarea("Tarea principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaSucesora = new Tarea("Tarea sucesora", "Descripción sucesora", DateTime.Today, VALID_TIMESPAN, false);
 
             tareaSucesora.AgregarDependencia(tareaPrincipal);
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaSucesora.EstadoActual.Valor);
@@ -207,7 +207,7 @@ namespace BusinessLogic_Tests
         [TestMethod]
         public void AgregarRecurso_NuevoRecurso_SeAgregaALaLista()
         {
-            var tarea = new Tarea("Tarea Test", "Descripción Test", DateTime.Today, TimeSpan.FromHours(2), false);
+            Tarea tarea = new Tarea("Tarea Test", "Descripción Test", DateTime.Today, TimeSpan.FromHours(2), false);
             tarea.AgregarRecurso(RECURSO_VALIDO, 2);
 
             Assert.AreEqual(1, tarea.Recursos.Count);
@@ -218,7 +218,7 @@ namespace BusinessLogic_Tests
         [TestMethod]
         public void AgregarRecurso_RecursoExistente_IncrementaCantidad()
         {
-            var tarea = new Tarea("Tarea Test", "Descripción Test", DateTime.Today, TimeSpan.FromHours(2), false);
+            Tarea tarea = new Tarea("Tarea Test", "Descripción Test", DateTime.Today, TimeSpan.FromHours(2), false);
 
             tarea.AgregarRecurso(RECURSO_VALIDO, 2);
             tarea.AgregarRecurso(RECURSO_VALIDO, 3);
@@ -231,7 +231,7 @@ namespace BusinessLogic_Tests
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void AgregarRecurso_CantidadMenorQue1_LanzaExcepcion()
         {
-            var tarea = new Tarea("Tarea Test", "Descripción Test", DateTime.Today, TimeSpan.FromHours(2), false);
+            Tarea tarea = new Tarea("Tarea Test", "Descripción Test", DateTime.Today, TimeSpan.FromHours(2), false);
 
             tarea.AgregarRecurso(RECURSO_VALIDO, 0);
         }
