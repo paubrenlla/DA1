@@ -142,6 +142,22 @@ public class Tarea
         return true;
     }
 
+    public void ConsumirRecursos()
+    {
+        foreach (RecursoNecesario recursoNecesario in Recursos)
+        {
+            recursoNecesario.Recurso.ConsumirRecurso(recursoNecesario.CantidadNecesaria);
+        }
+    }
+
+    public void LiberarRecursos()
+    {
+        foreach (RecursoNecesario recursoNecesario in Recursos)
+        {
+            recursoNecesario.Recurso.LiberarRecurso(recursoNecesario.CantidadNecesaria);
+        }
+    }
+    
 // Método recursivo para verificar dependencias anidadas
     private bool VerificarDependenciasCompletadas(IEnumerable<Tarea> dependencias)
     {

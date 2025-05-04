@@ -79,7 +79,7 @@ namespace BusinessLogic_Tests
             Assert.IsNotNull(tarea.EstadoActual.Fecha);
             Assert.IsTrue(tarea.EstadoActual.Fecha.Value.Date == DateTime.Today);
         }
-        
+
         [TestMethod]
         public void ModificarElEstadoDeTarea()
             // Se modifica el estado de Pendiente a Bloqueada y se valida que la fecha es correcta
@@ -95,7 +95,7 @@ namespace BusinessLogic_Tests
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tarea.EstadoActual.Valor);
             Assert.IsTrue(tarea.EstadoActual.Fecha.Value.Date == DateTime.Today);
         }
-        
+
         [TestMethod]
         public void NuevaTarea_TieneListaDeDependenciasVacia()
         {
@@ -103,23 +103,26 @@ namespace BusinessLogic_Tests
             Assert.IsNotNull(tarea.TareasDependencia);
             Assert.AreEqual(0, tarea.TareasDependencia.Count);
         }
-        
+
         [TestMethod]
         public void AgregarDependencia_DeberiaPonerEstadoBloqueada()
         {
-            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
-            Tarea tareaDependencia = new Tarea("Tarea Dependiente", "Descripción dependencia", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN,
+                false);
+            Tarea tareaDependencia = new Tarea("Tarea Dependiente", "Descripción dependencia", DateTime.Today,
+                VALID_TIMESPAN, false);
 
             tareaPrincipal.AgregarDependencia(tareaDependencia);
 
             Assert.AreEqual(1, tareaPrincipal.TareasDependencia.Count);
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaPrincipal.EstadoActual.Valor);
         }
-        
+
         [TestMethod]
         public void TodasLasDependenciasTerminadas_DeberiaCambiarAEstadoPendiente()
         {
-            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN,
+                false);
             Tarea tareaDependencia1 = new Tarea("Dependencia 1", "Desc 1", DateTime.Today, VALID_TIMESPAN, false);
             Tarea tareaDependencia2 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
 
@@ -134,18 +137,19 @@ namespace BusinessLogic_Tests
 
             Assert.AreEqual(TipoEstadoTarea.Pendiente, tareaPrincipal.EstadoActual.Valor);
         }
-        
+
         [TestMethod]
         public void ActualizarEstado_DependenciaAnidadaBloqueada_EstadoBloqueado()
         {
-            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN,
+                false);
             Tarea tareaDependencia1 = new Tarea("Dependencia 1", "Desc 1", DateTime.Today, VALID_TIMESPAN, false);
             Tarea tareaDependencia2 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
             Tarea tareaDependencia3 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
-           
+
             tareaDependencia1.modificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
             tareaDependencia2.modificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Today);
-         
+
             tareaDependencia2.AgregarDependencia(tareaDependencia3); // Dependencia anidada no efectuada
             tareaPrincipal.AgregarDependencia(tareaDependencia1);
             tareaPrincipal.AgregarDependencia(tareaDependencia2);
@@ -153,13 +157,13 @@ namespace BusinessLogic_Tests
             tareaPrincipal.ActualizarEstadoSegunDependencias();
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaPrincipal.EstadoActual.Valor);
         }
-    
+
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Tarea_DuracionMenorAUnaHora_LanzaExcepcion()
         {
-        TimeSpan duracionInvalida = TimeSpan.FromMinutes(59);
-        Tarea tarea = new Tarea("Título", "Descripción", DateTime.Now, duracionInvalida, false);
+            TimeSpan duracionInvalida = TimeSpan.FromMinutes(59);
+            Tarea tarea = new Tarea("Título", "Descripción", DateTime.Now, duracionInvalida, false);
         }
 
         [TestMethod]
@@ -192,8 +196,10 @@ namespace BusinessLogic_Tests
         [TestMethod]
         public void MarcarTareaComoCompletada_ConSucesoras_ActualizaEstadoDeSucesoras()
         {
-            Tarea tareaPrincipal = new Tarea("Tarea principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
-            Tarea tareaSucesora = new Tarea("Tarea sucesora", "Descripción sucesora", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaPrincipal = new Tarea("Tarea principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN,
+                false);
+            Tarea tareaSucesora = new Tarea("Tarea sucesora", "Descripción sucesora", DateTime.Today, VALID_TIMESPAN,
+                false);
 
             tareaSucesora.AgregarDependencia(tareaPrincipal);
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaSucesora.EstadoActual.Valor);
@@ -203,7 +209,7 @@ namespace BusinessLogic_Tests
             Assert.AreEqual(TipoEstadoTarea.Efectuada, tareaPrincipal.EstadoActual.Valor);
             Assert.AreEqual(TipoEstadoTarea.Pendiente, tareaSucesora.EstadoActual.Valor);
         }
-        
+
         [TestMethod]
         public void AgregarRecurso_NuevoRecurso_SeAgregaALaLista()
         {
@@ -235,7 +241,7 @@ namespace BusinessLogic_Tests
 
             tarea.AgregarRecurso(RECURSO_VALIDO, 0);
         }
-        
+
         [TestMethod]
         public void VerificarRecursosDisponibles_TodosDisponibles_DeberiaRetornarTrue()
         {
@@ -248,7 +254,7 @@ namespace BusinessLogic_Tests
 
             Console.WriteLine($"Recurso1 disponible: {recurso1.EstaDisponible(3)}");
             Console.WriteLine($"Recurso2 disponible: {recurso2.EstaDisponible(2)}");
-            
+
             Assert.IsTrue(tarea.VerificarRecursosDisponibles());
         }
 
@@ -292,6 +298,47 @@ namespace BusinessLogic_Tests
 
             Assert.IsFalse(tarea.VerificarRecursosDisponibles());
         }
+        
+        [TestMethod]
+        public void ConsumirRecursos_RecursosDisponibles_SeReducenCorrectamente()
+        {
+            Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 5);
+            Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 3);
+
+            tarea.AgregarRecurso(recurso1, 2);
+            tarea.AgregarRecurso(recurso2, 3);
+
+            tarea.ConsumirRecursos();
+
+            Assert.AreEqual(2, recurso1.CantidadEnUso);
+            Assert.AreEqual(3, recurso2.CantidadEnUso);
+        }
+
+        [TestMethod]
+        public void LiberarRecursos_RecursosConsumidos_SeRestauranCorrectamente()
+        {
+            Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 5);
+            Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 3);
+
+            tarea.AgregarRecurso(recurso1, 2);
+            tarea.AgregarRecurso(recurso2, 3);
+
+            tarea.ConsumirRecursos();
+            tarea.LiberarRecursos();
+
+            Assert.AreEqual(0, recurso1.CantidadEnUso);
+            Assert.AreEqual(0, recurso2.CantidadEnUso);
+        }
+
+        [TestMethod]
+        public void ConsumirRecursos_SinRecursosAsignados_NoCambiaNada()
+        {
+            Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            tarea.ConsumirRecursos();
+
+            Assert.IsTrue(tarea.VerificarRecursosDisponibles());
+        }
     }
-    
 }
