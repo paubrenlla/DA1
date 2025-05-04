@@ -2,6 +2,18 @@ namespace BusinessLogic;
 
 public class Tarea
 {
+    public class RecursoNecesario
+    {
+        public Recurso Recurso { get; set; }
+        public int CantidadNecesaria { get; set; }
+
+        public RecursoNecesario(Recurso recurso, int cantidadNecesaria)
+        {
+            Recurso = recurso;
+            CantidadNecesaria = cantidadNecesaria;
+        }
+    }
+    
     private static int _contadorId = 0;
     private int _id;
     private string _titulo;
@@ -12,9 +24,11 @@ public class Tarea
     private Estado _estadoActual;
     private List<Tarea> _tareasDependencia = new List<Tarea>();
     private List<Tarea> _tareasSucesoras = new List<Tarea>();
+    private List<RecursoNecesario> _recursos = new List<RecursoNecesario>();
 
     public IReadOnlyList<Tarea> TareasDependencia => _tareasDependencia.AsReadOnly();
     public IReadOnlyList<Tarea> TareasSucesoras => _tareasSucesoras.AsReadOnly();
+    public IReadOnlyList<RecursoNecesario> Recursos => _recursos.AsReadOnly();
     private static readonly TimeSpan duracionMinimaTarea = TimeSpan.FromHours(1);
     
     public int Id
@@ -107,6 +121,32 @@ public class Tarea
         bool todasEfectuadas = VerificarDependenciasCompletadas(_tareasDependencia);
 
         EstadoActual.Valor = todasEfectuadas ? TipoEstadoTarea.Pendiente : TipoEstadoTarea.Bloqueada;
+    }
+
+    public void AgregarRecurso(Recurso recurso, int cantidadNecesaria)
+    {
+        foreach (RecursoNecesario recursoNecesario in Recursos)
+        {
+            if (recursoNecesario.Recurso == recurso)
+            {
+                recursoNecesario.CantidadNecesaria += cantidadNecesaria;
+                return;
+            }
+        }
+        _recursos.Add(new RecursoNecesario(recurso, cantidadNecesaria));
+    }
+
+    public bool VerificarRecursosDisponibles()
+    {
+        foreach (RecursoNecesario recursoNecesario in Recursos)
+        {
+            if (!recursoNecesario.Recurso.EstaDisponible(recursoNecesario.CantidadNecesaria))
+            {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
 // Método recursivo para verificar dependencias anidadas

@@ -6,6 +6,8 @@ namespace BusinessLogic_Tests
     public class TareaTests
     {
         private static readonly TimeSpan VALID_TIMESPAN = new TimeSpan(6, 5, 0, 0);
+        private static readonly Recurso RECURSO_VALIDO = new Recurso("Computadora", "tipo", "desripcion", false, 8);
+
 
         [TestMethod]
         public void ConstructorConDatosValidos_CreaTareaCorrectamente()
@@ -201,6 +203,32 @@ namespace BusinessLogic_Tests
             Assert.AreEqual(TipoEstadoTarea.Efectuada, tareaPrincipal.EstadoActual.Valor);
             Assert.AreEqual(TipoEstadoTarea.Pendiente, tareaSucesora.EstadoActual.Valor);
         }
+        
+        [TestMethod]
+        public void AgregarRecurso_NuevoRecurso_SeAgregaALaLista()
+        {
+            var tarea = new Tarea("Tarea Test", "Descripción Test", DateTime.Today, TimeSpan.FromHours(2), false);
+            tarea.AgregarRecurso(RECURSO_VALIDO, 2);
 
+            Assert.AreEqual(1, tarea.Recursos.Count);
+            Assert.AreEqual(RECURSO_VALIDO, tarea.Recursos[0].Recurso);
+            Assert.AreEqual(2, tarea.Recursos[0].CantidadNecesaria);
+        }
+
+        [TestMethod]
+        public void AgregarRecurso_RecursoExistente_IncrementaCantidad()
+        {
+            var tarea = new Tarea("Tarea Test", "Descripción Test", DateTime.Today, TimeSpan.FromHours(2), false);
+
+            tarea.AgregarRecurso(RECURSO_VALIDO, 2);
+            tarea.AgregarRecurso(RECURSO_VALIDO, 3);
+
+            Assert.AreEqual(1, tarea.Recursos.Count);
+            Assert.AreEqual(5, tarea.Recursos[0].CantidadNecesaria);
+        }
+
+        
+        
+        
     }
 }
