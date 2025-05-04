@@ -2,18 +2,6 @@ namespace BusinessLogic;
 
 public class Tarea
 {
-    public class RecursoNecesario
-    {
-        public Recurso Recurso { get; set; }
-        public int CantidadNecesaria { get; set; }
-
-        public RecursoNecesario(Recurso recurso, int cantidadNecesaria)
-        {
-            Recurso = recurso;
-            CantidadNecesaria = cantidadNecesaria;
-        }
-    }
-    
     private static int _contadorId = 0;
     private int _id;
     private string _titulo;
