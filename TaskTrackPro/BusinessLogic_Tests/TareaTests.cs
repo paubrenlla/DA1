@@ -227,8 +227,14 @@ namespace BusinessLogic_Tests
             Assert.AreEqual(5, tarea.Recursos[0].CantidadNecesaria);
         }
 
-        
-        
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AgregarRecurso_CantidadMenorQue1_LanzaExcepcion()
+        {
+            var tarea = new Tarea("Tarea Test", "Descripción Test", DateTime.Today, TimeSpan.FromHours(2), false);
+
+            tarea.AgregarRecurso(RECURSO_VALIDO, 0);
+        }
         
     }
 }
