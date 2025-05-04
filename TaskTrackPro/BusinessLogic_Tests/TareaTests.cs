@@ -236,5 +236,62 @@ namespace BusinessLogic_Tests
             tarea.AgregarRecurso(RECURSO_VALIDO, 0);
         }
         
+        [TestMethod]
+        public void VerificarRecursosDisponibles_TodosDisponibles_DeberiaRetornarTrue()
+        {
+            Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 5);
+            Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 2);
+
+            tarea.AgregarRecurso(recurso1, 3);
+            tarea.AgregarRecurso(recurso2, 2);
+
+            Console.WriteLine($"Recurso1 disponible: {recurso1.EstaDisponible(3)}");
+            Console.WriteLine($"Recurso2 disponible: {recurso2.EstaDisponible(2)}");
+            
+            Assert.IsTrue(tarea.VerificarRecursosDisponibles());
+        }
+
+        [TestMethod]
+        public void VerificarRecursosDisponibles_UnRecursoInsuficiente_DeberiaRetornarFalse()
+        {
+            Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 2);
+            Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 1);
+
+            tarea.AgregarRecurso(recurso1, 2);
+            tarea.AgregarRecurso(recurso2, 2);
+
+            Assert.IsFalse(tarea.VerificarRecursosDisponibles());
+        }
+
+        [TestMethod]
+        public void VerificarRecursosDisponibles_NingunRecursoAgregado_DeberiaRetornarTrue()
+        {
+            Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+
+            Assert.IsTrue(tarea.VerificarRecursosDisponibles()); // No hay restricciones, debería ser válido
+        }
+
+        [TestMethod]
+        public void VerificarRecursosDisponibles_CantidadExacta_DeberiaRetornarTrue()
+        {
+            Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+
+            tarea.AgregarRecurso(RECURSO_VALIDO, 3); // Disponible exactamente la misma cantidad requerida
+
+            Assert.IsTrue(tarea.VerificarRecursosDisponibles());
+        }
+
+        [TestMethod]
+        public void VerificarRecursosDisponibles_CantidadMayorALaDisponible_DeberiaRetornarFalse()
+        {
+            Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+
+            tarea.AgregarRecurso(RECURSO_VALIDO, 10);
+
+            Assert.IsFalse(tarea.VerificarRecursosDisponibles());
+        }
     }
+    
 }

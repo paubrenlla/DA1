@@ -42,7 +42,7 @@ public class Recurso
         {
             return true;
         }
-        return CantidadEnUso + cantidad < CantidadDelRecurso;
+        return CantidadEnUso + cantidad <= CantidadDelRecurso;
     }
     
     public void ConsumirRecurso(int cantidad)
