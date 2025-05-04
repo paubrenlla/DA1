@@ -7,6 +7,12 @@ public class RecursoNecesario
 
     public RecursoNecesario(Recurso recurso, int cantidadNecesaria)
     {
+        if (recurso == null)
+            throw new ArgumentNullException(nameof(recurso), "El recurso no puede ser nulo.");
+
+        if (cantidadNecesaria <= 0)
+            throw new ArgumentOutOfRangeException(nameof(cantidadNecesaria));
+        
         Recurso = recurso;
         CantidadNecesaria = cantidadNecesaria;
     }
