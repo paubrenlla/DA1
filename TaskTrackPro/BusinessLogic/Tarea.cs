@@ -125,6 +125,11 @@ public class Tarea
 
     public void AgregarRecurso(Recurso recurso, int cantidadNecesaria)
     {
+        if (cantidadNecesaria <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(cantidadNecesaria));    
+        }
+        
         foreach (RecursoNecesario recursoNecesario in Recursos)
         {
             if (recursoNecesario.Recurso == recurso)
