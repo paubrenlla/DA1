@@ -16,5 +16,17 @@ public class RecursoNecesarioTests
         Assert.AreEqual(2, recursoNecesario.CantidadNecesaria);
     }
 
-    
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void Constructor_RecursoNulo_DeberiaLanzarExcepcion()
+    {
+        var recursoNecesario = new RecursoNecesario(null, 5);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentOutOfRangeException))]
+    public void Constructor_CantidadMenorIgualA0_DeberiaLanzarExcepcion()
+    {
+        var recursoNecesario = new RecursoNecesario(RECURSO_VALIDO, 0);
+    }
 }
