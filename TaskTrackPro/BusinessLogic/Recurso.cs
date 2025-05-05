@@ -36,6 +36,7 @@ public class Recurso
         ProyectoAlQuePertenece = proyectoAlQuePertenece;
     }
     
+
     public bool EstaDisponible(int cantidad)
     {
         if(SePuedeCompartir)

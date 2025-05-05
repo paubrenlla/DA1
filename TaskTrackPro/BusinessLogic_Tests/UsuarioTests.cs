@@ -14,7 +14,7 @@ public class UsuarioTests
         Assert.AreEqual(u.Email, "example@email.com");
         Assert.AreEqual(u.Nombre, "Nombre");
         Assert.AreEqual(u.Apellido, "Apellido");
-        Assert.AreEqual(u.Pwd, "EsValida1!");
+        Assert.AreEqual(u.Pwd, "RXNWYWxpZGExIQ==");
         Assert.AreEqual(u.FechaNacimiento, new DateTime(2000, 01, 01));
     }
 
@@ -161,7 +161,7 @@ public class UsuarioTests
     {
         Usuario u = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
         u.Pwd = "NuevaEsValida1!";
-        Assert.AreEqual("NuevaEsValida1!", u.Pwd);
+        Assert.AreEqual("TnVldmFFc1ZhbGlkYTEh", u.Pwd);
     }
 
     [TestMethod]
@@ -279,4 +279,25 @@ public class UsuarioTests
         Usuario.ValidarEmail("correo@mi-dominio.com"); 
         Usuario.ValidarEmail("correo@sub_dominio.com");
     }
+    
+    
+    [TestMethod]
+
+    public void ValidarMetodoEncriptacion()
+    {
+        string cadenaEncriptada = "RXNWYWxpZGExIQ==";
+        string cadenaEncriptadaPorUsuario= Usuario.EncriptarPassword("EsValida1!");
+        Assert.AreEqual(cadenaEncriptada, cadenaEncriptadaPorUsuario);
+    }
+    
+    [TestMethod]
+    public void UsuarioEsCreadoConPassEncriptada()
+    {
+        string passEcriptada = "RXNWYWxpZGExIQ==";
+        string passNoEncriptada= "EsValida1!";
+
+        Usuario u = new Usuario("example@email.com", "Nombre", "Apellido",passNoEncriptada, new DateTime(2000, 1, 1));
+        Assert.AreEqual(passEcriptada, u.Pwd);
+    }
+
 }
