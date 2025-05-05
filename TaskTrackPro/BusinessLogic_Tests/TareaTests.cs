@@ -85,16 +85,25 @@ namespace BusinessLogic_Tests
         public void ModificarElEstadoDeTarea()
             // Se modifica el estado de Pendiente a Bloqueada y se valida que la fecha es correcta
         {
-            Tarea tarea = new Tarea(
+            Tarea tareaPrincipal = new Tarea(
                 "Reinstalar los servidores de la ORT",
                 "Reinstalar los servidores de la ORT para la clase de Sistemas Operativos",
                 DateTime.Today.AddDays(20),
                 VALID_TIMESPAN,
                 true
             );
-            tarea.ModificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Today);
-            Assert.AreEqual(TipoEstadoTarea.Bloqueada, tarea.EstadoActual.Valor);
-            Assert.IsTrue(tarea.EstadoActual.Fecha.Value.Date == DateTime.Today);
+
+            Tarea tareaDependiente = new Tarea(
+                "Configurar red",
+                "Configurar la red antes de reinstalar los servidores",
+                DateTime.Today.AddDays(10),
+                VALID_TIMESPAN,
+                false
+            );
+
+            tareaPrincipal.AgregarDependencia(tareaDependiente);;
+            Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaPrincipal.EstadoActual.Valor);
+            Assert.IsTrue(tareaPrincipal.EstadoActual.Fecha.Value.Date == DateTime.Today);
         }
 
         [TestMethod]
@@ -122,17 +131,15 @@ namespace BusinessLogic_Tests
         [TestMethod]
         public void TodasLasDependenciasTerminadas_DeberiaCambiarAEstadoPendiente()
         {
-            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN,
-                false);
+            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
             Tarea tareaDependencia1 = new Tarea("Dependencia 1", "Desc 1", DateTime.Today, VALID_TIMESPAN, false);
             Tarea tareaDependencia2 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
 
             tareaPrincipal.AgregarDependencia(tareaDependencia1);
             tareaPrincipal.AgregarDependencia(tareaDependencia2);
 
-            // Simulamos que las dependencias directas se terminan
-            tareaDependencia1.ModificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
-            tareaDependencia2.ModificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
+            tareaDependencia1.MarcarTareaComoCompletada();
+            tareaDependencia2.MarcarTareaComoCompletada();
 
             tareaPrincipal.ActualizarEstado();
 
@@ -142,20 +149,20 @@ namespace BusinessLogic_Tests
         [TestMethod]
         public void ActualizarEstado_DependenciaAnidadaBloqueada_EstadoBloqueado()
         {
-            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN,
-                false);
+            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
             Tarea tareaDependencia1 = new Tarea("Dependencia 1", "Desc 1", DateTime.Today, VALID_TIMESPAN, false);
             Tarea tareaDependencia2 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
-            Tarea tareaDependencia3 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tareaDependencia3 = new Tarea("Dependencia 3", "Desc 3", DateTime.Today, VALID_TIMESPAN, false);
 
-            tareaDependencia1.ModificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
-            tareaDependencia2.ModificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Today);
+            tareaDependencia1.MarcarTareaComoCompletada();
 
-            tareaDependencia2.AgregarDependencia(tareaDependencia3); // Dependencia anidada no efectuada
+            tareaDependencia2.AgregarDependencia(tareaDependencia3);
+
             tareaPrincipal.AgregarDependencia(tareaDependencia1);
             tareaPrincipal.AgregarDependencia(tareaDependencia2);
 
             tareaPrincipal.ActualizarEstado();
+
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaPrincipal.EstadoActual.Valor);
         }
 
@@ -421,6 +428,47 @@ namespace BusinessLogic_Tests
             tarea.MarcarTareaComoEjecutandose();
 
             Assert.AreEqual(TipoEstadoTarea.Ejecutandose, tarea.EstadoActual.Valor);
+        }
+
+        [TestMethod]
+        public void ReevaluarTareasPosteriores_ConSucesorasBloqueadas_DeberiaActualizarEstadoAPendiente()
+        {
+            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción", DateTime.Today, TimeSpan.FromHours(2), false);
+            Tarea tareaSucesora = new Tarea("Tarea Sucesora", "Descripción sucesora", DateTime.Today, TimeSpan.FromHours(2), false);
+
+            tareaSucesora.AgregarDependencia(tareaPrincipal); 
+
+            tareaPrincipal.MarcarTareaComoCompletada();
+            
+            Assert.AreEqual(TipoEstadoTarea.Pendiente, tareaSucesora.EstadoActual.Valor);
+        }
+
+        [TestMethod]
+        public void ReevaluarTareasPosteriores_ConSucesorasPendientes_NoCambiaEstado()
+        {
+            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción", DateTime.Today, TimeSpan.FromHours(2), false);
+            Tarea tareaSucesora = new Tarea("Tarea Sucesora", "Descripción sucesora", DateTime.Today, TimeSpan.FromHours(2), false);
+
+            tareaSucesora.AgregarDependencia(tareaPrincipal);
+            
+            Assert.AreEqual(TipoEstadoTarea.Pendiente, tareaPrincipal.EstadoActual.Valor);
+            Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaSucesora.EstadoActual.Valor);
+        }
+
+        [TestMethod]
+        public void ReevaluarTareasPosteriores_ConSucesorasConDependenciasNoCompletadas_NoCambiaEstadoSucesora()
+        {
+            Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción", DateTime.Today, TimeSpan.FromHours(2), false);
+            Tarea tareaDependencia = new Tarea("Dependencia Intermedia", "Descripción dependencia", DateTime.Today, TimeSpan.FromHours(2), false);
+            Tarea tareaSucesora = new Tarea("Tarea Sucesora", "Descripción sucesora", DateTime.Today, TimeSpan.FromHours(2), false);
+
+            tareaSucesora.AgregarDependencia(tareaPrincipal);
+            tareaPrincipal.AgregarDependencia(tareaDependencia);
+
+            tareaDependencia.MarcarTareaComoCompletada();
+
+            Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaSucesora.EstadoActual.Valor);
+            Assert.AreEqual(TipoEstadoTarea.Pendiente, tareaPrincipal.EstadoActual.Valor);
         }
 
     }

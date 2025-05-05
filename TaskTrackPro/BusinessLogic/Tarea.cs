@@ -86,7 +86,7 @@ public class Tarea
     
     
 
-    public void ModificarEstado(TipoEstadoTarea nuevoEstado, DateTime fecha)
+    private void ModificarEstado(TipoEstadoTarea nuevoEstado, DateTime fecha)
     {   
             EstadoActual.Valor = nuevoEstado;
             EstadoActual.Fecha = fecha;
@@ -99,7 +99,7 @@ public class Tarea
 
         _tareasDependencia.Add(tarea);
         tarea._tareasSucesoras.Add(this);
-        ModificarEstado(TipoEstadoTarea.Bloqueada,DateTime.Now);
+        ActualizarEstado();
     }
     public void ActualizarEstado()
     {
@@ -175,10 +175,7 @@ public class Tarea
         ModificarEstado(TipoEstadoTarea.Efectuada, DateTime.Now);
         LiberarRecursos();
 
-        foreach (Tarea tarea in TareasSucesoras)
-        {
-            tarea.ActualizarEstado();
-        }
+        ReevaluarTareasPosteriores();
     }
 
     public void MarcarTareaComoEjecutandose()
@@ -187,6 +184,15 @@ public class Tarea
         {
             ModificarEstado(TipoEstadoTarea.Ejecutandose, DateTime.Now);
             ConsumirRecursos();
+            //TODO: reevaluar todas las tareas de DB por si usan los mismos recursos
+        }
+    }
+
+    private void ReevaluarTareasPosteriores()
+    {
+        foreach (Tarea tarea in TareasSucesoras)
+        {
+            tarea.ActualizarEstado();
         }
     }
 }
