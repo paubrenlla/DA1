@@ -162,7 +162,7 @@ public class Tarea
 // Método recursivo para verificar dependencias anidadas
     private bool VerificarDependenciasCompletadas(IEnumerable<Tarea> dependencias)
     {
-        foreach (var tarea in dependencias)
+        foreach (Tarea tarea in dependencias)
         {
             // Si la tarea dependiente no está efectuada, retorna false inmediatamente
             if (tarea.EstadoActual.Valor != TipoEstadoTarea.Efectuada)
