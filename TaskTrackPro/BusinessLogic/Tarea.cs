@@ -128,6 +128,7 @@ public class Tarea
             }
         }
         _recursos.Add(new RecursoNecesario(recurso, cantidadNecesaria));
+        ActualizarEstado();
     }
 
     public bool VerificarRecursosDisponibles()
