@@ -14,7 +14,15 @@ public class Tarea
     private Estado _estadoActual = new Estado(TipoEstadoTarea.Pendiente);
     private List<Tarea> _tareasDependencia = new List<Tarea>();
     private List<Tarea> _tareasSucesoras = new List<Tarea>();
-    private List<RecursoNecesario> _recursos = new List<RecursoNecesario>();
+
+    private TimeSpan _holgura;
+    
+
+    public DateTime EarlyStart { get; set; }
+    public DateTime LateStart { get; set; }
+    public DateTime EarlyFinish { get; set; }
+    public DateTime LateFinish { get; set; }
+
 
     public IReadOnlyList<Tarea> TareasDependencia => _tareasDependencia.AsReadOnly();
     public IReadOnlyList<Tarea> TareasSucesoras => _tareasSucesoras.AsReadOnly();
@@ -82,6 +90,11 @@ public class Tarea
     {
         get => _estadoActual;
         set => _estadoActual = value;
+    }
+    public TimeSpan Holgura
+    {
+        get => _holgura;
+        set => _holgura = value;
     }
     
     private void ModificarEstado(TipoEstadoTarea nuevoEstado, DateTime fecha)
