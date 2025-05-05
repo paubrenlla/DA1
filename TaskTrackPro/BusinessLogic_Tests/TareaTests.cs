@@ -186,11 +186,14 @@ namespace BusinessLogic_Tests
         {
             Tarea tarea = new Tarea("Tarea sin sucesoras", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
 
+            tarea.AgregarRecurso(RECURSO_VALIDO, 2);
+            tarea.ConsumirRecursos(); //
             tarea.MarcarTareaComoCompletada();
 
             Assert.AreEqual(TipoEstadoTarea.Efectuada, tarea.EstadoActual.Valor);
             Assert.IsNotNull(tarea.EstadoActual.Fecha);
             Assert.AreEqual(DateTime.Today, tarea.EstadoActual.Fecha.Value.Date);
+            Assert.AreEqual(0, RECURSO_VALIDO.CantidadEnUso);
         }
 
         [TestMethod]
@@ -209,6 +212,27 @@ namespace BusinessLogic_Tests
             Assert.AreEqual(TipoEstadoTarea.Efectuada, tareaPrincipal.EstadoActual.Valor);
             Assert.AreEqual(TipoEstadoTarea.Pendiente, tareaSucesora.EstadoActual.Valor);
         }
+        
+        [TestMethod]
+        public void MarcarTareaComoCompletada_ConSucesoras_LiberaRecursosYActualizaEstado()
+        {
+            Tarea tareaPrincipal = new Tarea("Tarea principal", "Descripción principal", DateTime.Today, TimeSpan.FromHours(2), false);
+            Tarea tareaSucesora = new Tarea("Tarea sucesora", "Descripción sucesora", DateTime.Today, TimeSpan.FromHours(2), false);
+    
+            tareaPrincipal.AgregarRecurso(RECURSO_VALIDO, 3);
+            tareaPrincipal.ConsumirRecursos();
+    
+            tareaSucesora.AgregarDependencia(tareaPrincipal);
+    
+            Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaSucesora.EstadoActual.Valor);
+
+            tareaPrincipal.MarcarTareaComoCompletada();
+
+            Assert.AreEqual(TipoEstadoTarea.Efectuada, tareaPrincipal.EstadoActual.Valor);
+            Assert.AreEqual(TipoEstadoTarea.Pendiente, tareaSucesora.EstadoActual.Valor);
+            Assert.AreEqual(0, RECURSO_VALIDO.CantidadEnUso);
+        }
+
 
         [TestMethod]
         public void AgregarRecurso_NuevoRecurso_SeAgregaALaLista()

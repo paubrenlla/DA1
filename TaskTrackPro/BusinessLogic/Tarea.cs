@@ -138,7 +138,6 @@ public class Tarea
                 return false;
             }
         }
-        
         return true;
     }
 
@@ -178,6 +177,7 @@ public class Tarea
     public void MarcarTareaComoCompletada()
     {
         modificarEstado(TipoEstadoTarea.Efectuada, DateTime.Now);
+        LiberarRecursos();
 
         foreach (Tarea tarea in TareasSucesoras)
         {
