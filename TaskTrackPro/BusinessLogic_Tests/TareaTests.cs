@@ -92,7 +92,7 @@ namespace BusinessLogic_Tests
                 VALID_TIMESPAN,
                 true
             );
-            tarea.modificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Today);
+            tarea.ModificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Today);
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tarea.EstadoActual.Valor);
             Assert.IsTrue(tarea.EstadoActual.Fecha.Value.Date == DateTime.Today);
         }
@@ -131,8 +131,8 @@ namespace BusinessLogic_Tests
             tareaPrincipal.AgregarDependencia(tareaDependencia2);
 
             // Simulamos que las dependencias directas se terminan
-            tareaDependencia1.modificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
-            tareaDependencia2.modificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
+            tareaDependencia1.ModificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
+            tareaDependencia2.ModificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
 
             tareaPrincipal.ActualizarEstado();
 
@@ -148,8 +148,8 @@ namespace BusinessLogic_Tests
             Tarea tareaDependencia2 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
             Tarea tareaDependencia3 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
 
-            tareaDependencia1.modificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
-            tareaDependencia2.modificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Today);
+            tareaDependencia1.ModificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
+            tareaDependencia2.ModificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Today);
 
             tareaDependencia2.AgregarDependencia(tareaDependencia3); // Dependencia anidada no efectuada
             tareaPrincipal.AgregarDependencia(tareaDependencia1);

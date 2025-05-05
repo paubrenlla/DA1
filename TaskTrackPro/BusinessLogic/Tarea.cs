@@ -11,7 +11,7 @@ public class Tarea
     private DateTime _fechaInicio;
     private TimeSpan _duracion;
     private bool _esCritica;
-    private Estado _estadoActual;
+    private Estado _estadoActual = new Estado(TipoEstadoTarea.Pendiente);
     private List<Tarea> _tareasDependencia = new List<Tarea>();
     private List<Tarea> _tareasSucesoras = new List<Tarea>();
     private List<RecursoNecesario> _recursos = new List<RecursoNecesario>();
@@ -19,8 +19,17 @@ public class Tarea
     public IReadOnlyList<Tarea> TareasDependencia => _tareasDependencia.AsReadOnly();
     public IReadOnlyList<Tarea> TareasSucesoras => _tareasSucesoras.AsReadOnly();
     public IReadOnlyList<RecursoNecesario> Recursos => _recursos.AsReadOnly();
-    private static readonly TimeSpan duracionMinimaTarea = TimeSpan.FromHours(1);
+    private static readonly TimeSpan DuracionMinimaTarea = TimeSpan.FromHours(1);
     
+    public Tarea(string titulo, string descripcion, DateTime fechaInicio, TimeSpan duracion, bool esCritica)
+    {
+        Id = ++_contadorId;
+        Titulo = titulo;
+        Descripcion = descripcion;
+        FechaInicio = fechaInicio;
+        Duracion = duracion;
+        EsCritica = esCritica;
+    }
     public int Id
     {
         get => _id;
@@ -43,7 +52,7 @@ public class Tarea
         set
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentNullException(nameof(value), "La descripción es requerido y no puede estar vacío.");
+                throw new ArgumentNullException(nameof(value), "La descripción es requerida y no puede estar vacía.");
             _descripcion = value;
         }
     }
@@ -59,7 +68,7 @@ public class Tarea
         get => _duracion;
         set
         {
-            if (value < duracionMinimaTarea )
+            if (value < DuracionMinimaTarea )
                 throw new ArgumentOutOfRangeException(nameof(value), "La duración mínima es de 1 hora.");
             _duracion = value;
         }
@@ -75,19 +84,9 @@ public class Tarea
         set => _estadoActual = value;
     }
     
-    public Tarea(string titulo, string descripcion, DateTime fechaInicio, TimeSpan duracion, bool esCritica)
-    {
-        Id = ++_contadorId;
-        Titulo = titulo;
-        Descripcion = descripcion;
-        FechaInicio = fechaInicio;
-        Duracion = duracion;
-        EsCritica = esCritica;
-        EstadoActual = new Estado(TipoEstadoTarea.Pendiente);  // Inicializamos como Pendiente
-    }
     
 
-    public void modificarEstado(TipoEstadoTarea nuevoEstado, DateTime fecha)
+    public void ModificarEstado(TipoEstadoTarea nuevoEstado, DateTime fecha)
     {   
             EstadoActual.Valor = nuevoEstado;
             EstadoActual.Fecha = fecha;
@@ -100,7 +99,7 @@ public class Tarea
 
         _tareasDependencia.Add(tarea);
         tarea._tareasSucesoras.Add(this);
-        modificarEstado(TipoEstadoTarea.Bloqueada,DateTime.Now);
+        ModificarEstado(TipoEstadoTarea.Bloqueada,DateTime.Now);
     }
     public void ActualizarEstado()
     {
@@ -109,10 +108,10 @@ public class Tarea
 
         if (VerificarDependenciasCompletadas() && VerificarRecursosDisponibles())
         {
-            modificarEstado(TipoEstadoTarea.Pendiente, DateTime.Now);
+            ModificarEstado(TipoEstadoTarea.Pendiente, DateTime.Now);
             return;
         }
-        modificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Now);
+        ModificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Now);
     }
 
     public void AgregarRecurso(Recurso recurso, int cantidadNecesaria)
@@ -173,7 +172,7 @@ public class Tarea
 
     public void MarcarTareaComoCompletada()
     {
-        modificarEstado(TipoEstadoTarea.Efectuada, DateTime.Now);
+        ModificarEstado(TipoEstadoTarea.Efectuada, DateTime.Now);
         LiberarRecursos();
 
         foreach (Tarea tarea in TareasSucesoras)
@@ -186,7 +185,7 @@ public class Tarea
     {
         if (VerificarDependenciasCompletadas() && VerificarRecursosDisponibles())
         {
-            modificarEstado(TipoEstadoTarea.Ejecutandose, DateTime.Now);
+            ModificarEstado(TipoEstadoTarea.Ejecutandose, DateTime.Now);
             ConsumirRecursos();
         }
     }
