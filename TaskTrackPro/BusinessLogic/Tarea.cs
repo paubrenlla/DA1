@@ -23,12 +23,12 @@ public class Tarea
     
     public Tarea(string titulo, string descripcion, DateTime fechaInicio, TimeSpan duracion, bool esCritica)
     {
-        Id = ++_contadorId;
         Titulo = titulo;
         Descripcion = descripcion;
         FechaInicio = fechaInicio;
         Duracion = duracion;
         EsCritica = esCritica;
+        Id = ++_contadorId;
     }
     public int Id
     {
@@ -84,8 +84,6 @@ public class Tarea
         set => _estadoActual = value;
     }
     
-    
-
     private void ModificarEstado(TipoEstadoTarea nuevoEstado, DateTime fecha)
     {   
             EstadoActual.Valor = nuevoEstado;
@@ -103,7 +101,7 @@ public class Tarea
     }
     public void ActualizarEstado()
     {
-        if (_tareasDependencia.Count == 0) 
+        if (TareasDependencia.Count == 0) 
             return;
 
         if (VerificarDependenciasCompletadas() && VerificarRecursosDisponibles())
