@@ -1,3 +1,5 @@
+using BusinessLogic.Enums;
+
 namespace BusinessLogic;
 
 public class Tarea
@@ -9,12 +11,12 @@ public class Tarea
     private DateTime _fechaInicio;
     private TimeSpan _duracion;
     private bool _esCritica;
-    private Estado _estadoActual;
+    private Estado _estadoActual = new Estado(TipoEstadoTarea.Pendiente);
     private List<Tarea> _tareasDependencia = new List<Tarea>();
     private List<Tarea> _tareasSucesoras = new List<Tarea>();
+
     private TimeSpan _holgura;
     
-
 
     public DateTime EarlyStart { get; set; }
     public DateTime LateStart { get; set; }
@@ -24,8 +26,18 @@ public class Tarea
 
     public IReadOnlyList<Tarea> TareasDependencia => _tareasDependencia.AsReadOnly();
     public IReadOnlyList<Tarea> TareasSucesoras => _tareasSucesoras.AsReadOnly();
-    private static readonly TimeSpan duracionMinimaTarea = TimeSpan.FromHours(1);
+    public IReadOnlyList<RecursoNecesario> Recursos => _recursos.AsReadOnly();
+    private static readonly TimeSpan DuracionMinimaTarea = TimeSpan.FromHours(1);
     
+    public Tarea(string titulo, string descripcion, DateTime fechaInicio, TimeSpan duracion, bool esCritica)
+    {
+        Titulo = titulo;
+        Descripcion = descripcion;
+        FechaInicio = fechaInicio;
+        Duracion = duracion;
+        EsCritica = esCritica;
+        Id = ++_contadorId;
+    }
     public int Id
     {
         get => _id;
@@ -48,7 +60,7 @@ public class Tarea
         set
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentNullException(nameof(value), "La descripción es requerido y no puede estar vacío.");
+                throw new ArgumentNullException(nameof(value), "La descripción es requerida y no puede estar vacía.");
             _descripcion = value;
         }
     }
@@ -64,7 +76,7 @@ public class Tarea
         get => _duracion;
         set
         {
-            if (value < duracionMinimaTarea )
+            if (value < DuracionMinimaTarea )
                 throw new ArgumentOutOfRangeException(nameof(value), "La duración mínima es de 1 hora.");
             _duracion = value;
         }
@@ -85,23 +97,11 @@ public class Tarea
         set => _holgura = value;
     }
     
-    public Tarea(string titulo, string descripcion, DateTime fechaInicio, TimeSpan duracion, bool esCritica)
-    {
-        Id = ++_contadorId;
-        Titulo = titulo;
-        Descripcion = descripcion;
-        FechaInicio = fechaInicio;
-        Duracion = duracion;
-        EsCritica = esCritica;
-        EstadoActual = new Estado(TipoEstadoTarea.Pendiente);  // Inicializamos como Pendiente
-    }
-    
-
-    public void modificarEstado(TipoEstadoTarea nuevoEstado, DateTime fecha)
+    private void ModificarEstado(TipoEstadoTarea nuevoEstado, DateTime fecha)
     {   
             EstadoActual.Valor = nuevoEstado;
             EstadoActual.Fecha = fecha;
-        }
+    }
     
     public void AgregarDependencia(Tarea tarea)
     {
@@ -110,34 +110,102 @@ public class Tarea
 
         _tareasDependencia.Add(tarea);
         tarea._tareasSucesoras.Add(this);
-        modificarEstado(TipoEstadoTarea.Bloqueada,DateTime.Now);
+        ActualizarEstado();
     }
-    public void ActualizarEstadoSegunDependencias()
+    public void ActualizarEstado()
     {
-        if (_tareasDependencia.Count == 0) 
+        if (TareasDependencia.Count == 0) 
             return;
 
-        // Verifica si todas las dependencias (directas e indirectas) están efectuadas
-        bool todasEfectuadas = VerificarDependenciasCompletadas(_tareasDependencia);
-
-        EstadoActual.Valor = todasEfectuadas ? TipoEstadoTarea.Pendiente : TipoEstadoTarea.Bloqueada;
+        if (VerificarDependenciasCompletadas() && VerificarRecursosDisponibles())
+        {
+            ModificarEstado(TipoEstadoTarea.Pendiente, DateTime.Now);
+            return;
+        }
+        ModificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Now);
     }
 
-// Método recursivo para verificar dependencias anidadas
-    private bool VerificarDependenciasCompletadas(IEnumerable<Tarea> dependencias)
+    public void AgregarRecurso(Recurso recurso, int cantidadNecesaria)
     {
-        foreach (var tarea in dependencias)
+        if (cantidadNecesaria <= 0)
         {
-            // Si la tarea dependiente no está efectuada, retorna false inmediatamente
+            throw new ArgumentOutOfRangeException(nameof(cantidadNecesaria));    
+        }
+        
+        foreach (RecursoNecesario recursoNecesario in Recursos)
+        {
+            if (recursoNecesario.Recurso == recurso)
+            {
+                recursoNecesario.CantidadNecesaria += cantidadNecesaria;
+                return;
+            }
+        }
+        _recursos.Add(new RecursoNecesario(recurso, cantidadNecesaria));
+        ActualizarEstado();
+    }
+
+    public bool VerificarRecursosDisponibles()
+    {
+        foreach (RecursoNecesario recursoNecesario in Recursos)
+        {
+            if (!recursoNecesario.Recurso.EstaDisponible(recursoNecesario.CantidadNecesaria))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void ConsumirRecursos()
+    {
+        foreach (RecursoNecesario recursoNecesario in Recursos)
+        {
+            recursoNecesario.Recurso.ConsumirRecurso(recursoNecesario.CantidadNecesaria);
+        }
+    }
+
+    public void LiberarRecursos()
+    {
+        foreach (RecursoNecesario recursoNecesario in Recursos)
+        {
+            recursoNecesario.Recurso.LiberarRecurso(recursoNecesario.CantidadNecesaria);
+        }
+    }
+    
+    private bool VerificarDependenciasCompletadas()
+    {
+        foreach (Tarea tarea in TareasDependencia)
+        {
             if (tarea.EstadoActual.Valor != TipoEstadoTarea.Efectuada)
                 return false;
-
-            // Si la tarea dependiente tiene sus propias dependencias, verifica recursivamente
-            if (tarea._tareasDependencia.Count > 0 && !VerificarDependenciasCompletadas(tarea._tareasDependencia))
-                return false;
         }
+        return true;
+    }
 
-        return true; // Todas las dependencias (anidadas) están efectuadas
+    public void MarcarTareaComoCompletada()
+    {
+        ModificarEstado(TipoEstadoTarea.Efectuada, DateTime.Now);
+        LiberarRecursos();
+
+        ReevaluarTareasPosteriores();
+    }
+
+    public void MarcarTareaComoEjecutandose()
+    {
+        if (VerificarDependenciasCompletadas() && VerificarRecursosDisponibles())
+        {
+            ModificarEstado(TipoEstadoTarea.Ejecutandose, DateTime.Now);
+            ConsumirRecursos();
+            //TODO: reevaluar todas las tareas de DB por si usan los mismos recursos
+        }
+    }
+
+    private void ReevaluarTareasPosteriores()
+    {
+        foreach (Tarea tarea in TareasSucesoras)
+        {
+            tarea.ActualizarEstado();
+        }
     }
 }
 
