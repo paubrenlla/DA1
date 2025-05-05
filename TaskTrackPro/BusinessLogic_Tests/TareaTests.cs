@@ -134,7 +134,7 @@ namespace BusinessLogic_Tests
             tareaDependencia1.modificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
             tareaDependencia2.modificarEstado(TipoEstadoTarea.Efectuada, DateTime.Today);
 
-            tareaPrincipal.ActualizarEstadoSegunDependencias();
+            tareaPrincipal.ActualizarEstado();
 
             Assert.AreEqual(TipoEstadoTarea.Pendiente, tareaPrincipal.EstadoActual.Valor);
         }
@@ -155,7 +155,7 @@ namespace BusinessLogic_Tests
             tareaPrincipal.AgregarDependencia(tareaDependencia1);
             tareaPrincipal.AgregarDependencia(tareaDependencia2);
 
-            tareaPrincipal.ActualizarEstadoSegunDependencias();
+            tareaPrincipal.ActualizarEstado();
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaPrincipal.EstadoActual.Valor);
         }
 

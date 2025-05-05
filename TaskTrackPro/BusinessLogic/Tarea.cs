@@ -102,15 +102,17 @@ public class Tarea
         tarea._tareasSucesoras.Add(this);
         modificarEstado(TipoEstadoTarea.Bloqueada,DateTime.Now);
     }
-    public void ActualizarEstadoSegunDependencias()
+    public void ActualizarEstado()
     {
         if (_tareasDependencia.Count == 0) 
             return;
 
-        // Verifica si todas las dependencias (directas e indirectas) están efectuadas
-        bool todasEfectuadas = VerificarDependenciasCompletadas();
-
-        EstadoActual.Valor = todasEfectuadas ? TipoEstadoTarea.Pendiente : TipoEstadoTarea.Bloqueada;
+        if (VerificarDependenciasCompletadas() && VerificarRecursosDisponibles())
+        {
+            modificarEstado(TipoEstadoTarea.Pendiente, DateTime.Now);
+            return;
+        }
+        modificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Now);
     }
 
     public void AgregarRecurso(Recurso recurso, int cantidadNecesaria)
@@ -176,7 +178,7 @@ public class Tarea
 
         foreach (Tarea tarea in TareasSucesoras)
         {
-            tarea.ActualizarEstadoSegunDependencias();
+            tarea.ActualizarEstado();
         }
     }
 
