@@ -1,4 +1,4 @@
-namespace BusinessLogic;
+namespace BusinessLogic.Enums;
 
 public enum TipoEstadoTarea
 {

@@ -1,3 +1,5 @@
+using BusinessLogic.Enums;
+
 namespace BusinessLogic;
 
 public class Estado

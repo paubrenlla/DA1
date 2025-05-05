@@ -1,4 +1,5 @@
 using BusinessLogic;
+using BusinessLogic.Enums;
 
 namespace BusinessLogic_Tests
 {
