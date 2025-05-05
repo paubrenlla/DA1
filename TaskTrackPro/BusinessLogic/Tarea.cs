@@ -14,6 +14,7 @@ public class Tarea
     private Estado _estadoActual = new Estado(TipoEstadoTarea.Pendiente);
     private List<Tarea> _tareasDependencia = new List<Tarea>();
     private List<Tarea> _tareasSucesoras = new List<Tarea>();
+    private List<RecursoNecesario> _recursos =  new List<RecursoNecesario>();
 
     private TimeSpan _holgura;
     
