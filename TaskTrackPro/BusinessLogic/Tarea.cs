@@ -108,7 +108,7 @@ public class Tarea
             return;
 
         // Verifica si todas las dependencias (directas e indirectas) están efectuadas
-        bool todasEfectuadas = VerificarDependenciasCompletadas(_tareasDependencia);
+        bool todasEfectuadas = VerificarDependenciasCompletadas();
 
         EstadoActual.Valor = todasEfectuadas ? TipoEstadoTarea.Pendiente : TipoEstadoTarea.Bloqueada;
     }
@@ -159,21 +159,14 @@ public class Tarea
         }
     }
     
-// Método recursivo para verificar dependencias anidadas
-    private bool VerificarDependenciasCompletadas(IEnumerable<Tarea> dependencias)
+    private bool VerificarDependenciasCompletadas()
     {
-        foreach (Tarea tarea in dependencias)
+        foreach (Tarea tarea in TareasDependencia)
         {
-            // Si la tarea dependiente no está efectuada, retorna false inmediatamente
             if (tarea.EstadoActual.Valor != TipoEstadoTarea.Efectuada)
                 return false;
-
-            // Si la tarea dependiente tiene sus propias dependencias, verifica recursivamente
-            if (tarea._tareasDependencia.Count > 0 && !VerificarDependenciasCompletadas(tarea._tareasDependencia))
-                return false;
         }
-
-        return true; // Todas las dependencias (anidadas) están efectuadas
+        return true;
     }
 
     public void MarcarTareaComoCompletada()
@@ -184,6 +177,15 @@ public class Tarea
         foreach (Tarea tarea in TareasSucesoras)
         {
             tarea.ActualizarEstadoSegunDependencias();
+        }
+    }
+
+    public void MarcarTareaComoEjecutandose()
+    {
+        if (VerificarDependenciasCompletadas() && VerificarRecursosDisponibles())
+        {
+            modificarEstado(TipoEstadoTarea.Ejecutandose, DateTime.Now);
+            ConsumirRecursos();
         }
     }
 }

@@ -365,5 +365,63 @@ namespace BusinessLogic_Tests
 
             Assert.IsTrue(tarea.VerificarRecursosDisponibles());
         }
+        
+        [TestMethod]
+        public void MarcarTareaComoEjecutandose_ConDependenciasYRecursos_ActualizaEstadoYConsumeRecursos()
+        {
+            Tarea tarea = new Tarea("Tarea Ejecutada", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            Tarea tareaDependencia = new Tarea("Dependencia", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            Recurso recurso = new Recurso("Servidor", "tipo", "descripcion", false, 5);
+
+            tarea.AgregarDependencia(tareaDependencia);
+            tareaDependencia.MarcarTareaComoCompletada();
+            tarea.AgregarRecurso(recurso, 3);
+
+            tarea.MarcarTareaComoEjecutandose();
+
+            Assert.AreEqual(TipoEstadoTarea.Ejecutandose, tarea.EstadoActual.Valor);
+            Assert.AreEqual(3, recurso.CantidadEnUso);
+        }
+
+        [TestMethod]
+        public void MarcarTareaComoEjecutandose_ConDependenciasIncompletas_NoCambiaEstadoNiConsumeRecursos()
+        {
+            Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            Tarea tareaDependencia = new Tarea("Dependencia", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            Recurso recurso = new Recurso("Laptop", "tipo", "descripcion", false, 5);
+
+            tarea.AgregarDependencia(tareaDependencia);
+            tarea.AgregarRecurso(recurso, 3);
+
+            tarea.MarcarTareaComoEjecutandose();
+
+            Assert.AreNotEqual(TipoEstadoTarea.Ejecutandose, tarea.EstadoActual.Valor);
+            Assert.AreEqual(0, recurso.CantidadEnUso);
+        }
+
+        [TestMethod]
+        public void MarcarTareaComoEjecutandose_SinRecursosDisponibles_NoCambiaEstadoNiConsumeRecursos()
+        {
+            Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            Recurso recurso = new Recurso("Laptop", "tipo", "descripcion", false, 2);
+
+            tarea.AgregarRecurso(recurso, 5);
+
+            tarea.MarcarTareaComoEjecutandose();
+
+            Assert.AreNotEqual(TipoEstadoTarea.Ejecutandose, tarea.EstadoActual.Valor);
+            Assert.AreEqual(0, recurso.CantidadEnUso);
+        }
+
+        [TestMethod]
+        public void MarcarTareaComoEjecutandose_SinDependenciasNiRecursos_CambiaEstadoPeroNoConsumeNada()
+        {
+            Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+
+            tarea.MarcarTareaComoEjecutandose();
+
+            Assert.AreEqual(TipoEstadoTarea.Ejecutandose, tarea.EstadoActual.Valor);
+        }
+
     }
 }
