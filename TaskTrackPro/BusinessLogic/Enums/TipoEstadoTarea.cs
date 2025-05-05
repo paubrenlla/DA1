@@ -4,5 +4,6 @@ public enum TipoEstadoTarea
 {
     Pendiente,
     Bloqueada,
-    Efectuada
+    Efectuada,
+    Ejecutandose
 }
