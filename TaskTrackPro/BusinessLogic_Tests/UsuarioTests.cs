@@ -299,5 +299,15 @@ public class UsuarioTests
         Usuario u = new Usuario("example@email.com", "Nombre", "Apellido",passNoEncriptada, new DateTime(2000, 1, 1));
         Assert.AreEqual(passEcriptada, u.Pwd);
     }
+    
+    //Tests para generar contraseña aleatoria
+    [TestMethod] public void GenerarContraseñaAleatoria_GeneraNuevaContraseña()
+    {
+        var usuario = new Usuario("test@email.com", "Paula", "Apellido", "OldPassword123!", new DateTime(1990, 5, 10));
+
+        usuario.GenerarContraseñaAleatoria();
+
+        Assert.AreNotEqual("OldPassword123!", usuario.Pwd);
+    }
 
 }
