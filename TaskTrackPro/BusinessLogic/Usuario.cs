@@ -4,6 +4,9 @@ namespace BusinessLogic;
 
 public class Usuario
 {
+    public const int MINIMO_LARGO_CONTRASEÑA = 8;
+    public const string CONTRASEÑA_DEFAULT = "1Contraseña!";
+    
     private string _email;
     private string _nombre;
     private string _apellido;
@@ -75,6 +78,16 @@ public class Usuario
     }
     
     //Metodos
+    public void GenerarContraseñaAleatoria()
+    {
+        Pwd = GeneradorContraseña.GenerarContraseña(MINIMO_LARGO_CONTRASEÑA);
+    }
+
+    public void ResetearContraseña()
+    {
+        Pwd = CONTRASEÑA_DEFAULT;
+    }
+    
     public static void ValidarContraseña(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -99,7 +112,6 @@ public class Usuario
         if (!Regex.IsMatch(value, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}$"))
             throw new ArgumentException("El email no tiene un formato válido.");
     }
-    
     
     //Encriptar contraseña en base64
     public static string EncriptarPassword(string passwordTextoPlano)
