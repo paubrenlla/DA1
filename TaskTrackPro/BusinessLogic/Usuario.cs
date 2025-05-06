@@ -85,7 +85,7 @@ public class Usuario
 
     public void ResetearContraseña()
     {
-        
+        Pwd = CONTRASEÑA_DEFAULT;
     }
     
     public static void ValidarContraseña(string value)
