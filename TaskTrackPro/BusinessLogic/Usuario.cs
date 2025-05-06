@@ -5,6 +5,7 @@ namespace BusinessLogic;
 public class Usuario
 {
     public const int MINIMO_LARGO_CONTRASEÑA = 8;
+    public const string CONTRASEÑA_DEFAULT = "1Contraseña!";
     
     private string _email;
     private string _nombre;
@@ -80,6 +81,11 @@ public class Usuario
     public void GenerarContraseñaAleatoria()
     {
         Pwd = GeneradorContraseña.GenerarContraseña(MINIMO_LARGO_CONTRASEÑA);
+    }
+
+    public void ResetearContraseña()
+    {
+        
     }
     
     public static void ValidarContraseña(string value)

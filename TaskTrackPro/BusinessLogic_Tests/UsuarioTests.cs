@@ -301,13 +301,26 @@ public class UsuarioTests
     }
     
     //Tests para generar contraseña aleatoria
-    [TestMethod] public void GenerarContraseñaAleatoria_GeneraNuevaContraseña()
+    [TestMethod] 
+    public void GenerarContraseñaAleatoria_GeneraNuevaContraseña()
     {
-        var usuario = new Usuario("test@email.com", "Paula", "Apellido", "OldPassword123!", new DateTime(1990, 5, 10));
+        Usuario usuario = new Usuario("test@email.com", "Paula", "Apellido", "OldPassword123!", new DateTime(1990, 5, 10));
 
         usuario.GenerarContraseñaAleatoria();
 
         Assert.AreNotEqual("OldPassword123!", usuario.Pwd);
     }
+    
+    //Tests para restablecer contraseña
+    [TestMethod]
+    public void ResetearContraseña_ReseteaAPorDefault()
+    {
+        Usuario usuario = new Usuario("test@email.com", "Paula", "Apellido", "OldPassword123!", new DateTime(1990, 5, 10));
 
+        usuario.ResetearContraseña();
+        
+        string defaultPwdEncriptada = Usuario.EncriptarPassword(Usuario.CONTRASEÑA_DEFAULT);
+        
+        Assert.AreEqual(defaultPwdEncriptada, usuario.Pwd);
+    }
 }
