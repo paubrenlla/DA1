@@ -7,7 +7,7 @@ public class GeneradorContraseñaTests
 {
     [TestMethod] public void GenerarContraseña_DatosValidos()
     {
-        string password = GeneradorContraseña.GeneratePassword(12);
+        string password = GeneradorContraseña.GenerarContraseña(12);
         
         Usuario.ValidarContraseña(password);
         
@@ -19,7 +19,7 @@ public class GeneradorContraseñaTests
     [ExpectedException(typeof(ArgumentException))]
     public void GenerarContraseña_DebeFallar_MenorCantidadCaracteres()
     {
-        GeneradorContraseña.GeneratePassword(3);
+        GeneradorContraseña.GenerarContraseña(3);
     }
 
 }

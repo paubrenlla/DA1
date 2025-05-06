@@ -9,7 +9,7 @@ public class GeneradorContraseña
     private const string NUMEROS = "0123456789";
     private const string CARACTERES_ESPECIALES = "!@#$%^&*()-_=+[]{}|;:,.<>?";
 
-    public static string GeneratePassword(int largoContraseña)
+    public static string GenerarContraseña(int largoContraseña)
     {
         if (largoContraseña < 8)
             throw new ArgumentException("La contraseña debe tener al menos 8 caracteres.");
