@@ -413,7 +413,16 @@ public class ProyectoTests
         Assert.ThrowsException<InvalidOperationException>(() => proyecto.AsignarUsuarioATarea(usuario, tarea));
     }
 
+    [TestMethod]
+    public void AsignarAdmin_UsuarioMiembro_ElUsuarioSeConvierteEnAdmin()
+    {
 
+        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        var usuario = new Usuario("admin@test.com", "Admin", "User", "paASD*ss", DateTime.Now);
+        proyecto.agregarMiembro(usuario);
+        proyecto.AsignarAdmin(usuario); 
+        Assert.IsTrue(proyecto.EsAdmin(usuario)); 
+    }
 }
 
 
