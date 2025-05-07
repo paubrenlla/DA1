@@ -216,7 +216,7 @@ public class Proyecto
     
     public bool EsAdmin(Usuario usuario)
     {
-        return _admins.Contains(usuario);
+        return Miembros.Contains(usuario) && _admins.Contains(usuario);
     }
     
     public void RemoverAdmin(Usuario usuario)
