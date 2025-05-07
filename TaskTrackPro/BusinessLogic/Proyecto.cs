@@ -191,6 +191,17 @@ public class Proyecto
     }
 
 
-
-  
+    public void AsignarUsuarioATarea(Usuario usuario, Tarea tarea)
+    {
+        if (!Miembros.Contains(usuario))
+            throw new ArgumentException("El usuario no pertenece al proyecto");
+    
+        if (!TareasAsociadas.Contains(tarea))
+            throw new ArgumentException("La tarea no pertenece al proyecto");
+    
+        if (tarea.UsuariosAsignados.Contains(usuario))
+            throw new ArgumentException("El usuario ya está asignado a esta tarea");
+    
+        tarea.AgregarUsuario(usuario);
+    }
 }
