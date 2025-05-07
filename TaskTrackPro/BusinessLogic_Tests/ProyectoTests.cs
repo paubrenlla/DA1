@@ -386,6 +386,32 @@ public class ProyectoTests
         CollectionAssert.Contains(tarea.UsuariosAsignados.ToList(), usuario);
         
     }
+    
+    [TestMethod]
+    public void AsignarUsuarioATarea_UsuarioNoMiembro_LanzaExcepcion()
+    {
+        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        var usuario = new Usuario("test@test.com", "Test", "Usuario", "Contr*aseña123", DateTime.Now);
+        var tarea = new Tarea("Tarea Test", "Descripción", DateTime.Now, TimeSpan.FromHours(5), false);
+    
+        proyecto.agregarTarea(tarea);
+
+        Assert.ThrowsException<ArgumentException>(() => proyecto.AsignarUsuarioATarea(usuario, tarea));
+    }
+
+    [TestMethod]
+    public void AsignarUsuarioATarea_UsuarioYaAsignado_LanzaExcepcion()
+    {
+        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        var usuario = new Usuario("test@test.com", "Test", "Usuario", "Contr*aseña123", DateTime.Now);
+        var tarea = new Tarea("Tarea Test", "Descripción", DateTime.Now, TimeSpan.FromHours(5), false);
+    
+        proyecto.agregarMiembro(usuario);
+        proyecto.agregarTarea(tarea);
+        proyecto.AsignarUsuarioATarea(usuario, tarea);
+
+        Assert.ThrowsException<InvalidOperationException>(() => proyecto.AsignarUsuarioATarea(usuario, tarea));
+    }
 
 
 }
