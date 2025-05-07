@@ -471,6 +471,36 @@ namespace BusinessLogic_Tests
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaSucesora.EstadoActual.Valor);
             Assert.AreEqual(TipoEstadoTarea.Pendiente, tareaPrincipal.EstadoActual.Valor);
         }
+        
+        [TestMethod]
+        public void TareasSeDesbloqueanAlCompletarDependencias()
+        {
+            // Arrange
+            var tarea1 = new Tarea("Tarea 1", "Inicio del flujo", DateTime.Now, TimeSpan.FromHours(2), false);
+            var tarea2 = new Tarea("Tarea 2", "Segunda etapa", DateTime.Now, TimeSpan.FromHours(2), false);
+            var tarea3 = new Tarea("Tarea 3", "Final del flujo", DateTime.Now, TimeSpan.FromHours(2), false);
 
+            tarea2.AgregarDependencia(tarea1); // tarea2 depende de tarea1
+            tarea3.AgregarDependencia(tarea2); // tarea3 depende de tarea2
+
+            // Assert estado inicial
+            Assert.AreEqual(TipoEstadoTarea.Bloqueada, tarea2.EstadoActual.Valor);
+            Assert.AreEqual(TipoEstadoTarea.Bloqueada, tarea3.EstadoActual.Valor);
+
+            // Act 1 - completar tarea1
+            tarea1.MarcarTareaComoCompletada();
+
+            // Assert 1 - tarea2 debería pasar a pendiente
+            Assert.AreEqual(TipoEstadoTarea.Pendiente, tarea2.EstadoActual.Valor);
+            Assert.AreEqual(TipoEstadoTarea.Bloqueada, tarea3.EstadoActual.Valor);
+
+            // Act 2 - completar tarea2
+            tarea2.MarcarTareaComoCompletada();
+
+            // Assert 2 - tarea3 debería pasar a pendiente
+            Assert.AreEqual(TipoEstadoTarea.Pendiente, tarea3.EstadoActual.Valor);
+        }
     }
+
+    
 }

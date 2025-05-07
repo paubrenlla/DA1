@@ -373,6 +373,22 @@ public class ProyectoTests
         CollectionAssert.Contains(rutaCritica, t4);
         
     }
+    [TestMethod] public void AsignarUsuarioATarea_UsuarioMiembro_TareaEnProyecto_AsignaCorrectamente()
+    {
+        // Arrange (Preparar)
+        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        var usuario = new Usuario("test@test.com", "Test", "Usuario", "Contraseña123", DateTime.Now);
+        var tarea = new Tarea("Tarea Test", "Descripción", DateTime.Now, TimeSpan.FromHours(5), false);
+            
+        proyecto.agregarMiembro(usuario);
+        proyecto.agregarTarea(tarea);
+
+        // Act (Ejecutar)
+        proyecto.AsignarUsuarioATarea(usuario, tarea);
+
+        // Assert (Verificar)
+        CollectionAssert.Contains(tarea.UsuariosAsignados, usuario);
+    }
 
 
 }
