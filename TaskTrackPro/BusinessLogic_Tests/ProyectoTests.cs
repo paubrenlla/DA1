@@ -442,11 +442,7 @@ public class ProyectoTests
     
         proyecto.agregarMiembro(usuario);
         proyecto.AsignarAdmin(usuario);
-    
-
         proyecto.RemoverAdmin(usuario); 
-
-
         Assert.IsFalse(proyecto.EsAdmin(usuario));
     }
 }

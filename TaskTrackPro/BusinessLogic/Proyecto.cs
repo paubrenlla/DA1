@@ -218,4 +218,12 @@ public class Proyecto
     {
         return _admins.Contains(usuario);
     }
+    
+    public void RemoverAdmin(Usuario usuario)
+    {
+        if (!Miembros.Contains(usuario))
+            throw new ArgumentException("El usuario no es miembro del proyecto.");
+    
+        _admins.Remove(usuario);
+    }
 }
