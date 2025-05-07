@@ -424,6 +424,15 @@ public class ProyectoTests
         Assert.IsTrue(proyecto.EsAdmin(usuario)); 
     }
     
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AsignarAdmin_UsuarioNoMiembro_LanzaExcepcion()
+    {
+        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        var usuarioNoMiembro = new Usuario("no@miembro.com", "No", "Miembro", "paASD*ss1", DateTime.Now);
+    
+        proyecto.AsignarAdmin(usuarioNoMiembro); 
+    }
 }
 
 
