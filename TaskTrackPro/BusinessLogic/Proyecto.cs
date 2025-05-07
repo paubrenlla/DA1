@@ -209,8 +209,9 @@ public class Proyecto
     {
         if (!Miembros.Contains(usuario))
             throw new ArgumentException("El usuario no es miembro del proyecto.");
-        
-        _admins.Add(usuario);
+    
+        if (!_admins.Contains(usuario)) 
+            _admins.Add(usuario);
     }
     
     public bool EsAdmin(Usuario usuario)
