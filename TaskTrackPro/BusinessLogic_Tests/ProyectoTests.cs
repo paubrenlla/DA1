@@ -418,11 +418,12 @@ public class ProyectoTests
     {
 
         var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
-        var usuario = new Usuario("admin@test.com", "Admin", "User", "paASD*ss", DateTime.Now);
+        var usuario = new Usuario("admin@test.com", "Admin", "User", "paASD*ss1", DateTime.Now);
         proyecto.agregarMiembro(usuario);
         proyecto.AsignarAdmin(usuario); 
         Assert.IsTrue(proyecto.EsAdmin(usuario)); 
     }
+    
 }
 
 
