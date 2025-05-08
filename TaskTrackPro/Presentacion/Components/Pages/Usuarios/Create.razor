@@ -1,62 +1,110 @@
-﻿@page "/usuarios/crear"
+﻿@page "/usuarios/crear/"
 
+<PageTitle>Crear Usuario</PageTitle>
+
+@using System.ComponentModel.DataAnnotations
 @using BusinessLogic
+@inject DB DataBase
 @inject NavigationManager NavigationManager
-@inject DB BaseDeDatos
+
 
 <h1>Crear Usuario</h1>
 
-@if (!string.IsNullOrEmpty(mensajeError))
-{
-    <div class="alert alert-danger">@mensajeError</div>
-}
 
-<div class="form-group">
-    <label>Email</label>
-    <input type="email" class="form-control" @bind="email" />
-</div>
+<EditForm Model="usuarioModel" OnValidSubmit="ValidSubmit" OnInvalidSubmit="InvalidSubmit" @formname="crearUsuarioForm">
 
-<div class="form-group">
-    <label>Nombre</label>
-    <input type="text" class="form-control" @bind="nombre" />
-</div>
+    <div class="form-group">
 
-<div class="form-group">
-    <label>Apellido</label>
-    <input type="text" class="form-control" @bind="apellido" />
-</div>
+        <label for="email">Email</label>
+        
+        <InputText type="text" class="form-control" id="email" @bind-Value="usuarioModel.Email"></InputText>
 
-<div class="form-group">
-    <label>Contraseña</label>
-    <input type="password" class="form-control" @bind="pwd" />
-</div>
+    </div>
+    <ValidationMessage For="@(()=>usuarioModel.Email)"/>
 
-<div class="form-group">
-    <label>Fecha de nacimiento</label>
-    <input type="date" class="form-control" @bind="fechaNacimiento" />
-</div>
+    <div class="form-group">
 
-<button class="btn btn-primary" @onclick="GuardarUsuario">Crear</button>
-<a class="btn btn-secondary" href="/usuarios">Cancelar</a>
+        <label for="nombre">Nombre</label>
+
+        <InputText type="text" class="form-control" id="nombre" @bind-Value="usuarioModel.Nombre"></InputText>
+
+    </div>
+    <ValidationMessage For="@(()=>usuarioModel.Nombre)"/>
+
+    <div class="form-group">
+
+        <label for="apellido">Apellido</label>
+
+        <InputText type="text" class="form-control" id="apellido" @bind-Value="usuarioModel.Apellido"></InputText>
+
+    </div>
+    <ValidationMessage For="@(()=>usuarioModel.Apellido)"/>
+
+    <div class="form-group">
+
+        <label for="contraseña">Contraseña</label>
+
+        <InputText type="password" class="form-control" id="contraseña" @bind-Value="usuarioModel.Contraseña"></InputText >
+
+    </div>
+    <ValidationMessage For="@(()=>usuarioModel.Contraseña)"/>
+
+    <div class="form-group">
+        <label for="fecha">Fecha de Nacimiento</label>
+        <InputDate TValue="DateTime?" class="form-control" id="fecha" @bind-Value="usuarioModel.FechaNacimiento" />
+    </div>
+    <ValidationMessage For="@(() => usuarioModel.FechaNacimiento)" />
+
+
+
+    <button type="submit" class="btn btn-primary">Guardar usuario</button>
+
+
+</EditForm>
+
+
 
 @code {
-    private string email = "";
-    private string nombre = "";
-    private string apellido = "";
-    private string pwd = "";
-    private DateTime fechaNacimiento = DateTime.Today;
 
-    private string mensajeError = "";
+    private UsuarioData usuarioModel = new UsuarioData();
 
-    private void GuardarUsuario()
+    public class UsuarioData
     {
-        Console.Write("ENTRO");
-        mensajeError = "";
-       
-            var nuevo = new Usuario(email, nombre, apellido, pwd, fechaNacimiento);
-            BaseDeDatos.agregarUsuario(nuevo);
-            NavigationManager.NavigateTo("/usuarios");
-        }
-       
+        [Required(ErrorMessage = "El usuario debe tener correo")]
+        public string? Email { get; set; }
+        [Required]
+        public string? Nombre { get; set; }
+        [Required]
+        public string? Apellido { get; set; }
+        [Required]
+        [StringLength(100,ErrorMessage = "No puede tener menos 8 caracteres",MinimumLength = 8)]
+        public string? Contraseña { get; set; }
+        [Required]
+        public DateTime? FechaNacimiento { get; set; }
     }
+
+    
+    private void ValidSubmit()
+
+    {
+        Console.WriteLine("OK");
+
+        var usuarioNuevo = new Usuario(
+            usuarioModel.Email!,
+            usuarioModel.Nombre!,
+            usuarioModel.Apellido!,
+            usuarioModel.Contraseña!,
+            usuarioModel.FechaNacimiento!.Value
+        );
+        DataBase.agregarUsuario(usuarioNuevo);
+        NavigationManager.NavigateTo("/usuarios");
+
+    }
+
+    protected void InvalidSubmit()
+    {
+        Console.WriteLine("Falló algo");
+    }
+
+}
 
