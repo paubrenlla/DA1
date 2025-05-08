@@ -2,109 +2,71 @@
 
 <PageTitle>Crear Usuario</PageTitle>
 
-@using System.ComponentModel.DataAnnotations
 @using BusinessLogic
 @inject DB DataBase
 @inject NavigationManager NavigationManager
 
-
 <h1>Crear Usuario</h1>
 
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger">@mensajeError</div>
+}
 
-<EditForm Model="usuarioModel" OnValidSubmit="ValidSubmit" OnInvalidSubmit="InvalidSubmit" @formname="crearUsuarioForm">
-
+<form onsubmit="return false">
     <div class="form-group">
-
         <label for="email">Email</label>
-        
-        <InputText type="text" class="form-control" id="email" @bind-Value="usuarioModel.Email"></InputText>
-
+        <input type="text" class="form-control" id="email" @bind="email">
     </div>
-    <ValidationMessage For="@(()=>usuarioModel.Email)"/>
 
     <div class="form-group">
-
         <label for="nombre">Nombre</label>
-
-        <InputText type="text" class="form-control" id="nombre" @bind-Value="usuarioModel.Nombre"></InputText>
-
+        <input type="text" class="form-control" id="nombre" @bind="nombre">
     </div>
-    <ValidationMessage For="@(()=>usuarioModel.Nombre)"/>
 
     <div class="form-group">
-
         <label for="apellido">Apellido</label>
-
-        <InputText type="text" class="form-control" id="apellido" @bind-Value="usuarioModel.Apellido"></InputText>
-
+        <input type="text" class="form-control" id="apellido" @bind="apellido">
     </div>
-    <ValidationMessage For="@(()=>usuarioModel.Apellido)"/>
 
     <div class="form-group">
-
         <label for="contraseña">Contraseña</label>
-
-        <InputText type="password" class="form-control" id="contraseña" @bind-Value="usuarioModel.Contraseña"></InputText >
-
+        <input type="password" class="form-control" id="contraseña" @bind="contraseña">
     </div>
-    <ValidationMessage For="@(()=>usuarioModel.Contraseña)"/>
-
+    
     <div class="form-group">
         <label for="fecha">Fecha de Nacimiento</label>
-        <InputDate TValue="DateTime?" class="form-control" id="fecha" @bind-Value="usuarioModel.FechaNacimiento" />
+        <input type="date" class="form-control" id="fecha" @bind="fecha" />
     </div>
-    <ValidationMessage For="@(() => usuarioModel.FechaNacimiento)" />
 
-
-
-    <button type="submit" class="btn btn-primary">Guardar usuario</button>
-
-
-</EditForm>
-
-
+    <input type="submit" class="btn btn-primary" value="Agregar" @onclick="Crear_Usuario">
+</form>
 
 @code {
+    private string email;
+    private string nombre;
+    private string apellido;
+    private string contraseña; 
+    private DateTime fecha;
+    private string mensajeError;
 
-    private UsuarioData usuarioModel = new UsuarioData();
-
-    public class UsuarioData
+    private void Crear_Usuario()
     {
-        [Required(ErrorMessage = "El usuario debe tener correo")]
-        public string? Email { get; set; }
-        [Required]
-        public string? Nombre { get; set; }
-        [Required]
-        public string? Apellido { get; set; }
-        [Required]
-        [StringLength(100,ErrorMessage = "No puede tener menos 8 caracteres",MinimumLength = 8)]
-        public string? Contraseña { get; set; }
-        [Required]
-        public DateTime? FechaNacimiento { get; set; }
-    }
+        mensajeError = "";
 
-    
-    private void ValidSubmit()
+        try
+        {
+            Usuario usuarioNuevo = new Usuario(
+                email, nombre, apellido, contraseña, fecha
+            );
 
-    {
-        Console.WriteLine("OK");
-
-        var usuarioNuevo = new Usuario(
-            usuarioModel.Email!,
-            usuarioModel.Nombre!,
-            usuarioModel.Apellido!,
-            usuarioModel.Contraseña!,
-            usuarioModel.FechaNacimiento!.Value
-        );
-        DataBase.agregarUsuario(usuarioNuevo);
-        NavigationManager.NavigateTo("/usuarios");
-
-    }
-
-    protected void InvalidSubmit()
-    {
-        Console.WriteLine("Falló algo");
+            DataBase.agregarUsuario(usuarioNuevo);
+            NavigationManager.NavigateTo("/usuarios");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
     }
 
 }
-
