@@ -13,7 +13,14 @@ public class DB
         ListaProyectos = new List<Proyecto>();
         ListaRecursos = new List<Recurso>();
         ListaUsuarios = new List<Usuario>();
+
+        var usuario1 = new Usuario("mateomcelano@gmail.com", "Mateo", "Muñiz", "Contraseña1!", new DateTime(2002, 4, 24));
+        var usuario2 = new Usuario("bruno@gmail.com", "Bruno", "Fernández", "ClaveSegura2#", new DateTime(1988, 9, 30));
+
+        ListaUsuarios.Add(usuario1);
+        ListaUsuarios.Add(usuario2);
     }
+
 
     public DB(Usuario user) : this()
     {

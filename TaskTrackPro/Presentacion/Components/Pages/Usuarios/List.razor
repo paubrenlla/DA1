@@ -1,0 +1,45 @@
+﻿@page "/usuarios"
+@using BusinessLogic
+
+@inject BusinessLogic.DB BaseDeDatos
+
+<h1>
+    Usuarios
+    <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="/usuarios/crear">Crear +</a>
+</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Email</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Fecha de Nacimiento</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var usuario in listaDeUsuarios)
+    {
+        <tr>
+            <td>@usuario.Email</td>
+            <td>@usuario.Nombre</td>
+            <td>@usuario.Apellido</td>
+            <td>@usuario.FechaNacimiento.ToShortDateString()</td>
+            <td>
+                <a class="btn btn-success btn-sm">Editar</a>
+                <button class="btn btn-danger btn-sm">Eliminar</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    private List<Usuario>? listaDeUsuarios = new List<Usuario>();
+
+    protected override void OnInitialized()
+    {
+        listaDeUsuarios = BaseDeDatos.ListaUsuarios;
+    }
+}
