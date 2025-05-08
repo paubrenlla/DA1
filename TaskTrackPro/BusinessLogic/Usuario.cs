@@ -119,4 +119,5 @@ public class Usuario
         var passwordBytes = System.Text.Encoding.UTF8.GetBytes(passwordTextoPlano);
         return System.Convert.ToBase64String(passwordBytes);
     }
+    
 }

@@ -410,7 +410,7 @@ public class ProyectoTests
         proyecto.agregarTarea(tarea);
         proyecto.AsignarUsuarioATarea(usuario, tarea);
 
-        Assert.ThrowsException<InvalidOperationException>(() => proyecto.AsignarUsuarioATarea(usuario, tarea));
+        Assert.ThrowsException<ArgumentException>(() => proyecto.AsignarUsuarioATarea(usuario, tarea));
     }
 
     [TestMethod]
