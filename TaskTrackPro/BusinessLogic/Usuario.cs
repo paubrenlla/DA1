@@ -6,7 +6,9 @@ public class Usuario
 {
     public const int MINIMO_LARGO_CONTRASEÑA = 8;
     public const string CONTRASEÑA_DEFAULT = "1Contraseña!";
-    
+    private static int _contadorId = 1;
+
+    public int Id { get; }
     private string _email;
     private string _nombre;
     private string _apellido;
@@ -20,6 +22,7 @@ public class Usuario
         Apellido = apellido;
         Pwd = pwd;
         FechaNacimiento = fechaNacimiento;
+        Id = _contadorId++;
     }
     
     //Properties

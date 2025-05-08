@@ -1,3 +1,4 @@
+using System.Reflection;
 using BusinessLogic;
 
 namespace BusinessLogic_Tests;
@@ -5,7 +6,14 @@ namespace BusinessLogic_Tests;
 [TestClass]
 public class UsuarioTests
 {
-    //Tests de Constructor
+    [TestInitialize]
+    public void Setup()
+    {
+        typeof(Usuario)
+            .GetField("_contadorId", BindingFlags.Static | BindingFlags.NonPublic)
+            ?.SetValue(null, 1);
+    }
+    
     [TestMethod]
     public void ConstructorConDatosCorrectos()
     {
@@ -17,6 +25,31 @@ public class UsuarioTests
         Assert.AreEqual(u.Pwd, "RXNWYWxpZGExIQ==");
         Assert.AreEqual(u.FechaNacimiento, new DateTime(2000, 01, 01));
     }
+    
+    [TestMethod]
+    public void UsuariosConIdCorrecta()
+    {
+        Usuario u = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        Usuario u2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+
+        Assert.AreEqual(u.Id, 1);
+        Assert.AreEqual(u2.Id, 2);
+    }
+    
+    [TestMethod]
+    public void UsuariosConIdCorrectaTrasCatchearExcpecion()
+    {
+        try
+        {
+            Usuario u = new Usuario("", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        }
+        catch(Exception ex){}
+        
+        Usuario u2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+
+        Assert.AreEqual(u2.Id, 1);
+    }
+    
 
     [TestMethod]
     public void ConstructorUsuarioEmailNulo_LanzaArgumentNullException()

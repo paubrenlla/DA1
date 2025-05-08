@@ -2,7 +2,7 @@ namespace BusinessLogic;
 
 public class Proyecto
 {
-    private static int _contadorId = 0; // contador compartido entre todas las instancias
+    private static int _contadorId = 1;
 
     public int Id { get; }
     public string? Nombre { get; set; }

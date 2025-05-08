@@ -195,7 +195,7 @@ namespace BusinessLogic_Tests
             Tarea tarea = new Tarea("Tarea sin sucesoras", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
 
             tarea.AgregarRecurso(RECURSO_VALIDO, 2);
-            tarea.ConsumirRecursos(); //
+            tarea.ConsumirRecursos();
             tarea.MarcarTareaComoCompletada();
 
             Assert.AreEqual(TipoEstadoTarea.Efectuada, tarea.EstadoActual.Valor);

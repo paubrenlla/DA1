@@ -1,0 +1,72 @@
+﻿@page "/usuarios/editar/"
+
+<PageTitle>Editar Usuario</PageTitle>
+
+@using BusinessLogic
+@inject DB DataBase
+@inject NavigationManager NavigationManager
+
+<h1>Crear Usuario</h1>
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger">@mensajeError</div>
+}
+
+<form onsubmit="return false">
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" class="form-control" id="email" @bind="email">
+    </div>
+
+    <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input type="text" class="form-control" id="nombre" @bind="nombre">
+    </div>
+
+    <div class="form-group">
+        <label for="apellido">Apellido</label>
+        <input type="text" class="form-control" id="apellido" @bind="apellido">
+    </div>
+
+    <div class="form-group">
+        <label for="contraseña">Contraseña</label>
+        <input type="password" class="form-control" id="contraseña" @bind="contraseña">
+    </div>
+    
+    <div class="form-group">
+        <label for="fecha">Fecha de Nacimiento</label>
+        <input type="date" class="form-control" id="fecha" @bind="fecha" />
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Agregar" @onclick="Crear_Usuario">
+</form>
+
+@code {
+    private string email;
+    private string nombre;
+    private string apellido;
+    private string contraseña; 
+    private DateTime fecha;
+    private string mensajeError;
+
+    private void Crear_Usuario()
+    {
+        mensajeError = "";
+
+        try
+        {
+            Usuario usuarioNuevo = new Usuario(
+                email, nombre, apellido, contraseña, fecha
+            );
+
+            DataBase.agregarUsuario(usuarioNuevo);
+            NavigationManager.NavigateTo("/usuarios");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+
+}
