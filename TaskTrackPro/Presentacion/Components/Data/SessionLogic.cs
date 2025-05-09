@@ -20,8 +20,7 @@ public class SessionLogic
     {
         string passwordEncriptada = Usuario.EncriptarPassword(password);
 
-        Usuario? user = _db.ListaUsuarios.FirstOrDefault(u =>
-            u.Email == email && u.Pwd == passwordEncriptada);
+        Usuario? user = _db.buscarUsuarioPorCorreoYContraseña(email, passwordEncriptada);
 
         if (user is null)
         {

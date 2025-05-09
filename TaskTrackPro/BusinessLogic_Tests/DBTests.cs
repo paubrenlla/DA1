@@ -236,7 +236,7 @@ public class DBTests
     }
     
     [TestMethod]
-    public void BuscarUsuarioPorId_DevuelveUsuarioCorrecto()
+    public void BuscarUsuarioPorIdDevuelveUsuarioCorrecto()
     {
         DB db = new DB();
         Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", "123AAaa!!", new DateTime(2000, 1, 1));
@@ -251,13 +251,28 @@ public class DBTests
     }
     
     [TestMethod]
-    public void BuscarUsuarioPorId_DevuelveNullSiNoExiste()
+    public void BuscarUsuarioPorIdDevuelveNullSiNoExiste()
     {
         DB db = new DB();
 
         Usuario resultado = db.buscarUsuarioPorId(999);
 
         Assert.IsNull(resultado);
+    }
+    
+    [TestMethod]
+    public void BuscarUsuarioPorCorreoYContraseña()
+    {
+        DB db = new DB();
+        Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", "123AAaa!!", new DateTime(2000, 1, 1));
+        Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", "456AAaa!!", new DateTime(1999, 2, 2));
+        db.agregarUsuario(u1);
+        db.agregarUsuario(u2);
+
+        Usuario resultado = db.buscarUsuarioPorCorreoYContraseña(u2.Email,u2.Pwd);
+
+        Assert.IsNotNull(resultado);
+        Assert.AreEqual(u2.Email, resultado.Email);
     }
 
 }

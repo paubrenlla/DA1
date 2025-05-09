@@ -63,7 +63,11 @@ public class DB
     {
         return ListaUsuarios.FirstOrDefault(u => u.Id == id);
     }
-
+     public Usuario? buscarUsuarioPorCorreoYContraseña(string email, string contraseña)
+    {
+        return ListaUsuarios.FirstOrDefault(u =>
+            u.Email == email && u.Pwd == contraseña);
+    }
 
     public void agregarProyecto(Proyecto proyecto)
     {
@@ -88,4 +92,6 @@ public class DB
     {
         ListaRecursos.Remove(recurso);
     }
+
+  
 }
