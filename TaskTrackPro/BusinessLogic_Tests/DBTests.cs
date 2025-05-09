@@ -17,6 +17,18 @@ public class DBTests
     }
     
     [TestMethod]
+    public void ConstructorConDatosPrecargados()
+    {
+        DB db = new DB(true);
+        
+        Assert.IsFalse(0 == db.AdministradoresSistema.Count);
+        Assert.IsFalse(0 == db.ListaUsuarios.Count);
+        Assert.IsFalse(0 == db.ListaProyectos.Count);
+        Assert.IsFalse(0 == db.ListaRecursos.Count);
+    }
+    
+    
+    [TestMethod]
     public void ConstructorConUsarioAdmin()
     {
         Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
