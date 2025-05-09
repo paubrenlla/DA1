@@ -58,6 +58,12 @@ public class DB
             throw new ArgumentException("El usuario es administrador");
         ListaUsuarios.Remove(user);
     }
+    
+    public Usuario? buscarUsuarioPorId(int id)
+    {
+        return ListaUsuarios.FirstOrDefault(u => u.Id == id);
+    }
+
 
     public void agregarProyecto(Proyecto proyecto)
     {

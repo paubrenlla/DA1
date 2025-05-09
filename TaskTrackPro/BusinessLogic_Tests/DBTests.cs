@@ -234,4 +234,30 @@ public class DBTests
         Assert.AreEqual(0, db.ListaRecursos.Count);
         Assert.IsFalse(db.ListaRecursos.Contains(recurso));
     }
+    
+    [TestMethod]
+    public void BuscarUsuarioPorId_DevuelveUsuarioCorrecto()
+    {
+        DB db = new DB();
+        Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", "123AAaa!!", new DateTime(2000, 1, 1));
+        Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", "456AAaa!!", new DateTime(1999, 2, 2));
+        db.agregarUsuario(u1);
+        db.agregarUsuario(u2);
+
+        Usuario resultado = db.buscarUsuarioPorId(u2.Id);
+
+        Assert.IsNotNull(resultado);
+        Assert.AreEqual(u2.Email, resultado.Email);
+    }
+    
+    [TestMethod]
+    public void BuscarUsuarioPorId_DevuelveNullSiNoExiste()
+    {
+        DB db = new DB();
+
+        Usuario resultado = db.buscarUsuarioPorId(999);
+
+        Assert.IsNull(resultado);
+    }
+
 }
