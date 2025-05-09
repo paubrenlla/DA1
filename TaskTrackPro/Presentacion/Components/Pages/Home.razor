@@ -1,22 +1,40 @@
 ﻿@page "/"
+@using BusinessLogic
 @using UserInterface.Data
 @inject SessionLogic SessionLogic
 @inject NavigationManager NavigationManager
+@inject DB BaseDeDatos
+
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
 
-@code{
+<p>@mensaje</p>
 
-    protected override async Task OnAfterRenderAsync(bool firsteRender)
+@code {
+    private string mensaje = "No hay usuario en sesión";
+    private bool yaRenderice = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var isUserActive = await SessionLogic.isUserActive();
-        if (!isUserActive)
+        if (!yaRenderice)
         {
-            NavigationManager.NavigateTo("/Login");
+            yaRenderice = true;
+
+            var isUserActive = await SessionLogic.isUserActive();
+            if (!isUserActive)
+            {
+                NavigationManager.NavigateTo("/Login");
+            }
+            else
+            {
+                var user = await SessionLogic.GetCurrentUser();
+                Console.WriteLine(user.Email);
+                mensaje = $"Sesión activa: {user.Email}";
+                StateHasChanged();
+            }
         }
     }
-
 }

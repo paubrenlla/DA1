@@ -66,7 +66,7 @@ public class DB
      public Usuario? buscarUsuarioPorCorreoYContraseña(string email, string contraseña)
     {
         return ListaUsuarios.FirstOrDefault(u =>
-            u.Email == email && u.Pwd == contraseña);
+            u.Email == email && u.Pwd == Usuario.EncriptarPassword(contraseña));
     }
 
     public void agregarProyecto(Proyecto proyecto)

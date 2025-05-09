@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace BusinessLogic;
@@ -7,6 +8,13 @@ public class Usuario
     public const int MINIMO_LARGO_CONTRASEÑA = 8;
     public const string CONTRASEÑA_DEFAULT = "1Contraseña!";
     private static int _contadorId = 1;
+
+    public Usuario()
+    {
+        // Necesario para la deserialización con System.Text.Json
+        // el JSON se deserialica en un objeto Usuario sin errores
+        // y luego las propiedades se asignan una por una usando los setters públicos
+    }
 
     public int Id { get; }
     private string _email;
@@ -57,7 +65,10 @@ public class Usuario
             _apellido = value;
         }
     }
-
+    
+    
+    [JsonIgnore] //Para que al deserializar el JSON no use este setter, así no valida
+                 // ni vuelve a encriptar una constraseña ya encriptada
     public string Pwd
     {
         get => _pwd;
@@ -66,6 +77,14 @@ public class Usuario
             ValidarContraseña(value);
             _pwd = EncriptarPassword(value);
         }
+    }
+    
+    // Agregamos este getter y setter solo para serialización
+    [JsonPropertyName("Pwd")]
+    public string PwdSerializado
+    {
+        get => _pwd;
+        set => _pwd = value;
     }
 
     public DateTime FechaNacimiento

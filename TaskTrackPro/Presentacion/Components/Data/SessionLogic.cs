@@ -16,11 +16,10 @@ public class SessionLogic
         _db = db;
     }
 
-    public async Task Login(string email, string password)
+    public async Task Login(string email, string contraseña)
     {
-        string passwordEncriptada = Usuario.EncriptarPassword(password);
 
-        Usuario? user = _db.buscarUsuarioPorCorreoYContraseña(email, passwordEncriptada);
+        Usuario? user = _db.buscarUsuarioPorCorreoYContraseña(email, contraseña);
 
         if (user is null)
         {

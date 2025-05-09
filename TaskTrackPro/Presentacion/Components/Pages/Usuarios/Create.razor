@@ -59,6 +59,7 @@
             Usuario usuarioNuevo = new Usuario(
                 email, nombre, apellido, contraseña, fecha
             );
+            Console.WriteLine(usuarioNuevo.Pwd);
 
             DataBase.agregarUsuario(usuarioNuevo);
             NavigationManager.NavigateTo("/usuarios");
