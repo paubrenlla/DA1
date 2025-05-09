@@ -49,6 +49,24 @@ public class UsuarioTests
 
         Assert.AreEqual(u2.Id, 1);
     }
+
+    [TestMethod]
+    public void ModificarAtributosDeUnUsuarioExistente()
+    {
+        Usuario u = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        string nuevoMail="example@email.com";
+        string nuevoNombre="Pepe";
+        string nuevoApellido="Rodriguez";
+        string nuevoPwd="EsValida1!";
+        DateTime nuevoFechaNacimiento = new DateTime(2000, 01, 01);
+        u.Modificar(nuevoMail,nuevoNombre,nuevoApellido,nuevoPwd,nuevoFechaNacimiento);
+        
+        Assert.AreEqual(nuevoMail, u.Email);
+        Assert.AreEqual(nuevoNombre, u.Nombre);
+        Assert.AreEqual(nuevoApellido, u.Apellido);
+        Assert.AreEqual(Usuario.EncriptarPassword(nuevoPwd), u.Pwd);
+        Assert.AreEqual(nuevoFechaNacimiento, u.FechaNacimiento);
+    }
     
 
     [TestMethod]
