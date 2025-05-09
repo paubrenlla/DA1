@@ -1,0 +1,49 @@
+﻿using Blazored.LocalStorage;
+using BusinessLogic;
+
+namespace UserInterface.Data;
+
+public class SessionLogic
+{
+    private const string CURRENT_USER = "current_user";
+
+    private readonly ILocalStorageService _localStorage;
+    private readonly DB _db;
+
+    public SessionLogic(ILocalStorageService localStorage, DB db)
+    {
+        _localStorage = localStorage;
+        _db = db;
+    }
+
+    public async Task Login(string email, string password)
+    {
+        string passwordEncriptada = Usuario.EncriptarPassword(password);
+
+        Usuario? user = _db.ListaUsuarios.FirstOrDefault(u =>
+            u.Email == email && u.Pwd == passwordEncriptada);
+
+        if (user is null)
+        {
+            throw new Exception("Credenciales inválidas");
+        }
+
+        await _localStorage.SetItemAsync(CURRENT_USER, user);
+    }
+
+    public async Task<bool> isUserActive()
+    {
+        Usuario? user = await _localStorage.GetItemAsync<Usuario>(CURRENT_USER);
+        return user is not null;
+    }
+
+    public async Task LogOut()
+    {
+        await _localStorage.RemoveItemAsync(CURRENT_USER);
+    }
+
+    public async Task<Usuario?> GetCurrentUser()
+    {
+        return await _localStorage.GetItemAsync<Usuario>(CURRENT_USER);
+    }
+}

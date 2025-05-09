@@ -1,4 +1,4 @@
-﻿@page "/usuarios/editar/"
+﻿@page "/usuarios/{id:int}/editar/"
 
 <PageTitle>Editar Usuario</PageTitle>
 
@@ -6,7 +6,7 @@
 @inject DB DataBase
 @inject NavigationManager NavigationManager
 
-<h1>Crear Usuario</h1>
+<h1>Editar Usuario</h1>
 
 @if (!string.IsNullOrEmpty(mensajeError))
 {
@@ -16,52 +16,61 @@
 <form onsubmit="return false">
     <div class="form-group">
         <label for="email">Email</label>
-        <input type="text" class="form-control" id="email" @bind="email">
+        <input type="text" class="form-control" id="email" @bind="emailNuevo">
     </div>
 
     <div class="form-group">
         <label for="nombre">Nombre</label>
-        <input type="text" class="form-control" id="nombre" @bind="nombre">
+        <input type="text" class="form-control" id="nombre" @bind="nombreNuevo">
     </div>
 
     <div class="form-group">
         <label for="apellido">Apellido</label>
-        <input type="text" class="form-control" id="apellido" @bind="apellido">
+        <input type="text" class="form-control" id="apellido" @bind="apellidoNuevo">
     </div>
 
     <div class="form-group">
         <label for="contraseña">Contraseña</label>
-        <input type="password" class="form-control" id="contraseña" @bind="contraseña">
+        <input type="password" class="form-control" id="contraseña" @bind="contraseñaNuevo">
     </div>
     
     <div class="form-group">
         <label for="fecha">Fecha de Nacimiento</label>
-        <input type="date" class="form-control" id="fecha" @bind="fecha" />
+        <input type="date" class="form-control" id="fecha" @bind="fechaNueva" />
     </div>
 
-    <input type="submit" class="btn btn-primary" value="Agregar" @onclick="Crear_Usuario">
+    <input type="submit" class="btn btn-primary" value="Guardar cambios" @onclick="GuardarCambios">
 </form>
 
 @code {
-    private string email;
-    private string nombre;
-    private string apellido;
-    private string contraseña; 
-    private DateTime fecha;
+    [Parameter]
+    public int id { get; set; }
+
+    private string emailNuevo;
+    private string nombreNuevo;
+    private string apellidoNuevo;
+    private string contraseñaNuevo; 
+    private DateTime fechaNueva;
     private string mensajeError;
 
-    private void Crear_Usuario()
-    {
-        mensajeError = "";
+    Usuario usuarioACambiar;
 
+    protected override void OnInitialized()
+    {
         try
         {
-            Usuario usuarioNuevo = new Usuario(
-                email, nombre, apellido, contraseña, fecha
-            );
+            usuarioACambiar = DataBase.buscarUsuarioPorId(id);
+            if (usuarioACambiar == null)
+            {
+                mensajeError = $"Usuario con ID {id} no encontrado.";
+                return;
+            }
 
-            DataBase.agregarUsuario(usuarioNuevo);
-            NavigationManager.NavigateTo("/usuarios");
+            emailNuevo = usuarioACambiar.Email;
+            nombreNuevo = usuarioACambiar.Nombre;
+            apellidoNuevo = usuarioACambiar.Apellido;
+            contraseñaNuevo = usuarioACambiar.Pwd;
+            fechaNueva = usuarioACambiar.FechaNacimiento;
         }
         catch (Exception ex)
         {
@@ -69,4 +78,16 @@
         }
     }
 
+    private void GuardarCambios()
+    {
+        try
+        {
+            usuarioACambiar.Modificar(emailNuevo,nombreNuevo,apellidoNuevo,contraseñaNuevo,fechaNueva);
+            NavigationManager.NavigateTo("/usuarios");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
 }

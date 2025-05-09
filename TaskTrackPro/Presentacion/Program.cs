@@ -1,5 +1,7 @@
+using Blazored.LocalStorage;
 using BusinessLogic;
 using Presentacion.Components;
+using UserInterface.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<DB>();
+builder.Services.AddScoped<SessionLogic>();
+
 
 
 var app = builder.Build();
