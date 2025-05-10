@@ -1,0 +1,49 @@
+﻿@page "/recursos"
+@using BusinessLogic
+
+@inject DB BaseDeDatos
+
+<h1>
+    Recursos
+    <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="/recursos/crear">Crear +</a>
+</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>En uso</th>
+            <th>Se comparten</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var recurso in listaDeRecursos)
+        {
+            <tr>
+                <td>@recurso.Nombre</td>
+                <td>@recurso.Tipo</td>
+                <td>@recurso.Descripcion</td>
+                <td>@recurso.CantidadDelRecurso.ToString()</td>
+                <td>@recurso.CantidadEnUso.ToString()</td>
+                <td>@recurso.SePuedeCompartir</td>
+                <td>
+                    <a class="btn btn-success btn-sm" href="recursos/@recurso.Id/editar/">Editar</a>
+                    <button class="btn btn-danger btn-sm">Eliminar</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<Recurso>? listaDeRecursos = new List<Recurso>();
+
+    protected override void OnInitialized()
+    {
+        listaDeRecursos = BaseDeDatos.ListaRecursos;
+    }
+}
