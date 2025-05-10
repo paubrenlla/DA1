@@ -11,7 +11,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<DB>();
+builder.Services.AddSingleton<DB>(_ => new DB(precargarDatos: true));
 builder.Services.AddScoped<SessionLogic>();
 
 
