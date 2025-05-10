@@ -73,6 +73,10 @@ public class DB
     {
         return ListaUsuarios.FirstOrDefault(u =>
             u.Email == email && u.Pwd == Usuario.EncriptarPassword(contraseña));
+    } 
+    public Usuario? buscarUsuarioPorCorreo(string email)
+    {
+        return ListaUsuarios.FirstOrDefault(u => u.Email == email);
     }
 
     public void agregarProyecto(Proyecto proyecto)
