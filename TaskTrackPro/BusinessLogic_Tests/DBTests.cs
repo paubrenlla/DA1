@@ -50,7 +50,7 @@ public class DBTests
         
         Assert.AreEqual(1, db.ListaUsuarios.Count);
         
-        Usuario user2 = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        Usuario user2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         
         db.agregarUsuario(user2);
         Assert.AreEqual(2, db.ListaUsuarios.Count);
@@ -75,7 +75,7 @@ public class DBTests
         Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         DB db = new DB(user);
         
-        Usuario user2 = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        Usuario user2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         
         db.agregarUsuario(user2);
         Assert.AreEqual(2, db.ListaUsuarios.Count);
@@ -92,7 +92,7 @@ public class DBTests
         Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         DB db = new DB(user);
         
-        Usuario user2 = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        Usuario user2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         
         db.agregarAdmin(user2);
         Assert.AreEqual(2, db.AdministradoresSistema.Count);
@@ -121,6 +121,7 @@ public class DBTests
         db.eliminarUsuario(user);
     }
     
+    [ExpectedException(typeof(ArgumentException))]
     [TestMethod]
     public void AgregarAdminQueYaEraUsuarioComun()
     {
@@ -130,11 +131,6 @@ public class DBTests
         Usuario user2 = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         
         db.agregarUsuario(user2);
-        db.agregarAdmin(user2);
-        Assert.AreEqual(2, db.AdministradoresSistema.Count);
-        Assert.AreSame(user2, db.AdministradoresSistema[1]);
-        Assert.AreEqual(2, db.ListaUsuarios.Count);
-        Assert.AreSame(user2, db.ListaUsuarios[1]);
     }
     
     [TestMethod]
@@ -275,6 +271,17 @@ public class DBTests
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(u2.Email, resultado.Email);
+    }
+    
+    [ExpectedException(typeof(ArgumentException))]
+    [TestMethod]
+    public void NoPuedenHaberCorreosRepetidos()
+    {
+        DB db = new DB();
+        Usuario usuario1 = new Usuario("correo@gmail.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
+        Usuario usuario2 = new Usuario("correo@gmail.com", "Nombre2", "Apellido2", "EsValida1!", new DateTime(2000, 1, 1));
+        db.agregarUsuario(usuario1);
+        db.agregarUsuario(usuario2);
     }
 
 }

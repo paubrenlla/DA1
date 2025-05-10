@@ -38,11 +38,17 @@ public class DB
     
     public void agregarUsuario(Usuario user)
     {        
-        if (ListaUsuarios.Contains(user))
+        if (ListaUsuarios.Contains(user) || ExisteUsuarioConCorreo(user))
             throw new ArgumentException("Usuario ya existe");
         ListaUsuarios.Add(user);
     }
-    
+
+    private bool ExisteUsuarioConCorreo(Usuario user)
+    {
+        return ListaUsuarios.Any(u => u.Email == user.Email);
+    }
+
+
     public void agregarAdmin(Usuario user)
     {
         if (!ListaUsuarios.Contains(user))
