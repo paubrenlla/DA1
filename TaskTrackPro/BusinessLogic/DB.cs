@@ -108,4 +108,9 @@ public class DB
     {
         return ListaProyectos.FirstOrDefault(p => p.Id == id);
     }
+  
+    public Recurso? buscarRecursoPorId(int id)
+    {
+        return ListaRecursos.FirstOrDefault(r => r.Id == id);
+    }
 }

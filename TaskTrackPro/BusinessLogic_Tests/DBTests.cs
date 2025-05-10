@@ -317,4 +317,28 @@ public class DBTests
         Assert.AreEqual(p2.Nombre, resultado.Nombre);
     }
 
+    [TestMethod]
+    public void BuscarRecursoPorIdDevuelveUsuarioCorrecto()
+    {
+        DB db = new DB();
+        Recurso r1 = new Recurso("Auto", "Rojo", "Ferrari", false, 1);
+        Recurso r2 = new Recurso("Computadora", "Equipos", "Lenovo", true, 5);
+        db.agregarRecurso(r1);
+        db.agregarRecurso(r2);
+
+        Recurso resultado = db.buscarRecursoPorId(r2.Id);
+
+        Assert.IsNotNull(resultado);
+        Assert.AreEqual(r2.Nombre, resultado.Nombre);
+    }
+    
+    [TestMethod]
+    public void BuscarRecursoPorIdDevuelveNullSiNoExiste()
+    {
+        DB db = new DB();
+
+        Recurso resultado = db.buscarRecursoPorId(999);
+
+        Assert.IsNull(resultado);
+    }
 }
