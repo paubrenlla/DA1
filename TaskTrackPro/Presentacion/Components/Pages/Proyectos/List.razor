@@ -1,6 +1,46 @@
-﻿@page "/List"
-<h3>List</h3>
+﻿@page "/proyectos"
+@using BusinessLogic
+
+@inject DB BaseDeDatos
+
+<h1>
+    Proyectos
+    <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="/proyectos/crear">Crear +</a>
+</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Fecha de Inicio</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var proyecto in listaDeProyectos)
+    {
+        <tr>
+            <td>@proyecto.Nombre</td>
+            <td>@proyecto.Descripcion</td>
+            <td>@proyecto.FechaInicio.ToShortDateString()</td>
+            <td>
+                <a class="btn btn-success btn-sm">Ver Tareas</a>
+                <a class="btn btn-success btn-sm">Agregar Tarea</a>
+                <a class="btn btn-success btn-sm">Ver Miembros</a>
+                <a class="btn btn-success btn-sm">Ruta Critica</a>
+                
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
 
 @code {
-    
+    private List<Proyecto>? listaDeProyectos = new List<Proyecto>();
+
+    protected override void OnInitialized()
+    {
+        listaDeProyectos = BaseDeDatos.ListaProyectos;
+    }
 }
