@@ -68,4 +68,38 @@ public class Recurso
     {
         ProyectoAlQuePertenece = null;
     }
+
+    public void Modificar(string nombre, string tipo, string descripcion, int cantidad, bool compartir)
+    {
+        if (string.IsNullOrWhiteSpace(nombre))
+        {
+            throw new ArgumentNullException(nameof(nombre), "El nombre no puede estar vacío.");
+        }
+        
+        if (string.IsNullOrWhiteSpace(tipo))
+        {
+            throw new ArgumentNullException(nameof(tipo), "El tipo no puede estar vacío.");
+        }
+
+        if (string.IsNullOrWhiteSpace(descripcion))
+        {
+            throw new ArgumentNullException(nameof(descripcion), "La descripcion no puede estar vacío.");
+        }
+
+        if (cantidad <= 0)
+        {
+            throw new ArgumentException("La cantidad debe ser mayor que cero.");
+        }
+
+        if (cantidad < CantidadEnUso)
+        {
+            throw new ArgumentException("La nueva cantidad no puede ser menor que la cantidad en uso.");
+        }
+        
+        Nombre = nombre;
+        Tipo = tipo;
+        Descripcion = descripcion;
+        CantidadDelRecurso = cantidad;
+        SePuedeCompartir = compartir;
+    }
 }

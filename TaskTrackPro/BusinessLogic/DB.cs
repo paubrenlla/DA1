@@ -99,5 +99,8 @@ public class DB
         ListaRecursos.Remove(recurso);
     }
 
-  
+    public Recurso? buscarRecursoPorId(int id)
+    {
+        return ListaRecursos.FirstOrDefault(r => r.Id == id);
+    }
 }
