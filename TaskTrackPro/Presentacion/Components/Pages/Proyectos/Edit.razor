@@ -3,10 +3,12 @@
 <PageTitle>Editar Proyecto</PageTitle>
 
 @using BusinessLogic
+@using UserInterface.Data
 @inject DB DataBase
 @inject NavigationManager NavigationManager
+@inject SessionLogic SessionLogic
 
-<h1>Editar Proyecto : @nombre</h1>
+<h1>Editar Proyecto: @nombre</h1>
 
 @if (!string.IsNullOrEmpty(mensajeError))
 {
@@ -23,7 +25,7 @@
         <label for="fecha">Fecha De Inicio</label>
         <input type="date" class="form-control" id="fecha" @bind="fechaNueva">
     </div>
-    
+
     <input type="submit" class="btn btn-primary" value="Guardar cambios" @onclick="GuardarCambios">
 </form>
 
@@ -36,25 +38,42 @@
     private DateTime fechaNueva;
     private string mensajeError;
 
-    Proyecto proyectoACambiar;
+    private Proyecto proyectoACambiar;
 
-    protected override void OnInitialized()
+    private bool yaVerifiqueSesion = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        try
+        if (!yaVerifiqueSesion)
         {
-            proyectoACambiar = DataBase.buscarProyectoPorId(id);
-            if (proyectoACambiar == null)
+            yaVerifiqueSesion = true;
+
+            var activo = await SessionLogic.isUserActive();
+            if (!activo)
             {
-                mensajeError = $"Proyecto no encontrado.";
+                NavigationManager.NavigateTo("/Login");
                 return;
             }
 
-            descripcionNueva = proyectoACambiar.Descripcion;
-            fechaNueva = proyectoACambiar.FechaInicio;
-        }
-        catch (Exception ex)
-        {
-            mensajeError = ex.Message;
+            try
+            {
+                proyectoACambiar = DataBase.buscarProyectoPorId(id);
+                if (proyectoACambiar == null)
+                {
+                    mensajeError = "Proyecto no encontrado.";
+                    return;
+                }
+                
+                nombre = proyectoACambiar.Nombre; // <-- Asigna el nombre
+                descripcionNueva = proyectoACambiar.Descripcion;
+                fechaNueva = proyectoACambiar.FechaInicio;
+            }
+            catch (Exception ex)
+            {
+                mensajeError = ex.Message;
+            }
+
+            StateHasChanged();
         }
     }
 
@@ -62,7 +81,7 @@
     {
         try
         {
-            proyectoACambiar.Modificar(descripcionNueva,fechaNueva);
+            proyectoACambiar.Modificar(descripcionNueva, fechaNueva);
             NavigationManager.NavigateTo("/proyectos");
         }
         catch (Exception ex)

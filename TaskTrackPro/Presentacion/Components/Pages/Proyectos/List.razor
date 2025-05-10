@@ -1,6 +1,8 @@
 ﻿@page "/proyectos"
 @using BusinessLogic
-
+@using UserInterface.Data
+@inject SessionLogic SessionLogic
+@inject NavigationManager NavigationManager
 @inject DB BaseDeDatos
 
 <h1>
@@ -41,8 +43,17 @@
 @code {
     private List<Proyecto>? listaDeProyectos = new List<Proyecto>();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        var isUserActive = await SessionLogic.isUserActive();
+        if (!isUserActive)
+        {
+            NavigationManager.NavigateTo("/Login");
+        }
+        else
+        {
+            
         listaDeProyectos = BaseDeDatos.ListaProyectos;
+        }
     }
 }

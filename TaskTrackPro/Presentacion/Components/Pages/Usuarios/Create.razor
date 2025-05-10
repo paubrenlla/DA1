@@ -3,8 +3,10 @@
 <PageTitle>Crear Usuario</PageTitle>
 
 @using BusinessLogic
+@using UserInterface.Data
 @inject DB DataBase
 @inject NavigationManager NavigationManager
+@inject SessionLogic SessionLogic
 
 <h1>Crear Usuario</h1>
 
@@ -33,7 +35,7 @@
         <label for="contraseña">Contraseña</label>
         <input type="password" class="form-control" id="contraseña" @bind="contraseña">
     </div>
-    
+
     <div class="form-group">
         <label for="fecha">Fecha de Nacimiento</label>
         <input type="date" class="form-control" id="fecha" @bind="fecha" />
@@ -46,9 +48,28 @@
     private string email;
     private string nombre;
     private string apellido;
-    private string contraseña; 
+    private string contraseña;
     private DateTime fecha;
     private string mensajeError;
+
+    private bool yaVerifiqueSesion = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!yaVerifiqueSesion)
+        {
+            yaVerifiqueSesion = true;
+
+            var activo = await SessionLogic.isUserActive();
+            if (!activo)
+            {
+                NavigationManager.NavigateTo("/Login");
+                return;
+            }
+
+            StateHasChanged();
+        }
+    }
 
     private void Crear_Usuario()
     {
@@ -59,7 +80,6 @@
             Usuario usuarioNuevo = new Usuario(
                 email, nombre, apellido, contraseña, fecha
             );
-            Console.WriteLine(usuarioNuevo.Pwd);
 
             DataBase.agregarUsuario(usuarioNuevo);
             NavigationManager.NavigateTo("/usuarios");
@@ -69,5 +89,4 @@
             mensajeError = ex.Message;
         }
     }
-
 }

@@ -3,8 +3,10 @@
 <PageTitle>Editar Usuario</PageTitle>
 
 @using BusinessLogic
+@using UserInterface.Data
 @inject DB DataBase
 @inject NavigationManager NavigationManager
+@inject SessionLogic SessionLogic
 
 <h1>Editar Usuario</h1>
 
@@ -55,29 +57,43 @@
 
     Usuario usuarioACambiar;
 
-    protected override void OnInitialized()
-    {
-        try
+    @code {
+        private bool yaVerifiqueSesion = false;
+        private bool redireccionado = false;
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            usuarioACambiar = DataBase.buscarUsuarioPorId(id);
-            if (usuarioACambiar == null)
+            if (!yaVerifiqueSesion)
             {
-                mensajeError = $"Usuario no encontrado.";
-                return;
+                yaVerifiqueSesion = true;
+
+                var activo = await SessionLogic.isUserActive();
+                if (!activo)
+                {
+                    redireccionado = true;
+                    NavigationManager.NavigateTo("/Login");
+                    return;
+                }
+
+                usuarioACambiar = DataBase.buscarUsuarioPorId(id);
+                if (usuarioACambiar != null)
+                {
+                    emailNuevo = usuarioACambiar.Email;
+                    nombreNuevo = usuarioACambiar.Nombre;
+                    apellidoNuevo = usuarioACambiar.Apellido;
+                    contraseñaNuevo = usuarioACambiar.Pwd;
+                    fechaNueva = usuarioACambiar.FechaNacimiento;
+                }
+                else
+                {
+                    mensajeError = "Usuario no encontrado.";
+                }
+
+                StateHasChanged();
             }
+        }
 
-            emailNuevo = usuarioACambiar.Email;
-            nombreNuevo = usuarioACambiar.Nombre;
-            apellidoNuevo = usuarioACambiar.Apellido;
-            contraseñaNuevo = usuarioACambiar.Pwd;
-            fechaNueva = usuarioACambiar.FechaNacimiento;
-        }
-        catch (Exception ex)
-        {
-            mensajeError = ex.Message;
-        }
     }
-
     private void GuardarCambios()
     {
         try

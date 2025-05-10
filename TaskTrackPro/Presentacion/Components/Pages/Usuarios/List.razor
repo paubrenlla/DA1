@@ -1,45 +1,63 @@
 ﻿@page "/usuarios"
 @using BusinessLogic
+@using UserInterface.Data
 
 @inject DB BaseDeDatos
+@inject SessionLogic SessionLogic
+@inject NavigationManager NavigationManager
 
 <h1>
     Usuarios
     <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="/usuarios/crear">Crear +</a>
 </h1>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>Email</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Fecha de Nacimiento</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var usuario in listaDeUsuarios)
-    {
+@if (listaDeUsuarios is not null)
+{
+    <table class="table">
+        <thead>
         <tr>
-            <td>@usuario.Email</td>
-            <td>@usuario.Nombre</td>
-            <td>@usuario.Apellido</td>
-            <td>@usuario.FechaNacimiento.ToShortDateString()</td>
-            <td>
-                <a class="btn btn-success btn-sm" href="usuarios/@usuario.Id/editar/">Editar</a>
-                <button class="btn btn-danger btn-sm">Eliminar</button>
-            </td>
+            <th>Email</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Fecha de Nacimiento</th>
+            <th>Acciones</th>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (var usuario in listaDeUsuarios)
+        {
+            <tr>
+                <td>@usuario.Email</td>
+                <td>@usuario.Nombre</td>
+                <td>@usuario.Apellido</td>
+                <td>@usuario.FechaNacimiento.ToShortDateString()</td>
+                <td>
+                    <a class="btn btn-success btn-sm" href="usuarios/@usuario.Id/editar/">Editar</a>
+                    <button class="btn btn-danger btn-sm">Eliminar</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Cargando usuarios...</p>
+}
 
 @code {
-    private List<Usuario>? listaDeUsuarios = new List<Usuario>();
+    private List<Usuario>? listaDeUsuarios;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        listaDeUsuarios = BaseDeDatos.ListaUsuarios;
+        var isUserActive = await SessionLogic.isUserActive();
+        if (!isUserActive)
+        {
+            NavigationManager.NavigateTo("/Login");
+        }
+        else
+        {
+            listaDeUsuarios = BaseDeDatos.ListaUsuarios;
+        }
     }
 }
