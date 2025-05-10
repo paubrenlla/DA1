@@ -13,7 +13,7 @@ public class Proyecto
     
     public List<Recurso> RecursosAsociados { get; set; }
     
-    
+    private readonly List<Usuario> _admins = new List<Usuario>();
 
     public Proyecto(string nombre, string descripcion, DateTime fechaInicio)
     {
@@ -191,6 +191,39 @@ public class Proyecto
     }
 
 
-
-  
+    public void AsignarUsuarioATarea(Usuario usuario, Tarea tarea)
+    {
+        if (!Miembros.Contains(usuario))
+            throw new ArgumentException("El usuario no pertenece al proyecto");
+    
+        if (!TareasAsociadas.Contains(tarea))
+            throw new ArgumentException("La tarea no pertenece al proyecto");
+    
+        if (tarea.UsuariosAsignados.Contains(usuario))
+            throw new ArgumentException("El usuario ya está asignado a esta tarea");
+    
+        tarea.AgregarUsuario(usuario);
+    }
+    
+    public void AsignarAdmin(Usuario usuario)
+    {
+        if (!Miembros.Contains(usuario))
+            throw new ArgumentException("El usuario no es miembro del proyecto.");
+    
+        if (!_admins.Contains(usuario)) 
+            _admins.Add(usuario);
+    }
+    
+    public bool EsAdmin(Usuario usuario)
+    {
+        return Miembros.Contains(usuario) && _admins.Contains(usuario);
+    }
+    
+    public void RemoverAdmin(Usuario usuario)
+    {
+        if (!Miembros.Contains(usuario))
+            throw new ArgumentException("El usuario no es miembro del proyecto.");
+    
+        _admins.Remove(usuario);
+    }
 }

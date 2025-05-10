@@ -15,6 +15,7 @@ public class Tarea
     private List<Tarea> _tareasDependencia = new List<Tarea>();
     private List<Tarea> _tareasSucesoras = new List<Tarea>();
     private List<RecursoNecesario> _recursos =  new List<RecursoNecesario>();
+    private List<Usuario> _usuariosAsignados  = new List<Usuario>();
 
     private TimeSpan _holgura;
     
@@ -24,7 +25,7 @@ public class Tarea
     public DateTime EarlyFinish { get; set; }
     public DateTime LateFinish { get; set; }
 
-
+public IReadOnlyList<Usuario> UsuariosAsignados => _usuariosAsignados.AsReadOnly();
     public IReadOnlyList<Tarea> TareasDependencia => _tareasDependencia.AsReadOnly();
     public IReadOnlyList<Tarea> TareasSucesoras => _tareasSucesoras.AsReadOnly();
     public IReadOnlyList<RecursoNecesario> Recursos => _recursos.AsReadOnly();
@@ -208,5 +209,14 @@ public class Tarea
             tarea.ActualizarEstado();
         }
     }
+    
+    public void AgregarUsuario(Usuario usuario)
+    {
+        if (usuario == null)
+            throw new ArgumentNullException(nameof(usuario));
+        _usuariosAsignados.Add(usuario);
+    }
+    
+    
 }
 

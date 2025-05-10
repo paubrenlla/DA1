@@ -141,7 +141,7 @@ public class Usuario
         var passwordBytes = System.Text.Encoding.UTF8.GetBytes(passwordTextoPlano);
         return System.Convert.ToBase64String(passwordBytes);
     }
-    
+
     public void Modificar(string email, string nombre, string apellido, string contraseña, DateTime fechaNacimiento)
     {
         Email = email;

@@ -373,8 +373,78 @@ public class ProyectoTests
         CollectionAssert.Contains(rutaCritica, t4);
         
     }
+    [TestMethod] 
+    public void AsignarUsuarioATarea_UsuarioMiembro_TareaEnProyecto_AsignaCorrectamente()
+    {
 
+        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        var usuario = new Usuario("test@test.com", "Test", "Usuario", "Contra*seña123", DateTime.Now);
+        var tarea = new Tarea("Tarea Test", "Descripción", DateTime.Now, TimeSpan.FromHours(5), false);
+        proyecto.agregarMiembro(usuario);
+        proyecto.agregarTarea(tarea);
+        proyecto.AsignarUsuarioATarea(usuario, tarea);
+        CollectionAssert.Contains(tarea.UsuariosAsignados.ToList(), usuario);
+        
+    }
+    
+    [TestMethod]
+    public void AsignarUsuarioATarea_UsuarioNoMiembro_LanzaExcepcion()
+    {
+        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        var usuario = new Usuario("test@test.com", "Test", "Usuario", "Contr*aseña123", DateTime.Now);
+        var tarea = new Tarea("Tarea Test", "Descripción", DateTime.Now, TimeSpan.FromHours(5), false);
+    
+        proyecto.agregarTarea(tarea);
 
+        Assert.ThrowsException<ArgumentException>(() => proyecto.AsignarUsuarioATarea(usuario, tarea));
+    }
+
+    [TestMethod]
+    public void AsignarUsuarioATarea_UsuarioYaAsignado_LanzaExcepcion()
+    {
+        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        var usuario = new Usuario("test@test.com", "Test", "Usuario", "Contr*aseña123", DateTime.Now);
+        var tarea = new Tarea("Tarea Test", "Descripción", DateTime.Now, TimeSpan.FromHours(5), false);
+    
+        proyecto.agregarMiembro(usuario);
+        proyecto.agregarTarea(tarea);
+        proyecto.AsignarUsuarioATarea(usuario, tarea);
+
+        Assert.ThrowsException<ArgumentException>(() => proyecto.AsignarUsuarioATarea(usuario, tarea));
+    }
+
+    [TestMethod]
+    public void AsignarAdmin_UsuarioMiembro_ElUsuarioSeConvierteEnAdmin()
+    {
+
+        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        var usuario = new Usuario("admin@test.com", "Admin", "User", "paASD*ss1", DateTime.Now);
+        proyecto.agregarMiembro(usuario);
+        proyecto.AsignarAdmin(usuario); 
+        Assert.IsTrue(proyecto.EsAdmin(usuario)); 
+    }
+    
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AsignarAdmin_UsuarioNoMiembro_LanzaExcepcion()
+    {
+        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        var usuarioNoMiembro = new Usuario("no@miembro.com", "No", "Miembro", "paASD*ss1", DateTime.Now);
+    
+        proyecto.AsignarAdmin(usuarioNoMiembro); 
+    }
+    
+    [TestMethod]
+    public void RemoverAdmin_UsuarioAdmin_DejaDeSerAdmin()
+    {
+        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        var usuario = new Usuario("admin@test.com", "Admin", "User", "paASD*ss1", DateTime.Now);
+    
+        proyecto.agregarMiembro(usuario);
+        proyecto.AsignarAdmin(usuario);
+        proyecto.RemoverAdmin(usuario); 
+        Assert.IsFalse(proyecto.EsAdmin(usuario));
+    }
 }
 
 
