@@ -195,4 +195,55 @@ public class RecursoTests
         Assert.IsNull(recurso.ProyectoAlQuePertenece);
     }
     
+    [TestMethod]
+    public void Modificar_RecursoActualizaTodosLosCamposCorrectamente()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", true, 10);
+
+        recurso.Modificar("Notebook", "Tecnología", "Notebook Dell", 7, false);
+
+        Assert.AreEqual("Notebook", recurso.Nombre);
+        Assert.AreEqual("Tecnología", recurso.Tipo);
+        Assert.AreEqual("Notebook Dell", recurso.Descripcion);
+        Assert.IsFalse(recurso.SePuedeCompartir);
+        Assert.AreEqual(7, recurso.CantidadDelRecurso);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void Modificar_LanzaExcepcionSiNombreEsVacio()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", true, 10);
+
+        recurso.Modificar("", "Tecnología", "Notebook Dell", 7, false);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void Modificar_LanzaExcepcionSiTipoEsVacio()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", true, 10);
+
+        recurso.Modificar("Notebook", "", "Notebook Dell", 7, false);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void Modificar_LanzaExcepcionSiCantidadEsMenorOIgualACero()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", true, 10);
+
+        recurso.Modificar("Notebook", "Tecnología", "Notebook Dell", 0, false);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void Modificar_LanzaExcepcionSiCantidadEsMenorQueEnUso()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", true, 10);
+        recurso.CantidadEnUso = 6;
+
+        recurso.Modificar("Notebook", "Tecnología", "Notebook Dell", 5, false);
+    }
+
 }
