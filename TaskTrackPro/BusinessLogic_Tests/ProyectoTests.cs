@@ -414,36 +414,15 @@ public class ProyectoTests
     }
 
     [TestMethod]
-    public void AsignarAdmin_UsuarioMiembro_ElUsuarioSeConvierteEnAdmin()
+    public void AsignarAdminAlProyecto()
     {
 
         var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
         var usuario = new Usuario("admin@test.com", "Admin", "User", "paASD*ss1", DateTime.Now);
-        proyecto.agregarMiembro(usuario);
         proyecto.AsignarAdmin(usuario); 
-        Assert.IsTrue(proyecto.EsAdmin(usuario)); 
-    }
-    
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void AsignarAdmin_UsuarioNoMiembro_LanzaExcepcion()
-    {
-        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
-        var usuarioNoMiembro = new Usuario("no@miembro.com", "No", "Miembro", "paASD*ss1", DateTime.Now);
-    
-        proyecto.AsignarAdmin(usuarioNoMiembro); 
-    }
-    
-    [TestMethod]
-    public void RemoverAdmin_UsuarioAdmin_DejaDeSerAdmin()
-    {
-        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
-        var usuario = new Usuario("admin@test.com", "Admin", "User", "paASD*ss1", DateTime.Now);
-    
-        proyecto.agregarMiembro(usuario);
-        proyecto.AsignarAdmin(usuario);
-        proyecto.RemoverAdmin(usuario); 
-        Assert.IsFalse(proyecto.EsAdmin(usuario));
+        Assert.AreEqual("admin@test.com",usuario.Email);
+        Assert.IsTrue(proyecto.EsAdmin(usuario));
+        Assert.AreEqual(0, proyecto.Miembros.Count);
     }
 }
 

@@ -10,10 +10,10 @@ public class Proyecto
     public DateTime FechaInicio { get; set; }
     public List<Tarea> TareasAsociadas { get; set; }
     public List<Usuario> Miembros { get; set; }
+    public Usuario Admin { get; set; }
     
     public List<Recurso> RecursosAsociados { get; set; }
     
-    private readonly List<Usuario> _admins = new List<Usuario>();
 
     public Proyecto(string nombre, string descripcion, DateTime fechaInicio)
     {
@@ -207,23 +207,12 @@ public class Proyecto
     
     public void AsignarAdmin(Usuario usuario)
     {
-        if (!Miembros.Contains(usuario))
-            throw new ArgumentException("El usuario no es miembro del proyecto.");
-    
-        if (!_admins.Contains(usuario)) 
-            _admins.Add(usuario);
+        Admin = usuario;
     }
     
     public bool EsAdmin(Usuario usuario)
     {
-        return Miembros.Contains(usuario) && _admins.Contains(usuario);
+        return usuario.Equals(Admin);
     }
     
-    public void RemoverAdmin(Usuario usuario)
-    {
-        if (!Miembros.Contains(usuario))
-            throw new ArgumentException("El usuario no es miembro del proyecto.");
-    
-        _admins.Remove(usuario);
-    }
 }
