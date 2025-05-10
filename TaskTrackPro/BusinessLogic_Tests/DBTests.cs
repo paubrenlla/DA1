@@ -17,6 +17,18 @@ public class DBTests
     }
     
     [TestMethod]
+    public void ConstructorConDatosPrecargados()
+    {
+        DB db = new DB(true);
+        
+        Assert.IsFalse(0 == db.AdministradoresSistema.Count);
+        Assert.IsFalse(0 == db.ListaUsuarios.Count);
+        Assert.IsFalse(0 == db.ListaProyectos.Count);
+        Assert.IsFalse(0 == db.ListaRecursos.Count);
+    }
+    
+    
+    [TestMethod]
     public void ConstructorConUsarioAdmin()
     {
         Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
@@ -222,4 +234,45 @@ public class DBTests
         Assert.AreEqual(0, db.ListaRecursos.Count);
         Assert.IsFalse(db.ListaRecursos.Contains(recurso));
     }
+    
+    [TestMethod]
+    public void BuscarUsuarioPorIdDevuelveUsuarioCorrecto()
+    {
+        DB db = new DB();
+        Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", "123AAaa!!", new DateTime(2000, 1, 1));
+        Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", "456AAaa!!", new DateTime(1999, 2, 2));
+        db.agregarUsuario(u1);
+        db.agregarUsuario(u2);
+
+        Usuario resultado = db.buscarUsuarioPorId(u2.Id);
+
+        Assert.IsNotNull(resultado);
+        Assert.AreEqual(u2.Email, resultado.Email);
+    }
+    
+    [TestMethod]
+    public void BuscarUsuarioPorIdDevuelveNullSiNoExiste()
+    {
+        DB db = new DB();
+
+        Usuario resultado = db.buscarUsuarioPorId(999);
+
+        Assert.IsNull(resultado);
+    }
+    
+    [TestMethod]
+    public void BuscarUsuarioPorCorreoYContraseña()
+    {
+        DB db = new DB();
+        Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", "123AAaa!!", new DateTime(2000, 1, 1));
+        Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", "456AAaa!!", new DateTime(1999, 2, 2));
+        db.agregarUsuario(u1);
+        db.agregarUsuario(u2);
+
+        Usuario resultado = db.buscarUsuarioPorCorreoYContraseña(u2.Email,u2.Pwd);
+
+        Assert.IsNotNull(resultado);
+        Assert.AreEqual(u2.Email, resultado.Email);
+    }
+
 }

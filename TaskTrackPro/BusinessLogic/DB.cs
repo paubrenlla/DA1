@@ -15,6 +15,21 @@ public class DB
         ListaUsuarios = new List<Usuario>();
     }
 
+    public DB(bool precargarDatos) : this()
+    {
+        Usuario usuario1 = new Usuario("mateomcelano@gmail.com", "Mateo", "Muñiz", "Contraseña1!", new DateTime(2002, 4, 24));
+        Usuario usuario2 = new Usuario("bruno@gmail.com", "Bruno", "Fernández", "ClaveSegura2#", new DateTime(1988, 9, 30));
+        ListaUsuarios.Add(usuario1);
+        AdministradoresSistema.Add(usuario1);
+        ListaUsuarios.Add(usuario2);
+        
+        Proyecto proyecto1 = new Proyecto("Proyecto prueba", "Este es un proyecto de prueba", DateTime.Now);
+        ListaProyectos.Add(proyecto1);
+
+        Recurso recurso1 = new Recurso("Auto", "Vehiculo","El auto de la empresa", false, 1, proyecto1);
+        ListaRecursos.Add(recurso1);
+    }
+    
     public DB(Usuario user) : this()
     {
         AdministradoresSistema.Add(user);
@@ -43,6 +58,16 @@ public class DB
             throw new ArgumentException("El usuario es administrador");
         ListaUsuarios.Remove(user);
     }
+    
+    public Usuario? buscarUsuarioPorId(int id)
+    {
+        return ListaUsuarios.FirstOrDefault(u => u.Id == id);
+    }
+     public Usuario? buscarUsuarioPorCorreoYContraseña(string email, string contraseña)
+    {
+        return ListaUsuarios.FirstOrDefault(u =>
+            u.Email == email && u.Pwd == Usuario.EncriptarPassword(contraseña));
+    }
 
     public void agregarProyecto(Proyecto proyecto)
     {
@@ -67,4 +92,6 @@ public class DB
     {
         ListaRecursos.Remove(recurso);
     }
+
+  
 }

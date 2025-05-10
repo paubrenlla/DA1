@@ -1,3 +1,4 @@
+using System.Reflection;
 using BusinessLogic;
 
 namespace BusinessLogic_Tests;
@@ -5,7 +6,14 @@ namespace BusinessLogic_Tests;
 [TestClass]
 public class UsuarioTests
 {
-    //Tests de Constructor
+    [TestInitialize]
+    public void Setup()
+    {
+        typeof(Usuario)
+            .GetField("_contadorId", BindingFlags.Static | BindingFlags.NonPublic)
+            ?.SetValue(null, 1);
+    }
+    
     [TestMethod]
     public void ConstructorConDatosCorrectos()
     {
@@ -17,6 +25,49 @@ public class UsuarioTests
         Assert.AreEqual(u.Pwd, "RXNWYWxpZGExIQ==");
         Assert.AreEqual(u.FechaNacimiento, new DateTime(2000, 01, 01));
     }
+    
+    [TestMethod]
+    public void UsuariosConIdCorrecta()
+    {
+        Usuario u = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        Usuario u2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+
+        Assert.AreEqual(u.Id, 1);
+        Assert.AreEqual(u2.Id, 2);
+    }
+    
+    [TestMethod]
+    public void UsuariosConIdCorrectaTrasCatchearExcpecion()
+    {
+        try
+        {
+            Usuario u = new Usuario("", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        }
+        catch(Exception ex){}
+        
+        Usuario u2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+
+        Assert.AreEqual(u2.Id, 1);
+    }
+
+    [TestMethod]
+    public void ModificarAtributosDeUnUsuarioExistente()
+    {
+        Usuario u = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        string nuevoMail="example@email.com";
+        string nuevoNombre="Pepe";
+        string nuevoApellido="Rodriguez";
+        string nuevoPwd="EsValida1!";
+        DateTime nuevoFechaNacimiento = new DateTime(2000, 01, 01);
+        u.Modificar(nuevoMail,nuevoNombre,nuevoApellido,nuevoPwd,nuevoFechaNacimiento);
+        
+        Assert.AreEqual(nuevoMail, u.Email);
+        Assert.AreEqual(nuevoNombre, u.Nombre);
+        Assert.AreEqual(nuevoApellido, u.Apellido);
+        Assert.AreEqual(Usuario.EncriptarPassword(nuevoPwd), u.Pwd);
+        Assert.AreEqual(nuevoFechaNacimiento, u.FechaNacimiento);
+    }
+    
 
     [TestMethod]
     public void ConstructorUsuarioEmailNulo_LanzaArgumentNullException()
