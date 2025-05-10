@@ -264,12 +264,14 @@ public class DBTests
     public void BuscarUsuarioPorCorreoYContraseña()
     {
         DB db = new DB();
+        string email2="b@b.com";
+        string contraseña2= "456AAaa!!";
         Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", "123AAaa!!", new DateTime(2000, 1, 1));
         Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", "456AAaa!!", new DateTime(1999, 2, 2));
         db.agregarUsuario(u1);
         db.agregarUsuario(u2);
 
-        Usuario resultado = db.buscarUsuarioPorCorreoYContraseña(u2.Email,u2.Pwd);
+        Usuario resultado = db.buscarUsuarioPorCorreoYContraseña(email2,contraseña2);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(u2.Email, resultado.Email);
