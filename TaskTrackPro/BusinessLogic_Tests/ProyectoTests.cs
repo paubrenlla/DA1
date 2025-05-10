@@ -417,12 +417,24 @@ public class ProyectoTests
     public void AsignarAdminAlProyecto()
     {
 
-        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
-        var usuario = new Usuario("admin@test.com", "Admin", "User", "paASD*ss1", DateTime.Now);
+        Proyecto proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        Usuario usuario = new Usuario("admin@test.com", "Admin", "User", "paASD*ss1", DateTime.Now);
         proyecto.AsignarAdmin(usuario); 
         Assert.AreEqual("admin@test.com",usuario.Email);
         Assert.IsTrue(proyecto.EsAdmin(usuario));
         Assert.AreEqual(0, proyecto.Miembros.Count);
+    }
+    
+    [TestMethod]
+    public void ModificarUnProyectoCorrectamente()
+    {
+        Proyecto proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        string descNueva = "Nueva DESCRIPCION";
+        DateTime fechaNueva = DateTime.Now.AddDays(3);
+        proyecto.Modificar(descNueva, fechaNueva);
+        
+        Assert.AreEqual(descNueva, proyecto.Descripcion);
+        Assert.AreEqual(fechaNueva, proyecto.FechaInicio);
     }
 }
 

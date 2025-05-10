@@ -215,4 +215,9 @@ public class Proyecto
         return usuario.Equals(Admin);
     }
     
+    public void Modificar(string descripcionNueva, DateTime fechaInicioNueva)
+    {
+       Descripcion = descripcionNueva;
+       FechaInicio = fechaInicioNueva;
+    }
 }

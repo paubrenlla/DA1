@@ -139,7 +139,6 @@ public class UsuarioTests
             new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", DateTime.Now.AddYears(1)));
     }
 
-    //Get y Set Nombre
     [TestMethod]
     public void NombreSetValorValido_ActualizaCorrectamente()
     {
@@ -156,7 +155,6 @@ public class UsuarioTests
         Assert.ThrowsException<ArgumentNullException>(() => u.Nombre = null);
     }
 
-    //Get y Set Apellido
     [TestMethod]
     public void Apellido_SetValorNulo_LanzaArgumentNullException()
     {
@@ -173,7 +171,6 @@ public class UsuarioTests
         Assert.AreEqual("NuevoApellido", u.Apellido);
     }
 
-    //Get y Set Fecha Nacimiento
     [TestMethod]
     public void FechaNacimientoSetValorValido_ActualizaCorrectamente()
     {
@@ -189,7 +186,6 @@ public class UsuarioTests
         Assert.ThrowsException<ArgumentException>(() => u.FechaNacimiento = DateTime.Now.AddYears(1));
     }
 
-    //Get y Set Email
     [TestMethod]
     public void EmailSetValorValido_ActualizaCorrectamente()
     {
@@ -206,7 +202,6 @@ public class UsuarioTests
         Assert.ThrowsException<ArgumentNullException>(() => u.Email = null);
     }
 
-    //Get y Set Contraseña
     [TestMethod]
     public void PwdSetValorValido_ActualizaCorrectamente()
     {
@@ -223,7 +218,6 @@ public class UsuarioTests
         Assert.ThrowsException<ArgumentNullException>(() => u.Pwd = null);
     }
 
-    //Validar contraseña
     [TestMethod]
     public void ValidarContraseñaValorNulo_LanzaArgumentNullException()
     {
@@ -278,7 +272,6 @@ public class UsuarioTests
         Usuario.ValidarContraseña("EsValida1!"); 
     }
     
-    //Validar email
     [TestMethod]
     public void ValidarEmailEmailValido_NoLanzaExcepcion()
     {
