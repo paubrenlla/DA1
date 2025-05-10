@@ -226,6 +226,15 @@ public class RecursoTests
 
         recurso.Modificar("Notebook", "", "Notebook Dell", 7, false);
     }
+    
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void Modificar_LanzaExcepcionSiDescripcionEsVacio()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", true, 10);
+
+        recurso.Modificar("Notebook", "Equipo", "", 7, false);
+    }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]

@@ -73,12 +73,17 @@ public class Recurso
     {
         if (string.IsNullOrWhiteSpace(nombre))
         {
-            throw new ArgumentNullException(nameof(tipo), "El nombre no puede estar vacío.");
+            throw new ArgumentNullException(nameof(nombre), "El nombre no puede estar vacío.");
+        }
+        
+        if (string.IsNullOrWhiteSpace(tipo))
+        {
+            throw new ArgumentNullException(nameof(tipo), "El tipo no puede estar vacío.");
         }
 
         if (string.IsNullOrWhiteSpace(descripcion))
         {
-            throw new ArgumentNullException(nameof(cantidad), "El tipo no puede estar vacío.");
+            throw new ArgumentNullException(nameof(descripcion), "La descripcion no puede estar vacío.");
         }
 
         if (cantidad <= 0)
