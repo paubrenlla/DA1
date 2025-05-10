@@ -103,5 +103,9 @@ public class DB
         ListaRecursos.Remove(recurso);
     }
 
-  
+
+    public Proyecto buscarProyectoPorId(int id)
+    {
+        return ListaProyectos.FirstOrDefault(p => p.Id == id);
+    }
 }

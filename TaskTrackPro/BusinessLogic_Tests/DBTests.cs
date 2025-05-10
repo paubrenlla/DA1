@@ -299,5 +299,22 @@ public class DBTests
         db.agregarUsuario(usuario1);
         db.agregarUsuario(usuario2);
     }
+    
+    [TestMethod]
+    public void BuscarProyectoPorIdDevuelveProyectoCorrecto()
+    { 
+        DB db = new DB();
+        Proyecto p1= new Proyecto("Proyecto 1", "desc", DateTime.Today);
+        Proyecto p2= new Proyecto("Proyecto 1", "desc", DateTime.Today);
+        
+        db.agregarProyecto(p1);
+        db.agregarProyecto(p2);
+        
+        Proyecto resultado = db.buscarProyectoPorId(p2.Id);
+
+        Assert.IsNotNull(resultado);
+        Assert.AreEqual(p2.Id, resultado.Id);
+        Assert.AreEqual(p2.Nombre, resultado.Nombre);
+    }
 
 }
