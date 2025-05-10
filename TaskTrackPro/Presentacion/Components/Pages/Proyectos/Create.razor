@@ -1,0 +1,65 @@
+﻿@page "/proyectos/crear/"
+
+<PageTitle>Crear Proyecto</PageTitle>
+
+@using BusinessLogic
+@inject DB DataBase
+@inject NavigationManager NavigationManager
+
+<h1>Crear Proyecto</h1>
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger">@mensajeError</div>
+}
+
+<form onsubmit="return false">
+    <div class="form-group">
+        <label for="nombre">Nombre del Proyecto</label>
+        <input type="text" class="form-control" id="nombre" @bind="nombre">
+    </div>
+
+    <div class="form-group">
+        <label for="descripcion">Descripción</label>
+        <input type="text" class="form-control" id="descripcion" @bind="descripcion">
+    </div>
+    
+    <div class="form-group">
+        <label for="fecha">Fecha de Inicio</label>
+        <input type="date" class="form-control" id="fecha" @bind="fecha" />
+    </div> 
+    
+    <div class="form-group">
+        <label for="admin">Usuario admin del proyecto (correo)</label>
+        <input type="text" class="form-control" id="admin" @bind="correoAdmin" />
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Agregar" @onclick="CrearProyecto">
+</form>
+
+@code {
+    private string nombre;
+    private string descripcion;
+    private DateTime fecha;
+    private string correoAdmin; 
+    private string mensajeError;
+
+    private void CrearProyecto()
+    {
+        mensajeError = "";
+
+        try
+        {
+            Proyecto proyectoNuevo = new Proyecto(nombre, descripcion, fecha);
+            Usuario usuarioAdmin = DataBase.buscarUsuarioPorCorreo(correoAdmin);
+            proyectoNuevo.AsignarAdmin(usuarioAdmin);
+            DataBase.agregarProyecto(proyectoNuevo);
+            NavigationManager.NavigateTo("/proyectos");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+
+}

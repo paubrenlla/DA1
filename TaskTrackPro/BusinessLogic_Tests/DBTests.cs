@@ -273,6 +273,22 @@ public class DBTests
         Assert.AreEqual(u2.Email, resultado.Email);
     }
     
+    [TestMethod]
+    public void BuscarUsuarioPorCorreo()
+    {
+        DB db = new DB();
+        string email2="b@b.com";
+        Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", "123AAaa!!", new DateTime(2000, 1, 1));
+        Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", "456AAaa!!", new DateTime(1999, 2, 2));
+        db.agregarUsuario(u1);
+        db.agregarUsuario(u2);
+
+        Usuario resultado = db.buscarUsuarioPorCorreo(email2);
+
+        Assert.IsNotNull(resultado);
+        Assert.AreEqual(u2.Email, resultado.Email);
+    }
+    
     [ExpectedException(typeof(ArgumentException))]
     [TestMethod]
     public void NoPuedenHaberCorreosRepetidos()
@@ -282,6 +298,23 @@ public class DBTests
         Usuario usuario2 = new Usuario("correo@gmail.com", "Nombre2", "Apellido2", "EsValida1!", new DateTime(2000, 1, 1));
         db.agregarUsuario(usuario1);
         db.agregarUsuario(usuario2);
+    }
+    
+    [TestMethod]
+    public void BuscarProyectoPorIdDevuelveProyectoCorrecto()
+    { 
+        DB db = new DB();
+        Proyecto p1= new Proyecto("Proyecto 1", "desc", DateTime.Today);
+        Proyecto p2= new Proyecto("Proyecto 1", "desc", DateTime.Today);
+        
+        db.agregarProyecto(p1);
+        db.agregarProyecto(p2);
+        
+        Proyecto resultado = db.buscarProyectoPorId(p2.Id);
+
+        Assert.IsNotNull(resultado);
+        Assert.AreEqual(p2.Id, resultado.Id);
+        Assert.AreEqual(p2.Nombre, resultado.Nombre);
     }
 
     [TestMethod]

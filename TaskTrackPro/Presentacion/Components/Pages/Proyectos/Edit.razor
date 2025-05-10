@@ -1,0 +1,73 @@
+﻿@page "/proyectos/{id:int}/editar/"
+
+<PageTitle>Editar Proyecto</PageTitle>
+
+@using BusinessLogic
+@inject DB DataBase
+@inject NavigationManager NavigationManager
+
+<h1>Editar Proyecto : @nombre</h1>
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger">@mensajeError</div>
+}
+
+<form onsubmit="return false">
+    <div class="form-group">
+        <label for="desc">Descripción</label>
+        <input type="text" class="form-control" id="desc" @bind="descripcionNueva">
+    </div>
+
+    <div class="form-group">
+        <label for="fecha">Fecha De Inicio</label>
+        <input type="date" class="form-control" id="fecha" @bind="fechaNueva">
+    </div>
+    
+    <input type="submit" class="btn btn-primary" value="Guardar cambios" @onclick="GuardarCambios">
+</form>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private string nombre;
+    private string descripcionNueva;
+    private DateTime fechaNueva;
+    private string mensajeError;
+
+    Proyecto proyectoACambiar;
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            proyectoACambiar = DataBase.buscarProyectoPorId(id);
+            if (proyectoACambiar == null)
+            {
+                mensajeError = $"Proyecto no encontrado.";
+                return;
+            }
+
+            descripcionNueva = proyectoACambiar.Descripcion;
+            fechaNueva = proyectoACambiar.FechaInicio;
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+
+    private void GuardarCambios()
+    {
+        try
+        {
+            proyectoACambiar.Modificar(descripcionNueva,fechaNueva);
+            NavigationManager.NavigateTo("/proyectos");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+}
