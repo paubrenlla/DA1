@@ -5,26 +5,51 @@ public class Proyecto
     private static int _contadorId = 1;
 
     public int Id { get; }
-    public string? Nombre { get; set; }
-    public string? Descripcion { get; set; }
-    public DateTime FechaInicio { get; set; }
+    private string _nombre;
+    private string _descripcion;
+    private DateTime _fechaInicio;
     public List<Tarea> TareasAsociadas { get; set; }
     public List<Usuario> Miembros { get; set; }
     public Usuario Admin { get; set; }
     
     public List<Recurso> RecursosAsociados { get; set; }
     
+    public string Nombre
+    {
+        get => _nombre;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("El nombre no puede estar vacío.");
+            _nombre = value;
+        }
+    }
+    
+    public string Descripcion
+    {
+        get => _descripcion;
+        set
+        {
+            if (value.Length > 400)
+                throw new ArgumentException("La descripción no puede superar los 400 caracteres.");
+            _descripcion = value;
+        }
+    }
+    
+    public DateTime FechaInicio
+    {
+        get => _fechaInicio;
+        set
+        {
+            if (value < DateTime.Now.Date)
+                throw new ArgumentException("La fecha de inicio no puede ser anterior a hoy.");
+            _fechaInicio = value;
+        }
+    }
+    
 
     public Proyecto(string nombre, string descripcion, DateTime fechaInicio)
     {
-        if (fechaInicio.Date < DateTime.Now.Date)
-            throw new ArgumentException("La fecha de inicio no puede ser anterior a hoy.");
-        
-        if (string.IsNullOrWhiteSpace(nombre))
-            throw new ArgumentException("El nombre no puede ser nulo o vacío.");
-        
-        if (descripcion.Length > 400)
-            throw new ArgumentException("La descripción no puede superar los 400 caracteres.");
         Id = _contadorId++;
         Nombre = nombre;
         Descripcion = descripcion;
