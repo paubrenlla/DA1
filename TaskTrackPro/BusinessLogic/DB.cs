@@ -30,6 +30,7 @@ public class DB
         Proyecto proyecto2 = new Proyecto("Proyecto prueba2", "Este es un proyecto de prueba2", DateTime.Now);
         Proyecto proyecto3 = new Proyecto("Proyecto prueba3", "Este es un proyecto de prueba3", DateTime.Now);
         ListaProyectos.Add(proyecto1);
+
         ListaProyectos.Add(proyecto2);
         ListaProyectos.Add(proyecto3);
         
@@ -37,6 +38,9 @@ public class DB
         proyecto3.agregarMiembro(usuario3);
         proyecto3.AsignarAdmin(usuario3);
         proyecto2.agregarMiembro(usuario3);
+
+        proyecto1.Admin = usuario1;
+
 
         Recurso recurso1 = new Recurso("Auto", "Vehiculo","El auto de la empresa", false, 1, proyecto1);
         ListaRecursos.Add(recurso1);

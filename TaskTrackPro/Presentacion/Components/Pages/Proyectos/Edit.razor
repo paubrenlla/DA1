@@ -26,6 +26,12 @@
         <input type="date" class="form-control" id="fecha" @bind="fechaNueva">
     </div>
 
+    <div class="form-group">
+        <label for="admin">Administrador (correo)</label>
+        <input type="email" class="form-control" id="admin" @bind="correoAdminNuevo">
+    </div>
+
+
     <input type="submit" class="btn btn-primary" value="Guardar cambios" @onclick="GuardarCambios">
 </form>
 
@@ -36,6 +42,8 @@
     private string nombre;
     private string descripcionNueva;
     private DateTime fechaNueva;
+    private string correoAdminNuevo;
+    private Usuario adminNuevo;
     private string mensajeError;
 
     private Proyecto proyectoACambiar;
@@ -63,10 +71,12 @@
                     mensajeError = "Proyecto no encontrado.";
                     return;
                 }
-                
-                nombre = proyectoACambiar.Nombre; // <-- Asigna el nombre
+
+                adminNuevo = proyectoACambiar.Admin;
+                nombre = proyectoACambiar.Nombre;
                 descripcionNueva = proyectoACambiar.Descripcion;
                 fechaNueva = proyectoACambiar.FechaInicio;
+                correoAdminNuevo = adminNuevo.Email;
             }
             catch (Exception ex)
             {
@@ -81,6 +91,10 @@
     {
         try
         {
+            if (adminNuevo.Email != correoAdminNuevo && DataBase.buscarUsuarioPorCorreo(correoAdminNuevo) != null)
+            {
+                proyectoACambiar.Admin = DataBase.buscarUsuarioPorCorreo(correoAdminNuevo);
+            }
             proyectoACambiar.Modificar(descripcionNueva, fechaNueva);
             NavigationManager.NavigateTo("/proyectos");
         }
