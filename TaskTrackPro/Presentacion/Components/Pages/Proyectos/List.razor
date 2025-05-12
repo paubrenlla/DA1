@@ -42,18 +42,24 @@
 
 @code {
     private List<Proyecto>? listaDeProyectos = new List<Proyecto>();
+    private bool yaVerifiqueSesion = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var isUserActive = await SessionLogic.isUserActive();
-        if (!isUserActive)
+        if (firstRender && !yaVerifiqueSesion)
         {
-            NavigationManager.NavigateTo("/Login");
-        }
-        else
-        {
-            
-        listaDeProyectos = BaseDeDatos.ListaProyectos;
+            yaVerifiqueSesion = true;
+
+            var isUserActive = await SessionLogic.isUserActive();
+            if (!isUserActive)
+            {
+                NavigationManager.NavigateTo("/Login");
+            }
+            else
+            {
+                listaDeProyectos = BaseDeDatos.ListaProyectos;
+                StateHasChanged(); 
+            }
         }
     }
 }

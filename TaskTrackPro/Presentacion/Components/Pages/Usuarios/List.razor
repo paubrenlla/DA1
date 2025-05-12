@@ -47,17 +47,22 @@ else
 
 @code {
     private List<Usuario>? listaDeUsuarios;
-
-    protected override async Task OnInitializedAsync()
+    private bool yaVerifiqueSesion = false;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var isUserActive = await SessionLogic.isUserActive();
-        if (!isUserActive)
+        if (firstRender && !yaVerifiqueSesion)
         {
-            NavigationManager.NavigateTo("/Login");
-        }
-        else
-        {
-            listaDeUsuarios = BaseDeDatos.ListaUsuarios;
+            var isUserActive = await SessionLogic.isUserActive();
+            if (!isUserActive)
+            {
+                NavigationManager.NavigateTo("/Login");
+            }
+            else
+            {
+                listaDeUsuarios = BaseDeDatos.ListaUsuarios;
+                StateHasChanged(); 
+            }
         }
     }
 }
