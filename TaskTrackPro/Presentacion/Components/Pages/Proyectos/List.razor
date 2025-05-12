@@ -1,6 +1,8 @@
 ﻿@page "/proyectos"
 @using BusinessLogic
-
+@using UserInterface.Data
+@inject SessionLogic SessionLogic
+@inject NavigationManager NavigationManager
 @inject DB BaseDeDatos
 
 <h1>
@@ -40,9 +42,24 @@
 
 @code {
     private List<Proyecto>? listaDeProyectos = new List<Proyecto>();
+    private bool yaVerifiqueSesion = false;
 
-    protected override void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        listaDeProyectos = BaseDeDatos.ListaProyectos;
+        if (firstRender && !yaVerifiqueSesion)
+        {
+            yaVerifiqueSesion = true;
+
+            var isUserActive = await SessionLogic.isUserActive();
+            if (!isUserActive)
+            {
+                NavigationManager.NavigateTo("/Login");
+            }
+            else
+            {
+                listaDeProyectos = BaseDeDatos.ListaProyectos;
+                StateHasChanged(); 
+            }
+        }
     }
 }
