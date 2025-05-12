@@ -88,7 +88,7 @@
                     emailNuevo = usuarioACambiar.Email;
                     nombreNuevo = usuarioACambiar.Nombre;
                     apellidoNuevo = usuarioACambiar.Apellido;
-                    contraseñaNuevo = usuarioACambiar.Pwd;
+                    contraseñaNuevo = Usuario.DesencriptarPassword(usuarioACambiar.Pwd);
                     fechaNueva = usuarioACambiar.FechaNacimiento;
                 }
                 else
