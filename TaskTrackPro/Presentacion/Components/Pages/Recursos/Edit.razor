@@ -3,8 +3,10 @@
 <PageTitle>Editar Recurso</PageTitle>
 
 @using BusinessLogic
+@using UserInterface.Data
 @inject DB DataBase
 @inject NavigationManager NavigationManager
+@inject SessionLogic SessionLogic
 
 <h1>Editar Recurso</h1>
 
@@ -16,7 +18,7 @@
 <form onsubmit="return false">
     <div class="form-group">
         <label for="nombre">Nombre</label>
-        <input type="text" class="form-control" id="email" @bind="nombreNuevo">
+        <input type="text" class="form-control" id="nombre" @bind="nombreNuevo">
     </div>
 
     <div class="form-group">
@@ -53,28 +55,43 @@
     private bool compartirNuevo;
     private string mensajeError;
 
-    Recurso recursoACambiar;
+    private Recurso recursoACambiar;
+    private bool yaVerifiqueSesion = false;
 
-    protected override void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        try
+        if (!yaVerifiqueSesion)
         {
-            recursoACambiar = DataBase.buscarRecursoPorId(id);
-            if (recursoACambiar == null)
+            yaVerifiqueSesion = true;
+
+            var activo = await SessionLogic.isUserActive();
+            if (!activo)
             {
-                mensajeError = $"Recurso con ID {id} no encontrado.";
+                NavigationManager.NavigateTo("/Login");
                 return;
             }
 
-            nombreNuevo = recursoACambiar.Nombre;
-            tipoNuevo = recursoACambiar.Tipo;
-            descripcionNueva = recursoACambiar.Descripcion;
-            cantidadRecurso = recursoACambiar.CantidadDelRecurso;
-            compartirNuevo = recursoACambiar.SePuedeCompartir;
-        }
-        catch (Exception ex)
-        {
-            mensajeError = ex.Message;
+            try
+            {
+                recursoACambiar = DataBase.buscarRecursoPorId(id);
+                if (recursoACambiar == null)
+                {
+                    mensajeError = $"Recurso con ID {id} no encontrado.";
+                    return;
+                }
+
+                nombreNuevo = recursoACambiar.Nombre;
+                tipoNuevo = recursoACambiar.Tipo;
+                descripcionNueva = recursoACambiar.Descripcion;
+                cantidadRecurso = recursoACambiar.CantidadDelRecurso;
+                compartirNuevo = recursoACambiar.SePuedeCompartir;
+
+                StateHasChanged(); // actualizar la interfaz
+            }
+            catch (Exception ex)
+            {
+                mensajeError = ex.Message;
+            }
         }
     }
 

@@ -59,7 +59,6 @@
 
     @code {
         private bool yaVerifiqueSesion = false;
-        private bool redireccionado = false;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -70,7 +69,6 @@
                 var activo = await SessionLogic.isUserActive();
                 if (!activo)
                 {
-                    redireccionado = true;
                     NavigationManager.NavigateTo("/Login");
                     return;
                 }
