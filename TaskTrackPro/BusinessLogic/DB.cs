@@ -25,6 +25,7 @@ public class DB
         
         Proyecto proyecto1 = new Proyecto("Proyecto prueba", "Este es un proyecto de prueba", DateTime.Now);
         ListaProyectos.Add(proyecto1);
+        proyecto1.Admin = usuario1;
 
         Recurso recurso1 = new Recurso("Auto", "Vehiculo","El auto de la empresa", false, 1, proyecto1);
         ListaRecursos.Add(recurso1);
