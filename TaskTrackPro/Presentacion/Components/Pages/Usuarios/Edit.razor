@@ -49,6 +49,13 @@
     }
 
     <input type="submit" class="btn btn-primary" value="Guardar cambios" @onclick="GuardarCambios">
+
+    <div class="form-group mt-2">
+        <button class="btn btn-secondary" @onclick="SetearContraseñaPorDefecto">
+            Contraseña por defecto
+        </button>
+    </div>
+
 </form>
 
 @code {
@@ -122,5 +129,14 @@
             esAdmin = true;
         }
     }
+    
+    private void SetearContraseñaPorDefecto()
+    {
+        contraseñaNuevo = Usuario.CONTRASEÑA_DEFAULT;
+        usuarioACambiar = DataBase.buscarUsuarioPorId(id);
+        usuarioACambiar.Pwd = contraseñaNuevo;
+
+    }
+
 
 }
