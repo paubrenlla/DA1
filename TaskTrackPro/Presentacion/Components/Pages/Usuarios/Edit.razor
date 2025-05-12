@@ -41,6 +41,13 @@
         <input type="date" class="form-control" id="fecha" @bind="fechaNueva" />
     </div>
 
+    @if (!esAdmin)
+    {
+        <button class="btn btn-warning mt-3" @onclick="ConcederPrivilegios">
+            Conceder privilegios del sistema
+        </button>
+    }
+
     <input type="submit" class="btn btn-primary" value="Guardar cambios" @onclick="GuardarCambios">
 </form>
 
@@ -58,6 +65,7 @@
     Usuario usuarioACambiar;
 
     @code {
+        private bool esAdmin;
         private bool yaVerifiqueSesion = false;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -74,6 +82,7 @@
                 }
 
                 usuarioACambiar = DataBase.buscarUsuarioPorId(id);
+                esAdmin = DataBase.AdministradoresSistema.Contains(usuarioACambiar);
                 if (usuarioACambiar != null)
                 {
                     emailNuevo = usuarioACambiar.Email;
@@ -104,4 +113,14 @@
             mensajeError = ex.Message;
         }
     }
+    
+    private void ConcederPrivilegios()
+    {
+        if (!DataBase.AdministradoresSistema.Contains(usuarioACambiar))
+        {
+            DataBase.AdministradoresSistema.Add(usuarioACambiar);
+            esAdmin = true;
+        }
+    }
+
 }
