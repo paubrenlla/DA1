@@ -472,6 +472,33 @@ public class ProyectoTests
 
         Assert.IsNull(resultado);
     }
+    
+    [TestMethod]
+    public void CalcularFinEstimadoDelProyecto()
+    {
+        DateTime inicio = DateTime.Today.AddDays(1);
+        TimeSpan duracion = TimeSpan.FromHours(2);
+
+        Tarea t1 = new Tarea("T1", "desc", inicio, duracion, false);
+        Tarea t2 = new Tarea("T2", "desc", inicio, duracion, false);
+        Tarea t3 = new Tarea("T3", "desc", inicio, duracion, false);
+        Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
+
+        t2.AgregarDependencia(t1);
+        t3.AgregarDependencia(t1);
+        t4.AgregarDependencia(t2);
+        t4.AgregarDependencia(t3);
+
+        Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
+        proyecto.agregarTarea(t1);
+        proyecto.agregarTarea(t2);
+        proyecto.agregarTarea(t3);
+        proyecto.agregarTarea(t4);
+
+        List<Tarea> rutaCritica = proyecto.CalcularRutaCritica();
+        proyecto.CalcularFinEstimado();
+        Assert.AreEqual(DateTime.Today.AddDays(1).AddHours(6), proyecto.FinEstimado);
+    }
 }
 
 
