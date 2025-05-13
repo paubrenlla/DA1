@@ -124,6 +124,25 @@ public class DB
         tarea1.AgregarDependencia(tarea2);
         tarea4.AgregarDependencia(tarea3);
         tarea4.AgregarDependencia(tarea5);
+
+        Notificacion bienvenida = new Notificacion("Bienvenidos a Task Track Pro!");
+        Notificacion lema = new Notificacion("El lema de la empresa es: Trabajas más así trabajas menos para poder trabajar más!! (el lema está work in progress)");
+        Notificacion aviso = new Notificacion("Por motivos de productivadad reduciremos la hora de descanso a 5 minutos , gracias por su comprensión :D");
+        
+        ListaNotificaciones.Add(bienvenida);
+        ListaNotificaciones.Add(lema);
+        ListaNotificaciones.Add(aviso);
+        
+        bienvenida.AgregarUsuario(usuarioAdmin);
+        aviso.AgregarUsuario(usuarioAdmin);
+        bienvenida.AgregarUsuario(usuario1);
+        bienvenida.AgregarUsuario(usuario2);
+        bienvenida.AgregarUsuario(usuario3);
+        bienvenida.AgregarUsuario(usuario4);
+        lema.AgregarUsuario(usuario1);
+        lema.AgregarUsuario(usuario2);
+        lema.AgregarUsuario(usuario3);
+        lema.AgregarUsuario(usuario4);
     }
     
     public DB(Usuario user) : this()
