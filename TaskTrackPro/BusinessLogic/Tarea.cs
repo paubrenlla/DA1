@@ -14,7 +14,7 @@ public class Tarea
     private Estado _estadoActual = new Estado(TipoEstadoTarea.Pendiente);
     private List<Tarea> _tareasDependencia = new List<Tarea>();
     private List<Tarea> _tareasSucesoras = new List<Tarea>();
-    private List<RecursoNecesario> _recursos =  new List<RecursoNecesario>();
+    private List<RecursoNecesario> _recursosNecesarios =  new List<RecursoNecesario>();
     private List<Usuario> _usuariosAsignados  = new List<Usuario>();
 
     private TimeSpan _holgura;
@@ -25,7 +25,6 @@ public class Tarea
 
     public IReadOnlyList<Tarea> TareasDependencia => _tareasDependencia.AsReadOnly();
     public IReadOnlyList<Tarea> TareasSucesoras => _tareasSucesoras.AsReadOnly();
-    public IReadOnlyList<RecursoNecesario> Recursos => _recursos.AsReadOnly();
     private static readonly TimeSpan DuracionMinimaTarea = TimeSpan.FromHours(1);
     
     public Tarea(string titulo, string descripcion, DateTime fechaInicio, TimeSpan duracion, bool esCritica)
@@ -101,6 +100,8 @@ public class Tarea
         get => _usuariosAsignados;
     }
     
+    public List<RecursoNecesario> RecursosNecesarios => _recursosNecesarios!;
+    
     private void ModificarEstado(TipoEstadoTarea nuevoEstado, DateTime fecha)
     {   
             EstadoActual.Valor = nuevoEstado;
@@ -136,7 +137,7 @@ public class Tarea
             throw new ArgumentOutOfRangeException(nameof(cantidadNecesaria));    
         }
         
-        foreach (RecursoNecesario recursoNecesario in Recursos)
+        foreach (RecursoNecesario recursoNecesario in RecursosNecesarios)
         {
             if (recursoNecesario.Recurso == recurso)
             {
@@ -144,13 +145,13 @@ public class Tarea
                 return;
             }
         }
-        _recursos.Add(new RecursoNecesario(recurso, cantidadNecesaria));
+        _recursosNecesarios.Add(new RecursoNecesario(recurso, cantidadNecesaria));
         ActualizarEstado();
     }
 
     public bool VerificarRecursosDisponibles()
     {
-        foreach (RecursoNecesario recursoNecesario in Recursos)
+        foreach (RecursoNecesario recursoNecesario in RecursosNecesarios)
         {
             if (!recursoNecesario.Recurso.EstaDisponible(recursoNecesario.CantidadNecesaria))
             {
@@ -162,7 +163,7 @@ public class Tarea
 
     public void ConsumirRecursos()
     {
-        foreach (RecursoNecesario recursoNecesario in Recursos)
+        foreach (RecursoNecesario recursoNecesario in RecursosNecesarios)
         {
             recursoNecesario.Recurso.ConsumirRecurso(recursoNecesario.CantidadNecesaria);
         }
@@ -170,7 +171,7 @@ public class Tarea
 
     public void LiberarRecursos()
     {
-        foreach (RecursoNecesario recursoNecesario in Recursos)
+        foreach (RecursoNecesario recursoNecesario in RecursosNecesarios)
         {
             recursoNecesario.Recurso.LiberarRecurso(recursoNecesario.CantidadNecesaria);
         }
