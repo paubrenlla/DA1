@@ -1,5 +1,6 @@
 @page "/proyectos/{id:int}/tareas"
 @using BusinessLogic
+@using BusinessLogic.Enums
 
 @inject DB BaseDeDatos
 
@@ -13,6 +14,7 @@
     <tr>
         <th>Titulo</th>
         <th>Descripción</th>
+        <th>Estado</th>
         <th>Fecha de inicio</th>
         <th>Duración</th>
         <th>Es crítica</th>
@@ -25,11 +27,17 @@
         <tr>
             <td>@tarea.Titulo</td>
             <td>@tarea.Descripcion</td>
+            <td>@tarea.EstadoActual.Valor</td>
             <td>@tarea.FechaInicio</td>
             <td>@tarea.Duracion</td>
             <td>@tarea.EsCritica</td>
             <td>
                 <a class="btn btn-success btn-sm" href="proyectos/@id/tareas/@tarea.Id/editar">Editar</a>
+                <button class="btn btn-primary btn-sm"
+                        @onclick="() => AbrirModalEstado(tarea)"
+                        disabled="@(!PuedeCambiarEstado(tarea.EstadoActual.Valor))">
+                    Editar estado
+                </button>
                 <a class="btn btn-success btn-sm" href="proyectos/@id/tareas/@tarea.Id/miembros">Ver miembros</a>
                 <a class="btn btn-success btn-sm" href="proyectos/@id/tareas/@tarea.Id/recursos">RecursosNecesarios necesarios</a>
                 <button class="btn btn-danger btn-sm">Eliminar</button>
@@ -44,9 +52,84 @@
     public int id { get; set; }
     
     private List<Tarea>? ListaDeTareas = new List<Tarea>();
+    bool mostrarModalEstado = false;
+    Tarea? tareaSeleccionada;
+    TipoEstadoTarea nuevoEstado;
 
     protected override void OnInitialized()
     {
         ListaDeTareas = BaseDeDatos.buscarProyectoPorId(@id).TareasAsociadas;
     }
+    
+    void AbrirModalEstado(Tarea tarea)
+    {
+        tareaSeleccionada = tarea;
+        nuevoEstado = tarea.EstadoActual.Valor;
+        mostrarModalEstado = true;
+    }
+
+    bool PuedeElegir(TipoEstadoTarea actual, TipoEstadoTarea candidato)
+    {
+        return actual switch
+        {
+            TipoEstadoTarea.Pendiente => candidato == TipoEstadoTarea.Ejecutandose,
+            TipoEstadoTarea.Ejecutandose => candidato == TipoEstadoTarea.Efectuada,
+            _ => false
+        };
+    }
+    
+    bool PuedeCambiarEstado(TipoEstadoTarea estado)
+    {
+        return estado == TipoEstadoTarea.Pendiente || estado == TipoEstadoTarea.Ejecutandose;
+    }
+
+    void GuardarEstado()
+    {
+        if (tareaSeleccionada != null)
+        {
+            if (nuevoEstado == TipoEstadoTarea.Efectuada)
+            {
+                tareaSeleccionada.MarcarTareaComoCompletada();
+            }
+            else if (nuevoEstado == TipoEstadoTarea.Ejecutandose)
+            {
+                tareaSeleccionada.MarcarTareaComoEjecutandose();
+            }
+            mostrarModalEstado = false;
+            tareaSeleccionada = null;
+        }
+    }
+}
+
+@if (mostrarModalEstado)
+{
+    <div class="modal show d-block" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modificar estado</h5>
+                    <button type="button" class="btn-close" @onclick="() => mostrarModalEstado = false"></button>
+                </div>
+                <div class="modal-body">
+                    <InputRadioGroup @bind-Value="nuevoEstado">
+                        @foreach (TipoEstadoTarea estado in Enum.GetValues(typeof(TipoEstadoTarea)))
+                        {
+                            if (tareaSeleccionada != null && PuedeElegir(tareaSeleccionada.EstadoActual.Valor, estado))
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="estado" />
+                                    <label class="form-check-label">@estado</label>
+                                </div>
+                            }
+                        }
+                    </InputRadioGroup>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="() => mostrarModalEstado = false">Cancelar</button>
+                    <button class="btn btn-primary" @onclick="GuardarEstado">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
 }
