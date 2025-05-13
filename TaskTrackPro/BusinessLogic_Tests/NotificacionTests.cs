@@ -6,6 +6,13 @@ namespace BusinessLogic_Tests;
 [TestClass]
 public class NotificacionTests
 {
+    [TestInitialize]
+    public void Setup()
+    {
+        typeof(Notificacion)
+            .GetField("_contadorId", BindingFlags.Static | BindingFlags.NonPublic)
+            ?.SetValue(null, 1);
+    }  
     
   [TestMethod]
   public void CreoNotificacionCorrectamente()
