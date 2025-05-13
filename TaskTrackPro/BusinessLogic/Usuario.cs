@@ -99,7 +99,6 @@ public class Usuario
         }
     }
     
-    //Metodos
     public void GenerarContraseñaAleatoria()
     {
         Pwd = GeneradorContraseña.GenerarContraseña(MINIMO_LARGO_CONTRASEÑA);
@@ -135,7 +134,6 @@ public class Usuario
             throw new ArgumentException("El email no tiene un formato válido.");
     }
     
-    //Encriptar contraseña en base64
     public static string EncriptarPassword(string passwordTextoPlano)
     {
         var passwordBytes = System.Text.Encoding.UTF8.GetBytes(passwordTextoPlano);
