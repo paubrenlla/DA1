@@ -150,5 +150,10 @@ public class Usuario
         Pwd = contraseña;
         FechaNacimiento = fechaNacimiento;
     }
-
+    
+    public static string DesencriptarPassword(string contraseñaEncriptada)
+    {
+        byte[] contraseñaBytes = Convert.FromBase64String(contraseñaEncriptada);
+        return System.Text.Encoding.UTF8.GetString(contraseñaBytes);
+    }
 }

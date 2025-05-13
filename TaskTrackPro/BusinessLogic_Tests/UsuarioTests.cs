@@ -344,7 +344,6 @@ public class UsuarioTests
         Assert.AreEqual(passEcriptada, u.Pwd);
     }
     
-    //Tests para generar contraseña aleatoria
     [TestMethod] 
     public void GenerarContraseñaAleatoria_GeneraNuevaContraseña()
     {
@@ -355,7 +354,6 @@ public class UsuarioTests
         Assert.AreNotEqual("OldPassword123!", usuario.Pwd);
     }
     
-    //Tests para restablecer contraseña
     [TestMethod]
     public void ResetearContraseña_ReseteaAPorDefault()
     {
@@ -367,4 +365,17 @@ public class UsuarioTests
         
         Assert.AreEqual(defaultPwdEncriptada, usuario.Pwd);
     }
+    
+    [TestMethod]
+    public void EncriptarYDesencriptarConstraseñaDevuelveConstraseñaOriginal()
+    {
+        string contraseñaOriginal = "1ContraseñaSegura!";
+        string contraseñaEncriptada = Usuario.EncriptarPassword(contraseñaOriginal);
+        
+        string desencriptado = Usuario.DesencriptarPassword(contraseñaEncriptada);
+        
+        Assert.AreEqual(contraseñaOriginal, desencriptado);
+    }
+    
+    
 }
