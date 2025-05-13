@@ -50,13 +50,13 @@ public class Proyecto
 
     public Proyecto(string nombre, string descripcion, DateTime fechaInicio)
     {
-        Id = _contadorId++;
         Nombre = nombre;
         Descripcion = descripcion;
         FechaInicio = fechaInicio;
         TareasAsociadas = new List<Tarea>();
         Miembros = new List<Usuario>();
         RecursosAsociados = new List<Recurso>();
+        Id = _contadorId++;
     }
 
     public void agregarTarea(Tarea tarea)
@@ -244,5 +244,10 @@ public class Proyecto
     {
        Descripcion = descripcionNueva;
        FechaInicio = fechaInicioNueva;
+    }
+    
+    public Tarea? BuscarTareaPorId(int id)
+    {
+        return TareasAsociadas.FirstOrDefault(r => r.Id == id);
     }
 }

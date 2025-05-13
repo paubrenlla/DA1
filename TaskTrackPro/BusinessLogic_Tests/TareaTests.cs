@@ -8,7 +8,7 @@ namespace BusinessLogic_Tests
     {
         private static readonly TimeSpan VALID_TIMESPAN = new TimeSpan(6, 5, 0, 0);
         private static readonly Recurso RECURSO_VALIDO = new Recurso("Computadora", "tipo", "desripcion", false, 8);
-
+        private static readonly DateTime VALID_DATETIME = DateTime.Today;
 
         [TestMethod]
         public void ConstructorConDatosValidos_CreaTareaCorrectamente()
@@ -500,7 +500,67 @@ namespace BusinessLogic_Tests
             // Assert 2 - tarea3 debería pasar a pendiente
             Assert.AreEqual(TipoEstadoTarea.Pendiente, tarea3.EstadoActual.Valor);
         }
-    }
+        
+        [TestMethod]
+        public void Modificar_CambiaTitulo()
+        {
+            Tarea tarea = new Tarea("Título original", "Desc", VALID_DATETIME, VALID_TIMESPAN, false);
+            string nuevoTitulo = "Título nuevo";
 
-    
+            tarea.Modificar(nuevoTitulo, tarea.Descripcion, tarea.FechaInicio, tarea.Duracion);
+
+            Assert.AreEqual(nuevoTitulo, tarea.Titulo);
+        }
+
+        [TestMethod]
+        public void Modificar_CambiaDescripcion()
+        {
+            Tarea tarea = new Tarea("Título", "Descripción original", VALID_DATETIME, VALID_TIMESPAN, false);
+            string nuevaDescripcion = "Descripción nueva";
+
+            tarea.Modificar(tarea.Titulo, nuevaDescripcion, tarea.FechaInicio, tarea.Duracion);
+
+            Assert.AreEqual(nuevaDescripcion, tarea.Descripcion);
+        }
+
+        [TestMethod]
+        public void Modificar_CambiaFechaInicio()
+        {
+            DateTime nuevaFecha = VALID_DATETIME.AddDays(5);
+            Tarea tarea = new Tarea("Título", "Descripción", VALID_DATETIME, VALID_TIMESPAN, false);
+
+            tarea.Modificar(tarea.Titulo, tarea.Descripcion, nuevaFecha, tarea.Duracion);
+
+            Assert.AreEqual(nuevaFecha, tarea.FechaInicio);
+        }
+
+        [TestMethod]
+        public void Modificar_CambiaDuracion()
+        {
+            TimeSpan nuevaDuracion = TimeSpan.FromHours(12);
+            Tarea tarea = new Tarea("Título", "Descripción", VALID_DATETIME, VALID_TIMESPAN, false);
+
+            tarea.Modificar(tarea.Titulo, tarea.Descripcion, tarea.FechaInicio, nuevaDuracion);
+
+            Assert.AreEqual(nuevaDuracion, tarea.Duracion);
+        }
+
+        [TestMethod]
+        public void Modificar_CambiaTodosLosValores()
+        {
+            string nuevoTitulo = "Título actualizado";
+            string nuevaDescripcion = "Descripción actualizada";
+            DateTime nuevaFecha = VALID_DATETIME.AddDays(3);
+            TimeSpan nuevaDuracion = TimeSpan.FromDays(2);
+
+            Tarea tarea = new Tarea("Original", "Original", VALID_DATETIME, VALID_TIMESPAN, false);
+
+            tarea.Modificar(nuevoTitulo, nuevaDescripcion, nuevaFecha, nuevaDuracion);
+
+            Assert.AreEqual(nuevoTitulo, tarea.Titulo);
+            Assert.AreEqual(nuevaDescripcion, tarea.Descripcion);
+            Assert.AreEqual(nuevaFecha, tarea.FechaInicio);
+            Assert.AreEqual(nuevaDuracion, tarea.Duracion);
+        }
+    }
 }

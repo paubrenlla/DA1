@@ -38,7 +38,7 @@ public IReadOnlyList<Usuario> UsuariosAsignados => _usuariosAsignados.AsReadOnly
         FechaInicio = fechaInicio;
         Duracion = duracion;
         EsCritica = esCritica;
-        Id = ++_contadorId;
+        Id = _contadorId++;
     }
     public int Id
     {
@@ -216,7 +216,13 @@ public IReadOnlyList<Usuario> UsuariosAsignados => _usuariosAsignados.AsReadOnly
             throw new ArgumentNullException(nameof(usuario));
         _usuariosAsignados.Add(usuario);
     }
-    
-    
+
+    public void Modificar(string titulo, string descripcion, DateTime fechaInicio, TimeSpan duracion)
+    {
+        Titulo = titulo;
+        Descripcion = descripcion;
+        FechaInicio = fechaInicio;
+        Duracion = duracion;
+    }
 }
 

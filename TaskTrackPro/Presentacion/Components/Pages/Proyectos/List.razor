@@ -28,18 +28,12 @@ else
             Proyectos del sistema
             <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="/proyectos/crear">Crear +</a>
         </h1>
-        <div class="alert alert-success">
-            Tienes privilegios de administrador del sistema
-        </div>
     }
     else
     {
         <h1>
             Mis Proyectos
         </h1>
-        <div class="alert alert-warning">
-            No tienes privilegios de administrador del sistema
-        </div>
     }
 
     @if (_proyectosVisibles?.Any() == true)
@@ -62,11 +56,11 @@ else
                         <td>@proyecto.FechaInicio.ToShortDateString()</td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a class="btn btn-primary btn-sm" href="proyectos/@proyecto.Id">Ver Tareas</a>
+                                <a class="btn btn-primary btn-sm" href="proyectos/@proyecto.Id/tareas">Ver Tareas</a>
                                 
                                 @if (_esAdminSistema || EsAdminDelProyecto(proyecto))
                                 {
-                                    <a class="btn btn-success btn-sm">Agregar Tarea</a>
+                                    <a class="btn btn-success btn-sm" href=href="proyectos/@proyecto.Id/tareas/crear">Agregar Tarea</a>
                                     <a class="btn btn-success btn-sm">Ver Miembros</a>
                                     <a class="btn btn-success btn-sm">Ruta Critica</a>
                                     <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/editar/">Editar</a>
