@@ -1,0 +1,160 @@
+@page "/proyectos/{idProyecto:int}/miembros/{idUsuario:int}/editar"
+
+<PageTitle>Editar Usuario</PageTitle>
+
+@using BusinessLogic
+@using UserInterface.Data
+@inject DB DataBase
+@inject NavigationManager NavigationManager
+@inject SessionLogic SessionLogic
+
+<h1>Editar Usuario</h1>
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger">@mensajeError</div>
+}
+
+<form onsubmit="return false">
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" class="form-control" id="email" @bind="emailNuevo" readonly>
+    </div>
+
+    <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input type="text" class="form-control" id="nombre" @bind="nombreNuevo" readonly>
+    </div>
+
+    <div class="form-group">
+        <label for="apellido">Apellido</label>
+        <input type="text" class="form-control" id="apellido" @bind="apellidoNuevo" readonly>
+    </div>
+
+    <div class="form-group">
+        <label for="contraseña">Contraseña</label>
+        <input type="password" class="form-control" id="contraseña" @bind="contraseñaNuevo">
+    </div>
+    
+    <div class="form-group">
+        <label for="fecha">Fecha de Nacimiento</label>
+        <input type="date" class="form-control" id="fecha" @bind="fechaNueva" readonly>
+    </div>
+
+    @if (!esAdmin)
+    {
+        <button class="btn btn-warning mt-3" @onclick="ConcederPrivilegios">
+            Conceder privilegios del sistema
+        </button>
+    }
+
+    <input type="submit" class="btn btn-primary" value="Guardar cambios" @onclick="GuardarCambios">
+
+    <div class="form-group mt-2">
+        <button class="btn btn-secondary" @onclick="SetearContraseñaPorDefecto">
+            Contraseña por defecto
+        </button>
+    </div>
+
+    <div class="form-group mt-2">
+        <button class="btn btn-info" @onclick="GenerarContraseñaAleatoria">
+            Generar contraseña aleatoria
+        </button>
+    </div>
+    
+</form>
+
+@code {
+    [Parameter]
+    public int idProyecto { get; set; }
+
+    [Parameter]
+    public int idUsuario { get; set; }
+    
+    private string emailNuevo;
+    private string nombreNuevo;
+    private string apellidoNuevo;
+    private string contraseñaNuevo; 
+    private DateTime fechaNueva;
+    private string mensajeError;
+
+    Usuario usuarioACambiar;
+
+    @code {
+        private bool esAdmin;
+        private bool yaVerifiqueSesion = false;
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (!yaVerifiqueSesion)
+            {
+                yaVerifiqueSesion = true;
+
+                var activo = await SessionLogic.isUserActive();
+                if (!activo)
+                {
+                    NavigationManager.NavigateTo("/Login");
+                    return;
+                }
+
+                usuarioACambiar = DataBase.buscarUsuarioPorId(idUsuario);
+                esAdmin = DataBase.AdministradoresSistema.Contains(usuarioACambiar);
+                if (usuarioACambiar != null)
+                {
+                    emailNuevo = usuarioACambiar.Email;
+                    nombreNuevo = usuarioACambiar.Nombre;
+                    apellidoNuevo = usuarioACambiar.Apellido;
+                    contraseñaNuevo = Usuario.DesencriptarPassword(usuarioACambiar.Pwd);
+                    fechaNueva = usuarioACambiar.FechaNacimiento;
+                }
+                else
+                {
+                    mensajeError = "Usuario no encontrado.";
+                }
+
+                StateHasChanged();
+            }
+        }
+
+    }
+    private void GuardarCambios()
+    {
+        try
+        {
+            usuarioACambiar.Modificar(emailNuevo,nombreNuevo,apellidoNuevo,contraseñaNuevo,fechaNueva);
+            NavigationManager.NavigateTo($"/proyectos/{idProyecto}/miembros");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+    
+    private void ConcederPrivilegios()
+    {
+        if (!DataBase.AdministradoresSistema.Contains(usuarioACambiar))
+        {
+            DataBase.AdministradoresSistema.Add(usuarioACambiar);
+            esAdmin = true;
+        }
+    }
+    
+    private void SetearContraseñaPorDefecto()
+    {
+        contraseñaNuevo = Usuario.CONTRASEÑA_DEFAULT;
+        usuarioACambiar = DataBase.buscarUsuarioPorId(idUsuario);
+        usuarioACambiar.Pwd = contraseñaNuevo;
+
+    }
+    
+    private void GenerarContraseñaAleatoria()
+    {
+        usuarioACambiar = DataBase.buscarUsuarioPorId(idUsuario);
+        usuarioACambiar.GenerarContraseñaAleatoria();
+        contraseñaNuevo = Usuario.DesencriptarPassword(usuarioACambiar.Pwd);
+        StateHasChanged();
+    }
+
+
+
+}

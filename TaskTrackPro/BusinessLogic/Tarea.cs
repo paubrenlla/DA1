@@ -18,14 +18,11 @@ public class Tarea
     private List<Usuario> _usuariosAsignados  = new List<Usuario>();
 
     private TimeSpan _holgura;
-    
-
     public DateTime EarlyStart { get; set; }
     public DateTime LateStart { get; set; }
     public DateTime EarlyFinish { get; set; }
     public DateTime LateFinish { get; set; }
 
-public IReadOnlyList<Usuario> UsuariosAsignados => _usuariosAsignados.AsReadOnly();
     public IReadOnlyList<Tarea> TareasDependencia => _tareasDependencia.AsReadOnly();
     public IReadOnlyList<Tarea> TareasSucesoras => _tareasSucesoras.AsReadOnly();
     public IReadOnlyList<RecursoNecesario> Recursos => _recursos.AsReadOnly();
@@ -97,6 +94,11 @@ public IReadOnlyList<Usuario> UsuariosAsignados => _usuariosAsignados.AsReadOnly
     {
         get => _holgura;
         set => _holgura = value;
+    }
+
+    public List<Usuario> UsuariosAsignados
+    {
+        get => _usuariosAsignados;
     }
     
     private void ModificarEstado(TipoEstadoTarea nuevoEstado, DateTime fecha)
