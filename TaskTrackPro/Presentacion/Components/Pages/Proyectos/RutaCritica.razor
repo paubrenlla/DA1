@@ -5,8 +5,6 @@
 @inject NavigationManager NavigationManager
 @inject SessionLogic SessionLogic
 
-<h3>RutaCritica</h3>
-
 @if (!string.IsNullOrEmpty(mensajeError))
 {
     <div class="alert alert-danger">@mensajeError</div>
@@ -23,6 +21,55 @@ else
        Este proyecto no tiene tareas.
     </h1>
 }
+@if (tareasCriticas?.Any() == true)
+{
+    <h2 class="mt-4 text-danger">Tareas Críticas</h2>
+    <table class="table table-bordered">
+        <thead class="table-danger">
+        <tr>
+            <th>Nombre</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var tarea in tareasCriticas)
+        {
+            <tr>
+                <td>@tarea.Titulo</td>
+                <td>@tarea.EarlyStart.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@tarea.EarlyFinish.ToString("dd/MM/yyyy HH:mm")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@if (tareasNoCriticas?.Any() == true)
+{
+    <h2 class="mt-4 text-secondary">Tareas No Críticas</h2>
+    <table class="table table-bordered">
+        <thead class="table-secondary">
+        <tr>
+            <th>Nombre</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th>Holgura</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var tarea in tareasNoCriticas)
+        {
+            <tr>
+                <td>@tarea.Titulo</td>
+                <td>@tarea.EarlyStart.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@tarea.EarlyFinish.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@tarea.Holgura.TotalHours @(" horas")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
 
 @code {
     private string mensajeError;
@@ -32,6 +79,10 @@ else
     Proyecto proyectoACalcular;
     List<Tarea> tareasCriticas;
     List<Tarea> tareasNoCriticas;
+    List<Tarea> tareasDelProyecto;
+    DateTime? fechaFinProyecto;
+    int totalDias;
+
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -49,9 +100,11 @@ else
             try
             {
                 proyectoACalcular = BaseDeDatos.buscarProyectoPorId(id);
+                tareasDelProyecto = proyectoACalcular.TareasAsociadas;
                 tareasCriticas = proyectoACalcular.CalcularRutaCritica();
-                tareasNoCriticas = proyectoACalcular.TareasNoCritcas();
+                tareasNoCriticas = proyectoACalcular.TareasNoCriticas();
                 proyectoACalcular.CalcularFinEstimado();
+                fechaFinProyecto = proyectoACalcular.FinEstimado;
             }
             catch (Exception ex)
             {
