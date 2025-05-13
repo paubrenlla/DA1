@@ -1,0 +1,77 @@
+@page "/proyectos/{idProyecto:int}/tareas/{idTarea:int}/miembros"
+@using BusinessLogic
+@using UserInterface.Data
+
+@inject DB BaseDeDatos
+@inject SessionLogic SessionLogic
+@inject NavigationManager NavigationManager
+
+<h1>
+    Miembros
+    <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="proyectos/@idProyecto/tareas/@idTarea/miembros/agregar">Agregar +</a>
+</h1>
+
+@if (listaDeMiembors is not null)
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Email</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Fecha de Nacimiento</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (Usuario usuario in listaDeMiembors)
+        {
+            <tr>
+                <td>@usuario.Email</td>
+                <td>@usuario.Nombre</td>
+                <td>@usuario.Apellido</td>
+                <td>@usuario.FechaNacimiento.ToShortDateString()</td>
+                <td>
+                    <a class="btn btn-success btn-sm" href="proyectos/@idProyecto/tareas/@idTarea/miembros/editar">Editar</a>
+                    <button class="btn btn-danger btn-sm">Eliminar</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Cargando miembros...</p>
+}
+
+@code {
+    [Parameter]
+    public int idProyecto { get; set; }
+    
+    [Parameter]
+    public int idTarea { get; set; }
+
+    
+    private List<Usuario>? listaDeMiembors;
+    private bool yaVerifiqueSesion = false;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !yaVerifiqueSesion)
+        {
+            var isUserActive = await SessionLogic.isUserActive();
+            if (!isUserActive)
+            {
+                NavigationManager.NavigateTo($"proyectos/{idProyecto}/tareas/{idTarea}/miembros/");
+            }
+            else
+            {
+                Proyecto pActual = BaseDeDatos.buscarProyectoPorId(idProyecto);
+                Tarea tActual = pActual.BuscarTareaPorId(idTarea);
+                listaDeMiembors = tActual.UsuariosAsignados;
+                StateHasChanged(); 
+            }
+        }
+    }
+}
