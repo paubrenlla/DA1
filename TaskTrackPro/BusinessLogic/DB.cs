@@ -6,6 +6,7 @@ public class DB
     public List<Proyecto> ListaProyectos { get; set; }
     public List<Recurso> ListaRecursos { get; set; }
     public List<Usuario> ListaUsuarios { get; set; }
+    public List<Notificacion> ListaNotificaciones { get; set; }
 
     public DB()
     {
@@ -13,6 +14,7 @@ public class DB
         ListaProyectos = new List<Proyecto>();
         ListaRecursos = new List<Recurso>();
         ListaUsuarios = new List<Usuario>();
+        ListaNotificaciones = new List<Notificacion>();
     }
     
     public DB(bool precargarDatos) : this()
