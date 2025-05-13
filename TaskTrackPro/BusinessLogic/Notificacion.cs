@@ -2,10 +2,12 @@
 
 public class Notificacion
 {
+    private static int _contadorId = 1;
     private string _mensaje;
     private List<Usuario> _usuariosNotificados;
     private List<Usuario> _vistaPorUsuarios;
 
+    public int Id { get; }
 
     public string Mensaje
     {
@@ -28,6 +30,7 @@ public class Notificacion
         Mensaje = mensaje;
         UsuariosNotificados = new List<Usuario>();
         VistaPorUsuarios = new List<Usuario>();
+        Id = _contadorId++;
     }
 
     public void AgregarUsuario(Usuario usuario)
