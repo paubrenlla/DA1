@@ -1,16 +1,29 @@
-﻿using BusinessLogic;
+﻿using System.Reflection;
+using BusinessLogic;
 
 namespace BusinessLogic_Tests;
 
 [TestClass]
 public class NotificacionTests
 {
+    
   [TestMethod]
   public void CreoNotificacionCorrectamente()
   {
       string mensaje = "Esta es una notifcación de prueba";
       Notificacion notificacion = new Notificacion(mensaje);
       Assert.AreEqual(mensaje, notificacion.Mensaje);
+  }
+  
+  [TestMethod]
+  public void NotificacionesConIdCorrectas()
+  {
+      string mensaje = "Esta es una notifcación de prueba";
+      Notificacion notificacion = new Notificacion(mensaje);
+      Notificacion notificacion1 = new Notificacion(mensaje);
+      
+      Assert.AreEqual(1,notificacion.Id);
+      Assert.AreEqual(2,notificacion1.Id);
   }
   
   [TestMethod]
