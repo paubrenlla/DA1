@@ -12,4 +12,6 @@ public class NotificacionTests
       Notificacion notificacion = new Notificacion(mensaje);
       Assert.AreEqual(mensaje, notificacion.Mensaje);
   }
+  
+  
 }
