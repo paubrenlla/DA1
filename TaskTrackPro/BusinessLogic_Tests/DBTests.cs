@@ -134,6 +134,19 @@ public class DBTests
         
         db.agregarUsuario(user2);
     }
+
+    [TestMethod]
+    public void AgregarNotificacion()
+    {
+        DB db = new DB();
+
+        Notificacion notificacion = new Notificacion("esta es una notificacion de prueba");
+        
+        db.agregarNotificacion(notificacion);
+        
+        Assert.IsTrue(db.ListaNotificaciones.Count!=0);
+        Assert.IsTrue(db.ListaNotificaciones.Contains(notificacion));
+    }
     
     [TestMethod]
     public void AgregarProyecto()

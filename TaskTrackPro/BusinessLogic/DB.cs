@@ -228,4 +228,9 @@ public class DB
     {
         return ListaRecursos.FirstOrDefault(r => r.Id == id);
     }
+
+    public Notificacion buscarNotificaciónPorId(int i)
+    {
+        return ListaNotificaciones.FirstOrDefault(n => n.Id == i);
+    }
 }
