@@ -44,4 +44,13 @@ public class SessionLogic
     {
         return await _localStorage.GetItemAsync<Usuario>(CURRENT_USER);
     }
+    
+    public async Task<bool> EsAdminSistema()
+    {
+        var user = await GetCurrentUser();
+        if (user == null) return false;
+    
+        return _db.AdministradoresSistema
+            .Any(a => a.Id == user.Id);
+    }
 }
