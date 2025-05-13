@@ -228,9 +228,9 @@ public class DB
     {
         return ListaRecursos.FirstOrDefault(r => r.Id == id);
     }
-
-    public Notificacion buscarNotificaciónPorId(int i)
+    
+    public void agregarNotificacion(Notificacion notificacion)
     {
-        return ListaNotificaciones.FirstOrDefault(n => n.Id == i);
+        ListaNotificaciones.Add(notificacion);
     }
 }
