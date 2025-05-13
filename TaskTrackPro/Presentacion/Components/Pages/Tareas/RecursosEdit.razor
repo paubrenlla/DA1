@@ -1,0 +1,116 @@
+@page "/proyectos/{idProyecto:int}/tareas/{idTarea:int}/recursos/{idRecurso:int}/editar"
+
+<PageTitle>Editar Recurso</PageTitle>
+
+@using BusinessLogic
+@using UserInterface.Data
+@inject DB DataBase
+@inject NavigationManager NavigationManager
+@inject SessionLogic SessionLogic
+
+<h1>Editar Recurso</h1>
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger">@mensajeError</div>
+}
+
+<form onsubmit="return false">
+    <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input type="text" class="form-control" id="nombre" @bind="nombreNuevo">
+    </div>
+
+    <div class="form-group">
+        <label for="tipo">Tipo</label>
+        <input type="text" class="form-control" id="tipo" @bind="tipoNuevo">
+    </div>
+
+    <div class="form-group">
+        <label for="descripcion">Descripción</label>
+        <input type="text" class="form-control" id="descripcion" @bind="descripcionNueva">
+    </div>
+
+    <div class="form-group">
+        <label for="cantidadRecurso">Cantidad del recurso</label>
+        <input type="number" class="form-control" id="cantidadRecurso" @bind="cantidadRecurso">
+    </div>
+
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="compartir" @bind="compartirNuevo">
+        <label class="form-check-label" for="compartir">Se puede compartir</label>
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Guardar cambios" @onclick="GuardarCambios">
+</form>
+
+@code {
+    [Parameter]
+    public int idProyecto { get; set; }
+    
+    [Parameter]
+    public int idTarea { get; set; }
+    
+    [Parameter]
+    public int idRecurso { get; set; }
+
+    private string nombreNuevo;
+    private string tipoNuevo;
+    private string descripcionNueva;
+    private int cantidadRecurso;
+    private bool compartirNuevo;
+    private string mensajeError;
+
+    private Recurso recursoACambiar;
+    private bool yaVerifiqueSesion = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!yaVerifiqueSesion)
+        {
+            yaVerifiqueSesion = true;
+
+            var activo = await SessionLogic.isUserActive();
+            if (!activo)
+            {
+                NavigationManager.NavigateTo("/Login");
+                return;
+            }
+
+            try
+            {
+                recursoACambiar = DataBase.buscarRecursoPorId(idRecurso);
+                if (recursoACambiar == null)
+                {
+                    mensajeError = $"Recurso con ID {idRecurso} no encontrado.";
+                    return;
+                }
+
+                nombreNuevo = recursoACambiar.Nombre;
+                tipoNuevo = recursoACambiar.Tipo;
+                descripcionNueva = recursoACambiar.Descripcion;
+                cantidadRecurso = recursoACambiar.CantidadDelRecurso;
+                compartirNuevo = recursoACambiar.SePuedeCompartir;
+
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                mensajeError = ex.Message;
+            }
+        }
+    }
+
+    private void GuardarCambios()
+    {
+        try
+        {
+            recursoACambiar.Modificar(nombreNuevo, tipoNuevo, descripcionNueva, cantidadRecurso, compartirNuevo);
+            NavigationManager.NavigateTo($"/proyectos/{idProyecto}/tareas/{idTarea}/recursos");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+}
