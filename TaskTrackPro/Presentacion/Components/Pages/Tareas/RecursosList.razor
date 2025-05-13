@@ -1,0 +1,75 @@
+@page "/proyectos/{idProyecto:int}/tareas/{idTarea:int}/recursos"
+@using BusinessLogic
+@using UserInterface.Data
+@inject SessionLogic SessionLogic
+@inject NavigationManager NavigationManager
+
+
+@inject DB BaseDeDatos
+
+<h1>
+    RecursosNecesarios
+    <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="/recursos/crear">Agregar</a>
+</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Tipo</th>
+        <th>Descripción</th>
+        <th>Cantidad</th>
+        <th>En uso</th>
+        <th>Se comparten</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (RecursoNecesario recursoNecesario in listaDeRecursosNecesarios)
+    {
+        Recurso recurso = recursoNecesario.Recurso;
+        <tr>
+            <td>@recurso.Nombre</td>
+            <td>@recurso.Tipo</td>
+            <td>@recurso.Descripcion</td>
+            <td>@recurso.CantidadDelRecurso.ToString()</td>
+            <td>@recurso.CantidadEnUso.ToString()</td>
+            <td>@recurso.SePuedeCompartir</td>
+            <td>
+                <a class="btn btn-success btn-sm" href="recursos/@recurso.Id/editar/">Editar</a>
+                <button class="btn btn-danger btn-sm">Eliminar</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public int idProyecto { get; set; }
+    
+    [Parameter]
+    public int idTarea { get; set; }
+    
+    private List<RecursoNecesario>? listaDeRecursosNecesarios = new List<RecursoNecesario>();
+    private bool yaVerifiqueSesion = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var isUserActive = await SessionLogic.isUserActive();
+        if (firstRender && !yaVerifiqueSesion)
+        {
+            if (!isUserActive)
+            {
+                NavigationManager.NavigateTo("/Login");
+            }
+            else
+            {
+                Proyecto proyectoActual = BaseDeDatos.buscarProyectoPorId(idProyecto);
+                Tarea tareaActual = proyectoActual.BuscarTareaPorId(idTarea);
+                listaDeRecursosNecesarios = tareaActual.RecursosNecesarios;
+                StateHasChanged();
+            }
+        }
+    }
+}

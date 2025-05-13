@@ -249,9 +249,9 @@ namespace BusinessLogic_Tests
             Tarea tarea = new Tarea("Tarea Test", "Descripción Test", DateTime.Today, TimeSpan.FromHours(2), false);
             tarea.AgregarRecurso(RECURSO_VALIDO, 2);
 
-            Assert.AreEqual(1, tarea.Recursos.Count);
-            Assert.AreEqual(RECURSO_VALIDO, tarea.Recursos[0].Recurso);
-            Assert.AreEqual(2, tarea.Recursos[0].CantidadNecesaria);
+            Assert.AreEqual(1, tarea.RecursosNecesarios.Count);
+            Assert.AreEqual(RECURSO_VALIDO, tarea.RecursosNecesarios[0].Recurso);
+            Assert.AreEqual(2, tarea.RecursosNecesarios[0].CantidadNecesaria);
         }
 
         [TestMethod]
@@ -262,8 +262,8 @@ namespace BusinessLogic_Tests
             tarea.AgregarRecurso(RECURSO_VALIDO, 2);
             tarea.AgregarRecurso(RECURSO_VALIDO, 3);
 
-            Assert.AreEqual(1, tarea.Recursos.Count);
-            Assert.AreEqual(5, tarea.Recursos[0].CantidadNecesaria);
+            Assert.AreEqual(1, tarea.RecursosNecesarios.Count);
+            Assert.AreEqual(5, tarea.RecursosNecesarios[0].CantidadNecesaria);
         }
 
         [TestMethod]
