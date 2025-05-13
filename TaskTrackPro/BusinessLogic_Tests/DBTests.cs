@@ -14,6 +14,7 @@ public class DBTests
         Assert.AreEqual(0, db.ListaProyectos.Count);
         Assert.AreEqual(0, db.ListaRecursos.Count);
         Assert.AreEqual(0, db.ListaUsuarios.Count);
+        Assert.AreEqual(0, db.ListaNotificaciones.Count);
     }
     
     [TestMethod]
