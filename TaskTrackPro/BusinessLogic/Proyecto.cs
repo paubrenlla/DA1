@@ -13,6 +13,7 @@ public class Proyecto
     public Usuario Admin { get; set; }
     
     public List<Recurso> RecursosAsociados { get; set; }
+    public DateTime? FinEstimado { get; set; }
     
     public string Nombre
     {
@@ -46,7 +47,8 @@ public class Proyecto
             _fechaInicio = value;
         }
     }
-    
+
+
 
     public Proyecto(string nombre, string descripcion, DateTime fechaInicio)
     {
@@ -249,5 +251,10 @@ public class Proyecto
     public Tarea? BuscarTareaPorId(int id)
     {
         return TareasAsociadas.FirstOrDefault(r => r.Id == id);
+    }
+    
+    public void CalcularFinEstimado()
+    {
+        FinEstimado= TareasAsociadas.Max(t=>t.EarlyFinish);
     }
 }
