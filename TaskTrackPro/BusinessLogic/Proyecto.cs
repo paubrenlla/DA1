@@ -262,4 +262,9 @@ public class Proyecto
     {
         return TareasAsociadas.Where(t => t.Holgura != TimeSpan.Zero).ToList();
     }
+
+    public DateTime InicioVerdadero()
+    {
+        return TareasAsociadas.Min(t=>t.EarlyStart);
+    }
 }
