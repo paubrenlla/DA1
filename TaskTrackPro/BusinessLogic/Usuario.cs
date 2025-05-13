@@ -33,7 +33,6 @@ public class Usuario
         Id = _contadorId++;
     }
     
-    //Properties
     public string Email
     {
         get => _email;

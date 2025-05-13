@@ -6,6 +6,7 @@ public class DB
     public List<Proyecto> ListaProyectos { get; set; }
     public List<Recurso> ListaRecursos { get; set; }
     public List<Usuario> ListaUsuarios { get; set; }
+    public List<Notificacion> ListaNotificaciones { get; set; }
 
     public DB()
     {
@@ -13,6 +14,7 @@ public class DB
         ListaProyectos = new List<Proyecto>();
         ListaRecursos = new List<Recurso>();
         ListaUsuarios = new List<Usuario>();
+        ListaNotificaciones = new List<Notificacion>();
     }
     
     public DB(bool precargarDatos) : this()
@@ -122,6 +124,25 @@ public class DB
         tarea1.AgregarDependencia(tarea2);
         tarea4.AgregarDependencia(tarea3);
         tarea4.AgregarDependencia(tarea5);
+
+        Notificacion bienvenida = new Notificacion("Bienvenidos a Task Track Pro!");
+        Notificacion lema = new Notificacion("El lema de la empresa es: Trabajas más así trabajas menos para poder trabajar más!! (el lema está work in progress)");
+        Notificacion aviso = new Notificacion("Por motivos de productivadad reduciremos la hora de descanso a 5 minutos , gracias por su comprensión :D");
+        
+        ListaNotificaciones.Add(bienvenida);
+        ListaNotificaciones.Add(lema);
+        ListaNotificaciones.Add(aviso);
+        
+        bienvenida.AgregarUsuario(usuarioAdmin);
+        aviso.AgregarUsuario(usuarioAdmin);
+        bienvenida.AgregarUsuario(usuario1);
+        bienvenida.AgregarUsuario(usuario2);
+        bienvenida.AgregarUsuario(usuario3);
+        bienvenida.AgregarUsuario(usuario4);
+        lema.AgregarUsuario(usuario1);
+        lema.AgregarUsuario(usuario2);
+        lema.AgregarUsuario(usuario3);
+        lema.AgregarUsuario(usuario4);
     }
     
     public DB(Usuario user) : this()
@@ -206,5 +227,24 @@ public class DB
     public Recurso? buscarRecursoPorId(int id)
     {
         return ListaRecursos.FirstOrDefault(r => r.Id == id);
+    }
+    
+    public void agregarNotificacion(Notificacion notificacion)
+    {
+        ListaNotificaciones.Add(notificacion);
+    }
+    
+        
+    public Notificacion buscarNotificaciónPorId(int i)
+    {
+        return ListaNotificaciones.FirstOrDefault(n => n.Id == i);
+    }
+
+    public List<Notificacion> NotificacionesNoLeidas(Usuario usuario)
+    {
+       return ListaNotificaciones
+            .Where(n => n.UsuariosNotificados.Contains(usuario) &&
+                        !n.VistaPorUsuarios.Contains(usuario))
+            .ToList();
     }
 }

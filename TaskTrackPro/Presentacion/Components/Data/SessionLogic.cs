@@ -42,8 +42,12 @@ public class SessionLogic
 
     public async Task<Usuario?> GetCurrentUser()
     {
-        return await _localStorage.GetItemAsync<Usuario>(CURRENT_USER);
+        var storedUser = await _localStorage.GetItemAsync<Usuario>(CURRENT_USER);
+        if (storedUser == null) return null;
+
+        return _db.ListaUsuarios.FirstOrDefault(u => u.Email == storedUser.Email);
     }
+
     
     public async Task<bool> EsAdminSistema()
     {
