@@ -26,6 +26,7 @@ public class DBTests
         Assert.IsFalse(0 == db.ListaUsuarios.Count);
         Assert.IsFalse(0 == db.ListaProyectos.Count);
         Assert.IsFalse(0 == db.ListaRecursos.Count);
+        Assert.IsFalse(0 == db.ListaNotificaciones.Count);
     }
     
     
