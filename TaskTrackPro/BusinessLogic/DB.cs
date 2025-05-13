@@ -57,12 +57,12 @@ public class DB
         proyecto3.agregarMiembro(usuario1);
         proyecto3.agregarMiembro(usuario2);
         
-        Tarea tarea1 = new Tarea("Planificación inicial", "Definir metas y responsables", new DateTime(2025, 5, 14, 9, 0, 0), TimeSpan.FromHours(2), true);
-        Tarea tarea2 = new Tarea("Revisión de requisitos", "Revisión con el cliente", new DateTime(2025, 5, 15, 10, 0, 0), TimeSpan.FromHours(3), false);
+        Tarea tarea1 = new Tarea("Planificación inicial", "Definir metas y responsables", new DateTime(2025, 5, 14, 9, 0, 0), TimeSpan.FromHours(2), false);
+        Tarea tarea2 = new Tarea("Revisión de requisitos", "Revisión con el cliente", new DateTime(2025, 5, 15, 10, 0, 0), TimeSpan.FromHours(3), true);
         proyecto1.agregarTarea(tarea1);
         proyecto1.agregarTarea(tarea2);
 
-        Tarea tarea3 = new Tarea("Diseño de arquitectura", "Definir la estructura general del sistema", new DateTime(2025, 5, 16, 9, 0, 0), TimeSpan.FromHours(4), true);
+        Tarea tarea3 = new Tarea("Diseño de arquitectura", "Definir la estructura general del sistema", new DateTime(2025, 5, 16, 9, 0, 0), TimeSpan.FromHours(4), false);
         Tarea tarea4 = new Tarea("Prueba de conceptos", "Prototipo funcional", new DateTime(2025, 5, 17, 14, 0, 0), TimeSpan.FromHours(2), false);
         Tarea tarea5 = new Tarea("Desarrollo base de datos", "Diseño e implementación del modelo", new DateTime(2025, 5, 18, 9, 0, 0), TimeSpan.FromHours(5), true);
         proyecto2.agregarTarea(tarea3);
@@ -70,7 +70,7 @@ public class DB
         proyecto2.agregarTarea(tarea5);
 
         Tarea tarea6 = new Tarea("Testing de integración", "Pruebas de módulos integrados", new DateTime(2025, 5, 20, 10, 0, 0), TimeSpan.FromHours(3), false);
-        Tarea tarea7 = new Tarea("Documentación", "Generar documentación para el usuario final", new DateTime(2025, 5, 21, 11, 0, 0), TimeSpan.FromHours(2), false);
+        Tarea tarea7 = new Tarea("Documentación", "Generar documentación para el usuario final", new DateTime(2025, 5, 21, 11, 0, 0), TimeSpan.FromHours(2), true);
         proyecto3.agregarTarea(tarea6);
         proyecto3.agregarTarea(tarea7);
 
