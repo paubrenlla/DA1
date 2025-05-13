@@ -372,4 +372,25 @@ public class DBTests
         
         Assert.AreEqual(resultado, notificacion);
     }
+
+    [TestMethod]
+    public void DevolverNotificacionesNoLeidasDeUnUsuario()
+    {
+        DB db = new DB();
+        Notificacion notificacion = new Notificacion("Notificación de prueba");
+        Notificacion notificacion2 = new Notificacion("Notificación de prueba");
+        Usuario usuario1 = new Usuario("correo@gmail.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
+
+        db.agregarNotificacion(notificacion);
+        db.agregarNotificacion(notificacion2);
+        db.agregarUsuario(usuario1);
+        notificacion.AgregarUsuario(usuario1);
+        notificacion2.AgregarUsuario(usuario1);
+        notificacion.MarcarComoVista(usuario1);
+        
+        List<Notificacion> noLeidas = db.NotificacionesNoLeidas(usuario1);
+        
+        Assert.IsNotNull(noLeidas);
+        Assert.AreEqual(notificacion2.Id, noLeidas[0].Id);
+    }
 }
