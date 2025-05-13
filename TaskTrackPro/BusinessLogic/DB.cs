@@ -233,4 +233,10 @@ public class DB
     {
         ListaNotificaciones.Add(notificacion);
     }
+    
+        
+    public Notificacion buscarNotificaciónPorId(int i)
+    {
+        return ListaNotificaciones.FirstOrDefault(n => n.Id == i);
+    }
 }
