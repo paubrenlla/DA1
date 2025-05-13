@@ -13,5 +13,4 @@ public class NotificacionTests
       Assert.AreEqual(mensaje, notificacion.Mensaje);
   }
   
-  
 }
