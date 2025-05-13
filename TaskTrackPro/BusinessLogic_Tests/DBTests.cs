@@ -356,4 +356,20 @@ public class DBTests
 
         Assert.IsNull(resultado);
     }
+    
+    [TestMethod]
+    public void BuscarNotificacionPorIdDevuelveNotificacionCorrecta()
+    {
+        DB db = new DB();
+
+        Notificacion notificacion = new Notificacion("Notificación de prueba");
+        Notificacion notificacion2 = new Notificacion("Notificación de prueba");
+        
+        db.agregarNotificacion(notificacion);
+        db.agregarNotificacion(notificacion2);
+
+        Notificacion resultado= db.buscarNotificaciónPorId(notificacion.Id);
+        
+        Assert.AreEqual(resultado, notificacion);
+    }
 }
