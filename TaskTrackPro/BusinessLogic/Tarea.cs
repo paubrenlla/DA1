@@ -38,7 +38,7 @@ public IReadOnlyList<Usuario> UsuariosAsignados => _usuariosAsignados.AsReadOnly
         FechaInicio = fechaInicio;
         Duracion = duracion;
         EsCritica = esCritica;
-        Id = ++_contadorId;
+        Id = _contadorId++;
     }
     public int Id
     {
