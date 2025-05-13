@@ -1,0 +1,50 @@
+@page "/proyectos/{id:int}/tareas"
+@using BusinessLogic
+
+@inject DB BaseDeDatos
+
+<h1>
+    Tareas
+    <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="proyectos/@id/tareas/crear">Crear +</a>
+</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Titulo</th>
+        <th>Descripción</th>
+        <th>Fecha de inicio</th>
+        <th>Duración</th>
+        <th>Es crítica</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var tarea in ListaDeTareas)
+    {
+        <tr>
+            <td>@tarea.Titulo</td>
+            <td>@tarea.Descripcion</td>
+            <td>@tarea.FechaInicio</td>
+            <td>@tarea.Duracion</td>
+            <td>@tarea.EsCritica</td>
+            <td>
+                <a class="btn btn-success btn-sm" href="proyectos/@id/tareas/@tarea.Id/editar">Editar</a>
+                <button class="btn btn-danger btn-sm">Eliminar</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    
+    private List<Tarea>? ListaDeTareas = new List<Tarea>();
+
+    protected override void OnInitialized()
+    {
+        ListaDeTareas = BaseDeDatos.buscarProyectoPorId(@id).TareasAsociadas;
+    }
+}

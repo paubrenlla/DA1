@@ -1,0 +1,76 @@
+@page "/proyectos/{id:int}/tareas/crear/"
+
+<PageTitle>Crear Tarea</PageTitle>
+
+@using BusinessLogic
+@inject DB DataBase
+@inject NavigationManager NavigationManager
+
+<h1>Crear Tarea</h1>
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger">@mensajeError</div>
+}
+
+<form onsubmit="return false">
+    <div class="form-group">
+        <label for="titulo">Título</label>
+        <input type="text" class="form-control" id="titulo" @bind="titulo">
+    </div>
+
+    <div class="form-group">
+        <label for="descripcion">Descripción</label>
+        <input type="text" class="form-control" id="descripcion" @bind="descripcion">
+    </div>
+
+    <div class="form-group">
+        <label for="fechaInicio">Fecha de Inicio</label>
+        <input type="date" class="form-control" id="fechaInicio" @bind="fechaInicio" />
+    </div>
+
+    <div class="form-group">
+        <label>Duración (días:horas)</label>
+        <div class="d-flex align-items-center">
+            <input type="number" class="form-control me-1" style="width: 80px;" min="0" @bind="dias" />
+            <span class="mx-1">:</span>
+            <input type="number" class="form-control ms-1" style="width: 80px;" min="0" max="23" @bind="horas" />
+        </div>
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Guardar cambios" style="margin-top: 5px" @onclick="Crear_Tarea">
+</form>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private string titulo;
+    private string descripcion;
+    private DateTime fechaInicio;
+
+    private int dias = 0;
+    private int horas = 0;
+
+    private bool esCritica;
+    private string mensajeError;
+
+    private void Crear_Tarea()
+    {
+        mensajeError = "";
+
+        try
+        {
+            TimeSpan duracion = new TimeSpan(dias, horas, 0, 0);
+
+            Tarea tarea = new Tarea(titulo, descripcion, fechaInicio, duracion, esCritica);
+            DataBase.buscarProyectoPorId(id).agregarTarea(tarea);
+            NavigationManager.NavigateTo($"/proyectos/{id}/tareas/");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+}
+

@@ -1,0 +1,102 @@
+@page "/proyectos/{idProyecto:int}/tareas/{idTarea:int}/editar"
+
+<PageTitle>Editar Tarea</PageTitle>
+
+@using BusinessLogic
+@inject DB DataBase
+@inject NavigationManager NavigationManager
+
+<h1>Editar Tarea</h1>
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger">@mensajeError</div>
+}
+
+<form onsubmit="return false">
+    <div class="form-group">
+        <label for="titulo">Título</label>
+        <input type="text" class="form-control" id="titulo" @bind="tituloNuevo">
+    </div>
+
+    <div class="form-group">
+        <label for="descripcion">Descripción</label>
+        <input type="text" class="form-control" id="descripcion" @bind="descripcionNueva">
+    </div>
+
+    <div class="form-group">
+        <label for="fechaInicio">Fecha de Inicio</label>
+        <input type="date" class="form-control" id="fechaInicio" @bind="fechaInicioNueva">
+    </div>
+
+    <div class="form-group">
+        <label>Duración (días:horas)</label>
+        <div class="d-flex align-items-center">
+            <input type="number" class="form-control me-1" style="width: 80px;" min="0" @bind="diasNuevo">
+            <span class="mx-1">:</span>
+            <input type="number" class="form-control ms-1" style="width: 80px;" min="0" max="23" @bind="horasNuevo">
+        </div>
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Guardar cambios" style="margin-top: 5px" @onclick="GuardarCambios">
+</form>
+
+@code {
+    [Parameter]
+    public int idProyecto { get; set; }
+    
+    [Parameter]
+    public int idTarea { get; set; }
+
+    private string tituloNuevo;
+    private string descripcionNueva;
+    private DateTime fechaInicioNueva;
+    
+    private int diasNuevo;
+    private int horasNuevo;
+    TimeSpan duracionNueva;
+    
+    private string mensajeError;
+
+    Tarea tareaACambiar;
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            tareaACambiar = DataBase.buscarProyectoPorId(idProyecto).BuscarTareaPorId(idTarea);
+            if (tareaACambiar == null)
+            {
+                mensajeError = $"Tarea con ID {idTarea} no encontrada.";
+                return;
+            }
+
+            tituloNuevo = tareaACambiar.Titulo;
+            descripcionNueva = tareaACambiar.Descripcion;
+            fechaInicioNueva = tareaACambiar.FechaInicio;
+            duracionNueva = tareaACambiar.Duracion;
+
+            diasNuevo = duracionNueva.Days;
+            horasNuevo = duracionNueva.Hours;
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+
+    private void GuardarCambios()
+    {
+        try
+        {
+            duracionNueva = new TimeSpan(diasNuevo, horasNuevo, 0, 0);
+            tareaACambiar.Modificar(tituloNuevo, descripcionNueva, fechaInicioNueva, duracionNueva);
+            NavigationManager.NavigateTo($"proyectos/{idProyecto}/tareas");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+
+}

@@ -25,8 +25,8 @@
             <td>@proyecto.Descripcion</td>
             <td>@proyecto.FechaInicio.ToShortDateString()</td>
             <td>
-                <a class="btn btn-success btn-sm">Ver Tareas</a>
-                <a class="btn btn-success btn-sm">Agregar Tarea</a>
+                <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/tareas">Ver Tareas</a>
+                <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/tareas/crear">Agregar Tarea</a>
                 <a class="btn btn-success btn-sm">Ver Miembros</a>
                 <a class="btn btn-success btn-sm">Ruta Critica</a>
                 <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/editar/">Editar</a>
