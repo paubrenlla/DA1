@@ -3,8 +3,10 @@
 <PageTitle>Editar Usuario</PageTitle>
 
 @using BusinessLogic
+@using UserInterface.Data
 @inject DB DataBase
 @inject NavigationManager NavigationManager
+@inject SessionLogic SessionLogic
 
 <h1>Editar Usuario</h1>
 
@@ -39,6 +41,13 @@
         <input type="date" class="form-control" id="fecha" @bind="fechaNueva" />
     </div>
 
+    @if (!esAdmin)
+    {
+        <button class="btn btn-warning mt-3" @onclick="ConcederPrivilegios">
+            Conceder privilegios del sistema
+        </button>
+    }
+
     <input type="submit" class="btn btn-primary" value="Guardar cambios" @onclick="GuardarCambios">
 </form>
 
@@ -55,29 +64,43 @@
 
     Usuario usuarioACambiar;
 
-    protected override void OnInitialized()
-    {
-        try
+    @code {
+        private bool esAdmin;
+        private bool yaVerifiqueSesion = false;
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            usuarioACambiar = DataBase.buscarUsuarioPorId(id);
-            if (usuarioACambiar == null)
+            if (!yaVerifiqueSesion)
             {
-                mensajeError = $"Usuario no encontrado.";
-                return;
+                yaVerifiqueSesion = true;
+
+                var activo = await SessionLogic.isUserActive();
+                if (!activo)
+                {
+                    NavigationManager.NavigateTo("/Login");
+                    return;
+                }
+
+                usuarioACambiar = DataBase.buscarUsuarioPorId(id);
+                esAdmin = DataBase.AdministradoresSistema.Contains(usuarioACambiar);
+                if (usuarioACambiar != null)
+                {
+                    emailNuevo = usuarioACambiar.Email;
+                    nombreNuevo = usuarioACambiar.Nombre;
+                    apellidoNuevo = usuarioACambiar.Apellido;
+                    contraseñaNuevo = usuarioACambiar.Pwd;
+                    fechaNueva = usuarioACambiar.FechaNacimiento;
+                }
+                else
+                {
+                    mensajeError = "Usuario no encontrado.";
+                }
+
+                StateHasChanged();
             }
+        }
 
-            emailNuevo = usuarioACambiar.Email;
-            nombreNuevo = usuarioACambiar.Nombre;
-            apellidoNuevo = usuarioACambiar.Apellido;
-            contraseñaNuevo = usuarioACambiar.Pwd;
-            fechaNueva = usuarioACambiar.FechaNacimiento;
-        }
-        catch (Exception ex)
-        {
-            mensajeError = ex.Message;
-        }
     }
-
     private void GuardarCambios()
     {
         try
@@ -90,4 +113,14 @@
             mensajeError = ex.Message;
         }
     }
+    
+    private void ConcederPrivilegios()
+    {
+        if (!DataBase.AdministradoresSistema.Contains(usuarioACambiar))
+        {
+            DataBase.AdministradoresSistema.Add(usuarioACambiar);
+            esAdmin = true;
+        }
+    }
+
 }

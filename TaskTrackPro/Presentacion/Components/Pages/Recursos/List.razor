@@ -1,5 +1,9 @@
 ﻿@page "/recursos"
 @using BusinessLogic
+@using UserInterface.Data
+@inject SessionLogic SessionLogic
+@inject NavigationManager NavigationManager
+
 
 @inject DB BaseDeDatos
 
@@ -41,9 +45,22 @@
 
 @code {
     private List<Recurso>? listaDeRecursos = new List<Recurso>();
+    private bool yaVerifiqueSesion = false;
 
-    protected override void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        listaDeRecursos = BaseDeDatos.ListaRecursos;
+        var isUserActive = await SessionLogic.isUserActive();
+        if (firstRender && !yaVerifiqueSesion)
+        {
+            if (!isUserActive)
+            {
+                NavigationManager.NavigateTo("/Login");
+            }
+            else
+            {
+            listaDeRecursos = BaseDeDatos.ListaRecursos;
+            StateHasChanged();
+            }
+        }
     }
 }

@@ -1,48 +1,139 @@
 ﻿@page "/proyectos"
 @using BusinessLogic
-
+@using UserInterface.Data
 @inject DB BaseDeDatos
+@inject SessionLogic SessionManager
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
 
-<h1>
-    Proyectos
-    <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="/proyectos/crear">Crear +</a>
-</h1>
-
-<table class="table">
-    <thead>
-    <tr>
-        <th>Nombre</th>
-        <th>Descripción</th>
-        <th>Fecha de Inicio</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var proyecto in listaDeProyectos)
+@if (!_isLoaded)
+{
+    <div class="text-center mt-5">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+}
+else if (!_sesionActiva)
+{
+    <div class="alert alert-warning">
+        Redirigiendo al login...
+    </div>
+}
+else
+{
+    @if (_esAdminSistema)
     {
-        <tr>
-            <td>@proyecto.Nombre</td>
-            <td>@proyecto.Descripcion</td>
-            <td>@proyecto.FechaInicio.ToShortDateString()</td>
-            <td>
-                <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/tareas">Ver Tareas</a>
-                <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/tareas/crear">Agregar Tarea</a>
-                <a class="btn btn-success btn-sm">Ver Miembros</a>
-                <a class="btn btn-success btn-sm">Ruta Critica</a>
-                <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/editar/">Editar</a>
-
-
-            </td>
-        </tr>
+        <h1>
+            Proyectos del sistema
+            <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="/proyectos/crear">Crear +</a>
+        </h1>
     }
-    </tbody>
-</table>
+    else
+    {
+        <h1>
+            Mis Proyectos
+        </h1>
+    }
+
+    @if (_proyectosVisibles?.Any() == true)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Fecha de Inicio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var proyecto in _proyectosVisibles)
+                {
+                    <tr>
+                        <td>@proyecto.Nombre</td>
+                        <td>@proyecto.Descripcion</td>
+                        <td>@proyecto.FechaInicio.ToShortDateString()</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a class="btn btn-primary btn-sm" href="proyectos/@proyecto.Id/tareas">Ver Tareas</a>
+                                
+                                @if (_esAdminSistema || EsAdminDelProyecto(proyecto))
+                                {
+                                    <a class="btn btn-success btn-sm" href=href="proyectos/@proyecto.Id/tareas/crear">Agregar Tarea</a>
+                                    <a class="btn btn-success btn-sm">Ver Miembros</a>
+                                    <a class="btn btn-success btn-sm">Ruta Critica</a>
+                                    <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/editar/">Editar</a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No tienes proyectos asignados
+        </div>
+    }
+}
 
 @code {
-    private List<Proyecto>? listaDeProyectos = new List<Proyecto>();
+    private List<Proyecto>? _proyectosVisibles;
+    private Usuario? _usuarioLogueado;
+    private bool _esAdminSistema;
+    private bool _isLoaded;
+    private bool _sesionActiva;
 
-    protected override void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        listaDeProyectos = BaseDeDatos.ListaProyectos;
+        if (firstRender && !_isLoaded)
+        {
+            try
+            {
+                // Primero verificamos la sesión
+                _sesionActiva = await SessionManager.isUserActive();
+                
+                if (!_sesionActiva)
+                {
+                    Navigation.NavigateTo("/Login");
+                    return;
+                }
+
+                // Si la sesión está activa, cargamos los datos
+                _usuarioLogueado = await SessionManager.GetCurrentUser();
+                
+                if (_usuarioLogueado != null)
+                {
+                    _esAdminSistema = BaseDeDatos.AdministradoresSistema
+                        .Any(a => a.Email.Equals(_usuarioLogueado.Email, StringComparison.OrdinalIgnoreCase));
+                    
+                    _proyectosVisibles = _esAdminSistema 
+                        ? BaseDeDatos.ListaProyectos
+                        : BaseDeDatos.ListaProyectos
+                            .Where(p => p.Miembros.Any(m => m.Email.Equals(_usuarioLogueado.Email, StringComparison.OrdinalIgnoreCase)) || 
+                                       (p.Admin != null && p.Admin.Email.Equals(_usuarioLogueado.Email, StringComparison.OrdinalIgnoreCase)))
+                            .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                await JS.InvokeVoidAsync("console.error", "Error cargando proyectos:", ex);
+            }
+            finally
+            {
+                _isLoaded = true;
+                StateHasChanged();
+            }
+        }
+    }
+
+    private bool EsAdminDelProyecto(Proyecto proyecto)
+    {
+        return _usuarioLogueado != null && 
+               proyecto.Admin != null && 
+               proyecto.Admin.Email.Equals(_usuarioLogueado.Email, StringComparison.OrdinalIgnoreCase);
     }
 }

@@ -3,8 +3,10 @@
 <PageTitle>Crear Proyecto</PageTitle>
 
 @using BusinessLogic
+@using UserInterface.Data
 @inject DB DataBase
 @inject NavigationManager NavigationManager
+@inject SessionLogic SessionLogic
 
 <h1>Crear Proyecto</h1>
 
@@ -43,6 +45,20 @@
     private DateTime fecha;
     private string correoAdmin; 
     private string mensajeError;
+    private bool yaVerifiqueSesion = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!yaVerifiqueSesion)
+        {
+            yaVerifiqueSesion = true;
+            var activo = await SessionLogic.isUserActive();
+            if (!activo)
+            {
+                NavigationManager.NavigateTo("/Login");
+            }
+        }
+    }
 
     private void CrearProyecto()
     {
@@ -61,5 +77,4 @@
             mensajeError = ex.Message;
         }
     }
-
 }

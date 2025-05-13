@@ -14,17 +14,33 @@ public class DB
         ListaRecursos = new List<Recurso>();
         ListaUsuarios = new List<Usuario>();
     }
-
+    
     public DB(bool precargarDatos) : this()
     {
         Usuario usuario1 = new Usuario("mateomcelano@gmail.com", "Mateo", "Muñiz", "Contraseña1!", new DateTime(2002, 4, 24));
         Usuario usuario2 = new Usuario("bruno@gmail.com", "Bruno", "Fernández", "ClaveSegura2#", new DateTime(1988, 9, 30));
+        Usuario usuario3 = new Usuario("fgavello@gmail.com", "Bruno", "Fernández", "Fgavello.2025!", new DateTime(1988, 9, 30));
+
         ListaUsuarios.Add(usuario1);
         AdministradoresSistema.Add(usuario1);
         ListaUsuarios.Add(usuario2);
+        ListaUsuarios.Add(usuario3);
         
-        Proyecto proyecto1 = new Proyecto("Proyecto prueba", "Este es un proyecto de prueba", DateTime.Now);
+        Proyecto proyecto1 = new Proyecto("Proyecto prueba1", "Este es un proyecto de prueba1", DateTime.Now);
+        Proyecto proyecto2 = new Proyecto("Proyecto prueba2", "Este es un proyecto de prueba2", DateTime.Now);
+        Proyecto proyecto3 = new Proyecto("Proyecto prueba3", "Este es un proyecto de prueba3", DateTime.Now);
         ListaProyectos.Add(proyecto1);
+
+        ListaProyectos.Add(proyecto2);
+        ListaProyectos.Add(proyecto3);
+        
+        
+        proyecto3.agregarMiembro(usuario3);
+        proyecto3.AsignarAdmin(usuario3);
+        proyecto2.agregarMiembro(usuario3);
+
+        proyecto1.Admin = usuario1;
+
 
         Recurso recurso1 = new Recurso("Auto", "Vehiculo","El auto de la empresa", false, 1, proyecto1);
         ListaRecursos.Add(recurso1);
