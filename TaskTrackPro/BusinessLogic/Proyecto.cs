@@ -245,4 +245,9 @@ public class Proyecto
        Descripcion = descripcionNueva;
        FechaInicio = fechaInicioNueva;
     }
+    
+    public Tarea? BuscarTareaPorId(int id)
+    {
+        return TareasAsociadas.FirstOrDefault(r => r.Id == id);
+    }
 }

@@ -16,6 +16,9 @@ public class ProyectoTests
         typeof(Proyecto)
             .GetField("_contadorId", BindingFlags.Static | BindingFlags.NonPublic)
             ?.SetValue(null, 1);
+        typeof(Tarea)
+            .GetField("_contadorId", BindingFlags.Static | BindingFlags.NonPublic)
+            ?.SetValue(null, 1);
     }
     
     [TestMethod]
@@ -435,6 +438,39 @@ public class ProyectoTests
         
         Assert.AreEqual(descNueva, proyecto.Descripcion);
         Assert.AreEqual(fechaNueva, proyecto.FechaInicio);
+    }
+    
+    [TestMethod]
+    public void BuscarTareaPorId_TareaExiste_ReturnsTarea()
+    {
+        Proyecto proyecto = new Proyecto("Proyecto de prueba", "Descripción del proyecto", DateTime.Now);
+        Tarea tarea1 = new Tarea("Tarea 1", "descripcion", DateTime.Now,VALID_TIMESPAN, false);
+        Tarea tarea2 = new Tarea("Tarea 2", "descripcion", DateTime.Now,VALID_TIMESPAN, false);
+
+        proyecto.agregarTarea(tarea1);
+        proyecto.agregarTarea(tarea2);
+
+        Tarea resultado = proyecto.BuscarTareaPorId(1);
+
+        Assert.IsNotNull(resultado);
+        Assert.AreEqual(tarea1, resultado);
+    }
+
+    [TestMethod]
+    public void BuscarTareaPorId_TareaNoExiste_ReturnsNull()
+    {
+        Proyecto proyecto = new Proyecto("Proyecto de prueba", "Descripción del proyecto", DateTime.Now);
+        Tarea tarea1 = new Tarea("Tarea 1", "descripcion", DateTime.Now,VALID_TIMESPAN, false);
+        Tarea tarea2 = new Tarea("Tarea 2", "descripcion", DateTime.Now,VALID_TIMESPAN, false);
+
+        proyecto.agregarTarea(tarea1);
+        proyecto.agregarTarea(tarea2);
+
+        proyecto.agregarRecurso(recurso);
+
+        Tarea resultado = proyecto.BuscarTareaPorId(8);
+
+        Assert.IsNull(resultado);
     }
 }
 
