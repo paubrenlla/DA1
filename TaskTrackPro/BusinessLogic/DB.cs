@@ -239,4 +239,12 @@ public class DB
     {
         return ListaNotificaciones.FirstOrDefault(n => n.Id == i);
     }
+
+    public List<Notificacion> NotificacionesNoLeidas(Usuario usuario)
+    {
+       return ListaNotificaciones
+            .Where(n => n.UsuariosNotificados.Contains(usuario) &&
+                        !n.VistaPorUsuarios.Contains(usuario))
+            .ToList();
+    }
 }
