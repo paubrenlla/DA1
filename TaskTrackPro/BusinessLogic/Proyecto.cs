@@ -140,7 +140,7 @@ public class Proyecto
 
             if (tarea.TareasDependencia.Count == 0)
             {
-                tarea.EarlyStart = FechaInicio;
+                tarea.EarlyStart = tarea.FechaInicio;
             }
             else
             {
@@ -213,7 +213,7 @@ public class Proyecto
         {
             tarea.Holgura = tarea.LateStart - tarea.EarlyStart;
         }
-
+        
         return TareasAsociadas.Where(t => t.Holgura == TimeSpan.Zero).ToList();
     }
 
@@ -256,5 +256,10 @@ public class Proyecto
     public void CalcularFinEstimado()
     {
         FinEstimado= TareasAsociadas.Max(t=>t.EarlyFinish);
+    }
+
+    public List<Tarea> TareasNoCriticas()
+    {
+        return TareasAsociadas.Where(t => t.Holgura != TimeSpan.Zero).ToList();
     }
 }
