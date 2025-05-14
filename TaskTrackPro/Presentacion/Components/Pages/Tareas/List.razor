@@ -38,6 +38,13 @@
                         disabled="@(!PuedeCambiarEstado(tarea.EstadoActual.Valor))">
                     Editar estado
                 </button>
+                <button class="btn btn-primary btn-sm"
+                        @onclick="() => AbrirModalDependencias(tarea)"
+                        disabled="@(!PuedeAgregarDependencias(tarea))">
+                    Dependencias
+                </button>
+
+
                 <a class="btn btn-success btn-sm" href="proyectos/@id/tareas/@tarea.Id/miembros">Ver miembros</a>
                 <a class="btn btn-success btn-sm" href="proyectos/@id/tareas/@tarea.Id/recursos">Recursos necesarios</a>
                 <button class="btn btn-danger btn-sm">Eliminar</button>
@@ -52,9 +59,15 @@
     public int id { get; set; }
     
     private List<Tarea>? ListaDeTareas = new List<Tarea>();
+    
     bool mostrarModalEstado = false;
     Tarea? tareaSeleccionada;
     TipoEstadoTarea nuevoEstado;
+    
+    bool mostrarModalDependencias = false;
+    List<Tarea>? tareasDisponiblesParaAgregar = new List<Tarea>();
+    Tarea? tareaDependenciaSeleccionada;
+    int? tareaDependenciaSeleccionadaId = null;
 
     protected override void OnInitialized()
     {
@@ -99,6 +112,42 @@
             tareaSeleccionada = null;
         }
     }
+    
+    bool PuedeAgregarDependencias(Tarea tarea)
+    {
+        return tarea.EstadoActual.Valor == TipoEstadoTarea.Pendiente ||
+               tarea.EstadoActual.Valor == TipoEstadoTarea.Bloqueada;
+    }
+    
+    void AbrirModalDependencias(Tarea tarea)
+    {
+        tareaSeleccionada = tarea;
+        tareasDisponiblesParaAgregar = ListaDeTareas
+            .Where(t => t.Id != tarea.Id && !tarea.TareasDependencia.Contains(t)).ToList();
+        mostrarModalDependencias = true;
+    }
+
+    void AgregarDependencia()
+    {
+        if (tareaSeleccionada != null && tareaDependenciaSeleccionadaId.HasValue)
+        {
+            var tareaADepender = tareasDisponiblesParaAgregar
+                .FirstOrDefault(t => t.Id == tareaDependenciaSeleccionadaId.Value);
+        
+            if (tareaADepender != null)
+            {
+                tareaSeleccionada.AgregarDependencia(tareaADepender);
+                tareaDependenciaSeleccionadaId = null;
+            }
+        }
+    }
+
+    void CerrarModalDependencias()
+    {
+        mostrarModalDependencias = false;
+        tareaSeleccionada = null;
+        tareaDependenciaSeleccionada = null;
+    }
 }
 
 @if (mostrarModalEstado)
@@ -117,7 +166,7 @@
                             if (tareaSeleccionada != null && PuedeElegir(tareaSeleccionada.EstadoActual.Valor, estado))
                             {
                                 <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="estado" />
+                                    <InputRadio class="form-check-input" Value="@estado" />
                                     <label class="form-check-label">@estado</label>
                                 </div>
                             }
@@ -133,3 +182,57 @@
     </div>
     <div class="modal-backdrop fade show"></div>
 }
+
+@if (mostrarModalDependencias)
+{
+    <div class="modal show d-block" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Dependencias de la tarea: @tareaSeleccionada?.Titulo</h5>
+                    <button type="button" class="btn-close" @onclick="CerrarModalDependencias"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Tareas de las que depende:</h6>
+                    @if (tareaSeleccionada?.TareasDependencia?.Any() == true) 
+                    {
+                        <ul class="list-group mb-3">
+                            @foreach (Tarea dep in tareaSeleccionada.TareasDependencia)
+                        {
+                            <li class="list-group-item">@dep.Titulo</li>
+                        }
+                        </ul>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">Esta tarea no depende de ninguna otra.</div>
+                    }
+
+                    <h6>Agregar nueva dependencia</h6>
+                    @if (tareasDisponiblesParaAgregar.Any())
+                    {
+                        <div class="input-group mb-3">
+                            <select class="form-select" @bind="tareaDependenciaSeleccionadaId">
+                                <option value="">-- Seleccionar tarea --</option>
+                                @foreach (Tarea tarea in tareasDisponiblesParaAgregar)
+                                {
+                                    <option value="@tarea.Id">@tarea.Titulo</option>
+                                }
+                            </select>
+                            <button class="btn btn-outline-primary" @onclick="AgregarDependencia">Agregar</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-secondary">No hay tareas disponibles para agregar como dependencia.</div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CerrarModalDependencias">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
