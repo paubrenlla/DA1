@@ -267,4 +267,12 @@ public class Proyecto
     {
         return TareasAsociadas.Min(t=>t.EarlyStart);
     }
+    
+    public int CalcularDiasTotales()
+    {
+        if (TareasAsociadas.Count == 0 || FinEstimado == null)
+            return 0;
+
+        return (FinEstimado.Value - InicioVerdadero()).Days + 1;
+    }
 }
