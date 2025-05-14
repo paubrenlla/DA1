@@ -150,6 +150,31 @@ public class ProyectoTests
     }
     
     [TestMethod]
+    public void AgregarTarea_TituloUnico_DeberiaAgregarTarea()
+    {
+        Proyecto proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now.AddDays(1));
+        Tarea tarea1 = new Tarea("Tarea 1", "Descripcion",DateTime.Now.AddDays(1), VALID_TIMESPAN, false);
+        Tarea tarea2 = new Tarea("Tarea 2", "Descripcion",DateTime.Now.AddDays(1), VALID_TIMESPAN, false);
+
+        
+        proyecto.agregarTarea(tarea1);
+        proyecto.agregarTarea(tarea2);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AgregarTarea_TituloRepetido_DeberiaLanzarExcepcion()
+    {
+        Proyecto proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now.AddDays(1));
+        Tarea tarea1 = new Tarea("Tarea Duplicada", "descripcion 1", DateTime.Now.AddDays(1), VALID_TIMESPAN, false);
+        Tarea tarea2 = new Tarea("Tarea Duplicada", "descripcion 2" ,DateTime.Now.AddDays(2), VALID_TIMESPAN, false);
+
+        proyecto.agregarTarea(tarea1);
+
+        proyecto.agregarTarea(tarea2);
+    }
+    
+    [TestMethod]
     
     public void EliminarTareaDelProyectoConVariasTareas()
     {
