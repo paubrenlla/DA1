@@ -86,7 +86,7 @@ public class DB
         proyecto1.AsignarUsuarioATarea(usuario2, tarea2);
         proyecto1.AsignarUsuarioATarea(usuario3, tarea2);
         
-        Recurso recurso1 = new Recurso("Auto", "Vehiculo","El auto de la empresa", false, 1, proyecto1);
+        Recurso recurso1 = new Recurso("Auto", "Vehiculo","El auto de la empresa", false, 1);
         Recurso recurso2 = new Recurso("Desarrollador backend", "Empleado", "Desarrollador con preferencia backend", true, 3);
         Recurso recurso3 = new Recurso("Desarrollador frontend", "Empleado",  "Desarrollador con preferencia frontend", true, 3);
         Recurso recurso4 = new Recurso("UX/UI Designer", "Empleado",  "Diseñador", true, 2);

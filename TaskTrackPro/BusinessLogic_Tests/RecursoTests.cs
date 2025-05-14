@@ -24,7 +24,7 @@ public class RecursoTests
         int cantidadDelRecurso = 5; 
         Proyecto? proyecto = null;
 
-        Recurso recurso = new Recurso(nombre, tipo, descripcion, sePuedeCompartir, cantidadDelRecurso, proyecto);
+        Recurso recurso = new Recurso(nombre, tipo, descripcion, sePuedeCompartir, cantidadDelRecurso);
 
         Assert.AreEqual(nombre, recurso.Nombre);
         Assert.AreEqual(tipo, recurso.Tipo);
@@ -32,7 +32,6 @@ public class RecursoTests
         Assert.AreEqual(sePuedeCompartir, recurso.SePuedeCompartir);
         Assert.AreEqual(cantidadDelRecurso, recurso.CantidadDelRecurso);
         Assert.AreEqual(0, recurso.CantidadEnUso); 
-        Assert.AreEqual(proyecto, recurso.ProyectoAlQuePertenece);
     }
     
     [TestMethod]
@@ -52,7 +51,6 @@ public class RecursoTests
         Assert.AreEqual(sePuedeCompartir, recurso.SePuedeCompartir);
         Assert.AreEqual(cantidadDelRecurso, recurso.CantidadDelRecurso);
         Assert.AreEqual(0, recurso.CantidadEnUso); 
-        Assert.AreEqual(null, recurso.ProyectoAlQuePertenece);
     }
     
     [TestMethod]
@@ -65,7 +63,7 @@ public class RecursoTests
         int cantidadDelRecurso = 5; 
         Proyecto? proyecto = new Proyecto("Proyecto", "Descripcion", DateTime.Now);
 
-        Recurso recurso = new Recurso(nombre, tipo, descripcion, sePuedeCompartir, cantidadDelRecurso, proyecto);
+        Recurso recurso = new Recurso(nombre, tipo, descripcion, sePuedeCompartir, cantidadDelRecurso);
 
         Assert.AreEqual(nombre, recurso.Nombre);
         Assert.AreEqual(tipo, recurso.Tipo);
@@ -73,35 +71,34 @@ public class RecursoTests
         Assert.AreEqual(sePuedeCompartir, recurso.SePuedeCompartir);
         Assert.AreEqual(cantidadDelRecurso, recurso.CantidadDelRecurso);
         Assert.AreEqual(0, recurso.CantidadEnUso); 
-        Assert.AreEqual(proyecto, recurso.ProyectoAlQuePertenece);
     }
     
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
     public void CreoRecursoConNombreVacío()
     {
-        Recurso recurso = new Recurso("", "Vehiculo", "Auto de la empresa", false, 5, null);
+        Recurso recurso = new Recurso("", "Vehiculo", "Auto de la empresa", false, 5);
     }
     
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
     public void CreoRecursoSinTipo()
     {
-        Recurso recurso = new Recurso("Auto", "", "Auto de la empresa", false, 5, null);
+        Recurso recurso = new Recurso("Auto", "", "Auto de la empresa", false, 5);
     }
     
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void CreoRecursoConCantidadDelRecursoIgualA0()
     {
-        Recurso recurso = new Recurso("Auto", "Vechiculo", "Auto de la empresa", false, 0, null);
+        Recurso recurso = new Recurso("Auto", "Vechiculo", "Auto de la empresa", false, 0);
     }
     
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void CreoRecursoConCantidadDelRecursoMenorA0()
     {
-        Recurso recurso = new Recurso("Auto", "Vechiculo", "Auto de la empresa", false, -8, null);
+        Recurso recurso = new Recurso("Auto", "Vechiculo", "Auto de la empresa", false, -8);
     }
     
     [TestMethod]
@@ -110,7 +107,7 @@ public class RecursoTests
         string nombre = "Auto";
         string tipo = "Vehiculo";
         string descripcion = "Auto de la empresa";
-        Recurso recurso = new Recurso(nombre, tipo, descripcion, false, 1, null);
+        Recurso recurso = new Recurso(nombre, tipo, descripcion, false, 1);
         Assert.AreEqual(1, recurso.Id);
         
         string nombre2 = "Auto2";
@@ -171,28 +168,6 @@ public class RecursoTests
 
         recurso.LiberarRecurso(3);
         Assert.AreEqual(5, recurso.CantidadEnUso);
-    }
-   
-    [TestMethod]
-    public void HacerRecursoExclusivoDeProyecto_ActualizaProyecto()
-    {
-        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
-        Proyecto proyecto = new Proyecto("Proyecto", "Descripcion", DateTime.Now);
-
-        recurso.HacerRecursoExclusivoDeProyecto(proyecto);
-        Assert.AreEqual(proyecto, recurso.ProyectoAlQuePertenece);
-    }
-    
-    [TestMethod]
-    public void HacerRecursoGlobal_DejaElRecursoSinProyecto()
-    {
-        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10, null);
-        Proyecto proyecto = new Proyecto("Proyecto", "Descripcion", DateTime.Now);
-        recurso.HacerRecursoExclusivoDeProyecto(proyecto);
-
-        recurso.HacerRecursoGlobal();
-
-        Assert.IsNull(recurso.ProyectoAlQuePertenece);
     }
     
     [TestMethod]

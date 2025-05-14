@@ -9,13 +9,10 @@ public class Recurso
     public bool SePuedeCompartir { get; set; }
     public int CantidadDelRecurso { get; set; }
     public int CantidadEnUso { get; set; }
-    public Proyecto? ProyectoAlQuePertenece { get; set; }
+    public List<Proyecto> ProyectosQuePertenece { get; set; }
     public int Id { get; set; }
 
     public Recurso(string nombre, string tipo, string descripcion, bool sePuedeCompartir, int cantidadDelRecurso) 
-        : this(nombre, tipo, descripcion, sePuedeCompartir, cantidadDelRecurso, null) {}
-
-    public Recurso(string nombre, string tipo, string descripcion, bool sePuedeCompartir, int cantidadDelRecurso, Proyecto? proyectoAlQuePertenece) 
     {
         if (string.IsNullOrEmpty(nombre)) 
             throw new ArgumentNullException("Se debe ingresar un nombre.");
@@ -33,7 +30,7 @@ public class Recurso
         SePuedeCompartir = sePuedeCompartir;
         CantidadDelRecurso = cantidadDelRecurso;
         CantidadEnUso = 0;
-        ProyectoAlQuePertenece = proyectoAlQuePertenece;
+        ProyectosQuePertenece = new List<Proyecto>();
     }
     
 
@@ -57,16 +54,6 @@ public class Recurso
     public void LiberarRecurso(int cantidad)
     {
         CantidadEnUso -= cantidad;
-    }
-    
-    public void HacerRecursoExclusivoDeProyecto(Proyecto proyecto)
-    {
-        ProyectoAlQuePertenece = proyecto;
-    }
-    
-    public void HacerRecursoGlobal()
-    {
-        ProyectoAlQuePertenece = null;
     }
 
     public void Modificar(string nombre, string tipo, string descripcion, int cantidad, bool compartir)
