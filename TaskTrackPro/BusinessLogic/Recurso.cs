@@ -9,7 +9,7 @@ public class Recurso
     public bool SePuedeCompartir { get; set; }
     public int CantidadDelRecurso { get; set; }
     public int CantidadEnUso { get; set; }
-    public List<Proyecto> ProyectosQuePertenece { get; set; }
+    public List<Tarea> TareasQueLoUsan { get; set; }
     public int Id { get; set; }
 
     public Recurso(string nombre, string tipo, string descripcion, bool sePuedeCompartir, int cantidadDelRecurso) 
@@ -30,7 +30,7 @@ public class Recurso
         SePuedeCompartir = sePuedeCompartir;
         CantidadDelRecurso = cantidadDelRecurso;
         CantidadEnUso = 0;
-        ProyectosQuePertenece = new List<Proyecto>();
+        TareasQueLoUsan = new List<Tarea>();
     }
     
 
@@ -49,6 +49,20 @@ public class Recurso
         {
             CantidadEnUso += cantidad;
         }
+    }
+
+    public void AgregarRecursoATarea(Tarea tarea)
+    {
+        if (!TareasQueLoUsan.Contains(tarea)) TareasQueLoUsan.Add(tarea);
+    }
+
+    public void QuitarRecursoATarea(Tarea tarea)
+    {
+        if(TareasQueLoUsan.Contains(tarea))  TareasQueLoUsan.Remove(tarea);
+    }
+    public bool EsExclusivo()
+    {
+        return TareasQueLoUsan.Count == 1;
     }
     
     public void LiberarRecurso(int cantidad)

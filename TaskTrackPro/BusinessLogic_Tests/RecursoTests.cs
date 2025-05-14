@@ -6,6 +6,8 @@ namespace BusinessLogic_Tests;
 [TestClass]
 public class RecursoTests
 {
+    private static readonly TimeSpan VALID_TIMESPAN = new TimeSpan(6, 5, 0, 0);
+
     [TestInitialize]
     public void Setup()
     {
@@ -168,6 +170,78 @@ public class RecursoTests
 
         recurso.LiberarRecurso(3);
         Assert.AreEqual(5, recurso.CantidadEnUso);
+    }
+    
+    [TestMethod]
+    public void EsExclusivo_DeberiaRetornarFalse_CuandoNoPerteneceAningunProyecto()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        
+        bool resultado = recurso.EsExclusivo();
+
+        Assert.IsFalse(resultado);
+    }
+
+    [TestMethod]
+    public void EsExclusivo_DeberiaRetornarTrue_CuandoPerteneceASoloUnProyecto()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        Tarea tarea = new Tarea("Tarea", "descripcion", DateTime.Now, VALID_TIMESPAN, false); 
+        
+        recurso.AgregarRecursoATarea(tarea);
+        bool resultado = recurso.EsExclusivo();
+
+        Assert.IsTrue(resultado);
+    }
+
+    [TestMethod]
+    public void EsExclusivo_DeberiaRetornarFalse_CuandoPerteneceAMultiplesProyectos()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        Tarea tarea1 = new Tarea("Tarea1 ", "descripcion", DateTime.Now, VALID_TIMESPAN, false); 
+        Tarea tarea2 = new Tarea("Tarea2 ", "descripcion", DateTime.Now, VALID_TIMESPAN, false); 
+        
+        recurso.AgregarRecursoATarea(tarea1);
+        recurso.AgregarRecursoATarea(tarea2);
+        
+        bool resultado = recurso.EsExclusivo();
+
+        Assert.IsFalse(resultado);
+    }
+    
+    [TestMethod]
+    public void QuitarRecursoATarea_DeberiaRemoverLaTarea_SiPertenece()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        Tarea tarea = new Tarea("Tarea1", "descripcion", DateTime.Now, VALID_TIMESPAN, false);
+
+        recurso.AgregarRecursoATarea(tarea);
+        Assert.IsTrue(recurso.TareasQueLoUsan.Contains(tarea));
+
+        recurso.QuitarRecursoATarea(tarea);
+
+        Assert.IsFalse(recurso.TareasQueLoUsan.Contains(tarea));
+    }
+
+    [TestMethod]
+    public void QuitarRecursoATarea_NoDeberiaHacerNada_SiNoPertenece()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        Tarea tareaNoAsociada = new Tarea("TareaNoAsociada", "descripcion", DateTime.Now, VALID_TIMESPAN, false);
+
+        recurso.QuitarRecursoATarea(tareaNoAsociada);
+
+        Assert.AreEqual(0, recurso.TareasQueLoUsan.Count);
+    }
+
+    [TestMethod]
+    public void QuitarRecursoATarea_NoDeberiaLanzarExcepcion_SiSeLlamaConNull()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+
+        recurso.QuitarRecursoATarea(null);
+
+        Assert.AreEqual(0, recurso.TareasQueLoUsan.Count);
     }
     
     [TestMethod]
