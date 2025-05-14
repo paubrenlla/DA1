@@ -1,0 +1,172 @@
+﻿@page "/proyectos/{id:int}/ruta_critica"
+@using BusinessLogic
+@using UserInterface.Data
+@inject DB BaseDeDatos
+@inject NavigationManager NavigationManager
+@inject SessionLogic SessionLogic
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger">@mensajeError</div>
+}
+@if (proyectoACalcular?.FinEstimado != null)
+{
+    <h1 class="display-4 text-primary">
+        Fin estimado del proyecto: @proyectoACalcular.FinEstimado.Value.ToString("dd/MM/yyyy HH:mm")
+    </h1>
+}
+else
+{
+    <h1 class="display-4 text-primary">
+       Este proyecto no tiene tareas.
+    </h1>
+}
+@if (tareasCriticas?.Any() == true)
+{
+    <h2 class="mt-4 text-danger">Tareas Críticas</h2>
+    <table class="table table-bordered">
+        <thead class="table-danger">
+        <tr>
+            <th>Nombre</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var tarea in tareasCriticas)
+        {
+            <tr>
+                <td>@tarea.Titulo</td>
+                <td>@tarea.EarlyStart.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@tarea.EarlyFinish.ToString("dd/MM/yyyy HH:mm")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@if (tareasNoCriticas?.Any() == true)
+{
+    <h2 class="mt-4 text-primary">Tareas No Críticas</h2>
+    <table class="table table-bordered table-striped border-primary">
+        <thead class="table-primary text-white">
+        <tr>
+            <th>Nombre</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th>Holgura</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var tarea in tareasNoCriticas)
+        {
+            <tr>
+                <td>@tarea.Titulo</td>
+                <td>@tarea.EarlyStart.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@tarea.EarlyFinish.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@tarea.Holgura.TotalHours @(" horas")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+}
+
+@if (proyectoACalcular != null && proyectoACalcular.TareasAsociadas.Count > 0)
+{
+    <h4 class="mt-5">Diagrama de Gantt</h4>
+
+    <table class="table table-bordered table-sm">
+        <thead>
+        <tr>
+            <th>Tarea</th>
+            @for (int i = 0; i < diasTotales; i++)
+            {
+                DateTime dia = inicioProyecto.AddDays(i);
+                <th class="text-center" style="font-size: small">@dia.ToString("dd/MM")</th>
+            }
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (Tarea tarea in proyectoACalcular.TareasAsociadasPorInicio())
+        {
+            <tr>
+                <td>@tarea.Titulo</td>
+                @for (int i = 0; i < diasTotales; i++)
+                {
+                    DateTime diaActual = inicioProyecto.AddDays(i);
+
+                    if (diaActual.Day >= tarea.EarlyStart.Day && diaActual.Day <= tarea.EarlyFinish.Day)
+                    {
+                        string color;
+                        if (tarea.EsCritica)
+                        {
+                            color = "bg-danger";
+                        }
+                        else
+                        {
+                            color = "bg-primary";
+                        }
+                        <td class="@color text-white"></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private string mensajeError;
+    [Parameter]
+    public int id { get; set; }   
+    private bool yaVerifiqueSesion = false;
+    Proyecto proyectoACalcular;
+    List<Tarea> tareasCriticas;
+    List<Tarea> tareasNoCriticas;
+    List<Tarea> tareasDelProyecto;
+    DateTime? fechaFinProyecto;
+    private DateTime inicioProyecto;
+    private int diasTotales;
+
+
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!yaVerifiqueSesion)
+        {
+            yaVerifiqueSesion = true;
+
+            var activo = await SessionLogic.isUserActive();
+            if (!activo)
+            {
+                NavigationManager.NavigateTo("/Login");
+                return;
+            }
+
+            try
+            {
+                proyectoACalcular = BaseDeDatos.buscarProyectoPorId(id);
+                tareasDelProyecto = proyectoACalcular.TareasAsociadas;
+                tareasCriticas = proyectoACalcular.CalcularRutaCritica();
+                tareasNoCriticas = proyectoACalcular.TareasNoCriticas();
+                proyectoACalcular.CalcularFinEstimado();
+                fechaFinProyecto = proyectoACalcular.FinEstimado;
+                inicioProyecto = proyectoACalcular.InicioVerdadero();
+                diasTotales = proyectoACalcular.CalcularDiasTotales();
+
+            }
+            catch (Exception ex)
+            {
+                mensajeError = ex.Message;
+            }
+
+            StateHasChanged();
+        }
+    }
+}

@@ -1,3 +1,5 @@
+using System.Data;
+
 namespace BusinessLogic;
 
 public class Proyecto
@@ -13,6 +15,7 @@ public class Proyecto
     public Usuario Admin { get; set; }
     
     public List<Recurso> RecursosAsociados { get; set; }
+    public DateTime? FinEstimado { get; set; }
     
     public string Nombre
     {
@@ -46,7 +49,8 @@ public class Proyecto
             _fechaInicio = value;
         }
     }
-    
+
+
 
     public Proyecto(string nombre, string descripcion, DateTime fechaInicio)
     {
@@ -138,7 +142,7 @@ public class Proyecto
 
             if (tarea.TareasDependencia.Count == 0)
             {
-                tarea.EarlyStart = FechaInicio;
+                tarea.EarlyStart = tarea.FechaInicio;
             }
             else
             {
@@ -210,8 +214,9 @@ public class Proyecto
         foreach (Tarea tarea in TareasAsociadas)
         {
             tarea.Holgura = tarea.LateStart - tarea.EarlyStart;
+            tarea.EsCritica = tarea.Holgura == TimeSpan.Zero;
         }
-
+        
         return TareasAsociadas.Where(t => t.Holgura == TimeSpan.Zero).ToList();
     }
 
@@ -249,5 +254,35 @@ public class Proyecto
     public Tarea? BuscarTareaPorId(int id)
     {
         return TareasAsociadas.FirstOrDefault(r => r.Id == id);
+    }
+    
+    public void CalcularFinEstimado()
+    {
+        FinEstimado= TareasAsociadas.Max(t=>t.EarlyFinish);
+    }
+
+    public List<Tarea> TareasNoCriticas()
+    {
+        return TareasAsociadas.Where(t => t.Holgura != TimeSpan.Zero).ToList();
+    }
+
+    public DateTime InicioVerdadero()
+    {
+        return TareasAsociadas.Min(t=>t.EarlyStart);
+    }
+    
+    public int CalcularDiasTotales()
+    {
+        if (TareasAsociadas.Count == 0 || FinEstimado == null)
+            return 0;
+
+        return (FinEstimado.Value - InicioVerdadero()).Days + 1;
+    }
+
+    public List<Tarea> TareasAsociadasPorInicio()
+    {
+        return TareasAsociadas
+            .OrderBy(t => t.EarlyStart)
+            .ToList();
     }
 }

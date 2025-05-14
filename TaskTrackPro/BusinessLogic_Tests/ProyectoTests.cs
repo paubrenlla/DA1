@@ -370,6 +370,10 @@ public class ProyectoTests
         Assert.AreEqual(TimeSpan.Zero, t2.Holgura);
         Assert.AreEqual(TimeSpan.Zero, t3.Holgura);
         Assert.AreEqual(TimeSpan.Zero, t4.Holgura);
+        Assert.IsTrue(t1.EsCritica);
+        Assert.IsTrue(t2.EsCritica);
+        Assert.IsTrue(t3.EsCritica);
+        Assert.IsTrue(t4.EsCritica);
         CollectionAssert.Contains(rutaCritica, t1);
         CollectionAssert.Contains(rutaCritica, t2);
         CollectionAssert.Contains(rutaCritica, t3);
@@ -472,6 +476,146 @@ public class ProyectoTests
 
         Assert.IsNull(resultado);
     }
+    
+    [TestMethod]
+    public void CalcularFinEstimadoDelProyecto()
+    {
+        DateTime inicio = DateTime.Today.AddDays(1);
+        TimeSpan duracion = TimeSpan.FromHours(2);
+
+        Tarea t1 = new Tarea("T1", "desc", inicio, duracion, false);
+        Tarea t2 = new Tarea("T2", "desc", inicio, duracion, false);
+        Tarea t3 = new Tarea("T3", "desc", inicio, duracion, false);
+        Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
+
+        t2.AgregarDependencia(t1);
+        t3.AgregarDependencia(t1);
+        t4.AgregarDependencia(t2);
+        t4.AgregarDependencia(t3);
+
+        Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
+        proyecto.agregarTarea(t1);
+        proyecto.agregarTarea(t2);
+        proyecto.agregarTarea(t3);
+        proyecto.agregarTarea(t4);
+
+        List<Tarea> rutaCritica = proyecto.CalcularRutaCritica();
+        proyecto.CalcularFinEstimado();
+        Assert.AreEqual(DateTime.Today.AddDays(1).AddHours(6), proyecto.FinEstimado);
+    }
+    
+    [TestMethod]
+    public void DevolverTareasNoCriticas()
+    {
+        DateTime inicio = DateTime.Today.AddDays(1);
+        TimeSpan duracion = TimeSpan.FromHours(2);
+
+        Tarea t1 = new Tarea("T1", "desc", inicio, duracion, false);
+        Tarea t2 = new Tarea("T2", "desc", inicio, duracion, false);
+        Tarea t3 = new Tarea("T3", "desc", inicio, duracion, false);
+        Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
+
+        t2.AgregarDependencia(t1);
+        t3.AgregarDependencia(t1);
+
+        Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
+        proyecto.agregarTarea(t1);
+        proyecto.agregarTarea(t2);
+        proyecto.agregarTarea(t3);
+        proyecto.agregarTarea(t4);
+
+        proyecto.CalcularRutaCritica();
+        List<Tarea> noCriticas = proyecto.TareasNoCriticas();
+        Assert.AreEqual(noCriticas.Count,1);
+        Assert.IsTrue(noCriticas.Contains(t4));
+    }
+    
+    [TestMethod]
+    public void CalcularElInicioVerdaderoDeLproyecto()
+    {
+        DateTime inicio = DateTime.Today.AddDays(1);
+        TimeSpan duracion = TimeSpan.FromHours(2);
+
+        Tarea t1 = new Tarea("T1", "desc", inicio, duracion, false);
+        Tarea t2 = new Tarea("T2", "desc", inicio, duracion, false);
+        Tarea t3 = new Tarea("T3", "desc", inicio, duracion, false);
+        Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
+
+        t2.AgregarDependencia(t1);
+        t3.AgregarDependencia(t1);
+
+        Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
+        proyecto.agregarTarea(t1);
+        proyecto.agregarTarea(t2);
+        proyecto.agregarTarea(t3);
+        proyecto.agregarTarea(t4);
+
+        proyecto.CalcularRutaCritica();
+        proyecto.CalcularFinEstimado();
+        DateTime inicioVerdadero = proyecto.InicioVerdadero();
+        
+        Assert.AreEqual(inicioVerdadero, inicio);
+        
+    }
+    
+    [TestMethod]
+    public void CalcularLosDiasTotalesDelProyecto()
+    {
+        DateTime inicio = DateTime.Today.AddDays(1);
+        TimeSpan duracion = TimeSpan.FromHours(2);
+
+        Tarea t1 = new Tarea("T1", "desc", inicio, duracion, false);
+        Tarea t2 = new Tarea("T2", "desc", inicio, duracion, false);
+        Tarea t3 = new Tarea("T3", "desc", inicio, duracion, false);
+        Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
+
+        t2.AgregarDependencia(t1);
+        t3.AgregarDependencia(t1);
+
+        Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
+        proyecto.agregarTarea(t1);
+        proyecto.agregarTarea(t2);
+        proyecto.agregarTarea(t3);
+        proyecto.agregarTarea(t4);
+
+        proyecto.CalcularRutaCritica();
+        proyecto.CalcularFinEstimado();
+        int diasTotales = proyecto.CalcularDiasTotales();
+        
+        Assert.AreEqual(diasTotales, 1);
+        
+    }
+    
+    [TestMethod]
+    public void DevolverTareasOrdenadasPorEarlyStart()
+    {
+        DateTime inicio = DateTime.Today;
+        TimeSpan duracion = TimeSpan.FromDays(2);
+
+        Tarea t1 = new Tarea("T1", "desc", inicio, duracion, false);
+        Tarea t2 = new Tarea("T2", "desc", inicio, duracion, false);
+        Tarea t3 = new Tarea("T3", "desc", inicio.AddHours(1), duracion, false);
+        Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
+
+        t2.AgregarDependencia(t1);
+        t4.AgregarDependencia(t3);
+
+        Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
+        proyecto.agregarTarea(t1);
+        proyecto.agregarTarea(t2);
+        proyecto.agregarTarea(t3);
+        proyecto.agregarTarea(t4);
+
+        proyecto.CalcularRutaCritica();
+        List<Tarea> tareasOrdenadas = proyecto.TareasAsociadasPorInicio();
+        
+        Assert.AreEqual(t1, tareasOrdenadas[0]);
+        Assert.AreEqual(t3, tareasOrdenadas[1]);
+        Assert.AreEqual(t2, tareasOrdenadas[2]);
+        Assert.AreEqual(t4, tareasOrdenadas[3]);
+        
+    }
+    
 }
 
 
