@@ -98,17 +98,6 @@ public class DB
         ListaRecursos.Add(recurso4);
         ListaRecursos.Add(recurso5);
         
-        proyecto1.agregarRecurso(recurso2);
-        proyecto1.agregarRecurso(recurso4);
-
-        proyecto2.agregarRecurso(recurso1);
-        proyecto2.agregarRecurso(recurso2);
-        proyecto2.agregarRecurso(recurso5); 
-
-        proyecto3.agregarRecurso(recurso3);
-        proyecto3.agregarRecurso(recurso4); 
-        proyecto3.agregarRecurso(recurso5);
-        
         tarea1.AgregarRecurso(recurso2, 2);
         tarea2.AgregarRecurso(recurso4, 1); 
 
