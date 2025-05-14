@@ -8,11 +8,21 @@
 
 <h1>
     Miembros
-    <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="proyectos/@idProyecto/tareas/@idTarea/miembros/agregar">Agregar +</a>
 </h1>
 
 @if (listaDeMiembors is not null)
 {
+    <div class="mb-3" style="width: 300px;">
+        <select class="form-select" @bind="usuarioSeleccionadoId">
+            <option value="-1">Seleccione un usuario</option>
+            @foreach (Usuario usuario in usuariosDisponibles)
+            {
+                <option value="@usuario.Id">@usuario.Nombre @usuario.Apellido (@usuario.Email)</option>
+            }
+        </select>
+        <button class="btn btn-success mt-2" @onclick="AgregarMiembro">Agregar</button>
+    </div>
+    
     <table class="table">
         <thead>
         <tr>
@@ -56,21 +66,60 @@ else
     private List<Usuario>? listaDeMiembors;
     private bool yaVerifiqueSesion = false;
     
+    private List<Usuario> usuariosDisponibles = new();
+    private int usuarioSeleccionadoId = -1;
+    private Proyecto? proyecto;
+    private Tarea? tarea;
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && !yaVerifiqueSesion)
         {
-            var isUserActive = await SessionLogic.isUserActive();
+            bool isUserActive = await SessionLogic.isUserActive();
             if (!isUserActive)
             {
                 NavigationManager.NavigateTo($"proyectos/{idProyecto}/tareas/{idTarea}/miembros/");
             }
             else
             {
-                Proyecto pActual = BaseDeDatos.buscarProyectoPorId(idProyecto);
-                Tarea tActual = pActual.BuscarTareaPorId(idTarea);
-                listaDeMiembors = tActual.UsuariosAsignados;
-                StateHasChanged(); 
+                proyecto = BaseDeDatos.buscarProyectoPorId(idProyecto);
+                tarea = proyecto?.BuscarTareaPorId(idTarea);
+
+                listaDeMiembors = tarea?.UsuariosAsignados;
+                ActualizarUsuariosDisponibles();
+                yaVerifiqueSesion = true;
+                StateHasChanged();
+            }
+        }
+    }
+    
+    private void ActualizarUsuariosDisponibles()
+    {
+        if (proyecto is not null && tarea is not null)
+        {
+            usuariosDisponibles = proyecto.Miembros
+                .Where(u => !tarea.UsuariosAsignados.Contains(u))
+                .ToList();
+        }
+    }
+
+    private void AgregarMiembro()
+    {
+        if (usuarioSeleccionadoId == -1 || proyecto is null || tarea is null)
+            return;
+
+        Usuario usuario = BaseDeDatos.buscarUsuarioPorId(usuarioSeleccionadoId);
+        if (usuario is not null)
+        {
+            try
+            {
+                proyecto.AsignarUsuarioATarea(usuario, tarea);
+                ActualizarUsuariosDisponibles();
+                StateHasChanged();
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
     }
