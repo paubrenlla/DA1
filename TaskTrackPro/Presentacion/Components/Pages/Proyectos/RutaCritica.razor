@@ -47,9 +47,9 @@ else
 
 @if (tareasNoCriticas?.Any() == true)
 {
-    <h2 class="mt-4 text-secondary">Tareas No Críticas</h2>
-    <table class="table table-bordered">
-        <thead class="table-secondary">
+    <h2 class="mt-4 text-primary">Tareas No Críticas</h2>
+    <table class="table table-bordered table-striped border-primary">
+        <thead class="table-primary text-white">
         <tr>
             <th>Nombre</th>
             <th>Inicio</th>
@@ -69,6 +69,7 @@ else
         }
         </tbody>
     </table>
+
 }
 
 @if (proyectoACalcular != null && proyectoACalcular.TareasAsociadas.Count > 0)
@@ -87,7 +88,7 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (Tarea tarea in proyectoACalcular.TareasAsociadas)
+        @foreach (Tarea tarea in proyectoACalcular.TareasAsociadasPorInicio())
         {
             <tr>
                 <td>@tarea.Titulo</td>
