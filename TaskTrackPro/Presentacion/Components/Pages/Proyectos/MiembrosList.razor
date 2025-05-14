@@ -8,8 +8,24 @@
 
 <h1>
     Miembros
-    <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="proyectos/@id/miembros/agregar">Agregar +</a>
 </h1>
+
+@if (usuariosDisponibles?.Any() == true)
+{
+    <div class="d-flex mb-3">
+        <select @bind="usuarioSeleccionadoId" class="form-select me-2" style="max-width: 300px;">
+            @foreach (Usuario usuario in usuariosDisponibles)
+            {
+                <option value="@usuario.Id">@usuario.Nombre @usuario.Apellido (@usuario.Email)</option>
+            }
+        </select>
+        <button class="btn btn-primary" @onclick="AgregarMiembro">Agregar</button>
+    </div>
+}
+else
+{
+    <p><em>No hay usuarios disponibles para agregar.</em></p>
+}
 
 @if (listaDeMiembors is not null)
 {
@@ -52,11 +68,15 @@ else
     private List<Usuario>? listaDeMiembors;
     private bool yaVerifiqueSesion = false;
     
+    private List<Usuario>? usuariosDisponibles;
+    private int usuarioSeleccionadoId;
+    private Proyecto? proyecto;
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && !yaVerifiqueSesion)
         {
-            var isUserActive = await SessionLogic.isUserActive();
+            bool isUserActive = await SessionLogic.isUserActive();
             if (!isUserActive)
             {
                 NavigationManager.NavigateTo($"/proyectos/{id}/miembros");
@@ -66,6 +86,51 @@ else
                 listaDeMiembors = BaseDeDatos.buscarProyectoPorId(id).Miembros;
                 StateHasChanged(); 
             }
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        bool isUserActive = await SessionLogic.isUserActive();
+        if (!isUserActive)
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
+        proyecto = BaseDeDatos.buscarProyectoPorId(id);
+        listaDeMiembors = proyecto.Miembros;
+
+        ActualizarUsuariosDisponibles();
+    }
+
+    private void ActualizarUsuariosDisponibles()
+    {
+        usuariosDisponibles = BaseDeDatos.ListaUsuarios
+            .Where(u => !proyecto.Miembros.Contains(u))
+            .ToList();
+
+        if (usuariosDisponibles.Any())
+        {
+            usuarioSeleccionadoId = usuariosDisponibles.First().Id;
+        }
+    }
+
+    private void AgregarMiembro()
+    {
+        Usuario usuario = BaseDeDatos.buscarUsuarioPorId(usuarioSeleccionadoId);
+        if (usuario is not null && proyecto is not null)
+        {
+            try
+            {
+                proyecto.agregarMiembro(usuario);
+                ActualizarUsuariosDisponibles();
+                StateHasChanged();
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
         }
     }
 }
