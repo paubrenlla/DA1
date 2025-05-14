@@ -71,6 +71,55 @@ else
     </table>
 }
 
+@if (proyectoACalcular != null && proyectoACalcular.TareasAsociadas.Count > 0)
+{
+    <h4 class="mt-5">Diagrama de Gantt</h4>
+
+    <table class="table table-bordered table-sm">
+        <thead>
+        <tr>
+            <th>Tarea</th>
+            @for (int i = 0; i < diasTotales; i++)
+            {
+                DateTime dia = inicioProyecto.AddDays(i);
+                <th class="text-center" style="font-size: small">@dia.ToString("dd/MM")</th>
+            }
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (Tarea tarea in proyectoACalcular.TareasAsociadas)
+        {
+            <tr>
+                <td>@tarea.Titulo</td>
+                @for (int i = 0; i < diasTotales; i++)
+                {
+                    DateTime diaActual = inicioProyecto.AddDays(i);
+
+                    if (diaActual.Day >= tarea.EarlyStart.Day && diaActual.Day <= tarea.EarlyFinish.Day)
+                    {
+                        string color;
+                        if (tarea.EsCritica)
+                        {
+                            color = "bg-danger";
+                        }
+                        else
+                        {
+                            color = "bg-primary";
+                        }
+                        <td class="@color text-white"></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+
 @code {
     private string mensajeError;
     [Parameter]
@@ -81,7 +130,9 @@ else
     List<Tarea> tareasNoCriticas;
     List<Tarea> tareasDelProyecto;
     DateTime? fechaFinProyecto;
-    int totalDias;
+    private DateTime inicioProyecto;
+    private int diasTotales;
+
 
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -105,6 +156,9 @@ else
                 tareasNoCriticas = proyectoACalcular.TareasNoCriticas();
                 proyectoACalcular.CalcularFinEstimado();
                 fechaFinProyecto = proyectoACalcular.FinEstimado;
+                inicioProyecto = proyectoACalcular.InicioVerdadero();
+                diasTotales = proyectoACalcular.CalcularDiasTotales();
+
             }
             catch (Exception ex)
             {
