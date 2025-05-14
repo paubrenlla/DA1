@@ -131,13 +131,15 @@
     {
         if (tareaSeleccionada != null && tareaDependenciaSeleccionadaId.HasValue)
         {
-            var tareaADepender = tareasDisponiblesParaAgregar
+            Tarea tareaADepender = tareasDisponiblesParaAgregar
                 .FirstOrDefault(t => t.Id == tareaDependenciaSeleccionadaId.Value);
         
             if (tareaADepender != null)
             {
                 tareaSeleccionada.AgregarDependencia(tareaADepender);
                 tareaDependenciaSeleccionadaId = null;
+                tareasDisponiblesParaAgregar = ListaDeTareas
+                    .Where(t => t.Id != tareaSeleccionada.Id && !tareaSeleccionada.TareasDependencia.Contains(t)).ToList();
             }
         }
     }
