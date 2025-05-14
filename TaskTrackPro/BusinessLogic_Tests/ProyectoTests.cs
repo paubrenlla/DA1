@@ -370,6 +370,10 @@ public class ProyectoTests
         Assert.AreEqual(TimeSpan.Zero, t2.Holgura);
         Assert.AreEqual(TimeSpan.Zero, t3.Holgura);
         Assert.AreEqual(TimeSpan.Zero, t4.Holgura);
+        Assert.IsTrue(t1.EsCritica);
+        Assert.IsTrue(t2.EsCritica);
+        Assert.IsTrue(t3.EsCritica);
+        Assert.IsTrue(t4.EsCritica);
         CollectionAssert.Contains(rutaCritica, t1);
         CollectionAssert.Contains(rutaCritica, t2);
         CollectionAssert.Contains(rutaCritica, t3);

@@ -1,3 +1,5 @@
+using System.Data;
+
 namespace BusinessLogic;
 
 public class Proyecto
@@ -212,6 +214,7 @@ public class Proyecto
         foreach (Tarea tarea in TareasAsociadas)
         {
             tarea.Holgura = tarea.LateStart - tarea.EarlyStart;
+            tarea.EsCritica = tarea.Holgura == TimeSpan.Zero;
         }
         
         return TareasAsociadas.Where(t => t.Holgura == TimeSpan.Zero).ToList();
