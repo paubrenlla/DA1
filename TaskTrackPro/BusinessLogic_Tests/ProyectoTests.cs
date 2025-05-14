@@ -586,6 +586,36 @@ public class ProyectoTests
         
     }
     
+    [TestMethod]
+    public void DevolverTareasOrdenadasPorEarlyStart()
+    {
+        DateTime inicio = DateTime.Today;
+        TimeSpan duracion = TimeSpan.FromDays(2);
+
+        Tarea t1 = new Tarea("T1", "desc", inicio, duracion, false);
+        Tarea t2 = new Tarea("T2", "desc", inicio, duracion, false);
+        Tarea t3 = new Tarea("T3", "desc", inicio.AddHours(1), duracion, false);
+        Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
+
+        t2.AgregarDependencia(t1);
+        t4.AgregarDependencia(t3);
+
+        Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
+        proyecto.agregarTarea(t1);
+        proyecto.agregarTarea(t2);
+        proyecto.agregarTarea(t3);
+        proyecto.agregarTarea(t4);
+
+        proyecto.CalcularRutaCritica();
+        List<Tarea> tareasOrdenadas = proyecto.TareasAsociadasPorInicio();
+        
+        Assert.AreEqual(t1, tareasOrdenadas[0]);
+        Assert.AreEqual(t3, tareasOrdenadas[1]);
+        Assert.AreEqual(t2, tareasOrdenadas[2]);
+        Assert.AreEqual(t4, tareasOrdenadas[3]);
+        
+    }
+    
 }
 
 

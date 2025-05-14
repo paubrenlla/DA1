@@ -278,4 +278,11 @@ public class Proyecto
 
         return (FinEstimado.Value - InicioVerdadero()).Days + 1;
     }
+
+    public List<Tarea> TareasAsociadasPorInicio()
+    {
+        return TareasAsociadas
+            .OrderBy(t => t.EarlyStart)
+            .ToList();
+    }
 }
