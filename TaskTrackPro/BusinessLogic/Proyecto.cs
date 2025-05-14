@@ -69,6 +69,14 @@ public class Proyecto
         {
             throw new ArgumentException("La tarea ya existe en el proyecto.");
         }
+
+        foreach (Tarea tareaNueva in TareasAsociadas)
+        {
+            if (tareaNueva.Titulo == tarea.Titulo)
+            {
+                throw new ArgumentException("Ya existe una tarea con ese nombre en el proyecto.");
+            }
+        }
         TareasAsociadas.Add(tarea);
     }
     
