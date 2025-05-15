@@ -116,6 +116,7 @@ public class Tarea
         _tareasDependencia.Add(tarea);
         tarea._tareasSucesoras.Add(this);
         ActualizarEstado();
+        Proyecto.CalcularRutaCritica();
     }
     public void ActualizarEstado()
     {
@@ -211,7 +212,6 @@ public class Tarea
         {
             ModificarEstado(TipoEstadoTarea.Ejecutandose, DateTime.Now);
             ConsumirRecursos();
-            //TODO: reevaluar todas las tareas de DB por si usan los mismos recursos
         }
     }
 
@@ -236,6 +236,7 @@ public class Tarea
         Descripcion = descripcion;
         FechaInicio = fechaInicio;
         Duracion = duracion;
+        Proyecto.CalcularRutaCritica();
     }
 }
 
