@@ -88,6 +88,43 @@ public class DBTests
         Assert.IsFalse(db.ListaUsuarios.Contains(user2));
     }
     
+    [ExpectedException(typeof(ArgumentException))]
+    [TestMethod]
+    public void EliminarUsuarioNoPuedeEliminarAdminDeProyecto()
+    {
+        DB db = new DB();
+        Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        db.agregarUsuario(usuario);
+        Proyecto proyecto = new Proyecto("Proyecto","descripcion", DateTime.Today);
+        proyecto.AsignarAdmin(usuario);
+        db.agregarProyecto(proyecto);
+        
+        db.eliminarUsuario(usuario);
+    }
+    
+    [TestMethod]
+    public void EliminarUsuarioBorraAsignacionesDeProyectos()
+    {
+        DB db = new DB();
+        Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        Usuario usuario2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        db.agregarUsuario(usuario);
+        Proyecto proyecto = new Proyecto("Proyecto","descripcion", DateTime.Today);
+        db.agregarProyecto(proyecto);
+        proyecto.agregarMiembro(usuario);
+        proyecto.AsignarAdmin(usuario2);
+        Tarea tarea = new Tarea("Tarea", "descripcion", DateTime.Today, TimeSpan.FromDays(1), false);
+        tarea.AgregarUsuario(usuario);
+        proyecto.agregarTarea(tarea);
+        
+        db.eliminarUsuario(usuario);
+        
+        Assert.IsTrue(tarea.UsuariosAsignados.Count == 0);
+        Assert.IsTrue(proyecto.Miembros.Count == 0);
+        Assert.IsFalse(tarea.UsuariosAsignados.Contains(usuario));
+        Assert.IsFalse(proyecto.Miembros.Contains(usuario));
+    }
+    
     [TestMethod]
     public void AgregarAdmin()
     {
@@ -393,4 +430,14 @@ public class DBTests
         Assert.IsNotNull(noLeidas);
         Assert.AreEqual(notificacion2.Id, noLeidas[0].Id);
     }
+
+    [TestMethod]
+    public void VerSiUnUsuarioEsAdmin()
+    {
+        Usuario usuario1 = new Usuario("correo@gmail.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
+        DB db = new DB(usuario1);
+        bool esAdmin = db.UsuarioEsAdmin(usuario1);
+        Assert.IsTrue(esAdmin);
+    }
+    
 }

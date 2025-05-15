@@ -247,4 +247,9 @@ public class DB
                         !n.VistaPorUsuarios.Contains(usuario))
             .ToList();
     }
+
+    public bool UsuarioEsAdmin(Usuario usuario)
+    {
+        return AdministradoresSistema.Any(u => u.Id == usuario.Id);
+    }
 }
