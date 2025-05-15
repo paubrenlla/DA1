@@ -109,8 +109,24 @@ public class Proyecto
     {
         if (!Miembros.Contains(user))
             throw new ArgumentException("Este usuario no es integrante del proyecto.");
-
+        
         Miembros.Remove(user);
+        
+        var tareasConUsuario = TareasAsociadas
+            .Where(t => t.UsuariosAsignados.Contains(user));
+
+        foreach (var tarea in tareasConUsuario)
+        {
+            tarea.UsuariosAsignados.Remove(user);
+        }
+    }
+    
+    public void eliminarMiembroTarea(Usuario user, Tarea tarea)
+    {
+        if (!BuscarTareaPorId(tarea.Id).UsuariosAsignados.Contains(user))
+            throw new ArgumentException("Este usuario no es integrante de la tarea.");
+
+        BuscarTareaPorId(tarea.Id).UsuariosAsignados.Remove(user);
     }
 
     public List<Tarea> TareasSinDependencia()
