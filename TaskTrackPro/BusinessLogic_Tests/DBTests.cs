@@ -114,8 +114,8 @@ public class DBTests
         proyecto.agregarMiembro(usuario);
         proyecto.AsignarAdmin(usuario2);
         Tarea tarea = new Tarea("Tarea", "descripcion", DateTime.Today, TimeSpan.FromDays(1), false);
-        tarea.AgregarUsuario(usuario);
         proyecto.agregarTarea(tarea);
+        tarea.AgregarUsuario(usuario);
         
         db.eliminarUsuario(usuario);
         

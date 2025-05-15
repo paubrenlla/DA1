@@ -302,7 +302,7 @@ public Notificacion buscarNotificaciónPorId(int i)
     public bool UsuarioEsAdminProyecto(Usuario usuario, Proyecto p)
     {
         return p.Admin.Id == usuario.Id;
-
+    }
     public bool esAdminDeUnProyecto(Usuario usuario)
     {
         return ListaProyectos.Any(p => p.Admin.Equals(usuario));

@@ -35,6 +35,7 @@ public class Notificacion
 
     public void AgregarUsuario(Usuario usuario)
     {
+        if (usuario == null) return;
         UsuariosNotificados.Add(usuario);
     }
 

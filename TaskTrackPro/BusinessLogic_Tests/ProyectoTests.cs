@@ -262,15 +262,15 @@ public class ProyectoTests
         
         var tarea = new Tarea("Tarea ", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
         var tareaDependencia = new Tarea("Dependencia", "Desc", DateTime.Today, VALID_TIMESPAN, false);
-        tarea.AgregarDependencia(tareaDependencia);
         
         proyecto.agregarTarea(tarea);
         proyecto.agregarTarea(tareaDependencia);
+        
+        tarea.AgregarDependencia(tareaDependencia);
 
         List<Tarea> tareasSinDependencia = proyecto.TareasSinDependencia();
         Assert.AreEqual(1, tareasSinDependencia.Count);
         Assert.AreSame(tareaDependencia, tareasSinDependencia[0]);
-        
     }
     
     [TestMethod]
@@ -298,10 +298,10 @@ public class ProyectoTests
         var t1 = new Tarea("T1", "Desc", hoy, TimeSpan.FromDays(3), false);
         var t2 = new Tarea("T2", "Desc", hoy, TimeSpan.FromDays(2), false);
 
-        t2.AgregarDependencia(t1);
-
         proyecto.agregarTarea(t1);
         proyecto.agregarTarea(t2);
+
+        t2.AgregarDependencia(t1);
 
         proyecto.CalcularTiemposTempranos();
 
@@ -322,13 +322,13 @@ public class ProyectoTests
         var t2 = new Tarea("T2", "desc", inicio.AddHours(3), duracion, false);
         var t3 = new Tarea("T3", "desc", inicio.AddHours(6), duracion, false);
 
-        t2.AgregarDependencia(t1);
-        t3.AgregarDependencia(t2);
-
         var proyecto = new Proyecto("Proyecto", "desc", inicio);
         proyecto.agregarTarea(t1);
         proyecto.agregarTarea(t2);
         proyecto.agregarTarea(t3);
+        
+        t2.AgregarDependencia(t1);
+        t3.AgregarDependencia(t2);
 
         proyecto.CalcularTiemposTempranos();
         proyecto.CalcularTiemposTardios();
@@ -348,17 +348,17 @@ public class ProyectoTests
         Tarea t2 = new Tarea("T2", "desc", inicio, duracion, false);
         Tarea t3 = new Tarea("T3", "desc", inicio, duracion, false);
         Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
-
-        t2.AgregarDependencia(t1);
-        t3.AgregarDependencia(t1);
-        t4.AgregarDependencia(t2);
-        t4.AgregarDependencia(t3);
-
+        
         Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
         proyecto.agregarTarea(t1);
         proyecto.agregarTarea(t2);
         proyecto.agregarTarea(t3);
         proyecto.agregarTarea(t4);
+
+        t2.AgregarDependencia(t1);
+        t3.AgregarDependencia(t1);
+        t4.AgregarDependencia(t2);
+        t4.AgregarDependencia(t3);
 
         List<Tarea> rutaCritica = proyecto.CalcularRutaCritica();
 
@@ -483,16 +483,16 @@ public class ProyectoTests
         Tarea t3 = new Tarea("T3", "desc", inicio, duracion, false);
         Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
 
-        t2.AgregarDependencia(t1);
-        t3.AgregarDependencia(t1);
-        t4.AgregarDependencia(t2);
-        t4.AgregarDependencia(t3);
-
         Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
         proyecto.agregarTarea(t1);
         proyecto.agregarTarea(t2);
         proyecto.agregarTarea(t3);
         proyecto.agregarTarea(t4);
+
+        t2.AgregarDependencia(t1);
+        t3.AgregarDependencia(t1);
+        t4.AgregarDependencia(t2);
+        t4.AgregarDependencia(t3);
 
         List<Tarea> rutaCritica = proyecto.CalcularRutaCritica();
         proyecto.CalcularFinEstimado();
@@ -509,15 +509,15 @@ public class ProyectoTests
         Tarea t2 = new Tarea("T2", "desc", inicio, duracion, false);
         Tarea t3 = new Tarea("T3", "desc", inicio, duracion, false);
         Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
-
-        t2.AgregarDependencia(t1);
-        t3.AgregarDependencia(t1);
-
+        
         Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
         proyecto.agregarTarea(t1);
         proyecto.agregarTarea(t2);
         proyecto.agregarTarea(t3);
         proyecto.agregarTarea(t4);
+
+        t2.AgregarDependencia(t1);
+        t3.AgregarDependencia(t1);
 
         proyecto.CalcularRutaCritica();
         List<Tarea> noCriticas = proyecto.TareasNoCriticas();
@@ -536,14 +536,14 @@ public class ProyectoTests
         Tarea t3 = new Tarea("T3", "desc", inicio, duracion, false);
         Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
 
-        t2.AgregarDependencia(t1);
-        t3.AgregarDependencia(t1);
-
         Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
         proyecto.agregarTarea(t1);
         proyecto.agregarTarea(t2);
         proyecto.agregarTarea(t3);
         proyecto.agregarTarea(t4);
+
+        t2.AgregarDependencia(t1);
+        t3.AgregarDependencia(t1);
 
         proyecto.CalcularRutaCritica();
         proyecto.CalcularFinEstimado();
@@ -564,14 +564,14 @@ public class ProyectoTests
         Tarea t3 = new Tarea("T3", "desc", inicio, duracion, false);
         Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
 
-        t2.AgregarDependencia(t1);
-        t3.AgregarDependencia(t1);
-
         Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
         proyecto.agregarTarea(t1);
         proyecto.agregarTarea(t2);
         proyecto.agregarTarea(t3);
         proyecto.agregarTarea(t4);
+
+        t2.AgregarDependencia(t1);
+        t3.AgregarDependencia(t1);
 
         proyecto.CalcularRutaCritica();
         proyecto.CalcularFinEstimado();
@@ -592,14 +592,14 @@ public class ProyectoTests
         Tarea t3 = new Tarea("T3", "desc", inicio.AddHours(1), duracion, false);
         Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
 
-        t2.AgregarDependencia(t1);
-        t4.AgregarDependencia(t3);
-
         Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
         proyecto.agregarTarea(t1);
         proyecto.agregarTarea(t2);
         proyecto.agregarTarea(t3);
         proyecto.agregarTarea(t4);
+
+        t2.AgregarDependencia(t1);
+        t4.AgregarDependencia(t3);
 
         proyecto.CalcularRutaCritica();
         List<Tarea> tareasOrdenadas = proyecto.TareasAsociadasPorInicio();

@@ -9,7 +9,20 @@ namespace BusinessLogic_Tests
         private static readonly TimeSpan VALID_TIMESPAN = new TimeSpan(6, 5, 0, 0);
         private static readonly Recurso RECURSO_VALIDO = new Recurso("Computadora", "tipo", "desripcion", false, 8);
         private static readonly DateTime VALID_DATETIME = DateTime.Today;
+        private Proyecto PROYECTO_VALIDO;
 
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            PROYECTO_VALIDO = new Proyecto("Proyecto valido", "descripcion", VALID_DATETIME);
+        }
+        
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            PROYECTO_VALIDO = null;
+        }
+        
         [TestMethod]
         public void ConstructorConDatosValidos_CreaTareaCorrectamente()
         {
@@ -101,6 +114,9 @@ namespace BusinessLogic_Tests
                 false
             );
 
+            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.agregarTarea(tareaDependiente);
+            
             tareaPrincipal.AgregarDependencia(tareaDependiente);;
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaPrincipal.EstadoActual.Valor);
             Assert.IsTrue(tareaPrincipal.EstadoActual.Fecha.Value.Date == DateTime.Today);
@@ -110,6 +126,7 @@ namespace BusinessLogic_Tests
         public void NuevaTarea_TieneListaDeDependenciasVacia()
         {
             Tarea tarea = new Tarea("Tarea Principal", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
+            PROYECTO_VALIDO.agregarTarea(tarea);
             Assert.IsNotNull(tarea.TareasDependencia);
             Assert.AreEqual(0, tarea.TareasDependencia.Count);
         }
@@ -121,6 +138,8 @@ namespace BusinessLogic_Tests
                 false);
             Tarea tareaDependencia = new Tarea("Tarea Dependiente", "Descripción dependencia", DateTime.Today,
                 VALID_TIMESPAN, false);
+            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.agregarTarea(tareaDependencia);
 
             tareaPrincipal.AgregarDependencia(tareaDependencia);
 
@@ -135,6 +154,10 @@ namespace BusinessLogic_Tests
             Tarea tareaDependencia1 = new Tarea("Dependencia 1", "Desc 1", DateTime.Today, VALID_TIMESPAN, false);
             Tarea tareaDependencia2 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
 
+            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.agregarTarea(tareaDependencia1);
+            PROYECTO_VALIDO.agregarTarea(tareaDependencia2);
+            
             tareaPrincipal.AgregarDependencia(tareaDependencia1);
             tareaPrincipal.AgregarDependencia(tareaDependencia2);
 
@@ -149,11 +172,18 @@ namespace BusinessLogic_Tests
         [TestMethod]
         public void ActualizarEstado_DependenciaAnidadaBloqueada_EstadoBloqueado()
         {
+            Proyecto proyecto = new Proyecto("Proyecto valido", "descripcion", VALID_DATETIME);
+            
             Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción principal", DateTime.Today, VALID_TIMESPAN, false);
             Tarea tareaDependencia1 = new Tarea("Dependencia 1", "Desc 1", DateTime.Today, VALID_TIMESPAN, false);
             Tarea tareaDependencia2 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
             Tarea tareaDependencia3 = new Tarea("Dependencia 3", "Desc 3", DateTime.Today, VALID_TIMESPAN, false);
-
+            
+            proyecto.agregarTarea(tareaPrincipal);
+            proyecto.agregarTarea(tareaDependencia1);
+            proyecto.agregarTarea(tareaDependencia2);
+            proyecto.agregarTarea(tareaDependencia3);
+            
             tareaDependencia1.MarcarTareaComoCompletada();
 
             tareaDependencia2.AgregarDependencia(tareaDependencia3);
@@ -183,6 +213,9 @@ namespace BusinessLogic_Tests
             Tarea tarea1 = new Tarea("Tarea 1", "Desc", inicio, duracion, false);
             Tarea tarea2 = new Tarea("Tarea 2", "Desc", inicio.AddHours(3), duracion, false);
 
+            PROYECTO_VALIDO.agregarTarea(tarea1);
+            PROYECTO_VALIDO.agregarTarea(tarea2);
+            
             tarea2.AgregarDependencia(tarea1);
 
             Assert.IsTrue(tarea2.TareasDependencia.Contains(tarea1));
@@ -194,6 +227,8 @@ namespace BusinessLogic_Tests
         {
             Tarea tarea = new Tarea("Tarea sin sucesoras", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
 
+            PROYECTO_VALIDO.agregarTarea(tarea);
+            
             tarea.AgregarRecurso(RECURSO_VALIDO, 2);
             tarea.ConsumirRecursos();
             tarea.MarcarTareaComoCompletada();
@@ -212,6 +247,9 @@ namespace BusinessLogic_Tests
             Tarea tareaSucesora = new Tarea("Tarea sucesora", "Descripción sucesora", DateTime.Today, VALID_TIMESPAN,
                 false);
 
+            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.agregarTarea(tareaSucesora);
+            
             tareaSucesora.AgregarDependencia(tareaPrincipal);
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaSucesora.EstadoActual.Valor);
 
@@ -227,6 +265,9 @@ namespace BusinessLogic_Tests
             Tarea tareaPrincipal = new Tarea("Tarea principal", "Descripción principal", DateTime.Today, TimeSpan.FromHours(2), false);
             Tarea tareaSucesora = new Tarea("Tarea sucesora", "Descripción sucesora", DateTime.Today, TimeSpan.FromHours(2), false);
     
+            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.agregarTarea(tareaSucesora);
+            
             tareaPrincipal.AgregarRecurso(RECURSO_VALIDO, 3);
             tareaPrincipal.ConsumirRecursos();
             tareaSucesora.AgregarDependencia(tareaPrincipal);
@@ -247,6 +288,9 @@ namespace BusinessLogic_Tests
         public void AgregarRecurso_NuevoRecurso_SeAgregaALaLista()
         {
             Tarea tarea = new Tarea("Tarea Test", "Descripción Test", DateTime.Today, TimeSpan.FromHours(2), false);
+            
+            PROYECTO_VALIDO.agregarTarea(tarea);
+            
             tarea.AgregarRecurso(RECURSO_VALIDO, 2);
 
             Assert.AreEqual(1, tarea.RecursosNecesarios.Count);
@@ -259,6 +303,8 @@ namespace BusinessLogic_Tests
         {
             Tarea tarea = new Tarea("Tarea Test", "Descripción Test", DateTime.Today, TimeSpan.FromHours(2), false);
 
+            PROYECTO_VALIDO.agregarTarea(tarea);
+            
             tarea.AgregarRecurso(RECURSO_VALIDO, 2);
             tarea.AgregarRecurso(RECURSO_VALIDO, 3);
 
@@ -279,6 +325,9 @@ namespace BusinessLogic_Tests
         public void VerificarRecursosDisponibles_TodosDisponibles_DeberiaRetornarTrue()
         {
             Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            
+            PROYECTO_VALIDO.agregarTarea(tarea);
+            
             Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 5);
             Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 2);
 
@@ -295,6 +344,9 @@ namespace BusinessLogic_Tests
         public void VerificarRecursosDisponibles_UnRecursoInsuficiente_DeberiaRetornarFalse()
         {
             Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            
+            PROYECTO_VALIDO.agregarTarea(tarea);
+            
             Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 2);
             Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 1);
 
@@ -317,6 +369,8 @@ namespace BusinessLogic_Tests
         {
             Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
 
+            PROYECTO_VALIDO.agregarTarea(tarea);
+            
             tarea.AgregarRecurso(RECURSO_VALIDO, 3); // Disponible exactamente la misma cantidad requerida
 
             Assert.IsTrue(tarea.VerificarRecursosDisponibles());
@@ -336,6 +390,9 @@ namespace BusinessLogic_Tests
         public void ConsumirRecursos_RecursosDisponibles_SeReducenCorrectamente()
         {
             Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            
+            PROYECTO_VALIDO.agregarTarea(tarea);
+            
             Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 5);
             Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 3);
 
@@ -352,6 +409,9 @@ namespace BusinessLogic_Tests
         public void LiberarRecursos_RecursosConsumidos_SeRestauranCorrectamente()
         {
             Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+
+            PROYECTO_VALIDO.agregarTarea(tarea);
+            
             Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 5);
             Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 3);
 
@@ -379,6 +439,10 @@ namespace BusinessLogic_Tests
         {
             Tarea tarea = new Tarea("Tarea Ejecutada", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
             Tarea tareaDependencia = new Tarea("Dependencia", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            
+            PROYECTO_VALIDO.agregarTarea(tarea);
+            PROYECTO_VALIDO.agregarTarea(tareaDependencia);
+            
             Recurso recurso = new Recurso("Servidor", "tipo", "descripcion", false, 5);
 
             tarea.AgregarDependencia(tareaDependencia);
@@ -396,6 +460,10 @@ namespace BusinessLogic_Tests
         {
             Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
             Tarea tareaDependencia = new Tarea("Dependencia", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            
+            PROYECTO_VALIDO.agregarTarea(tarea);
+            PROYECTO_VALIDO.agregarTarea(tareaDependencia);
+            
             Recurso recurso = new Recurso("Laptop", "tipo", "descripcion", false, 5);
 
             tarea.AgregarDependencia(tareaDependencia);
@@ -411,6 +479,9 @@ namespace BusinessLogic_Tests
         public void MarcarTareaComoEjecutandose_SinRecursosDisponibles_NoCambiaEstadoNiConsumeRecursos()
         {
             Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+            
+            PROYECTO_VALIDO.agregarTarea(tarea);
+
             Recurso recurso = new Recurso("Laptop", "tipo", "descripcion", false, 2);
 
             tarea.AgregarRecurso(recurso, 5);
@@ -426,6 +497,8 @@ namespace BusinessLogic_Tests
         {
             Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
 
+            PROYECTO_VALIDO.agregarTarea(tarea);
+
             tarea.MarcarTareaComoEjecutandose();
 
             Assert.AreEqual(TipoEstadoTarea.Ejecutandose, tarea.EstadoActual.Valor);
@@ -437,6 +510,9 @@ namespace BusinessLogic_Tests
             Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción", DateTime.Today, TimeSpan.FromHours(2), false);
             Tarea tareaSucesora = new Tarea("Tarea Sucesora", "Descripción sucesora", DateTime.Today, TimeSpan.FromHours(2), false);
 
+            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.agregarTarea(tareaSucesora);
+            
             tareaSucesora.AgregarDependencia(tareaPrincipal); 
 
             tareaPrincipal.MarcarTareaComoCompletada();
@@ -450,6 +526,9 @@ namespace BusinessLogic_Tests
             Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción", DateTime.Today, TimeSpan.FromHours(2), false);
             Tarea tareaSucesora = new Tarea("Tarea Sucesora", "Descripción sucesora", DateTime.Today, TimeSpan.FromHours(2), false);
 
+            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.agregarTarea(tareaSucesora);
+            
             tareaSucesora.AgregarDependencia(tareaPrincipal);
             
             Assert.AreEqual(TipoEstadoTarea.Pendiente, tareaPrincipal.EstadoActual.Valor);
@@ -463,6 +542,10 @@ namespace BusinessLogic_Tests
             Tarea tareaDependencia = new Tarea("Dependencia Intermedia", "Descripción dependencia", DateTime.Today, TimeSpan.FromHours(2), false);
             Tarea tareaSucesora = new Tarea("Tarea Sucesora", "Descripción sucesora", DateTime.Today, TimeSpan.FromHours(2), false);
 
+            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.agregarTarea(tareaSucesora);
+            PROYECTO_VALIDO.agregarTarea(tareaDependencia);
+
             tareaSucesora.AgregarDependencia(tareaPrincipal);
             tareaPrincipal.AgregarDependencia(tareaDependencia);
 
@@ -475,29 +558,27 @@ namespace BusinessLogic_Tests
         [TestMethod]
         public void TareasSeDesbloqueanAlCompletarDependencias()
         {
-            // Arrange
-            var tarea1 = new Tarea("Tarea 1", "Inicio del flujo", DateTime.Now, TimeSpan.FromHours(2), false);
-            var tarea2 = new Tarea("Tarea 2", "Segunda etapa", DateTime.Now, TimeSpan.FromHours(2), false);
-            var tarea3 = new Tarea("Tarea 3", "Final del flujo", DateTime.Now, TimeSpan.FromHours(2), false);
+            Tarea tarea1 = new Tarea("Tarea 1", "Inicio del flujo", DateTime.Now, TimeSpan.FromHours(2), false);
+            Tarea tarea2 = new Tarea("Tarea 2", "Segunda etapa", DateTime.Now, TimeSpan.FromHours(2), false);
+            Tarea tarea3 = new Tarea("Tarea 3", "Final del flujo", DateTime.Now, TimeSpan.FromHours(2), false);
 
-            tarea2.AgregarDependencia(tarea1); // tarea2 depende de tarea1
-            tarea3.AgregarDependencia(tarea2); // tarea3 depende de tarea2
+            PROYECTO_VALIDO.agregarTarea(tarea1);
+            PROYECTO_VALIDO.agregarTarea(tarea2);
+            PROYECTO_VALIDO.agregarTarea(tarea3);
+            
+            tarea2.AgregarDependencia(tarea1);
+            tarea3.AgregarDependencia(tarea2);
 
-            // Assert estado inicial
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tarea2.EstadoActual.Valor);
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tarea3.EstadoActual.Valor);
 
-            // Act 1 - completar tarea1
             tarea1.MarcarTareaComoCompletada();
 
-            // Assert 1 - tarea2 debería pasar a pendiente
             Assert.AreEqual(TipoEstadoTarea.Pendiente, tarea2.EstadoActual.Valor);
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tarea3.EstadoActual.Valor);
 
-            // Act 2 - completar tarea2
             tarea2.MarcarTareaComoCompletada();
 
-            // Assert 2 - tarea3 debería pasar a pendiente
             Assert.AreEqual(TipoEstadoTarea.Pendiente, tarea3.EstadoActual.Valor);
         }
         
@@ -505,6 +586,9 @@ namespace BusinessLogic_Tests
         public void Modificar_CambiaTitulo()
         {
             Tarea tarea = new Tarea("Título original", "Desc", VALID_DATETIME, VALID_TIMESPAN, false);
+            
+            PROYECTO_VALIDO.agregarTarea(tarea);
+            
             string nuevoTitulo = "Título nuevo";
 
             tarea.Modificar(nuevoTitulo, tarea.Descripcion, tarea.FechaInicio, tarea.Duracion);
@@ -516,6 +600,9 @@ namespace BusinessLogic_Tests
         public void Modificar_CambiaDescripcion()
         {
             Tarea tarea = new Tarea("Título", "Descripción original", VALID_DATETIME, VALID_TIMESPAN, false);
+            
+            PROYECTO_VALIDO.agregarTarea(tarea);
+
             string nuevaDescripcion = "Descripción nueva";
 
             tarea.Modificar(tarea.Titulo, nuevaDescripcion, tarea.FechaInicio, tarea.Duracion);
@@ -529,6 +616,8 @@ namespace BusinessLogic_Tests
             DateTime nuevaFecha = VALID_DATETIME.AddDays(5);
             Tarea tarea = new Tarea("Título", "Descripción", VALID_DATETIME, VALID_TIMESPAN, false);
 
+            PROYECTO_VALIDO.agregarTarea(tarea);
+            
             tarea.Modificar(tarea.Titulo, tarea.Descripcion, nuevaFecha, tarea.Duracion);
 
             Assert.AreEqual(nuevaFecha, tarea.FechaInicio);
@@ -540,6 +629,8 @@ namespace BusinessLogic_Tests
             TimeSpan nuevaDuracion = TimeSpan.FromHours(12);
             Tarea tarea = new Tarea("Título", "Descripción", VALID_DATETIME, VALID_TIMESPAN, false);
 
+            PROYECTO_VALIDO.agregarTarea(tarea);
+            
             tarea.Modificar(tarea.Titulo, tarea.Descripcion, tarea.FechaInicio, nuevaDuracion);
 
             Assert.AreEqual(nuevaDuracion, tarea.Duracion);
@@ -555,6 +646,8 @@ namespace BusinessLogic_Tests
 
             Tarea tarea = new Tarea("Original", "Original", VALID_DATETIME, VALID_TIMESPAN, false);
 
+            PROYECTO_VALIDO.agregarTarea(tarea);
+            
             tarea.Modificar(nuevoTitulo, nuevaDescripcion, nuevaFecha, nuevaDuracion);
 
             Assert.AreEqual(nuevoTitulo, tarea.Titulo);

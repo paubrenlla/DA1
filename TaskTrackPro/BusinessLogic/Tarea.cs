@@ -247,7 +247,10 @@ public class Tarea
             throw new ArgumentNullException(nameof(usuario));
         Notificacion notificacion = new Notificacion("El usuario " + Titulo + " ha sido agregado a la tarea " + Titulo);
         notificacion.AgregarUsuarios(UsuariosAsignados);
-        notificacion.AgregarUsuario(Proyecto.Admin);
+        if (Proyecto.Admin != null)
+        {
+            notificacion.AgregarUsuario(Proyecto.Admin);
+        }
         _usuariosAsignados.Add(usuario);
     }
 
