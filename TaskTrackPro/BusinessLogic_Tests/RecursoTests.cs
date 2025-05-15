@@ -6,6 +6,8 @@ namespace BusinessLogic_Tests;
 [TestClass]
 public class RecursoTests
 {
+    private static readonly TimeSpan VALID_TIMESPAN = new TimeSpan(6, 5, 0, 0);
+
     [TestInitialize]
     public void Setup()
     {
@@ -24,7 +26,7 @@ public class RecursoTests
         int cantidadDelRecurso = 5; 
         Proyecto? proyecto = null;
 
-        Recurso recurso = new Recurso(nombre, tipo, descripcion, sePuedeCompartir, cantidadDelRecurso, proyecto);
+        Recurso recurso = new Recurso(nombre, tipo, descripcion, sePuedeCompartir, cantidadDelRecurso);
 
         Assert.AreEqual(nombre, recurso.Nombre);
         Assert.AreEqual(tipo, recurso.Tipo);
@@ -32,7 +34,6 @@ public class RecursoTests
         Assert.AreEqual(sePuedeCompartir, recurso.SePuedeCompartir);
         Assert.AreEqual(cantidadDelRecurso, recurso.CantidadDelRecurso);
         Assert.AreEqual(0, recurso.CantidadEnUso); 
-        Assert.AreEqual(proyecto, recurso.ProyectoAlQuePertenece);
     }
     
     [TestMethod]
@@ -52,7 +53,6 @@ public class RecursoTests
         Assert.AreEqual(sePuedeCompartir, recurso.SePuedeCompartir);
         Assert.AreEqual(cantidadDelRecurso, recurso.CantidadDelRecurso);
         Assert.AreEqual(0, recurso.CantidadEnUso); 
-        Assert.AreEqual(null, recurso.ProyectoAlQuePertenece);
     }
     
     [TestMethod]
@@ -65,7 +65,7 @@ public class RecursoTests
         int cantidadDelRecurso = 5; 
         Proyecto? proyecto = new Proyecto("Proyecto", "Descripcion", DateTime.Now);
 
-        Recurso recurso = new Recurso(nombre, tipo, descripcion, sePuedeCompartir, cantidadDelRecurso, proyecto);
+        Recurso recurso = new Recurso(nombre, tipo, descripcion, sePuedeCompartir, cantidadDelRecurso);
 
         Assert.AreEqual(nombre, recurso.Nombre);
         Assert.AreEqual(tipo, recurso.Tipo);
@@ -73,35 +73,34 @@ public class RecursoTests
         Assert.AreEqual(sePuedeCompartir, recurso.SePuedeCompartir);
         Assert.AreEqual(cantidadDelRecurso, recurso.CantidadDelRecurso);
         Assert.AreEqual(0, recurso.CantidadEnUso); 
-        Assert.AreEqual(proyecto, recurso.ProyectoAlQuePertenece);
     }
     
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
     public void CreoRecursoConNombreVacío()
     {
-        Recurso recurso = new Recurso("", "Vehiculo", "Auto de la empresa", false, 5, null);
+        Recurso recurso = new Recurso("", "Vehiculo", "Auto de la empresa", false, 5);
     }
     
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
     public void CreoRecursoSinTipo()
     {
-        Recurso recurso = new Recurso("Auto", "", "Auto de la empresa", false, 5, null);
+        Recurso recurso = new Recurso("Auto", "", "Auto de la empresa", false, 5);
     }
     
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void CreoRecursoConCantidadDelRecursoIgualA0()
     {
-        Recurso recurso = new Recurso("Auto", "Vechiculo", "Auto de la empresa", false, 0, null);
+        Recurso recurso = new Recurso("Auto", "Vechiculo", "Auto de la empresa", false, 0);
     }
     
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void CreoRecursoConCantidadDelRecursoMenorA0()
     {
-        Recurso recurso = new Recurso("Auto", "Vechiculo", "Auto de la empresa", false, -8, null);
+        Recurso recurso = new Recurso("Auto", "Vechiculo", "Auto de la empresa", false, -8);
     }
     
     [TestMethod]
@@ -110,7 +109,7 @@ public class RecursoTests
         string nombre = "Auto";
         string tipo = "Vehiculo";
         string descripcion = "Auto de la empresa";
-        Recurso recurso = new Recurso(nombre, tipo, descripcion, false, 1, null);
+        Recurso recurso = new Recurso(nombre, tipo, descripcion, false, 1);
         Assert.AreEqual(1, recurso.Id);
         
         string nombre2 = "Auto2";
@@ -172,27 +171,83 @@ public class RecursoTests
         recurso.LiberarRecurso(3);
         Assert.AreEqual(5, recurso.CantidadEnUso);
     }
-   
+    
     [TestMethod]
-    public void HacerRecursoExclusivoDeProyecto_ActualizaProyecto()
+    public void EsExclusivo_DeberiaRetornarFalse_CuandoNoPerteneceAningunProyecto()
     {
         Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
-        Proyecto proyecto = new Proyecto("Proyecto", "Descripcion", DateTime.Now);
+        
+        bool resultado = recurso.EsExclusivo();
 
-        recurso.HacerRecursoExclusivoDeProyecto(proyecto);
-        Assert.AreEqual(proyecto, recurso.ProyectoAlQuePertenece);
+        Assert.IsFalse(resultado);
+    }
+
+    [TestMethod]
+    public void EsExclusivo_DeberiaRetornarTrue_CuandoPerteneceASoloUnProyecto()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        Tarea tarea = new Tarea("Tarea", "descripcion", DateTime.Now, VALID_TIMESPAN, false); 
+        
+        recurso.AgregarRecursoATarea(tarea);
+        bool resultado = recurso.EsExclusivo();
+
+        Assert.IsTrue(resultado);
+    }
+
+    [TestMethod]
+    public void EsExclusivo_DeberiaRetornarFalse_CuandoPerteneceAMultiplesProyectos()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        
+        Proyecto proyecto1 = new Proyecto("Proyecto1", "descripcion", DateTime.Now);
+        Tarea tarea1 = new Tarea("Tarea1 ", "descripcion", DateTime.Now, VALID_TIMESPAN, false); 
+        proyecto1.agregarTarea(tarea1);
+        
+        Proyecto proyecto2 = new Proyecto("Proyecto2", "descripcion", DateTime.Now);
+        Tarea tarea2 = new Tarea("Tarea2 ", "descripcion", DateTime.Now, VALID_TIMESPAN, false); 
+        proyecto2.agregarTarea(tarea2);
+        
+        recurso.AgregarRecursoATarea(tarea1);
+        recurso.AgregarRecursoATarea(tarea2);
+        
+        bool resultado = recurso.EsExclusivo();
+
+        Assert.IsFalse(resultado);
     }
     
     [TestMethod]
-    public void HacerRecursoGlobal_DejaElRecursoSinProyecto()
+    public void QuitarRecursoATarea_DeberiaRemoverLaTarea_SiPertenece()
     {
-        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10, null);
-        Proyecto proyecto = new Proyecto("Proyecto", "Descripcion", DateTime.Now);
-        recurso.HacerRecursoExclusivoDeProyecto(proyecto);
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        Tarea tarea = new Tarea("Tarea1", "descripcion", DateTime.Now, VALID_TIMESPAN, false);
 
-        recurso.HacerRecursoGlobal();
+        recurso.AgregarRecursoATarea(tarea);
+        Assert.IsTrue(recurso.TareasQueLoUsan.Contains(tarea));
 
-        Assert.IsNull(recurso.ProyectoAlQuePertenece);
+        recurso.QuitarRecursoATarea(tarea);
+
+        Assert.IsFalse(recurso.TareasQueLoUsan.Contains(tarea));
+    }
+
+    [TestMethod]
+    public void QuitarRecursoATarea_NoDeberiaHacerNada_SiNoPertenece()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        Tarea tareaNoAsociada = new Tarea("TareaNoAsociada", "descripcion", DateTime.Now, VALID_TIMESPAN, false);
+
+        recurso.QuitarRecursoATarea(tareaNoAsociada);
+
+        Assert.AreEqual(0, recurso.TareasQueLoUsan.Count);
+    }
+
+    [TestMethod]
+    public void QuitarRecursoATarea_NoDeberiaLanzarExcepcion_SiSeLlamaConNull()
+    {
+        Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+
+        recurso.QuitarRecursoATarea(null);
+
+        Assert.AreEqual(0, recurso.TareasQueLoUsan.Count);
     }
     
     [TestMethod]
