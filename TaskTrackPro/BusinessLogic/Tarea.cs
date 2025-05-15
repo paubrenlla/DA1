@@ -23,9 +23,6 @@ public class Tarea
     public DateTime LateStart { get; set; }
     public DateTime EarlyFinish { get; set; }
     public DateTime LateFinish { get; set; }
-
-    public IReadOnlyList<Tarea> TareasDependencia => _tareasDependencia.AsReadOnly();
-    public IReadOnlyList<Tarea> TareasSucesoras => _tareasSucesoras.AsReadOnly();
     private static readonly TimeSpan DuracionMinimaTarea = TimeSpan.FromHours(1);
     
     public Tarea(string titulo, string descripcion, DateTime fechaInicio, TimeSpan duracion, bool esCritica)
@@ -102,6 +99,8 @@ public class Tarea
     }
     
     public List<RecursoNecesario> RecursosNecesarios => _recursosNecesarios!;
+    public List<Tarea> TareasDependencia => _tareasDependencia!;
+    public List<Tarea> TareasSucesoras => _tareasSucesoras!;
     
     private void ModificarEstado(TipoEstadoTarea nuevoEstado, DateTime fecha)
     {   
