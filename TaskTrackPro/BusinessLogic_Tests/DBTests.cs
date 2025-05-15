@@ -477,7 +477,7 @@ public class DBTests
         p1.AsignarAdmin(usuario1);
         db.agregarProyecto(p1);
         
-       bool esAdmin = db.UsuarioEsAdminProyecto(usuario1, p1);
+       bool esAdmin = db.UsuarioEsAdminDelProyecto(usuario1, p1);
         
         Assert.IsTrue(esAdmin);
     }

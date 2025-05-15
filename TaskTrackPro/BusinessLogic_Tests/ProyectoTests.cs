@@ -611,6 +611,36 @@ public class ProyectoTests
         
     }
     
+    [TestMethod]
+    public void DevolverTareasDelUsuario()
+    {
+        DateTime inicio = DateTime.Today;
+        TimeSpan duracion = TimeSpan.FromDays(2);
+
+        Tarea t1 = new Tarea("T1", "desc", inicio, duracion, false);
+        Tarea t2 = new Tarea("T2", "desc", inicio, duracion, false);
+        Tarea t3 = new Tarea("T3", "desc", inicio.AddHours(1), duracion, false);
+        Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
+
+        Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
+        proyecto.agregarTarea(t1);
+        proyecto.agregarTarea(t2);
+        proyecto.agregarTarea(t3);
+        proyecto.agregarTarea(t4);
+
+        Usuario usuario = new Usuario("test@test.com", "Test", "Usuario", "Contra*seña123", DateTime.Now);
+        t1.AgregarUsuario(usuario);
+        t2.AgregarUsuario(usuario);
+
+        List<Tarea> tareasDelUsuario = proyecto.TareasDelUsuario(usuario);
+        
+        Assert.AreEqual(2, tareasDelUsuario.Count);
+        Assert.AreEqual(t1, tareasDelUsuario[0]);
+        Assert.AreEqual(t2, tareasDelUsuario[1]);
+
+    }
+    
+    
 }
 
 
