@@ -54,6 +54,7 @@ else
     private List<Usuario>? listaDeUsuarios;
     private bool yaVerifiqueSesion = false;
     private string mensajeError = string.Empty;
+    Usuario usuarioLogeado;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -63,6 +64,12 @@ else
             if (!isUserActive)
             {
                 NavigationManager.NavigateTo("/Login");
+            }
+            
+            usuarioLogeado = await SessionLogic.GetCurrentUser();
+            if (!BaseDeDatos.UsuarioEsAdmin(usuarioLogeado))
+            {
+                NavigationManager.NavigateTo("/");
             }
             else
             {

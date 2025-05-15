@@ -4,7 +4,7 @@
 
 @using BusinessLogic
 @using UserInterface.Data
-@inject DB DataBase
+@inject DB BaseDeDatos
 @inject NavigationManager NavigationManager
 @inject SessionLogic SessionLogic
 
@@ -52,6 +52,7 @@
     private DateTime fecha;
     private string mensajeError;
 
+    Usuario usuarioLogeado;
     private bool yaVerifiqueSesion = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -69,6 +70,11 @@
 
             StateHasChanged();
         }
+        usuarioLogeado = await SessionLogic.GetCurrentUser();
+        if (!BaseDeDatos.UsuarioEsAdmin(usuarioLogeado))
+        {
+            NavigationManager.NavigateTo("/");
+        }
     }
 
     private void Crear_Usuario()
@@ -81,7 +87,7 @@
                 email, nombre, apellido, contraseña, fecha
             );
 
-            DataBase.agregarUsuario(usuarioNuevo);
+            BaseDeDatos.agregarUsuario(usuarioNuevo);
             NavigationManager.NavigateTo("/usuarios");
         }
         catch (Exception ex)

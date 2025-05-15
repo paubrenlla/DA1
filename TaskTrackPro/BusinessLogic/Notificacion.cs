@@ -1,4 +1,4 @@
-﻿using BusinessLogic;
+﻿namespace BusinessLogic;
 
 public class Notificacion
 {

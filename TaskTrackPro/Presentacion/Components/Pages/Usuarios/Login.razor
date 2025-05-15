@@ -2,7 +2,7 @@
 
 @using BusinessLogic
 @using UserInterface.Data
-@inject SessionLogic Sesion
+@inject SessionLogic SessionManager
 @inject NavigationManager NavigationManager
 
 <h1>Iniciar sesión</h1>
@@ -30,12 +30,40 @@
     private string email;
     private string password;
     private string mensajeError;
+    private bool yaVerifiqueSesion = false;
+    private bool sesionActiva;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !yaVerifiqueSesion)
+        {
+            try
+            {
+                sesionActiva = await SessionManager.isUserActive();
+                
+                if (sesionActiva)
+                {
+                    NavigationManager.NavigateTo("/");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                mensajeError = ex.Message;
+                
+            }   
+            yaVerifiqueSesion = true;
+            StateHasChanged();
+        }
+    }  
+    
+
 
     private async Task IniciarSesion()
     {
         try
         {
-            await Sesion.Login(email, password);
+            await SessionManager.Login(email, password);
             NavigationManager.NavigateTo("/");
         }
         catch (Exception ex)
