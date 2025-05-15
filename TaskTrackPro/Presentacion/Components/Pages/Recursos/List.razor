@@ -36,7 +36,14 @@
                 <td>@recurso.SePuedeCompartir</td>
                 <td>
                     <a class="btn btn-success btn-sm" href="recursos/@recurso.Id/editar/">Editar</a>
-                    <button class="btn btn-danger btn-sm">Eliminar</button>
+                    @if(@recurso.EstaEnUso()){
+                        <button class="btn btn-danger btn-sm" disabled>Eliminar</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-danger btn-sm" @onclick="@(() => BaseDeDatos.eliminarRecurso(recurso))">Eliminar</button>
+
+                    }
                 </td>
             </tr>
         }
