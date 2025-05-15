@@ -42,4 +42,13 @@ public class Notificacion
     {
         VistaPorUsuarios.Add(usuario);
     }
+
+    public void AgregarUsuarios(List<Usuario> usuarios)
+    {
+        if (usuarios == null) return;
+        foreach (Usuario usuario in usuarios)
+        {
+            AgregarUsuario(usuario);
+        }
+    }
 }
