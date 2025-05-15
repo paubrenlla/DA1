@@ -612,29 +612,43 @@ public class ProyectoTests
     }
     
     [TestMethod]
-    public void EliminarMiembroTarea_DeberiaEliminarUsuarioAsignado()
+    public void EliminarMiembro_DeberiaEliminarUsuarioDelProyectoYDeTareasAsignadas()
     {
         Proyecto proyecto = new Proyecto("Proyecto", "descripcion", DateTime.Now);
         Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        Tarea tarea = new Tarea("Tarea", "Descripción", DateTime.Now, TimeSpan.FromDays(1), false);
-        tarea.UsuariosAsignados.Add(usuario);
+        Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Now, TimeSpan.FromDays(1), false);
+
         proyecto.agregarTarea(tarea);
+        proyecto.Miembros.Add(usuario);
+        tarea.UsuariosAsignados.Add(usuario);
 
-        proyecto.eliminarMiembroTarea(usuario, tarea);
+        proyecto.eliminarMiembro(usuario);
 
+        Assert.IsFalse(proyecto.Miembros.Contains(usuario));
         Assert.IsFalse(tarea.UsuariosAsignados.Contains(usuario));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void EliminarMiembroTarea_DeberiaLanzarExcepcion_SiUsuarioNoEstaAsignado()
+    public void EliminarMiembro_DeberiaEliminarUsuarioSoloDelProyecto_SiNoEstaAsignadoATareas()
     {
         Proyecto proyecto = new Proyecto("Proyecto", "descripcion", DateTime.Now);
         Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        Tarea tarea = new Tarea("Tarea", "Descripción", DateTime.Now, TimeSpan.FromDays(1), false);
-        proyecto.agregarTarea(tarea);
 
-        proyecto.eliminarMiembroTarea(usuario, tarea);
+        proyecto.Miembros.Add(usuario);
+
+        proyecto.eliminarMiembro(usuario);
+
+        Assert.IsFalse(proyecto.Miembros.Contains(usuario));
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void EliminarMiembro_DeberiaLanzarExcepcion_SiUsuarioNoEsMiembro()
+    {
+        Proyecto proyecto = new Proyecto("Proyecto", "descripcion", DateTime.Now);
+        Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+
+        proyecto.eliminarMiembro(usuario);
     }
 }
 
