@@ -1,13 +1,21 @@
 @page "/proyectos/{id:int}/tareas"
 @using BusinessLogic
 @using BusinessLogic.Enums
+@using UserInterface.Data
 
 @inject DB BaseDeDatos
+@inject SessionLogic SessionManager
+@inject NavigationManager Navigation
 
 <h1>
     Tareas
     <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="proyectos/@id/tareas/crear">Crear +</a>
 </h1>
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger">@mensajeError</div>
+}
 
 <table class="table">
     <thead>
@@ -22,7 +30,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var tarea in ListaDeTareas)
+    @foreach (var tarea in tareasDisponibles)
     {
         <tr>
             <td>@tarea.Titulo</td>
@@ -32,26 +40,37 @@
             <td>@tarea.Duracion</td>
             <td>@tarea.EsCritica</td>
             <td>
-                <a class="btn btn-success btn-sm" href="proyectos/@id/tareas/@tarea.Id/editar">Editar</a>
-                <button class="btn btn-primary btn-sm"
-                        @onclick="() => AbrirModalEstado(tarea)"
-                        disabled="@(!PuedeCambiarEstado(tarea.EstadoActual.Valor))">
-                    Editar estado
-                </button>
-                <button class="btn btn-primary btn-sm"
-                        @onclick="() => AbrirModalDependencias(tarea)"
-                        disabled="@(!PuedeAgregarDependencias(tarea))">
-                    Dependencias
-                </button>
-                <a class="btn btn-success btn-sm" href="proyectos/@id/tareas/@tarea.Id/miembros">Ver miembros</a>
-                <a class="btn btn-success btn-sm" href="proyectos/@id/tareas/@tarea.Id/recursos">Recursos necesarios</a>
-                <button class="btn btn-danger btn-sm"
-                        @onclick="@(() => EliminarTarea(tarea))"
-                        disabled="@(tarea.TareasSucesoras.Count > 0)">
-                    Eliminar
-                </button>
-
+                @if (esAdminSistema || BaseDeDatos.UsuarioEsAdminDelProyecto(usuarioLogueado, proyectoActual))
+                {
+                    <a class="btn btn-success btn-sm" href="proyectos/@id/tareas/@tarea.Id/editar">Editar</a>
+                    <button class="btn btn-primary btn-sm"
+                            @onclick="() => AbrirModalEstado(tarea)"
+                            disabled="@(!PuedeCambiarEstado(tarea.EstadoActual.Valor))">
+                        Editar estado
+                    </button>
+                    <button class="btn btn-primary btn-sm"
+                            @onclick="() => AbrirModalDependencias(tarea)"
+                            disabled="@(!PuedeAgregarDependencias(tarea))">
+                        Dependencias
+                    </button>
+                    <a class="btn btn-success btn-sm" href="proyectos/@id/tareas/@tarea.Id/miembros">Ver miembros</a>
+                    <a class="btn btn-success btn-sm" href="proyectos/@id/tareas/@tarea.Id/recursos">Recursos necesarios</a>
+                    <button class="btn btn-danger btn-sm"
+                            @onclick="@(() => EliminarTarea(tarea))"
+                            disabled="@(tarea.TareasSucesoras.Count > 0)">
+                        Eliminar
+                    </button>
+                }
+                else
+                {
+                    <button class="btn btn-primary btn-sm"
+                            @onclick="() => AbrirModalEstado(tarea)"
+                            disabled="@(!PuedeCambiarEstado(tarea.EstadoActual.Valor))">
+                        Editar estado
+                    </button>
+                }
             </td>
+
         </tr>
     }
     </tbody>
@@ -61,26 +80,71 @@
     [Parameter]
     public int id { get; set; }
     
-    private List<Tarea>? ListaDeTareas = new List<Tarea>();
+    private List<Tarea>? tareasDisponibles = new List<Tarea>();
+    private List<Tarea>? tareasDisponiblesParaAgregar = new List<Tarea>();
     
     bool mostrarModalEstado = false;
     Tarea? tareaSeleccionada;
     TipoEstadoTarea nuevoEstado;
     
     bool mostrarModalDependencias = false;
-    List<Tarea>? tareasDisponiblesParaAgregar = new List<Tarea>();
     Tarea? tareaDependenciaSeleccionada;
     int? tareaDependenciaSeleccionadaId = null;
+    bool yaVerifiqueSesion = false;
+    private bool sesionActiva;
+    private string mensajeError = string.Empty;
+    private Usuario? usuarioLogueado;
+    private bool esAdminSistema;
+    Proyecto proyectoActual;
 
-    protected override void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        ListaDeTareas = BaseDeDatos.buscarProyectoPorId(@id).TareasAsociadas;
-        CargarTareas();
+       
+        if (firstRender && !yaVerifiqueSesion)
+        {
+            try
+            {
+                sesionActiva = await SessionManager.isUserActive();
+                
+                if (!sesionActiva)
+                {
+                    Navigation.NavigateTo("/Login");
+                    return;
+                }
+
+                usuarioLogueado = await SessionManager.GetCurrentUser();
+                
+                if (usuarioLogueado != null)
+                {
+                    proyectoActual = BaseDeDatos.buscarProyectoPorId(id);
+                    esAdminSistema = BaseDeDatos.UsuarioEsAdmin(usuarioLogueado);
+            
+                    if (esAdminSistema || BaseDeDatos.UsuarioEsAdminDelProyecto(usuarioLogueado,proyectoActual))
+                    {
+                        tareasDisponibles = proyectoActual.TareasAsociadas;
+                    }
+                    else
+                    {
+                        tareasDisponibles = proyectoActual.TareasDelUsuario(usuarioLogueado);
+                    }
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                mensajeError = ex.Message;
+            }
+            finally
+            {
+                yaVerifiqueSesion = true;
+                StateHasChanged();
+            }
+        }
     }
     
     void CargarTareas()
     {
-        ListaDeTareas = BaseDeDatos.buscarProyectoPorId(id).TareasAsociadas;
+        tareasDisponibles = BaseDeDatos.buscarProyectoPorId(id).TareasAsociadas;
     }
 
     
@@ -88,7 +152,6 @@
     {
         var proyecto = BaseDeDatos.buscarProyectoPorId(id);
         proyecto.eliminarTarea(tarea);
-        CargarTareas();
         StateHasChanged();
     }
 
@@ -142,7 +205,7 @@
     void AbrirModalDependencias(Tarea tarea)
     {
         tareaSeleccionada = tarea;
-        tareasDisponiblesParaAgregar = ListaDeTareas
+        tareasDisponiblesParaAgregar = tareasDisponibles
             .Where(t => t.Id != tarea.Id && !tarea.TareasDependencia.Contains(t)).ToList();
         mostrarModalDependencias = true;
     }
@@ -158,7 +221,7 @@
             {
                 tareaSeleccionada.AgregarDependencia(tareaADepender);
                 tareaDependenciaSeleccionadaId = null;
-                tareasDisponiblesParaAgregar = ListaDeTareas
+                tareasDisponiblesParaAgregar = tareasDisponibles
                     .Where(t => t.Id != tareaSeleccionada.Id && !tareaSeleccionada.TareasDependencia.Contains(t)).ToList();
             }
         }

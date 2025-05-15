@@ -58,7 +58,7 @@ else
                             <div class="btn-group" role="group">
                                 <a class="btn btn-primary btn-sm" href="proyectos/@proyecto.Id/tareas">Ver Tareas</a>
                                 
-                                @if (esAdminSistema || BaseDeDatos.UsuarioEsAdminProyecto(usuarioLogueado,proyecto))
+                                @if (esAdminSistema || BaseDeDatos.UsuarioEsAdminDelProyecto(usuarioLogueado,proyecto))
                                 {
                                     <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/tareas/crear">Agregar Tarea</a>
                                     <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/miembros">Ver Miembros</a>
