@@ -159,17 +159,20 @@ public class ProyectoTests
         var tarea2 = new Tarea("Otra tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
         var tarea3 = new Tarea("Ootra tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
         var tarea4 = new Tarea("Oootra tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
-
+        
+        
         proyecto.agregarTarea(tarea);
         proyecto.agregarTarea(tarea2);
         proyecto.agregarTarea(tarea3);
         proyecto.agregarTarea(tarea4);
+        tarea.AgregarDependencia(tarea2);
         Assert.AreEqual(4, proyecto.TareasAsociadas.Count);
 
         proyecto.eliminarTarea(tarea);
 
         Assert.AreEqual(3, proyecto.TareasAsociadas.Count);
         Assert.IsFalse(proyecto.TareasAsociadas.Contains(tarea));
+        Assert.IsFalse(tarea2.TareasSucesoras.Contains(tarea));
     }
     
     [TestMethod]
@@ -678,6 +681,23 @@ public class ProyectoTests
         Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
 
         proyecto.eliminarMiembro(usuario);
+    }
+
+    [TestMethod]
+    public void EliminarMiembroDeUnaTareaCorrectamente()
+    {
+        Proyecto proyecto = new Proyecto("Proyecto", "descripcion", DateTime.Now);
+        Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Now, TimeSpan.FromDays(1), false);
+
+        proyecto.agregarTarea(tarea);
+        proyecto.Miembros.Add(usuario);
+        tarea.UsuariosAsignados.Add(usuario);
+
+        proyecto.eliminarMiembroTarea(usuario,tarea);
+        
+        Assert.IsTrue(tarea.UsuariosAsignados.Count == 0);
+        Assert.IsFalse(tarea.UsuariosAsignados.Contains(usuario));
     }
 }
 

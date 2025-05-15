@@ -176,15 +176,12 @@ public class Proyecto
 
             tarea.EarlyFinish = tarea.EarlyStart + tarea.Duracion;
 
-            foreach (Tarea tareaQueLeSigue in TareasAsociadas)
+            foreach (Tarea tareaQueLeSigue in tarea.TareasSucesoras)
             {
-                if (tareaQueLeSigue.TareasDependencia.Contains(tarea))
-                {
                     if (TodasLasDependenciasFueronProcesadas(tareaQueLeSigue))
                     {
                         pendientes.Enqueue(tareaQueLeSigue);
                     }
-                }
             }
         }
     }
