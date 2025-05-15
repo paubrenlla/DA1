@@ -430,5 +430,56 @@ public class DBTests
         Assert.IsNotNull(noLeidas);
         Assert.AreEqual(notificacion2.Id, noLeidas[0].Id);
     }
+
+
+    [TestMethod]
+    public void VerSiUnUsuarioEsAdmin()
+    {
+        Usuario usuario1 = new Usuario("correo@gmail.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
+        DB db = new DB(usuario1);
+        bool esAdmin = db.UsuarioEsAdmin(usuario1);
+        Assert.IsTrue(esAdmin);
+    }
+    
+    [TestMethod]
+    public void DevolverProyectosDeUnUsuario()
+    {
+        DB db = new DB();
+        Usuario usuario1 = new Usuario("correo@gmail.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
+        Usuario usuario2 = new Usuario("correo2@gmail.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
+        Proyecto p1= new Proyecto("Proyecto 1", "desc", DateTime.Today);
+        Proyecto p2= new Proyecto("Proyecto 2", "desc", DateTime.Today);
+        Proyecto p3= new Proyecto("Proyecto 3", "desc", DateTime.Today);
+        p1.AsignarAdmin(usuario1);
+        p2.AsignarAdmin(usuario2);
+        p3.AsignarAdmin(usuario2);
+        p2.agregarMiembro(usuario1);
+        db.agregarUsuario(usuario1);
+        db.agregarUsuario(usuario2);
+        db.agregarProyecto(p1);
+        db.agregarProyecto(p2);
+        db.agregarProyecto(p3);
+        
+        List<Proyecto> proyectosDelUsuario = db.ProyectosDelUsuario(usuario1);
+        
+        Assert.IsTrue(proyectosDelUsuario.Count == 2);
+        Assert.IsTrue(proyectosDelUsuario.Contains(p1));
+        Assert.IsTrue(proyectosDelUsuario.Contains(p2));
+        Assert.IsFalse(proyectosDelUsuario.Contains(p3));
+    }
+    
+    [TestMethod]
+    public void VerSiUsuarioEsAdminDeUnProyecto()
+    {
+        DB db = new DB();
+        Usuario usuario1 = new Usuario("correo@gmail.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
+        Proyecto p1= new Proyecto("Proyecto 1", "desc", DateTime.Today);
+        p1.AsignarAdmin(usuario1);
+        db.agregarProyecto(p1);
+        
+       bool esAdmin = db.UsuarioEsAdminProyecto(usuario1, p1);
+        
+        Assert.IsTrue(esAdmin);
+    }
     
 }

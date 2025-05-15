@@ -116,6 +116,7 @@ public class Tarea
         _tareasDependencia.Add(tarea);
         tarea._tareasSucesoras.Add(this);
         ActualizarEstado();
+        Proyecto.CalcularRutaCritica();
     }
     public void ActualizarEstado()
     {
@@ -260,6 +261,7 @@ public class Tarea
         Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha sido modificada.");
         notificacion.AgregarUsuarios(UsuariosAsignados);
         notificacion.AgregarUsuario(Proyecto.Admin);
+        Proyecto.CalcularRutaCritica();
     }
 }
 

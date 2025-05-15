@@ -76,6 +76,7 @@ public class Proyecto
         }
         TareasAsociadas.Add(tarea);
         tarea.Proyecto = this;
+        CalcularRutaCritica();
     }
     
     public void eliminarTarea(Tarea tarea)
@@ -92,6 +93,7 @@ public class Proyecto
         Notificacion notificacion = new Notificacion("Se eliminado la tarea " + tarea.Titulo + " del proyecto " + Nombre + ".");
         notificacion.AgregarUsuarios(tarea.UsuariosAsignados);
         notificacion.AgregarUsuario(Admin);
+        CalcularRutaCritica();
     }
 
     public void agregarMiembro(Usuario user)
@@ -224,7 +226,6 @@ public class Proyecto
         
         return TareasAsociadas.Where(t => t.Holgura == TimeSpan.Zero).ToList();
     }
-
 
     public void AsignarUsuarioATarea(Usuario usuario, Tarea tarea)
     {
