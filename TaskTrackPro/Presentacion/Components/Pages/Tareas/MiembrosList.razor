@@ -10,7 +10,7 @@
     Miembros
 </h1>
 
-@if (listaDeMiembors is not null)
+@if (listaDeMiembros is not null)
 {
     <div class="mb-3" style="width: 300px;">
         <select class="form-select" @bind="usuarioSeleccionadoId">
@@ -34,7 +34,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach (Usuario usuario in listaDeMiembors)
+        @foreach (Usuario usuario in listaDeMiembros)
         {
             <tr>
                 <td>@usuario.Email</td>
@@ -43,7 +43,11 @@
                 <td>@usuario.FechaNacimiento.ToShortDateString()</td>
                 <td>
                     <a class="btn btn-success btn-sm" href="proyectos/@idProyecto/tareas/@idTarea/miembros/@usuario.Id/editar">Editar</a>
-                    <button class="btn btn-danger btn-sm">Eliminar</button>
+                    <button class="btn btn-danger btn-sm"
+                            @onclick="@(() => EliminarMiembro(usuario))"
+                            disabled="@(tarea.TareasSucesoras.Count > 0)">
+                        Eliminar
+                    </button>
                 </td>
             </tr>
         }
@@ -63,7 +67,7 @@ else
     public int idTarea { get; set; }
 
     
-    private List<Usuario>? listaDeMiembors;
+    private List<Usuario>? listaDeMiembros;
     private bool yaVerifiqueSesion = false;
     
     private List<Usuario> usuariosDisponibles = new();
@@ -85,7 +89,7 @@ else
                 proyecto = BaseDeDatos.buscarProyectoPorId(idProyecto);
                 tarea = proyecto?.BuscarTareaPorId(idTarea);
 
-                listaDeMiembors = tarea?.UsuariosAsignados;
+                listaDeMiembros = tarea?.UsuariosAsignados;
                 ActualizarUsuariosDisponibles();
                 yaVerifiqueSesion = true;
                 StateHasChanged();
@@ -122,5 +126,17 @@ else
                 Console.WriteLine(ex.Message);
             }
         }
+    }
+    void EliminarMiembro(Usuario miembro)
+    {
+        Proyecto proyecto = BaseDeDatos.buscarProyectoPorId(idProyecto);
+        proyecto.eliminarMiembroTarea(miembro, tarea);
+        CargarMiembros();
+        StateHasChanged();
+    }
+    
+    void CargarMiembros()
+    {
+        listaDeMiembros = BaseDeDatos.buscarProyectoPorId(idProyecto).BuscarTareaPorId(idTarea).UsuariosAsignados;
     }
 }
