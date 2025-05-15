@@ -4,7 +4,7 @@
 
 @using BusinessLogic
 @using UserInterface.Data
-@inject DB DataBase
+@inject DB BaseDeDatos
 @inject NavigationManager NavigationManager
 @inject SessionLogic SessionLogic
 
@@ -57,6 +57,7 @@
 
     private Recurso recursoACambiar;
     private bool yaVerifiqueSesion = false;
+    Usuario usuarioLogeado;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -70,10 +71,15 @@
                 NavigationManager.NavigateTo("/Login");
                 return;
             }
+            usuarioLogeado = await SessionLogic.GetCurrentUser();
+            if (!BaseDeDatos.UsuarioEsAdmin(usuarioLogeado))
+            {
+                NavigationManager.NavigateTo("/");
+            }
 
             try
             {
-                recursoACambiar = DataBase.buscarRecursoPorId(id);
+                recursoACambiar = BaseDeDatos.buscarRecursoPorId(id);
                 if (recursoACambiar == null)
                 {
                     mensajeError = $"Recurso con ID {id} no encontrado.";
@@ -86,7 +92,7 @@
                 cantidadRecurso = recursoACambiar.CantidadDelRecurso;
                 compartirNuevo = recursoACambiar.SePuedeCompartir;
 
-                StateHasChanged(); // actualizar la interfaz
+                StateHasChanged();
             }
             catch (Exception ex)
             {
