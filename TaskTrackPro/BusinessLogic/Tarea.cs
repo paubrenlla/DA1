@@ -154,6 +154,12 @@ public class Tarea
         ActualizarEstado();
     }
 
+    public void EliminarRecurso(RecursoNecesario recurso)
+    {
+        RecursosNecesarios.Remove(recurso);
+        ActualizarEstado();
+    }
+
     public bool VerificarRecursosDisponibles()
     {
         foreach (RecursoNecesario recursoNecesario in RecursosNecesarios)
