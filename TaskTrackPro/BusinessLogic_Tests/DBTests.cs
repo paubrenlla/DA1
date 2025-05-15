@@ -88,6 +88,20 @@ public class DBTests
         Assert.IsFalse(db.ListaUsuarios.Contains(user2));
     }
     
+    [ExpectedException(typeof(ArgumentException))]
+    [TestMethod]
+    public void EliminarUsuarioNoPuedeEliminarAdminDeProyecto()
+    {
+        DB db = new DB();
+        Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        db.agregarUsuario(usuario);
+        Proyecto proyecto = new Proyecto("Proyecto","descripcion", DateTime.Today);
+        proyecto.AsignarAdmin(usuario);
+        db.agregarProyecto(proyecto);
+        
+        db.eliminarUsuario(usuario);
+    }
+    
     [TestMethod]
     public void AgregarAdmin()
     {
@@ -393,4 +407,5 @@ public class DBTests
         Assert.IsNotNull(noLeidas);
         Assert.AreEqual(notificacion2.Id, noLeidas[0].Id);
     }
+    
 }

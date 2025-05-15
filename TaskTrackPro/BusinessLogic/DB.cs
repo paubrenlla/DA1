@@ -173,11 +173,14 @@ public class DB
         AdministradoresSistema.Add(user);
     }
 
-    public void eliminarUsuario(Usuario user)
+    public void eliminarUsuario(Usuario usuario)
     {
-        if (AdministradoresSistema.Contains(user))
+        if (AdministradoresSistema.Contains(usuario))
             throw new ArgumentException("El usuario es administrador");
-        ListaUsuarios.Remove(user);
+        if (esAdminDeUnProyecto(usuario))
+            throw new ArgumentException("El usuario es administrador de un proyecto");
+            
+        ListaUsuarios.Remove(usuario);
     }
     
     public Usuario? buscarUsuarioPorId(int id)
@@ -246,5 +249,10 @@ public class DB
             .Where(n => n.UsuariosNotificados.Contains(usuario) &&
                         !n.VistaPorUsuarios.Contains(usuario))
             .ToList();
+    }
+
+    public bool esAdminDeUnProyecto(Usuario usuario)
+    {
+        return ListaProyectos.Any(p => p.Admin.Equals(usuario));
     }
 }
