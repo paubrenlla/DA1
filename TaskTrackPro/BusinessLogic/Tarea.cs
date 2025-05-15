@@ -11,6 +11,7 @@ public class Tarea
     private DateTime _fechaInicio;
     private TimeSpan _duracion;
     private bool _esCritica;
+    public Proyecto? Proyecto { get; set; }
     private Estado _estadoActual = new Estado(TipoEstadoTarea.Pendiente);
     private List<Tarea> _tareasDependencia = new List<Tarea>();
     private List<Tarea> _tareasSucesoras = new List<Tarea>();
@@ -22,9 +23,6 @@ public class Tarea
     public DateTime LateStart { get; set; }
     public DateTime EarlyFinish { get; set; }
     public DateTime LateFinish { get; set; }
-
-    public IReadOnlyList<Tarea> TareasDependencia => _tareasDependencia.AsReadOnly();
-    public IReadOnlyList<Tarea> TareasSucesoras => _tareasSucesoras.AsReadOnly();
     private static readonly TimeSpan DuracionMinimaTarea = TimeSpan.FromHours(1);
     
     public Tarea(string titulo, string descripcion, DateTime fechaInicio, TimeSpan duracion, bool esCritica)
@@ -101,6 +99,8 @@ public class Tarea
     }
     
     public List<RecursoNecesario> RecursosNecesarios => _recursosNecesarios!;
+    public List<Tarea> TareasDependencia => _tareasDependencia!;
+    public List<Tarea> TareasSucesoras => _tareasSucesoras!;
     
     private void ModificarEstado(TipoEstadoTarea nuevoEstado, DateTime fecha)
     {   
@@ -116,12 +116,15 @@ public class Tarea
         _tareasDependencia.Add(tarea);
         tarea._tareasSucesoras.Add(this);
         ActualizarEstado();
+        Proyecto.CalcularRutaCritica();
     }
     public void ActualizarEstado()
     {
-        if (TareasDependencia.Count == 0) 
+        if (this.EstadoActual.Valor == TipoEstadoTarea.Efectuada 
+            || this.EstadoActual.Valor == TipoEstadoTarea.Ejecutandose)
+        {
             return;
-
+        }
         if (VerificarDependenciasCompletadas() && VerificarRecursosDisponibles())
         {
             ModificarEstado(TipoEstadoTarea.Pendiente, DateTime.Now);
@@ -142,10 +145,18 @@ public class Tarea
             if (recursoNecesario.Recurso == recurso)
             {
                 recursoNecesario.CantidadNecesaria += cantidadNecesaria;
+                ActualizarEstado();
                 return;
             }
         }
         _recursosNecesarios.Add(new RecursoNecesario(recurso, cantidadNecesaria));
+        recurso.AgregarRecursoATarea(this);
+        ActualizarEstado();
+    }
+
+    public void EliminarRecurso(RecursoNecesario recurso)
+    {
+        RecursosNecesarios.Remove(recurso);
         ActualizarEstado();
     }
 
@@ -201,7 +212,6 @@ public class Tarea
         {
             ModificarEstado(TipoEstadoTarea.Ejecutandose, DateTime.Now);
             ConsumirRecursos();
-            //TODO: reevaluar todas las tareas de DB por si usan los mismos recursos
         }
     }
 
@@ -226,6 +236,7 @@ public class Tarea
         Descripcion = descripcion;
         FechaInicio = fechaInicio;
         Duracion = duracion;
+        Proyecto.CalcularRutaCritica();
     }
 }
 

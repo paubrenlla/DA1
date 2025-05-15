@@ -11,6 +11,11 @@
     <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="/usuarios/crear">Crear +</a>
 </h1>
 
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger">@mensajeError</div>
+}
+
 @if (listaDeUsuarios is not null)
 {
     <table class="table">
@@ -33,7 +38,7 @@
                 <td>@usuario.FechaNacimiento.ToShortDateString()</td>
                 <td>
                     <a class="btn btn-success btn-sm" href="usuarios/@usuario.Id/editar/">Editar</a>
-                    <button class="btn btn-danger btn-sm">Eliminar</button>
+                    <button class="btn btn-danger btn-sm" @onclick="() => EliminarUsuario(usuario.Id)">Eliminar</button>
                 </td>
             </tr>
         }
@@ -48,7 +53,8 @@ else
 @code {
     private List<Usuario>? listaDeUsuarios;
     private bool yaVerifiqueSesion = false;
-    
+    private string mensajeError = string.Empty;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && !yaVerifiqueSesion)
@@ -61,8 +67,25 @@ else
             else
             {
                 listaDeUsuarios = BaseDeDatos.ListaUsuarios;
+                yaVerifiqueSesion = true;
                 StateHasChanged(); 
             }
+        }
+    }
+
+    private void EliminarUsuario(int id)
+    {
+        try
+        {
+            mensajeError = string.Empty;
+            Usuario usuarioAEliminar = BaseDeDatos.buscarUsuarioPorId(id);
+            BaseDeDatos.eliminarUsuario(usuarioAEliminar);
+            listaDeUsuarios = BaseDeDatos.ListaUsuarios;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al eliminar usuario: {ex.Message}";
         }
     }
 }

@@ -9,13 +9,10 @@ public class Recurso
     public bool SePuedeCompartir { get; set; }
     public int CantidadDelRecurso { get; set; }
     public int CantidadEnUso { get; set; }
-    public Proyecto? ProyectoAlQuePertenece { get; set; }
+    public List<Tarea> TareasQueLoUsan { get; set; }
     public int Id { get; set; }
 
     public Recurso(string nombre, string tipo, string descripcion, bool sePuedeCompartir, int cantidadDelRecurso) 
-        : this(nombre, tipo, descripcion, sePuedeCompartir, cantidadDelRecurso, null) {}
-
-    public Recurso(string nombre, string tipo, string descripcion, bool sePuedeCompartir, int cantidadDelRecurso, Proyecto? proyectoAlQuePertenece) 
     {
         if (string.IsNullOrEmpty(nombre)) 
             throw new ArgumentNullException("Se debe ingresar un nombre.");
@@ -33,40 +30,62 @@ public class Recurso
         SePuedeCompartir = sePuedeCompartir;
         CantidadDelRecurso = cantidadDelRecurso;
         CantidadEnUso = 0;
-        ProyectoAlQuePertenece = proyectoAlQuePertenece;
+        TareasQueLoUsan = new List<Tarea>();
     }
     
 
     public bool EstaDisponible(int cantidad)
     {
-        if(SePuedeCompartir)
+        bool cantidadNecesaria = cantidad + CantidadEnUso <= CantidadDelRecurso;
+        if(SePuedeCompartir && cantidadNecesaria)
         {
             return true;
         }
-        return CantidadEnUso + cantidad <= CantidadDelRecurso;
+        return cantidadNecesaria;
     }
     
     public void ConsumirRecurso(int cantidad)
     {
-        if(EstaDisponible(cantidad))
+        if (!EstaDisponible(cantidad)) return;
+        CantidadEnUso += cantidad;
+        ReevaluarEstadoTareas();
+    }
+
+    public void AgregarRecursoATarea(Tarea tarea)
+    {
+        if (!TareasQueLoUsan.Contains(tarea)) TareasQueLoUsan.Add(tarea);
+    }
+
+    public void QuitarRecursoATarea(Tarea tarea)
+    {
+        if(TareasQueLoUsan.Contains(tarea))  TareasQueLoUsan.Remove(tarea);
+    }
+
+    public void ReevaluarEstadoTareas()
+    {
+        foreach (Tarea tarea in TareasQueLoUsan)
         {
-            CantidadEnUso += cantidad;
+            tarea.ActualizarEstado();
         }
+    }
+    public bool EsExclusivo()
+    {
+        int cantidadProyectosDistintos = TareasQueLoUsan
+            .Select(p => p.Proyecto)
+            .Distinct()
+            .Count();
+        return cantidadProyectosDistintos == 1;
     }
     
     public void LiberarRecurso(int cantidad)
     {
         CantidadEnUso -= cantidad;
+        ReevaluarEstadoTareas();
     }
-    
-    public void HacerRecursoExclusivoDeProyecto(Proyecto proyecto)
+
+    public bool EstaEnUso()
     {
-        ProyectoAlQuePertenece = proyecto;
-    }
-    
-    public void HacerRecursoGlobal()
-    {
-        ProyectoAlQuePertenece = null;
+        return CantidadEnUso > 0;
     }
 
     public void Modificar(string nombre, string tipo, string descripcion, int cantidad, bool compartir)
@@ -101,5 +120,7 @@ public class Recurso
         Descripcion = descripcion;
         CantidadDelRecurso = cantidad;
         SePuedeCompartir = compartir;
+        
+        ReevaluarEstadoTareas();
     }
 }

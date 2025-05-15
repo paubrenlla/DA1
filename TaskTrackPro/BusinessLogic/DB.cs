@@ -86,7 +86,7 @@ public class DB
         proyecto1.AsignarUsuarioATarea(usuario2, tarea2);
         proyecto1.AsignarUsuarioATarea(usuario3, tarea2);
         
-        Recurso recurso1 = new Recurso("Auto", "Vehiculo","El auto de la empresa", false, 1, proyecto1);
+        Recurso recurso1 = new Recurso("Auto", "Vehiculo","El auto de la empresa", false, 1);
         Recurso recurso2 = new Recurso("Desarrollador backend", "Empleado", "Desarrollador con preferencia backend", true, 3);
         Recurso recurso3 = new Recurso("Desarrollador frontend", "Empleado",  "Desarrollador con preferencia frontend", true, 3);
         Recurso recurso4 = new Recurso("UX/UI Designer", "Empleado",  "Diseñador", true, 2);
@@ -97,17 +97,6 @@ public class DB
         ListaRecursos.Add(recurso3);
         ListaRecursos.Add(recurso4);
         ListaRecursos.Add(recurso5);
-        
-        proyecto1.agregarRecurso(recurso2);
-        proyecto1.agregarRecurso(recurso4);
-
-        proyecto2.agregarRecurso(recurso1);
-        proyecto2.agregarRecurso(recurso2);
-        proyecto2.agregarRecurso(recurso5); 
-
-        proyecto3.agregarRecurso(recurso3);
-        proyecto3.agregarRecurso(recurso4); 
-        proyecto3.agregarRecurso(recurso5);
         
         tarea1.AgregarRecurso(recurso2, 2);
         tarea2.AgregarRecurso(recurso4, 1); 
@@ -173,13 +162,40 @@ public class DB
         AdministradoresSistema.Add(user);
     }
 
-    public void eliminarUsuario(Usuario user)
+    public void eliminarUsuario(Usuario usuario)
     {
-        if (AdministradoresSistema.Contains(user))
+        if (AdministradoresSistema.Contains(usuario))
             throw new ArgumentException("El usuario es administrador");
-        ListaUsuarios.Remove(user);
+        if (esAdminDeUnProyecto(usuario))
+            throw new ArgumentException("El usuario es administrador de un proyecto");
+        EliminarAsignacionesDeProyectos(usuario);    
+        ListaUsuarios.Remove(usuario);
     }
     
+    private List<Proyecto> ProyectosDeUsuario(Usuario usuario)
+    {
+        return ListaProyectos
+            .Where(p => p.Miembros.Any(u => u.Id == usuario.Id))
+            .ToList();
+    }
+
+    private void EliminarAsignacionesDeProyectos(Usuario usuario)
+    {
+        List<Proyecto> proyectosDelUsuario = ProyectosDeUsuario(usuario);
+        foreach (var proyecto in proyectosDelUsuario)
+        {
+            proyecto.Miembros.Remove(usuario);
+            foreach (var tarea in proyecto.TareasAsociadas)
+            {
+                if (tarea.UsuariosAsignados.Contains(usuario))
+                {
+                    tarea.UsuariosAsignados.Remove(usuario);
+                }
+            }
+        }
+    }
+
+
     public Usuario? buscarUsuarioPorId(int id)
     {
         return ListaUsuarios.FirstOrDefault(u => u.Id == id);
@@ -248,6 +264,7 @@ public class DB
             .ToList();
     }
 
+
     public bool UsuarioEsAdmin(Usuario usuario)
     {
         return AdministradoresSistema.Any(u => u.Id == usuario.Id);
@@ -264,5 +281,10 @@ public class DB
     public bool UsuarioEsAdminProyecto(Usuario usuario, Proyecto p)
     {
         return p.Admin.Id == usuario.Id;
+
+    public bool esAdminDeUnProyecto(Usuario usuario)
+    {
+        return ListaProyectos.Any(p => p.Admin.Equals(usuario));
+
     }
 }

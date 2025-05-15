@@ -13,8 +13,6 @@ public class Proyecto
     public List<Tarea> TareasAsociadas { get; set; }
     public List<Usuario> Miembros { get; set; }
     public Usuario Admin { get; set; }
-    
-    public List<Recurso> RecursosAsociados { get; set; }
     public DateTime? FinEstimado { get; set; }
     
     public string Nombre
@@ -59,7 +57,6 @@ public class Proyecto
         FechaInicio = fechaInicio;
         TareasAsociadas = new List<Tarea>();
         Miembros = new List<Usuario>();
-        RecursosAsociados = new List<Recurso>();
         Id = _contadorId++;
     }
 
@@ -78,6 +75,8 @@ public class Proyecto
             }
         }
         TareasAsociadas.Add(tarea);
+        tarea.Proyecto = this;
+        CalcularRutaCritica();
     }
     
     public void eliminarTarea(Tarea tarea)
@@ -86,14 +85,18 @@ public class Proyecto
             throw new ArgumentException("No existe la tarea en este proyecto");
 
         TareasAsociadas.Remove(tarea);
+        foreach (Tarea tareaDependencia in tarea.TareasDependencia)
+        {
+            tareaDependencia.TareasSucesoras.Remove(tarea);
+            tareaDependencia.ActualizarEstado();
+        }
+        CalcularRutaCritica();
     }
 
     public void agregarMiembro(Usuario user)
     {
         if (Miembros.Contains(user))
-        {
             throw new ArgumentException("Este usuario ya es miembro del proyecto.");
-        }
         Miembros.Add(user);
     }
     
@@ -103,15 +106,6 @@ public class Proyecto
             throw new ArgumentException("Este usuario no es integrante del proyecto.");
 
         Miembros.Remove(user);
-    }
-
-    public void agregarRecurso(Recurso recurso)
-    {
-        if (RecursosAsociados.Contains(recurso))
-        {
-            throw new ArgumentException("El recurso ya es parte del proyecto.");
-        }
-        RecursosAsociados.Add(recurso);
     }
 
     public List<Tarea> TareasSinDependencia()
@@ -227,7 +221,6 @@ public class Proyecto
         
         return TareasAsociadas.Where(t => t.Holgura == TimeSpan.Zero).ToList();
     }
-
 
     public void AsignarUsuarioATarea(Usuario usuario, Tarea tarea)
     {
