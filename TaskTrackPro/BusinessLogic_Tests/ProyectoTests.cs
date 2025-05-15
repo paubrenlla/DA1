@@ -87,34 +87,6 @@ public class ProyectoTests
         
         Assert.AreEqual(2,proyecto2.Id);
     }
-
-    [TestMethod]
-    public void AgregarRecursoAlProyecto()
-    {
-        string nombre = "Proyecto A";
-        string descripcion = "Este es un proyecto para el TDD jeje";
-        DateTime fechaInicio = DateTime.Today;
-
-        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
-
-        proyecto.agregarRecurso(recurso);
-        Assert.AreEqual(1, proyecto.RecursosAsociados.Count);
-        Assert.AreEqual(recurso, proyecto.RecursosAsociados[0]);
-    }    
-    
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void AgregarRecursoQueYaExisteEnElProyecto()
-    {
-        string nombre = "Proyecto A";
-        string descripcion = "Este es un proyecto para el TDD jeje";
-        DateTime fechaInicio = DateTime.Today;
-
-        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
-        
-        proyecto.agregarRecurso(recurso);
-        proyecto.agregarRecurso(recurso);
-    }
     
     [TestMethod]
     public void AgregarTareaAlProyecto()
@@ -494,9 +466,7 @@ public class ProyectoTests
 
         proyecto.agregarTarea(tarea1);
         proyecto.agregarTarea(tarea2);
-
-        proyecto.agregarRecurso(recurso);
-
+        
         Tarea resultado = proyecto.BuscarTareaPorId(8);
 
         Assert.IsNull(resultado);

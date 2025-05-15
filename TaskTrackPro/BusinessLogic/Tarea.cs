@@ -11,6 +11,7 @@ public class Tarea
     private DateTime _fechaInicio;
     private TimeSpan _duracion;
     private bool _esCritica;
+    public Proyecto? Proyecto { get; set; }
     private Estado _estadoActual = new Estado(TipoEstadoTarea.Pendiente);
     private List<Tarea> _tareasDependencia = new List<Tarea>();
     private List<Tarea> _tareasSucesoras = new List<Tarea>();
@@ -119,9 +120,11 @@ public class Tarea
     }
     public void ActualizarEstado()
     {
-        if (TareasDependencia.Count == 0) 
+        if (this.EstadoActual.Valor == TipoEstadoTarea.Efectuada 
+            || this.EstadoActual.Valor == TipoEstadoTarea.Ejecutandose)
+        {
             return;
-
+        }
         if (VerificarDependenciasCompletadas() && VerificarRecursosDisponibles())
         {
             ModificarEstado(TipoEstadoTarea.Pendiente, DateTime.Now);
@@ -142,10 +145,12 @@ public class Tarea
             if (recursoNecesario.Recurso == recurso)
             {
                 recursoNecesario.CantidadNecesaria += cantidadNecesaria;
+                ActualizarEstado();
                 return;
             }
         }
         _recursosNecesarios.Add(new RecursoNecesario(recurso, cantidadNecesaria));
+        recurso.AgregarRecursoATarea(this);
         ActualizarEstado();
     }
 
