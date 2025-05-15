@@ -260,4 +260,9 @@ public class DB
             .ToList();
     }
 
+
+    public bool UsuarioEsAdminProyecto(Usuario usuario, Proyecto p)
+    {
+        return p.Admin.Id == usuario.Id;
+    }
 }

@@ -467,6 +467,18 @@ public class DBTests
         Assert.IsFalse(proyectosDelUsuario.Contains(p3));
     }
     
-    
+    [TestMethod]
+    public void VerSiUsuarioEsAdminDeUnProyecto()
+    {
+        DB db = new DB();
+        Usuario usuario1 = new Usuario("correo@gmail.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
+        Proyecto p1= new Proyecto("Proyecto 1", "desc", DateTime.Today);
+        p1.AsignarAdmin(usuario1);
+        db.agregarProyecto(p1);
+        
+       bool esAdmin = db.UsuarioEsAdminProyecto(usuario1, p1);
+        
+        Assert.IsTrue(esAdmin);
+    }
     
 }
