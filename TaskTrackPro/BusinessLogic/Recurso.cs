@@ -36,19 +36,19 @@ public class Recurso
 
     public bool EstaDisponible(int cantidad)
     {
-        if(SePuedeCompartir)
+        bool cantidadNecesaria = cantidad + CantidadEnUso <= CantidadDelRecurso;
+        if(SePuedeCompartir && cantidadNecesaria)
         {
             return true;
         }
-        return CantidadEnUso + cantidad <= CantidadDelRecurso;
+        return cantidadNecesaria;
     }
     
     public void ConsumirRecurso(int cantidad)
     {
-        if(EstaDisponible(cantidad))
-        {
-            CantidadEnUso += cantidad;
-        }
+        if (!EstaDisponible(cantidad)) return;
+        CantidadEnUso += cantidad;
+        ReevaluarEstadoTareas();
     }
 
     public void AgregarRecursoATarea(Tarea tarea)
@@ -60,6 +60,14 @@ public class Recurso
     {
         if(TareasQueLoUsan.Contains(tarea))  TareasQueLoUsan.Remove(tarea);
     }
+
+    public void ReevaluarEstadoTareas()
+    {
+        foreach (Tarea tarea in TareasQueLoUsan)
+        {
+            tarea.ActualizarEstado();
+        }
+    }
     public bool EsExclusivo()
     {
         return TareasQueLoUsan.Count == 1;
@@ -68,6 +76,7 @@ public class Recurso
     public void LiberarRecurso(int cantidad)
     {
         CantidadEnUso -= cantidad;
+        ReevaluarEstadoTareas();
     }
 
     public void Modificar(string nombre, string tipo, string descripcion, int cantidad, bool compartir)
@@ -102,5 +111,7 @@ public class Recurso
         Descripcion = descripcion;
         CantidadDelRecurso = cantidad;
         SePuedeCompartir = compartir;
+        
+        ReevaluarEstadoTareas();
     }
 }

@@ -119,9 +119,6 @@ public class Tarea
     }
     public void ActualizarEstado()
     {
-        if (TareasDependencia.Count == 0) 
-            return;
-
         if (VerificarDependenciasCompletadas() && VerificarRecursosDisponibles())
         {
             ModificarEstado(TipoEstadoTarea.Pendiente, DateTime.Now);
@@ -142,10 +139,12 @@ public class Tarea
             if (recursoNecesario.Recurso == recurso)
             {
                 recursoNecesario.CantidadNecesaria += cantidadNecesaria;
+                ActualizarEstado();
                 return;
             }
         }
         _recursosNecesarios.Add(new RecursoNecesario(recurso, cantidadNecesaria));
+        recurso.AgregarRecursoATarea(this);
         ActualizarEstado();
     }
 
