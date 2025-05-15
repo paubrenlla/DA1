@@ -53,6 +53,8 @@
 @code {
     private List<Recurso>? listaDeRecursos = new List<Recurso>();
     private bool yaVerifiqueSesion = false;
+    Usuario usuarioLogeado;
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -62,6 +64,11 @@
             if (!isUserActive)
             {
                 NavigationManager.NavigateTo("/Login");
+            }
+            usuarioLogeado = await SessionLogic.GetCurrentUser();
+            if (!BaseDeDatos.UsuarioEsAdmin(usuarioLogeado))
+            {
+                NavigationManager.NavigateTo("/");
             }
             else
             {
