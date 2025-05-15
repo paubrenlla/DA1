@@ -127,6 +127,9 @@ public class Tarea
         if (VerificarDependenciasCompletadas() && VerificarRecursosDisponibles())
         {
             ModificarEstado(TipoEstadoTarea.Pendiente, DateTime.Now);
+            Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha pasado a pendiente.");
+            notificacion.AgregarUsuarios(UsuariosAsignados);
+            notificacion.AgregarUsuario(Proyecto.Admin);
             return;
         }
         ModificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Now);
@@ -201,6 +204,18 @@ public class Tarea
     {
         ModificarEstado(TipoEstadoTarea.Efectuada, DateTime.Now);
         LiberarRecursos();
+        if (DateTime.Now > LateFinish)
+        {
+            Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha pasado a sido completada con demora.");
+            notificacion.AgregarUsuarios(UsuariosAsignados);
+            notificacion.AgregarUsuario(Proyecto.Admin);
+        }
+        else
+        {
+            Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha sido completada en fecha.");
+            notificacion.AgregarUsuarios(UsuariosAsignados);
+            notificacion.AgregarUsuario(Proyecto.Admin);
+        }
 
         ReevaluarTareasPosteriores();
     }
@@ -211,7 +226,9 @@ public class Tarea
         {
             ModificarEstado(TipoEstadoTarea.Ejecutandose, DateTime.Now);
             ConsumirRecursos();
-            //TODO: reevaluar todas las tareas de DB por si usan los mismos recursos
+            Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha pasado a ejecución.");
+            notificacion.AgregarUsuarios(UsuariosAsignados);
+            notificacion.AgregarUsuario(Proyecto.Admin);
         }
     }
 
@@ -227,6 +244,9 @@ public class Tarea
     {
         if (usuario == null)
             throw new ArgumentNullException(nameof(usuario));
+        Notificacion notificacion = new Notificacion("El usuario " + Titulo + " ha sido agregado a la tarea " + Titulo);
+        notificacion.AgregarUsuarios(UsuariosAsignados);
+        notificacion.AgregarUsuario(Proyecto.Admin);
         _usuariosAsignados.Add(usuario);
     }
 
@@ -236,6 +256,10 @@ public class Tarea
         Descripcion = descripcion;
         FechaInicio = fechaInicio;
         Duracion = duracion;
+        
+        Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha sido modificada.");
+        notificacion.AgregarUsuarios(UsuariosAsignados);
+        notificacion.AgregarUsuario(Proyecto.Admin);
     }
 }
 

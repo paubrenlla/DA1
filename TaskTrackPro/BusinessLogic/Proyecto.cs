@@ -89,6 +89,9 @@ public class Proyecto
             tareaDependencia.TareasSucesoras.Remove(tarea);
             tareaDependencia.ActualizarEstado();
         }
+        Notificacion notificacion = new Notificacion("Se eliminado la tarea " + tarea.Titulo + " del proyecto " + Nombre + ".");
+        notificacion.AgregarUsuarios(tarea.UsuariosAsignados);
+        notificacion.AgregarUsuario(Admin);
     }
 
     public void agregarMiembro(Usuario user)
@@ -96,6 +99,8 @@ public class Proyecto
         if (Miembros.Contains(user))
             throw new ArgumentException("Este usuario ya es miembro del proyecto.");
         Miembros.Add(user);
+        Notificacion notificacion = new Notificacion("Ha sido agregado al proyecto: " + Nombre + ".");
+        notificacion.AgregarUsuario(user);
     }
     
     public void eliminarMiembro(Usuario user)
@@ -233,11 +238,15 @@ public class Proyecto
             throw new ArgumentException("El usuario ya está asignado a esta tarea");
     
         tarea.AgregarUsuario(usuario);
+        Notificacion notificacion = new Notificacion("Ha sido agregado a la tarea " + tarea.Titulo + ".");
+        notificacion.AgregarUsuario(usuario);
     }
     
     public void AsignarAdmin(Usuario usuario)
     {
         Admin = usuario;
+        Notificacion notificacion = new Notificacion("Eres administrador del proyecto " + Nombre + ".");
+        notificacion.AgregarUsuario(usuario);
     }
     
     public bool EsAdmin(Usuario usuario)

@@ -101,11 +101,17 @@ public class Usuario
     public void GenerarContraseñaAleatoria()
     {
         Pwd = GeneradorContraseña.GenerarContraseña(MINIMO_LARGO_CONTRASEÑA);
+        
+        Notificacion notificacion = new Notificacion("Su contraseña fue regenerada.");
+        notificacion.AgregarUsuario(this);
     }
 
     public void ResetearContraseña()
     {
         Pwd = CONTRASEÑA_DEFAULT;
+        
+        Notificacion notificacion = new Notificacion("Su contraseña fue restablecida.");
+        notificacion.AgregarUsuario(this);
     }
     
     public static void ValidarContraseña(string value)
@@ -146,6 +152,9 @@ public class Usuario
         Apellido = apellido;
         Pwd = contraseña;
         FechaNacimiento = fechaNacimiento;
+
+        Notificacion notificacion = new Notificacion("Sus datos han sido actualizados.");
+        notificacion.AgregarUsuario(this);
     }
     
     public static string DesencriptarPassword(string contraseñaEncriptada)
