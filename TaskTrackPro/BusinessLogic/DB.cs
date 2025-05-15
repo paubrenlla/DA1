@@ -179,10 +179,34 @@ public class DB
             throw new ArgumentException("El usuario es administrador");
         if (esAdminDeUnProyecto(usuario))
             throw new ArgumentException("El usuario es administrador de un proyecto");
-            
+        EliminarAsignacionesDeProyectos(usuario);    
         ListaUsuarios.Remove(usuario);
     }
     
+    private List<Proyecto> ProyectosDeUsuario(Usuario usuario)
+    {
+        return ListaProyectos
+            .Where(p => p.Miembros.Any(u => u.Id == usuario.Id))
+            .ToList();
+    }
+
+    private void EliminarAsignacionesDeProyectos(Usuario usuario)
+    {
+        List<Proyecto> proyectosDelUsuario = ProyectosDeUsuario(usuario);
+        foreach (var proyecto in proyectosDelUsuario)
+        {
+            proyecto.Miembros.Remove(usuario);
+            foreach (var tarea in proyecto.TareasAsociadas)
+            {
+                if (tarea.UsuariosAsignados.Contains(usuario))
+                {
+                    tarea.UsuariosAsignados.Remove(usuario);
+                }
+            }
+        }
+    }
+
+
     public Usuario? buscarUsuarioPorId(int id)
     {
         return ListaUsuarios.FirstOrDefault(u => u.Id == id);
