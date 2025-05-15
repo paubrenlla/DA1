@@ -311,4 +311,9 @@ public class Proyecto
             .OrderBy(t => t.EarlyStart)
             .ToList();
     }
+
+    public List<Tarea> TareasDelUsuario(Usuario usuario)
+    {
+        return TareasAsociadas.Where(t => t.UsuariosAsignados.Contains(usuario)).ToList();
+    }
 }

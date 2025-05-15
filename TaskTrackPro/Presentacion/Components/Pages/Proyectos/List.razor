@@ -6,7 +6,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
 
-@if (!_isLoaded)
+@if (!yaVerifiqueSesion)
 {
     <div class="text-center mt-5">
         <div class="spinner-border" role="status">
@@ -14,7 +14,7 @@
         </div>
     </div>
 }
-else if (!_sesionActiva)
+else if (!sesionActiva)
 {
     <div class="alert alert-warning">
         Redirigiendo al login...
@@ -22,7 +22,7 @@ else if (!_sesionActiva)
 }
 else
 {
-    @if (_esAdminSistema)
+    @if (esAdminSistema)
     {
         <h1>
             Proyectos del sistema
@@ -36,7 +36,7 @@ else
         </h1>
     }
 
-    @if (_proyectosVisibles?.Any() == true)
+    @if (proyectosVisibles?.Any() == true)
     {
         <table class="table">
             <thead>
@@ -48,7 +48,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var proyecto in _proyectosVisibles)
+                @foreach (var proyecto in proyectosVisibles)
                 {
                     <tr>
                         <td>@proyecto.Nombre</td>
@@ -58,19 +58,12 @@ else
                             <div class="btn-group" role="group">
                                 <a class="btn btn-primary btn-sm" href="proyectos/@proyecto.Id/tareas">Ver Tareas</a>
                                 
-                                @if (_esAdminSistema || EsAdminDelProyecto(proyecto))
+                                @if (esAdminSistema || BaseDeDatos.UsuarioEsAdminDelProyecto(usuarioLogueado,proyecto))
                                 {
                                     <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/tareas/crear">Agregar Tarea</a>
                                     <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/miembros">Ver Miembros</a>
                                     <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/ruta_critica">Ruta Critica</a>
                                     <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/editar/">Editar</a>
-                                    @if(proyecto.TareasAsociadas.Count > 0){
-                                        <button class="btn btn-danger btn-sm" disabled>Eliminar</button>
-                                    }
-                                    else
-                                    {
-                                        <button class="btn btn-danger btn-sm" @onclick="@(() => BaseDeDatos.eliminarProyecto(proyecto))">Eliminar</button>
-                                    }
                                 }
                             </div>
                         </td>
@@ -88,41 +81,41 @@ else
 }
 
 @code {
-    private List<Proyecto>? _proyectosVisibles;
-    private Usuario? _usuarioLogueado;
-    private bool _esAdminSistema;
-    private bool _isLoaded;
-    private bool _sesionActiva;
+    private List<Proyecto>? proyectosVisibles;
+    private Usuario? usuarioLogueado;
+    private bool esAdminSistema;
+    private bool yaVerifiqueSesion;
+    private bool sesionActiva;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && !_isLoaded)
+        if (firstRender && !yaVerifiqueSesion)
         {
             try
             {
-                // Primero verificamos la sesión
-                _sesionActiva = await SessionManager.isUserActive();
+                sesionActiva = await SessionManager.isUserActive();
                 
-                if (!_sesionActiva)
+                if (!sesionActiva)
                 {
                     Navigation.NavigateTo("/Login");
                     return;
                 }
 
-                // Si la sesión está activa, cargamos los datos
-                _usuarioLogueado = await SessionManager.GetCurrentUser();
+                usuarioLogueado = await SessionManager.GetCurrentUser();
                 
-                if (_usuarioLogueado != null)
+                if (usuarioLogueado != null)
                 {
-                    _esAdminSistema = BaseDeDatos.AdministradoresSistema
-                        .Any(a => a.Email.Equals(_usuarioLogueado.Email, StringComparison.OrdinalIgnoreCase));
+                    esAdminSistema = BaseDeDatos.UsuarioEsAdmin(usuarioLogueado);
+            
+                    if (esAdminSistema)
+                    {
+                        proyectosVisibles = BaseDeDatos.ListaProyectos;
+                    }
+                    else
+                    {
+                        proyectosVisibles = BaseDeDatos.ProyectosDelUsuario(usuarioLogueado);
+                    }
                     
-                    _proyectosVisibles = _esAdminSistema 
-                        ? BaseDeDatos.ListaProyectos
-                        : BaseDeDatos.ListaProyectos
-                            .Where(p => p.Miembros.Any(m => m.Email.Equals(_usuarioLogueado.Email, StringComparison.OrdinalIgnoreCase)) || 
-                                       (p.Admin != null && p.Admin.Email.Equals(_usuarioLogueado.Email, StringComparison.OrdinalIgnoreCase)))
-                            .ToList();
                 }
             }
             catch (Exception ex)
@@ -131,16 +124,9 @@ else
             }
             finally
             {
-                _isLoaded = true;
+                yaVerifiqueSesion = true;
                 StateHasChanged();
             }
         }
-    }
-
-    private bool EsAdminDelProyecto(Proyecto proyecto)
-    {
-        return _usuarioLogueado != null && 
-               proyecto.Admin != null && 
-               proyecto.Admin.Email.Equals(_usuarioLogueado.Email, StringComparison.OrdinalIgnoreCase);
     }
 }

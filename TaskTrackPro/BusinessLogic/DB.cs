@@ -188,7 +188,7 @@ public class DB
     {
         if (AdministradoresSistema.Contains(usuario))
             throw new ArgumentException("El usuario es administrador");
-        if (esAdminDeUnProyecto(usuario))
+        if (esAdminDeAlgunProyecto(usuario))
             throw new ArgumentException("El usuario es administrador de un proyecto");
         EliminarAsignacionesDeProyectos(usuario);
         ListaUsuarios.Remove(usuario);
@@ -299,11 +299,12 @@ public Notificacion buscarNotificaciónPorId(int i)
     }
 
 
-    public bool UsuarioEsAdminProyecto(Usuario usuario, Proyecto p)
+    public bool UsuarioEsAdminDelProyecto(Usuario usuario, Proyecto p)
     {
         return p.Admin.Id == usuario.Id;
     }
-    public bool esAdminDeUnProyecto(Usuario usuario)
+
+    public bool esAdminDeAlgunProyecto(Usuario usuario)
     {
         return ListaProyectos.Any(p => p.Admin.Equals(usuario));
 
