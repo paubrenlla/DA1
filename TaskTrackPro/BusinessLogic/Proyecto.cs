@@ -112,6 +112,14 @@ public class Proyecto
 
         Miembros.Remove(user);
     }
+    
+    public void eliminarMiembroTarea(Usuario user, Tarea tarea)
+    {
+        if (!BuscarTareaPorId(tarea.Id).UsuariosAsignados.Contains(user))
+            throw new ArgumentException("Este usuario no es integrante de la tarea.");
+
+        BuscarTareaPorId(tarea.Id).UsuariosAsignados.Remove(user);
+    }
 
     public List<Tarea> TareasSinDependencia()
     {

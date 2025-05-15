@@ -611,6 +611,31 @@ public class ProyectoTests
         
     }
     
+    [TestMethod]
+    public void EliminarMiembroTarea_DeberiaEliminarUsuarioAsignado()
+    {
+        Proyecto proyecto = new Proyecto("Proyecto", "descripcion", DateTime.Now);
+        Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        Tarea tarea = new Tarea("Tarea", "Descripción", DateTime.Now, TimeSpan.FromDays(1), false);
+        tarea.UsuariosAsignados.Add(usuario);
+        proyecto.agregarTarea(tarea);
+
+        proyecto.eliminarMiembroTarea(usuario, tarea);
+
+        Assert.IsFalse(tarea.UsuariosAsignados.Contains(usuario));
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void EliminarMiembroTarea_DeberiaLanzarExcepcion_SiUsuarioNoEstaAsignado()
+    {
+        Proyecto proyecto = new Proyecto("Proyecto", "descripcion", DateTime.Now);
+        Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
+        Tarea tarea = new Tarea("Tarea", "Descripción", DateTime.Now, TimeSpan.FromDays(1), false);
+        proyecto.agregarTarea(tarea);
+
+        proyecto.eliminarMiembroTarea(usuario, tarea);
+    }
 }
 
 
