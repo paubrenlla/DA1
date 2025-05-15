@@ -84,14 +84,17 @@ public class Proyecto
             throw new ArgumentException("No existe la tarea en este proyecto");
 
         TareasAsociadas.Remove(tarea);
+        foreach (Tarea tareaDependencia in tarea.TareasDependencia)
+        {
+            tareaDependencia.TareasSucesoras.Remove(tarea);
+            tareaDependencia.ActualizarEstado();
+        }
     }
 
     public void agregarMiembro(Usuario user)
     {
         if (Miembros.Contains(user))
-        {
             throw new ArgumentException("Este usuario ya es miembro del proyecto.");
-        }
         Miembros.Add(user);
     }
     

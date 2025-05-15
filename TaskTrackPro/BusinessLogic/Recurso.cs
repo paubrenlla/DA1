@@ -83,6 +83,11 @@ public class Recurso
         ReevaluarEstadoTareas();
     }
 
+    public bool EstaEnUso()
+    {
+        return CantidadEnUso > 0;
+    }
+
     public void Modificar(string nombre, string tipo, string descripcion, int cantidad, bool compartir)
     {
         if (string.IsNullOrWhiteSpace(nombre))

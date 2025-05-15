@@ -309,5 +309,32 @@ public class RecursoTests
 
         recurso.Modificar("Notebook", "Tecnología", "Notebook Dell", 5, false);
     }
+    
+    [TestMethod]
+    public void EstaEnUso_DeberiaRetornarFalse_CuandoCantidadEnUsoEsCero()
+    {
+        var recurso = new Recurso("Proyector", "Tecnología", "Proyector HD", true, 5);
+        var resultado = recurso.EstaEnUso();
+        Assert.IsFalse(resultado);
+    }
+
+    [TestMethod]
+    public void EstaEnUso_DeberiaRetornarTrue_CuandoCantidadEnUsoEsMayorACero()
+    {
+        var recurso = new Recurso("Notebook", "Tecnología", "Notebook Dell", true, 5);
+        recurso.ConsumirRecurso(2);
+        var resultado = recurso.EstaEnUso();
+        Assert.IsTrue(resultado);
+    }
+
+    [TestMethod]
+    public void EstaEnUso_DeberiaRetornarFalse_SiSeLiberaTodoElRecurso()
+    {
+        var recurso = new Recurso("Monitor", "Tecnología", "Monitor LED", true, 3);
+        recurso.ConsumirRecurso(3);
+        recurso.LiberarRecurso(3);
+        var resultado = recurso.EstaEnUso();
+        Assert.IsFalse(resultado);
+    }
 
 }

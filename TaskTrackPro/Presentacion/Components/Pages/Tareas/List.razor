@@ -43,11 +43,14 @@
                         disabled="@(!PuedeAgregarDependencias(tarea))">
                     Dependencias
                 </button>
-
-
                 <a class="btn btn-success btn-sm" href="proyectos/@id/tareas/@tarea.Id/miembros">Ver miembros</a>
                 <a class="btn btn-success btn-sm" href="proyectos/@id/tareas/@tarea.Id/recursos">Recursos necesarios</a>
-                <button class="btn btn-danger btn-sm">Eliminar</button>
+                <button class="btn btn-danger btn-sm"
+                        @onclick="@(() => EliminarTarea(tarea))"
+                        disabled="@(tarea.TareasSucesoras.Count > 0)">
+                    Eliminar
+                </button>
+
             </td>
         </tr>
     }
@@ -72,7 +75,24 @@
     protected override void OnInitialized()
     {
         ListaDeTareas = BaseDeDatos.buscarProyectoPorId(@id).TareasAsociadas;
+        CargarTareas();
     }
+    
+    void CargarTareas()
+    {
+        ListaDeTareas = BaseDeDatos.buscarProyectoPorId(id).TareasAsociadas;
+    }
+
+    
+    void EliminarTarea(Tarea tarea)
+    {
+        var proyecto = BaseDeDatos.buscarProyectoPorId(id);
+        proyecto.eliminarTarea(tarea);
+        CargarTareas();
+        StateHasChanged();
+    }
+
+
     
     void AbrirModalEstado(Tarea tarea)
     {
