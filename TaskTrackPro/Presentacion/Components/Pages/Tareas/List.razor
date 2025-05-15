@@ -9,7 +9,10 @@
 
 <h1>
     Tareas
-    <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="proyectos/@id/tareas/crear">Crear +</a>
+    @if(esAdminSistema || BaseDeDatos.UsuarioEsAdminDelProyecto(usuarioLogueado, proyectoActual))
+    {
+        <a class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" href="proyectos/@id/tareas/crear">Crear +</a>
+    }
 </h1>
 
 @if (!string.IsNullOrEmpty(mensajeError))
