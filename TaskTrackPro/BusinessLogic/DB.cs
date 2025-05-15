@@ -264,8 +264,27 @@ public class DB
             .ToList();
     }
 
+
+    public bool UsuarioEsAdmin(Usuario usuario)
+    {
+        return AdministradoresSistema.Any(u => u.Id == usuario.Id);
+    }
+
+    public List<Proyecto> ProyectosDelUsuario(Usuario usuario)
+    {
+        return ListaProyectos
+            .Where(p => p.Miembros.Any(m => m.Id == usuario.Id) || p.Admin.Id == usuario.Id)
+            .ToList();
+    }
+
+
+    public bool UsuarioEsAdminProyecto(Usuario usuario, Proyecto p)
+    {
+        return p.Admin.Id == usuario.Id;
+
     public bool esAdminDeUnProyecto(Usuario usuario)
     {
         return ListaProyectos.Any(p => p.Admin.Equals(usuario));
+
     }
 }
