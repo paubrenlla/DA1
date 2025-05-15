@@ -252,4 +252,12 @@ public class DB
     {
         return AdministradoresSistema.Any(u => u.Id == usuario.Id);
     }
+
+    public List<Proyecto> ProyectosDelUsuario(Usuario usuario)
+    {
+        return ListaProyectos
+            .Where(p => p.Miembros.Any(m => m.Id == usuario.Id) || p.Admin.Id == usuario.Id)
+            .ToList();
+    }
+
 }
