@@ -70,7 +70,11 @@ public class Recurso
     }
     public bool EsExclusivo()
     {
-        return TareasQueLoUsan.Count == 1;
+        int cantidadProyectosDistintos = TareasQueLoUsan
+            .Select(p => p.Proyecto)
+            .Distinct()
+            .Count();
+        return cantidadProyectosDistintos == 1;
     }
     
     public void LiberarRecurso(int cantidad)

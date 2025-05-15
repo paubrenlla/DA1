@@ -198,8 +198,14 @@ public class RecursoTests
     public void EsExclusivo_DeberiaRetornarFalse_CuandoPerteneceAMultiplesProyectos()
     {
         Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
+        
+        Proyecto proyecto1 = new Proyecto("Proyecto1", "descripcion", DateTime.Now);
         Tarea tarea1 = new Tarea("Tarea1 ", "descripcion", DateTime.Now, VALID_TIMESPAN, false); 
+        proyecto1.agregarTarea(tarea1);
+        
+        Proyecto proyecto2 = new Proyecto("Proyecto2", "descripcion", DateTime.Now);
         Tarea tarea2 = new Tarea("Tarea2 ", "descripcion", DateTime.Now, VALID_TIMESPAN, false); 
+        proyecto2.agregarTarea(tarea2);
         
         recurso.AgregarRecursoATarea(tarea1);
         recurso.AgregarRecursoATarea(tarea2);

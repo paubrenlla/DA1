@@ -75,6 +75,7 @@ public class Proyecto
             }
         }
         TareasAsociadas.Add(tarea);
+        tarea.Proyecto = this;
     }
     
     public void eliminarTarea(Tarea tarea)
