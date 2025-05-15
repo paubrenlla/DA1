@@ -144,12 +144,8 @@ public class Proyecto
         return tareaQueLeSigue.TareasSucesoras.All(s => s.LateStart != DateTime.MaxValue);
 
     }
-    public void CalcularTiemposTempranos()
-    {
-        CalcularEarlyTimes();    
-    }
 
-    private void CalcularEarlyTimes()
+    public void CalcularTiemposTempranos()
     {
         foreach (Tarea tarea in TareasAsociadas)
         {
