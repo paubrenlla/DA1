@@ -14,17 +14,17 @@ public class UsuarioDataAccess : IDataAccessUsuario
 
     public void Remove(Usuario usuario)
     {
-        throw new NotImplementedException();
+        _listaUsuarios.Remove(usuario);
     }
 
     public Usuario GetById(int id)
     {
-        throw new NotImplementedException();
+        return _listaUsuarios.FirstOrDefault(u => u.Id == id);
     }
 
     public List<Usuario> GetAll()
     {
-        throw new NotImplementedException();
+        return _listaUsuarios;
     }
 
     public Usuario? buscarUsuarioPorCorreoYContraseña(string email, string contraseña)
