@@ -29,11 +29,11 @@ public class UsuarioDataAccess : IDataAccessUsuario
 
     public Usuario? buscarUsuarioPorCorreoYContraseña(string email, string contraseña)
     {
-        throw new NotImplementedException();
+        return _listaUsuarios.FirstOrDefault(u =>
+            u.Email == email && u.Pwd == Usuario.EncriptarPassword(contraseña));
     }
 
-    public Usuario? BuscarUsuarioPorCorreo(Usuario usuario)
+    public Usuario? BuscarUsuarioPorCorreo(string email)
     {
-        throw new NotImplementedException();
+        return _listaUsuarios.FirstOrDefault(u => u.Email == email);    }
     }
-}

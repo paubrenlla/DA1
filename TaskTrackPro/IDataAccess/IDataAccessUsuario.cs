@@ -4,7 +4,7 @@ namespace IDataAcces;
 
 public interface IDataAccessUsuario : IDataAccessGeneric<Usuario>
 {
-    public Usuario? BuscarUsuarioPorCorreo(Usuario usuario);
+    public Usuario? BuscarUsuarioPorCorreo(string email);
 
     public Usuario? buscarUsuarioPorCorreoYContraseña(string email, string contraseña);
 }
