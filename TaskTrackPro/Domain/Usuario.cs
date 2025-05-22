@@ -9,8 +9,9 @@ public class Usuario
     public const string CONTRASEÑA_DEFAULT = "1Contraseña!";
     private static int _contadorId = 1;
 
-    public Usuario()
+    public Usuario(bool esAdminSistema)
     {
+        EsAdminSistema = esAdminSistema;
         // Necesario para la deserialización con System.Text.Json
         // el JSON se deserialica en un objeto Usuario sin errores
         // y luego las propiedades se asignan una por una usando los setters públicos
@@ -22,6 +23,7 @@ public class Usuario
     private string _apellido;
     private string _pwd;
     private DateTime _fechaNacimiento;
+    public bool EsAdminSistema { get; set; }
 
     public Usuario(string email, string nombre, string apellido, string pwd, DateTime fechaNacimiento)
     {
@@ -30,6 +32,7 @@ public class Usuario
         Apellido = apellido;
         Pwd = pwd;
         FechaNacimiento = fechaNacimiento;
+        EsAdminSistema = false;
         Id = _contadorId++;
     }
     
@@ -98,6 +101,7 @@ public class Usuario
         }
     }
     
+
     public void GenerarContraseñaAleatoria()
     {
         Pwd = GeneradorContraseña.GenerarContraseña(MINIMO_LARGO_CONTRASEÑA);
@@ -161,5 +165,13 @@ public class Usuario
     {
         byte[] contraseñaBytes = Convert.FromBase64String(contraseñaEncriptada);
         return System.Text.Encoding.UTF8.GetString(contraseñaBytes);
+    }
+    
+    public void AgregarAdmin()
+    {
+        if (EsAdminSistema)
+            throw new ArgumentException("El usuario ya es administrador");
+
+        EsAdminSistema = true;
     }
 }

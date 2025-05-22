@@ -174,11 +174,8 @@ public class DB
 
     public void agregarAdmin(Usuario user)
     {
-        if (!ListaUsuarios.Contains(user))
-            agregarUsuario(user);
-        if (AdministradoresSistema.Contains(user))
+        if (user.EsAdminSistema)
             throw new ArgumentException("El usuario ya es administrador");
-        AdministradoresSistema.Add(user);
         
         Notificacion notificacion = new Notificacion("Eres administrador de sistema.");
         notificacion.AgregarUsuario(user);

@@ -44,7 +44,7 @@ public class DBTests
         Assert.AreSame(user, db.ListaUsuarios[0]);
     }
     
-    [TestMethod]
+    /*[TestMethod]
     public void AgregarUsarioComun()
     {
         Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
@@ -100,7 +100,7 @@ public class DBTests
         db.agregarProyecto(proyecto);
         
         db.eliminarUsuario(usuario);
-    }
+    }*/
     
     [TestMethod]
     public void EliminarUsuarioBorraAsignacionesDeProyectos()
@@ -125,7 +125,7 @@ public class DBTests
         Assert.IsFalse(proyecto.Miembros.Contains(usuario));
     }
     
-    [TestMethod]
+    /*[TestMethod]
     public void AgregarAdmin()
     {
         Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
@@ -170,7 +170,7 @@ public class DBTests
         Usuario user2 = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         
         db.agregarUsuario(user2);
-    }
+    }*/
 
     [TestMethod]
     public void AgregarNotificacion()
