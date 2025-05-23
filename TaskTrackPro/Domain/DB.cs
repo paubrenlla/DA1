@@ -264,7 +264,7 @@ public class DB
         return ListaRecursos.FirstOrDefault(r => r.Id == id);
     }
 
-    public void agregarNotificacion(Notificacion notificacion)
+    /*public void agregarNotificacion(Notificacion notificacion)
     {
         ListaNotificaciones.Add(notificacion);
     }
@@ -280,7 +280,7 @@ public Notificacion buscarNotificaciónPorId(int i)
             .Where(n => n.UsuariosNotificados.Contains(usuario) &&
                         !n.VistaPorUsuarios.Contains(usuario))
             .ToList();
-    }
+    }*/
 
 
     public bool UsuarioEsAdmin(Usuario usuario)
