@@ -59,14 +59,12 @@ public class NotificacionDataAccess_Tests
     [TestMethod]
     public void DevolverNotificacionesNoLeidasDeUnUsuario()
     {
-        DB db = new DB();
         Notificacion notificacion = new Notificacion("Notificación de prueba");
         Notificacion notificacion2 = new Notificacion("Notificación de prueba");
         Usuario usuario1 = new Usuario("correo@gmail.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
 
         NotificacionRepo.Add(notificacion);
         NotificacionRepo.Add(notificacion2);
-        db.agregarUsuario(usuario1);
         notificacion.AgregarUsuario(usuario1);
         notificacion2.AgregarUsuario(usuario1);
         notificacion.MarcarComoVista(usuario1);

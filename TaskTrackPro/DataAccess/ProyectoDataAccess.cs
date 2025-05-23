@@ -38,22 +38,15 @@ public class ProyectoDataAccess :IDataAccessProyecto
         return _listaProyectos.Any(p => p.Admin.Equals(usuario));
     }
     
-    public List<Proyecto> ProyectosDeUsuario(Usuario usuario)
-    {
-        return _listaProyectos
-            .Where(p => p.Miembros.Any(u => u.Id == usuario.Id))
-            .ToList();
-    }
-    
     public void EliminarAsignacionesDeProyectos(Usuario usuario)
     {
-        List<Proyecto> proyectosDelUsuario = ProyectosDeUsuario(usuario);
+        List<Proyecto> proyectosDelUsuario = ProyectosDelUsuario(usuario);
         foreach (var proyecto in proyectosDelUsuario)
         {
             proyecto.Miembros.Remove(usuario);
             foreach (var tarea in proyecto.TareasAsociadas)
             {
-                if (tarea.UsuariosAsignados.Contains(usuario))
+                if (tarea.UsuariosAsignados.Contains(usuario)) //TODO Ley Demeter, ver si por ejemplo hay Tarea Repo
                 {
                     tarea.UsuariosAsignados.Remove(usuario);
                 }
