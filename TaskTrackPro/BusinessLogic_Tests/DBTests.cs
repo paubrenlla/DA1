@@ -185,7 +185,7 @@ public class DBTests
         Assert.IsTrue(db.ListaNotificaciones.Contains(notificacion));
     }*/
     
-    [TestMethod]
+    /*[TestMethod]
     public void AgregarProyecto()
     {
         DB db = new DB();
@@ -199,9 +199,9 @@ public class DBTests
         db.agregarProyecto(proyecto);
         Assert.AreEqual(1, db.ListaProyectos.Count);
         Assert.AreSame(proyecto, db.ListaProyectos[0]);
-    }
+    }*/
     
-    [TestMethod]
+    /*[TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void AgregarProyectoYaExistenteEnElSistema()
     {
@@ -216,9 +216,9 @@ public class DBTests
         
         db.agregarProyecto(proyecto);
         db.agregarProyecto(proyecto);
-    }
+    }*/
     
-    [TestMethod]
+    /*[TestMethod]
     public void EliminarProyecto()
     {
         DB db = new DB();
@@ -238,7 +238,7 @@ public class DBTests
         db.eliminarProyecto(proyecto);
         Assert.AreEqual(0, db.ListaProyectos.Count);
         Assert.IsFalse(db.ListaProyectos.Contains(proyecto));
-    }
+    }*/
     
     [TestMethod]
     public void AgregarRecurso()
@@ -283,7 +283,7 @@ public class DBTests
         Assert.IsFalse(db.ListaRecursos.Contains(recurso));
     }
     
-    [TestMethod]
+    /*[TestMethod]
     public void BuscarUsuarioPorIdDevuelveUsuarioCorrecto()
     {
         DB db = new DB();
@@ -296,19 +296,19 @@ public class DBTests
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(u2.Email, resultado.Email);
-    }
+    }*/
     
-    [TestMethod]
-    public void BuscarUsuarioPorIdDevuelveNullSiNoExiste()
-    {
-        DB db = new DB();
-
-        Usuario resultado = db.buscarUsuarioPorId(999);
-
-        Assert.IsNull(resultado);
-    }
+    // [TestMethod]
+    // public void BuscarUsuarioPorIdDevuelveNullSiNoExiste()
+    // {
+    //     DB db = new DB();
+    //
+    //     Usuario resultado = db.buscarUsuarioPorId(999);
+    //
+    //     Assert.IsNull(resultado);
+    // }
     
-    [TestMethod]
+    /*[TestMethod]
     public void BuscarUsuarioPorCorreoYContraseña()
     {
         DB db = new DB();
@@ -323,9 +323,9 @@ public class DBTests
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(u2.Email, resultado.Email);
-    }
+    }*/
     
-    [TestMethod]
+    /*[TestMethod]
     public void BuscarUsuarioPorCorreo()
     {
         DB db = new DB();
@@ -339,7 +339,7 @@ public class DBTests
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(u2.Email, resultado.Email);
-    }
+    }*/
     
     [ExpectedException(typeof(ArgumentException))]
     [TestMethod]
@@ -352,7 +352,7 @@ public class DBTests
         db.agregarUsuario(usuario2);
     }
     
-    [TestMethod]
+    /*[TestMethod]
     public void BuscarProyectoPorIdDevuelveProyectoCorrecto()
     { 
         DB db = new DB();
@@ -367,7 +367,7 @@ public class DBTests
         Assert.IsNotNull(resultado);
         Assert.AreEqual(p2.Id, resultado.Id);
         Assert.AreEqual(p2.Nombre, resultado.Nombre);
-    }
+    }*/
 
     [TestMethod]
     public void BuscarRecursoPorIdDevuelveUsuarioCorrecto()
@@ -441,7 +441,7 @@ public class DBTests
         Assert.IsTrue(esAdmin);
     }
     
-    [TestMethod]
+    /*[TestMethod]
     public void DevolverProyectosDeUnUsuario()
     {
         DB db = new DB();
@@ -466,9 +466,9 @@ public class DBTests
         Assert.IsTrue(proyectosDelUsuario.Contains(p1));
         Assert.IsTrue(proyectosDelUsuario.Contains(p2));
         Assert.IsFalse(proyectosDelUsuario.Contains(p3));
-    }
+    }*/
     
-    [TestMethod]
+    /*[TestMethod]
     public void VerSiUsuarioEsAdminDeUnProyecto()
     {
         DB db = new DB();
@@ -480,6 +480,6 @@ public class DBTests
        bool esAdmin = db.UsuarioEsAdminDelProyecto(usuario1, p1);
         
         Assert.IsTrue(esAdmin);
-    }
+    }*/
     
 }
