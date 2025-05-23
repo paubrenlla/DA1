@@ -52,5 +52,4 @@ public class UsuarioDataAccess : IDataAccessUsuario
     {
         return _listaUsuarios.Any(u => u.Email == user.Email);
     }
-    
 }

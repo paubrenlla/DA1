@@ -167,10 +167,10 @@ public class DB
         notificacion.AgregarUsuario(user);
     }
 
-    private bool ExisteUsuarioConCorreo(Usuario user)
-    {
-        return ListaUsuarios.Any(u => u.Email == user.Email);
-    }
+    // private bool ExisteUsuarioConCorreo(Usuario user)
+    // {
+    //     return ListaUsuarios.Any(u => u.Email == user.Email);
+    // }
 
     public void agregarAdmin(Usuario user)
     {
@@ -185,13 +185,13 @@ public class DB
     {
         if (AdministradoresSistema.Contains(usuario))
             throw new ArgumentException("El usuario es administrador");
-        if (esAdminDeAlgunProyecto(usuario))
+        if (UsuarioEsAdminDeAlgunProyecto(usuario))
             throw new ArgumentException("El usuario es administrador de un proyecto");
         EliminarAsignacionesDeProyectos(usuario);
         ListaUsuarios.Remove(usuario);
     }
 
-    private List<Proyecto> ProyectosDeUsuario(Usuario usuario)
+    /*private List<Proyecto> ProyectosDeUsuario(Usuario usuario)
     {
         return ListaProyectos
             .Where(p => p.Miembros.Any(u => u.Id == usuario.Id))
@@ -213,34 +213,35 @@ public class DB
             }
         }
     }
+    */
 
-    public Usuario? buscarUsuarioPorId(int id)
-    {
-        return ListaUsuarios.FirstOrDefault(u => u.Id == id);
-    }
+    // public Usuario? buscarUsuarioPorId(int id)
+    // {
+    //     return ListaUsuarios.FirstOrDefault(u => u.Id == id);
+    // }
 
-    public Usuario? buscarUsuarioPorCorreoYContraseña(string email, string contraseña)
-    {
-        return ListaUsuarios.FirstOrDefault(u =>
-            u.Email == email && u.Pwd == Usuario.EncriptarPassword(contraseña));
-    }
+    // public Usuario? buscarUsuarioPorCorreoYContraseña(string email, string contraseña)
+    // {
+    //     return ListaUsuarios.FirstOrDefault(u =>
+    //         u.Email == email && u.Pwd == Usuario.EncriptarPassword(contraseña));
+    // }
+    //
+    // public Usuario? buscarUsuarioPorCorreo(string email)
+    // {
+    //     return ListaUsuarios.FirstOrDefault(u => u.Email == email);
+    // }
 
-    public Usuario? buscarUsuarioPorCorreo(string email)
-    {
-        return ListaUsuarios.FirstOrDefault(u => u.Email == email);
-    }
-
-    public void agregarProyecto(Proyecto proyecto)
-    {
-        if (ListaProyectos.Contains(proyecto))
-            throw new ArgumentException("El proyecto ya existe");
-        ListaProyectos.Add(proyecto);
-    }
-
-    public void eliminarProyecto(Proyecto proyecto)
-    {
-        ListaProyectos.Remove(proyecto);
-    }
+    // public void agregarProyecto(Proyecto proyecto)
+    // {
+    //     if (ListaProyectos.Contains(proyecto))
+    //         throw new ArgumentException("El proyecto ya existe");
+    //     ListaProyectos.Add(proyecto);
+    // }
+    //
+    // public void eliminarProyecto(Proyecto proyecto)
+    // {
+    //     ListaProyectos.Remove(proyecto);
+    // }
 
     public void agregarRecurso(Recurso recurso)
     {
@@ -254,10 +255,10 @@ public class DB
         ListaRecursos.Remove(recurso);
     }
 
-    public Proyecto buscarProyectoPorId(int id)
-    {
-        return ListaProyectos.FirstOrDefault(p => p.Id == id);
-    }
+    // public Proyecto buscarProyectoPorId(int id)
+    // {
+    //     return ListaProyectos.FirstOrDefault(p => p.Id == id);
+    // }
 
     public Recurso? buscarRecursoPorId(int id)
     {
@@ -288,12 +289,12 @@ public Notificacion buscarNotificaciónPorId(int i)
         return AdministradoresSistema.Any(u => u.Id == usuario.Id);
     }
 
-    public List<Proyecto> ProyectosDelUsuario(Usuario usuario)
-    {
-        return ListaProyectos
-            .Where(p => p.Miembros.Any(m => m.Id == usuario.Id) || p.Admin.Id == usuario.Id)
-            .ToList();
-    }
+    // public List<Proyecto> ProyectosDelUsuario(Usuario usuario)
+    // {
+    //     return ListaProyectos
+    //         .Where(p => p.Miembros.Any(m => m.Id == usuario.Id) || p.Admin.Id == usuario.Id)
+    //         .ToList();
+    // }
 
 
     public bool UsuarioEsAdminDelProyecto(Usuario usuario, Proyecto p)
@@ -301,9 +302,9 @@ public Notificacion buscarNotificaciónPorId(int i)
         return p.Admin.Id == usuario.Id;
     }
 
-    public bool esAdminDeAlgunProyecto(Usuario usuario)
-    {
-        return ListaProyectos.Any(p => p.Admin.Equals(usuario));
-
-    }
+    // public bool UsuarioEsAdminDeAlgunProyecto(Usuario usuario)
+    // {
+    //     return ListaProyectos.Any(p => p.Admin.Equals(usuario));
+    //
+    // }
 }
