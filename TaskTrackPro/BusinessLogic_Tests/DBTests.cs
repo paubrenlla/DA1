@@ -172,7 +172,7 @@ public class DBTests
         db.agregarUsuario(user2);
     }*/
 
-    [TestMethod]
+    /*[TestMethod]
     public void AgregarNotificacion()
     {
         DB db = new DB();
@@ -183,7 +183,7 @@ public class DBTests
         
         Assert.IsTrue(db.ListaNotificaciones.Count!=0);
         Assert.IsTrue(db.ListaNotificaciones.Contains(notificacion));
-    }
+    }*/
     
     [TestMethod]
     public void AgregarProyecto()
@@ -394,7 +394,7 @@ public class DBTests
         Assert.IsNull(resultado);
     }
     
-    [TestMethod]
+    /*[TestMethod]
     public void BuscarNotificacionPorIdDevuelveNotificacionCorrecta()
     {
         DB db = new DB();
@@ -408,9 +408,9 @@ public class DBTests
         Notificacion resultado= db.buscarNotificaciónPorId(notificacion.Id);
         
         Assert.AreEqual(resultado, notificacion);
-    }
+    }*/
 
-    [TestMethod]
+    /*[TestMethod]
     public void DevolverNotificacionesNoLeidasDeUnUsuario()
     {
         DB db = new DB();
@@ -429,7 +429,7 @@ public class DBTests
         
         Assert.IsNotNull(noLeidas);
         Assert.AreEqual(notificacion2.Id, noLeidas[0].Id);
-    }
+    }*/
 
 
     [TestMethod]

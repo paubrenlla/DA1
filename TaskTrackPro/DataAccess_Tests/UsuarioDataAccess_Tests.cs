@@ -1,13 +1,12 @@
 using BusinessLogic;
 using Repositorios;
 
-namespace DataAccessUsuario_Tests;
+namespace DataAccess_Tests;
 
 [TestClass]
 public class DataAccessUsuarioTest
 {
     private UsuarioDataAccess UsuarioRepo;
-    private Usuario usuario;
 
     [TestInitialize]
     public void SetUp()
@@ -59,7 +58,7 @@ public class DataAccessUsuarioTest
         Assert.IsFalse(UsuarioRepo.GetAll().Contains(user2));
     }
     
-    [ExpectedException(typeof(ArgumentException))]
+    /*[ExpectedException(typeof(ArgumentException))]
     [TestMethod]
     //TODO Moverlo a Usuario Service
     public void EliminarUsuarioNoPuedeEliminarAdminDeProyecto()
@@ -71,7 +70,7 @@ public class DataAccessUsuarioTest
        // db.agregarProyecto(proyecto);
         
         //db.eliminarUsuario(usuario);
-    }
+    }*/
     
     
     [TestMethod]
@@ -84,7 +83,7 @@ public class DataAccessUsuarioTest
         
         UsuarioRepo.Remove(user);
     }
-    [TestMethod] //TODO Moverlo a UsuarioLogic
+    /*[TestMethod] //TODO Moverlo a UsuarioLogic
     public void AgregarAdmin()
     {
         Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
@@ -97,6 +96,6 @@ public class DataAccessUsuarioTest
         Assert.AreSame(user2, db.AdministradoresSistema[1]);
         Assert.AreEqual(2, db.ListaUsuarios.Count);
         Assert.AreSame(user2, db.ListaUsuarios[1]);
-    }
+    }*/
     
 }

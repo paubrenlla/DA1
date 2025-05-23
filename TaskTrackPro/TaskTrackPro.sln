@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IDataAccess", "IDataAccess\IDataAccess.csproj", "{4B0FF3A8-D041-4B52-8717-E7D8D2B4A2DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessUsuario_Tests", "DataAccessUsuario_Tests\DataAccessUsuario_Tests.csproj", "{7D5D6CBE-5D7C-4420-8A4F-1205089927D7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess_Tests", "DataAccess_Tests\DataAccess_Tests.csproj", "{7D5D6CBE-5D7C-4420-8A4F-1205089927D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
