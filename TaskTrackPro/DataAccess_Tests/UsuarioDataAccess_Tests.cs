@@ -6,28 +6,28 @@ namespace DataAccess_Tests;
 [TestClass]
 public class DataAccessUsuarioTest
 {
-    private UsuarioDataAccess UsuarioRepo;
+    private UsuarioDataAccess usuarioRepo;
 
     [TestInitialize]
     public void SetUp()
     {
-        UsuarioRepo = new UsuarioDataAccess();
+        usuarioRepo = new UsuarioDataAccess();
     }
 
     [TestMethod]
     public void AgregarUsarioComun()
     {
         Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        UsuarioRepo.Add(user);
+        usuarioRepo.Add(user);
 
-        Assert.AreEqual(1, UsuarioRepo.GetAll().Count);
+        Assert.AreEqual(1, usuarioRepo.GetAll().Count);
 
         Usuario user2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!",
             new DateTime(2000, 01, 01));
 
-        UsuarioRepo.Add(user2);
-        Assert.AreEqual(2, UsuarioRepo.GetAll().Count);
-        Assert.AreSame(user2, UsuarioRepo.GetAll()[1]);
+        usuarioRepo.Add(user2);
+        Assert.AreEqual(2, usuarioRepo.GetAll().Count);
+        Assert.AreSame(user2, usuarioRepo.GetAll()[1]);
     }
 
     [TestMethod]
@@ -35,30 +35,30 @@ public class DataAccessUsuarioTest
     public void AgregarUsarioQueYaExisteEnElSistema()
     {
         Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        UsuarioRepo.Add(user);
+        usuarioRepo.Add(user);
 
         Usuario user2 = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!",
             new DateTime(2000, 01, 01));
 
-        UsuarioRepo.Add(user2);
+        usuarioRepo.Add(user2);
     }
 
     [TestMethod]
     public void EliminarUsuario()
     {
         Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        UsuarioRepo.Add(user);
+        usuarioRepo.Add(user);
 
         Usuario user2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!",
             new DateTime(2000, 01, 01));
 
-        UsuarioRepo.Add(user2);
-        Assert.AreEqual(2, UsuarioRepo.GetAll().Count);
-        Assert.AreSame(user2, UsuarioRepo.GetAll()[1]);
+        usuarioRepo.Add(user2);
+        Assert.AreEqual(2, usuarioRepo.GetAll().Count);
+        Assert.AreSame(user2, usuarioRepo.GetAll()[1]);
 
-        UsuarioRepo.Remove(user2);
-        Assert.AreEqual(1, UsuarioRepo.GetAll().Count);
-        Assert.IsFalse(UsuarioRepo.GetAll().Contains(user2));
+        usuarioRepo.Remove(user2);
+        Assert.AreEqual(1, usuarioRepo.GetAll().Count);
+        Assert.IsFalse(usuarioRepo.GetAll().Contains(user2));
     }
 
     /*[ExpectedException(typeof(ArgumentException))]
@@ -67,7 +67,7 @@ public class DataAccessUsuarioTest
     public void EliminarUsuarioNoPuedeEliminarAdminDeProyecto()
     {
         Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        UsuarioRepo.Add(usuario);
+        usuarioRepo.Add(usuario);
         Proyecto proyecto = new Proyecto("Proyecto","descripcion", DateTime.Today);
         proyecto.AsignarAdmin(usuario);
        // db.agregarProyecto(proyecto);
@@ -81,10 +81,10 @@ public class DataAccessUsuarioTest
     public void EliminarUsuarioQueEsAdmin()
     {
         Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        UsuarioRepo.Add(user);
+        usuarioRepo.Add(user);
         user.EsAdminSistema = true;
 
-        UsuarioRepo.Remove(user);
+        usuarioRepo.Remove(user);
     }
     /*[TestMethod] //TODO Moverlo a UsuarioLogic
     public void AgregarAdmin()
@@ -107,10 +107,10 @@ public class DataAccessUsuarioTest
         DB db = new DB();
         Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", "123AAaa!!", new DateTime(2000, 1, 1));
         Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", "456AAaa!!", new DateTime(1999, 2, 2));
-        UsuarioRepo.Add(u1);
-        UsuarioRepo.Add(u2);
+        usuarioRepo.Add(u1);
+        usuarioRepo.Add(u2);
 
-        Usuario resultado = UsuarioRepo.GetById(u2.Id);
+        Usuario resultado = usuarioRepo.GetById(u2.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(u2.Email, resultado.Email);
@@ -119,7 +119,7 @@ public class DataAccessUsuarioTest
     [TestMethod]
     public void BuscarUsuarioPorIdDevuelveNullSiNoExiste()
     {
-        Usuario resultado = UsuarioRepo.GetById(999);
+        Usuario resultado = usuarioRepo.GetById(999);
 
         Assert.IsNull(resultado);
     }
@@ -131,10 +131,10 @@ public class DataAccessUsuarioTest
         string contraseña2= "456AAaa!!";
         Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", "123AAaa!!", new DateTime(2000, 1, 1));
         Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", "456AAaa!!", new DateTime(1999, 2, 2));
-        UsuarioRepo.Add(u1);
-        UsuarioRepo.Add(u2);
+        usuarioRepo.Add(u1);
+        usuarioRepo.Add(u2);
 
-        Usuario resultado = UsuarioRepo.buscarUsuarioPorCorreoYContraseña(email2,contraseña2);
+        Usuario resultado = usuarioRepo.buscarUsuarioPorCorreoYContraseña(email2,contraseña2);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(u2.Email, resultado.Email);
@@ -146,10 +146,10 @@ public class DataAccessUsuarioTest
         string email2="b@b.com";
         Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", "123AAaa!!", new DateTime(2000, 1, 1));
         Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", "456AAaa!!", new DateTime(1999, 2, 2));
-        UsuarioRepo.Add(u1);
-        UsuarioRepo.Add(u2);
+        usuarioRepo.Add(u1);
+        usuarioRepo.Add(u2);
 
-        Usuario resultado = UsuarioRepo.BuscarUsuarioPorCorreo(email2);
+        Usuario resultado = usuarioRepo.BuscarUsuarioPorCorreo(email2);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(u2.Email, resultado.Email);

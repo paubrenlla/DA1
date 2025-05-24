@@ -6,12 +6,12 @@ namespace DataAccess_Tests;
 [TestClass]
 public class NotificacionDataAccess_Tests
 {
-    private NotificacionDataAccess NotificacionRepo;
+    private NotificacionDataAccess notificacionRepo;
     
     [TestInitialize]
     public void SetUp()
     {
-        NotificacionRepo = new NotificacionDataAccess();
+        notificacionRepo = new NotificacionDataAccess();
     }
     
     [TestMethod]
@@ -19,10 +19,10 @@ public class NotificacionDataAccess_Tests
     {
         Notificacion notificacion = new Notificacion("esta es una notificacion de prueba");
         
-        NotificacionRepo.Add(notificacion);
+        notificacionRepo.Add(notificacion);
         
-        Assert.IsTrue(NotificacionRepo.GetAll().Count()!=0);
-        Assert.IsTrue(NotificacionRepo.GetAll().Contains(notificacion));
+        Assert.IsTrue(notificacionRepo.GetAll().Count()!=0);
+        Assert.IsTrue(notificacionRepo.GetAll().Contains(notificacion));
     }
 
     [TestMethod]
@@ -30,13 +30,13 @@ public class NotificacionDataAccess_Tests
     {
         Notificacion notificacion = new Notificacion("esta es una notificacion de prueba");
         
-        NotificacionRepo.Add(notificacion);
+        notificacionRepo.Add(notificacion);
         
-        Assert.IsTrue(NotificacionRepo.GetAll().Count()!=0);
+        Assert.IsTrue(notificacionRepo.GetAll().Count()!=0);
         
-        NotificacionRepo.Remove(notificacion);
+        notificacionRepo.Remove(notificacion);
         
-        Assert.IsTrue(NotificacionRepo.GetAll().Count()==0);
+        Assert.IsTrue(notificacionRepo.GetAll().Count()==0);
         
     }
     
@@ -48,10 +48,10 @@ public class NotificacionDataAccess_Tests
         Notificacion notificacion = new Notificacion("Notificación de prueba");
         Notificacion notificacion2 = new Notificacion("Notificación de prueba");
         
-        NotificacionRepo.Add(notificacion);
-        NotificacionRepo.Add(notificacion2);
+        notificacionRepo.Add(notificacion);
+        notificacionRepo.Add(notificacion2);
 
-        Notificacion resultado= NotificacionRepo.GetById(notificacion.Id);
+        Notificacion resultado= notificacionRepo.GetById(notificacion.Id);
         
         Assert.AreEqual(resultado, notificacion);
     }
@@ -63,13 +63,13 @@ public class NotificacionDataAccess_Tests
         Notificacion notificacion2 = new Notificacion("Notificación de prueba");
         Usuario usuario1 = new Usuario("correo@gmail.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
 
-        NotificacionRepo.Add(notificacion);
-        NotificacionRepo.Add(notificacion2);
+        notificacionRepo.Add(notificacion);
+        notificacionRepo.Add(notificacion2);
         notificacion.AgregarUsuario(usuario1);
         notificacion2.AgregarUsuario(usuario1);
         notificacion.MarcarComoVista(usuario1);
         
-        List<Notificacion> noLeidas = NotificacionRepo.NotificacionesNoLeidas(usuario1);
+        List<Notificacion> noLeidas = notificacionRepo.NotificacionesNoLeidas(usuario1);
         
         Assert.IsNotNull(noLeidas);
         Assert.AreEqual(notificacion2.Id, noLeidas[0].Id);

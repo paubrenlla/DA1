@@ -6,12 +6,12 @@ namespace DataAccess_Tests;
 [TestClass]
 public class ProyectoDataAccess_Tests
 {
-    private ProyectoDataAccess ProyectoRepo;
+    private ProyectoDataAccess proyectoRepo;
 
     [TestInitialize]
     public void SetUp()
     {
-        ProyectoRepo = new ProyectoDataAccess();
+        proyectoRepo = new ProyectoDataAccess();
     }
     
     [TestMethod]
@@ -24,9 +24,9 @@ public class ProyectoDataAccess_Tests
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
         
-        ProyectoRepo.Add(proyecto);
-        Assert.AreEqual(1, ProyectoRepo.GetAll().Count);
-        Assert.AreSame(proyecto, ProyectoRepo.GetAll()[0]);
+        proyectoRepo.Add(proyecto);
+        Assert.AreEqual(1, proyectoRepo.GetAll().Count);
+        Assert.AreSame(proyecto, proyectoRepo.GetAll()[0]);
     }
     
     [TestMethod]
@@ -40,8 +40,8 @@ public class ProyectoDataAccess_Tests
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
         
-        ProyectoRepo.Add(proyecto);
-        ProyectoRepo.Add(proyecto);
+        proyectoRepo.Add(proyecto);
+        proyectoRepo.Add(proyecto);
     }
     
     [TestMethod]
@@ -55,14 +55,14 @@ public class ProyectoDataAccess_Tests
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
         
-        ProyectoRepo.Add(proyecto);
+        proyectoRepo.Add(proyecto);
         
-        Assert.AreEqual(1, ProyectoRepo.GetAll().Count);
-        Assert.AreSame(proyecto, ProyectoRepo.GetAll()[0]);
+        Assert.AreEqual(1, proyectoRepo.GetAll().Count);
+        Assert.AreSame(proyecto, proyectoRepo.GetAll()[0]);
         
-        ProyectoRepo.Remove(proyecto);
-        Assert.AreEqual(0, ProyectoRepo.GetAll().Count);
-        Assert.IsFalse(ProyectoRepo.GetAll().Contains(proyecto));
+        proyectoRepo.Remove(proyecto);
+        Assert.AreEqual(0, proyectoRepo.GetAll().Count);
+        Assert.IsFalse(proyectoRepo.GetAll().Contains(proyecto));
     }
     
     [TestMethod]
@@ -72,10 +72,10 @@ public class ProyectoDataAccess_Tests
         Proyecto p1= new Proyecto("Proyecto 1", "desc", DateTime.Today);
         Proyecto p2= new Proyecto("Proyecto 1", "desc", DateTime.Today);
         
-        ProyectoRepo.Add(p1);
-        ProyectoRepo.Add(p2);
+        proyectoRepo.Add(p1);
+        proyectoRepo.Add(p2);
         
-        Proyecto resultado = ProyectoRepo.GetById(p2.Id);
+        Proyecto resultado = proyectoRepo.GetById(p2.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(p2.Id, resultado.Id);
@@ -95,10 +95,10 @@ public class ProyectoDataAccess_Tests
         p3.AsignarAdmin(usuario2);
         p2.agregarMiembro(usuario1);
         
-        ProyectoRepo.Add(p1);
-        ProyectoRepo.Add(p2);
-        ProyectoRepo.Add(p3);
-        List<Proyecto> proyectosDelUsuario = ProyectoRepo.ProyectosDelUsuario(usuario1);
+        proyectoRepo.Add(p1);
+        proyectoRepo.Add(p2);
+        proyectoRepo.Add(p3);
+        List<Proyecto> proyectosDelUsuario = proyectoRepo.ProyectosDelUsuario(usuario1);
         
         Assert.IsTrue(proyectosDelUsuario.Count == 2);
         Assert.IsTrue(proyectosDelUsuario.Contains(p1));
@@ -115,10 +115,10 @@ public class ProyectoDataAccess_Tests
         Proyecto p1= new Proyecto("Proyecto 1", "desc", DateTime.Today);
         p1.AsignarAdmin(usuario1);
         p1.agregarMiembro(usuario2);
-        ProyectoRepo.Add(p1);
+        proyectoRepo.Add(p1);
         
-        bool Usuario1esAdmin = ProyectoRepo.esAdminDeAlgunProyecto(usuario1);
-        bool Usuario2NoesAdmin = ProyectoRepo.esAdminDeAlgunProyecto(usuario2);
+        bool Usuario1esAdmin = proyectoRepo.esAdminDeAlgunProyecto(usuario1);
+        bool Usuario2NoesAdmin = proyectoRepo.esAdminDeAlgunProyecto(usuario2);
         
         Assert.IsTrue(Usuario1esAdmin);
         Assert.IsFalse(Usuario2NoesAdmin);
@@ -136,8 +136,8 @@ public class ProyectoDataAccess_Tests
         proyecto.agregarTarea(tarea);
         tarea.AgregarUsuario(usuario);
         
-        ProyectoRepo.Add(proyecto);
-        ProyectoRepo.EliminarAsignacionesDeProyectos(usuario);
+        proyectoRepo.Add(proyecto);
+        proyectoRepo.EliminarAsignacionesDeProyectos(usuario);
         
         Assert.IsTrue(tarea.UsuariosAsignados.Count == 0);
         Assert.IsTrue(proyecto.Miembros.Count == 0);
