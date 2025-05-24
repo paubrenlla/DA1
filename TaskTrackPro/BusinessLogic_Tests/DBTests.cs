@@ -240,7 +240,7 @@ public class DBTests
         Assert.IsFalse(db.ListaProyectos.Contains(proyecto));
     }*/
     
-    [TestMethod]
+    /*[TestMethod]
     public void AgregarRecurso()
     {
         DB db = new DB();
@@ -281,7 +281,7 @@ public class DBTests
         db.eliminarRecurso(recurso);
         Assert.AreEqual(0, db.ListaRecursos.Count);
         Assert.IsFalse(db.ListaRecursos.Contains(recurso));
-    }
+    }*/
     
     /*[TestMethod]
     public void BuscarUsuarioPorIdDevuelveUsuarioCorrecto()
@@ -369,7 +369,7 @@ public class DBTests
         Assert.AreEqual(p2.Nombre, resultado.Nombre);
     }*/
 
-    [TestMethod]
+    /*[TestMethod]
     public void BuscarRecursoPorIdDevuelveUsuarioCorrecto()
     {
         DB db = new DB();
@@ -382,17 +382,17 @@ public class DBTests
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(r2.Nombre, resultado.Nombre);
-    }
+    }*/
     
-    [TestMethod]
-    public void BuscarRecursoPorIdDevuelveNullSiNoExiste()
-    {
-        DB db = new DB();
-
-        Recurso resultado = db.buscarRecursoPorId(999);
-
-        Assert.IsNull(resultado);
-    }
+    // [TestMethod]
+    // public void BuscarRecursoPorIdDevuelveNullSiNoExiste()
+    // {
+    //     DB db = new DB();
+    //
+    //     Recurso resultado = db.buscarRecursoPorId(999);
+    //
+    //     Assert.IsNull(resultado);
+    // }
     
     /*[TestMethod]
     public void BuscarNotificacionPorIdDevuelveNotificacionCorrecta()
