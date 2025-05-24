@@ -31,7 +31,7 @@ public class RecursoDataAccess :IDataAccessRecurso
     public void Remove(Recurso recurso)
     {
         if (recurso.EstaEnUso())
-            throw new InvalidOperationException("No se puede eliminar un recurso que está en uso.");
+            throw new ArgumentException("No se puede eliminar un recurso que está en uso.");
         _listaRecursos.Remove(recurso);
     }
 }
