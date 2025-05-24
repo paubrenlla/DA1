@@ -41,10 +41,10 @@ public class ProyectoDataAccess :IDataAccessProyecto
     public void EliminarAsignacionesDeProyectos(Usuario usuario)
     {
         List<Proyecto> proyectosDelUsuario = ProyectosDelUsuario(usuario);
-        foreach (var proyecto in proyectosDelUsuario)
+        foreach (Proyecto proyecto in proyectosDelUsuario)
         {
             proyecto.Miembros.Remove(usuario);
-            foreach (var tarea in proyecto.TareasAsociadas)
+            foreach (Tarea tarea in proyecto.TareasAsociadas)
             {
                 if (tarea.UsuariosAsignados.Contains(usuario)) //TODO Ley Demeter, ver si por ejemplo hay Tarea Repo
                 {
