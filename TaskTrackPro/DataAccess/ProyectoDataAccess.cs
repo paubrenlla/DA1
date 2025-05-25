@@ -25,7 +25,11 @@ public class ProyectoDataAccess :IDataAccessProyecto
     
     public Proyecto GetById(int id)
     {
-        return _listaProyectos.FirstOrDefault(p => p.Id == id);
+        Proyecto proyecto = _listaProyectos.FirstOrDefault(p => p.Id == id);
+        if (proyecto == null)
+            throw new ArgumentException("No existe el proyecto");
+        return proyecto;
+
     }
 
     public List<Proyecto> GetAll()

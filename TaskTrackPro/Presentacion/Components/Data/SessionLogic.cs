@@ -47,14 +47,4 @@ public class SessionLogic
 
         return _db.ListaUsuarios.FirstOrDefault(u => u.Email == storedUser.Email);
     }
-
-    
-    public async Task<bool> EsAdminSistema()
-    {
-        var user = await GetCurrentUser();
-        if (user == null) return false;
-    
-        return _db.AdministradoresSistema
-            .Any(a => a.Id == user.Id);
-    }
 }

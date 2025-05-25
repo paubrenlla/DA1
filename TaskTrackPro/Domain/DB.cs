@@ -157,10 +157,10 @@ public class DB
         ListaUsuarios.Add(user);
     }
 
+    /*
     public void agregarUsuario(Usuario user)
     {
- //TODO hacerlo en usuario service
- //if (ListaUsuarios.Contains(user) || ExisteUsuarioConCorreo(user))
+    //if (ListaUsuarios.Contains(user) || ExisteUsuarioConCorreo(user))
     //        throw new ArgumentException("Usuario ya existe");
         ListaUsuarios.Add(user);
         
@@ -172,26 +172,29 @@ public class DB
     // {
     //     return ListaUsuarios.Any(u => u.Email == user.Email);
     // }
+    */
 
-    public void agregarAdmin(Usuario user)
-    {
-        if (user.EsAdminSistema)
-            throw new ArgumentException("El usuario ya es administrador");
-        
-        Notificacion notificacion = new Notificacion("Eres administrador de sistema.");
-        notificacion.AgregarUsuario(user);
-    }
+    // public void agregarAdmin(Usuario user)
+    // {
+    //     if (user.EsAdminSistema)
+    //         throw new ArgumentException("El usuario ya es administrador");
+    //     //TODO no olvidarse de las notificaciones
+    //     Notificacion notificacion = new Notificacion("Eres administrador de sistema.");
+    //     notificacion.AgregarUsuario(user);
+    // }
 
-    public void eliminarUsuario(Usuario usuario)
-    {
-        if (AdministradoresSistema.Contains(usuario))
-            throw new ArgumentException("El usuario es administrador");
- //TODO hacer esto en service de usuario
-        //if (UsuarioEsAdminDeAlgunProyecto(usuario))
-            throw new ArgumentException("El usuario es administrador de un proyecto");
-   //     EliminarAsignacionesDeProyectos(usuario);
-        ListaUsuarios.Remove(usuario);
-    }
+ /*
+ //    public void eliminarUsuario(Usuario usuario)
+ //    {
+ //        if (AdministradoresSistema.Contains(usuario))
+ //            throw new ArgumentException("El usuario es administrador");
+ // TODO falta elimiar asignaciones en UsuarioService
+ //
+ //         if (UsuarioEsAdminDeAlgunProyecto(usuario))
+ //            throw new ArgumentException("El usuario es administrador de un proyecto");
+ //        EliminarAsignacionesDeProyectos(usuario);
+ //        ListaUsuarios.Remove(usuario);
+ //    }
 
     /*private List<Proyecto> ProyectosDeUsuario(Usuario usuario)
     {
@@ -215,7 +218,7 @@ public class DB
             }
         }
     }
-    */
+    #1#
 
     // public Usuario? buscarUsuarioPorId(int id)
     // {
@@ -228,7 +231,7 @@ public class DB
     //         u.Email == email && u.Pwd == Usuario.EncriptarPassword(contraseña));
     // }
     //
-    // public Usuario? buscarUsuarioPorCorreo(string email)
+    //public Usuario? buscarUsuarioPorCorreo(string email)
     // {
     //     return ListaUsuarios.FirstOrDefault(u => u.Email == email);
     // }
@@ -243,6 +246,7 @@ public class DB
     // public void eliminarProyecto(Proyecto proyecto)
     // {
     //     ListaProyectos.Remove(proyecto);
+    */
     // }
 
     public void agregarRecurso(Recurso recurso)
@@ -267,7 +271,7 @@ public class DB
         return ListaRecursos.FirstOrDefault(r => r.Id == id);
     }
 
-    /*public void agregarNotificacion(Notificacion notificacion)
+    /*/*public void agregarNotificacion(Notificacion notificacion)
     {
         ListaNotificaciones.Add(notificacion);
     }
@@ -283,14 +287,15 @@ public Notificacion buscarNotificaciónPorId(int i)
             .Where(n => n.UsuariosNotificados.Contains(usuario) &&
                         !n.VistaPorUsuarios.Contains(usuario))
             .ToList();
-    }*/
+    }#1#
 
 
     public bool UsuarioEsAdmin(Usuario usuario)
     {
         return AdministradoresSistema.Any(u => u.Id == usuario.Id);
-    }
+    }*/
 
+    //TODO hacer cuando tenga ProyectoDTO
     // public List<Proyecto> ProyectosDelUsuario(Usuario usuario)
     // {
     //     return ListaProyectos
@@ -298,11 +303,10 @@ public Notificacion buscarNotificaciónPorId(int i)
     //         .ToList();
     // }
 
-
-    public bool UsuarioEsAdminDelProyecto(Usuario usuario, Proyecto p)
-    {
-        return p.Admin.Id == usuario.Id;
-    }
+    // public bool UsuarioEsAdminDelProyecto(Usuario usuario, Proyecto p)
+    // {
+    //     return p.Admin.Id == usuario.Id;
+    // }
 
     // public bool UsuarioEsAdminDeAlgunProyecto(Usuario usuario)
     // {

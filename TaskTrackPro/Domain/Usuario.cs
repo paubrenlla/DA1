@@ -17,7 +17,7 @@ public class Usuario
         // y luego las propiedades se asignan una por una usando los setters públicos
     }
 
-    public int Id { get; }
+    public int Id { get; set; }
     private string _email;
     private string _nombre;
     private string _apellido;
@@ -35,7 +35,17 @@ public class Usuario
         EsAdminSistema = false;
         Id = _contadorId++;
     }
-    
+
+    public Usuario(int dtoId, string dtoEmail, string dtoNombre, string dtoApellido, string dtoContraseña, DateTime dtoFechaNacimiento)
+    {
+        Id = dtoId;
+        Email = dtoEmail;
+        Nombre = dtoNombre;
+        Apellido = dtoApellido;
+        FechaNacimiento = dtoFechaNacimiento;
+        _pwd = dtoContraseña;
+    }
+
     public string Email
     {
         get => _email;

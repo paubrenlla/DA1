@@ -22,7 +22,7 @@ public class NotificacionDataAccess : IDataAccessNotificacion
         _listaNotificaciones.Remove(notificacion);
     }
 
-    public Notificacion GetById(int id)
+    public Notificacion? GetById(int id)
     {
         return _listaNotificaciones.FirstOrDefault(n => n.Id == id);
     }
