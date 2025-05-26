@@ -23,7 +23,7 @@ public class TareaDataAccess : IDataAccessTarea
         _listaTareas.Remove(data);
     }
 
-    public Tarea GetById(int Id)
+    public Tarea? GetById(int Id)
     {
         return _listaTareas.FirstOrDefault(t => t.Id == Id);
     }
@@ -32,4 +32,5 @@ public class TareaDataAccess : IDataAccessTarea
     {
         return _listaTareas;
     }
+    
 }

@@ -8,5 +8,5 @@ public interface IDataAccessProyecto : IDataAccessGeneric<Proyecto>
 
     public void EliminarAsignacionesDeProyectos(Usuario usuario);
     
-    public bool esAdminDeAlgunProyecto(Usuario usuario);
+    public bool EsAdminDeAlgunProyecto(Usuario usuario);
 }

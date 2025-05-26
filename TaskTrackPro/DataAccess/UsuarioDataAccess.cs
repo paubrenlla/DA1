@@ -15,7 +15,7 @@ public class UsuarioDataAccess : IDataAccessUsuario
 
     public void Add(Usuario usuario)
     {
-        if (_listaUsuarios.Contains(usuario) || ExisteUsuarioConCorreo(usuario))
+        if (_listaUsuarios.Contains(usuario) || ExisteUsuarioConCorreo(usuario.Email))
             throw new ArgumentException("Usuario ya existe");
         _listaUsuarios.Add(usuario);
     }
@@ -27,9 +27,12 @@ public class UsuarioDataAccess : IDataAccessUsuario
         _listaUsuarios.Remove(usuario);
     }
 
-    public Usuario GetById(int id)
+    public Usuario? GetById(int id)
     {
-        return _listaUsuarios.FirstOrDefault(u => u.Id == id);
+        Usuario usuario = _listaUsuarios.FirstOrDefault(u => u.Id == id);
+        if (usuario == null)
+            throw new ArgumentException("No existe el usuario");
+        return usuario;
     }
 
     public List<Usuario> GetAll()
@@ -48,8 +51,8 @@ public class UsuarioDataAccess : IDataAccessUsuario
         return _listaUsuarios.FirstOrDefault(u => u.Email == email);
     }
     
-    public bool ExisteUsuarioConCorreo(Usuario user)
+    public bool ExisteUsuarioConCorreo(string email)
     {
-        return _listaUsuarios.Any(u => u.Email == user.Email);
+        return _listaUsuarios.Any(u => u.Email == email);
     }
 }

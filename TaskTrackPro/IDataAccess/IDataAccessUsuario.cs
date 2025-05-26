@@ -8,5 +8,5 @@ public interface IDataAccessUsuario : IDataAccessGeneric<Usuario>
 
     public Usuario? buscarUsuarioPorCorreoYContraseña(string email, string contraseña);
 
-    public bool ExisteUsuarioConCorreo(Usuario user);
+    public bool ExisteUsuarioConCorreo(string email);
 }

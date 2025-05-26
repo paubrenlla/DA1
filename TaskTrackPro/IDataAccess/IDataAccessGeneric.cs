@@ -6,7 +6,7 @@ public interface IDataAccessGeneric <T>
 
     public void Remove(T data);
 
-    public T GetById(int Id);
+    public T? GetById(int Id);
 
     public List<T> GetAll();
 }

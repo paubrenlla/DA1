@@ -117,8 +117,8 @@ public class ProyectoDataAccess_Tests
         p1.agregarMiembro(usuario2);
         proyectoRepo.Add(p1);
         
-        bool Usuario1esAdmin = proyectoRepo.esAdminDeAlgunProyecto(usuario1);
-        bool Usuario2NoesAdmin = proyectoRepo.esAdminDeAlgunProyecto(usuario2);
+        bool Usuario1esAdmin = proyectoRepo.EsAdminDeAlgunProyecto(usuario1);
+        bool Usuario2NoesAdmin = proyectoRepo.EsAdminDeAlgunProyecto(usuario2);
         
         Assert.IsTrue(Usuario1esAdmin);
         Assert.IsFalse(Usuario2NoesAdmin);

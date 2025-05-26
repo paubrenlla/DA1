@@ -18,7 +18,7 @@ public class RecursoDataAccess :IDataAccessRecurso
         _listaRecursos.Add(recurso);
     }
 
-    public Recurso GetById(int Id)
+    public Recurso? GetById(int Id)
     {
        return _listaRecursos.FirstOrDefault(r => r.Id == Id);
     }

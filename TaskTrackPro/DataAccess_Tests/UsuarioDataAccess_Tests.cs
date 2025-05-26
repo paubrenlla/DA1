@@ -60,22 +60,7 @@ public class DataAccessUsuarioTest
         Assert.AreEqual(1, usuarioRepo.GetAll().Count);
         Assert.IsFalse(usuarioRepo.GetAll().Contains(user2));
     }
-
-    /*[ExpectedException(typeof(ArgumentException))]
-    [TestMethod]
-    //TODO Moverlo a Usuario Service
-    public void EliminarUsuarioNoPuedeEliminarAdminDeProyecto()
-    {
-        Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        usuarioRepo.Add(usuario);
-        Proyecto proyecto = new Proyecto("Proyecto","descripcion", DateTime.Today);
-        proyecto.AsignarAdmin(usuario);
-       // db.agregarProyecto(proyecto);
-
-        //db.eliminarUsuario(usuario);
-    }*/
-
-
+    
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void EliminarUsuarioQueEsAdmin()
@@ -117,6 +102,7 @@ public class DataAccessUsuarioTest
     }
     
     [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
     public void BuscarUsuarioPorIdDevuelveNullSiNoExiste()
     {
         Usuario resultado = usuarioRepo.GetById(999);
