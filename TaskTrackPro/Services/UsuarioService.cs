@@ -21,7 +21,7 @@ public class UsuarioService
        return Convertidor.AUsuarioDTO(usuario);
     }
     
-    public void AgregarUsuario(UsuarioCreateDTO dto)
+    public void AgregarUsuario(UsuarioDTO dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Contraseña))
             throw new ArgumentException("El correo y la contraseña no pueden estar vacíos");
@@ -29,7 +29,7 @@ public class UsuarioService
         if (_repoUsuarios.ExisteUsuarioConCorreo(dto.Email))
             throw new ArgumentException("El correo ya está en uso");
 
-        Usuario nuevoUsuario = Convertidor.AUsuario(dto);
+        Usuario nuevoUsuario = new Usuario(dto.Email, dto.Nombre, dto.Apellido, dto.Contraseña, dto.FechaNacimiento);
         _repoUsuarios.Add(nuevoUsuario);
     }
 
@@ -87,12 +87,5 @@ public class UsuarioService
         return usuarioAdmin.EsAdminSistema;
     }
     
-    //TODO hacer cuando tenga ProyectoService DTO
-
-    // public bool UsuarioEsAdminDelProyecto(UsuarioDTO usuario, Proyecto p)
-    // {
-    //     Usuario usuarioAdmin = _repoUsuarios.GetById(usuario.Id);
-    //     _repoProyectos.GetById()
-    // }
 
 }

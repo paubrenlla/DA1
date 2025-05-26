@@ -41,7 +41,7 @@ public class UsuarioServiceTests
     [TestMethod]
     public void AgregarUsuarioValidoCorrectamente()
     {
-        var dto = new UsuarioCreateDTO
+        var dto = new UsuarioDTO
         {
             Email = "nuevo@mail.com",
             Nombre = "Nuevo",
@@ -64,7 +64,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(ArgumentException))]
     public void AgregarUsuarioConCorreoQueYaExiste()
     {
-        var dto = new UsuarioCreateDTO
+        var dto = new UsuarioDTO
         {
             Email = "juan@mail.com",
             Nombre = "Pepe",
@@ -79,7 +79,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(ArgumentException))]
     public void AgregarUsuarioSinCorreo()
     {
-        var dto = new UsuarioCreateDTO
+        var dto = new UsuarioDTO
         {
             Email = "",
             Nombre = "Pepe",

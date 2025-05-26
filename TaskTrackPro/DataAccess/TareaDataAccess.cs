@@ -25,7 +25,11 @@ public class TareaDataAccess : IDataAccessTarea
 
     public Tarea? GetById(int Id)
     {
-        return _listaTareas.FirstOrDefault(t => t.Id == Id);
+        Tarea tarea = _listaTareas.FirstOrDefault(t => t.Id == Id);
+        if (tarea == null) 
+            throw new ArgumentException("Tarea no encontrada");
+        return tarea;
+
     }
 
     public List<Tarea> GetAll()
