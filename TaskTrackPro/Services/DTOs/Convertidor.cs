@@ -27,5 +27,15 @@ public static class Convertidor
     {
         return new Usuario(dto.Email, dto.Nombre, dto.Apellido, dto.Contraseña, dto.FechaNacimiento);
     }
+    
+    public static ProyectoDTO AProyectoDTO(Proyecto p)
+    {
+        return new ProyectoDTO
+        {
+            Id = p.Id,
+            Nombre = p.Nombre,
+            Descripcion = p.Descripcion
+        };
+    }
 
 }

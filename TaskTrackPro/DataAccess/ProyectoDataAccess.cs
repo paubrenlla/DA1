@@ -37,7 +37,7 @@ public class ProyectoDataAccess :IDataAccessProyecto
         return _listaProyectos;
     }
     
-    public bool esAdminDeAlgunProyecto(Usuario usuario)
+    public bool EsAdminDeAlgunProyecto(Usuario usuario)
     {
         return _listaProyectos.Any(p => p.Admin.Equals(usuario));
     }

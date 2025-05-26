@@ -6,18 +6,18 @@ namespace Services;
 
 public class UsuarioService
 {
-    private IDataAccessUsuario listaUsuarios;
-    private IDataAccessProyecto listaProyecto;
+    private IDataAccessUsuario _repoUsuarios;
+    private IDataAccessProyecto _repoProyectos;
 
     public UsuarioService(IDataAccessUsuario u, IDataAccessProyecto p)
     {
-        listaUsuarios = u;
-        listaProyecto = p;
+        _repoUsuarios = u;
+        _repoProyectos = p;
     }
 
     public UsuarioDTO BuscarUsuarioPorId(int id)
     {
-       Usuario usuario = listaUsuarios.GetById(id);
+       Usuario usuario = _repoUsuarios.GetById(id);
        return Convertidor.AUsuarioDTO(usuario);
     }
     
@@ -26,17 +26,17 @@ public class UsuarioService
         if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Contraseña))
             throw new ArgumentException("El correo y la contraseña no pueden estar vacíos");
 
-        if (listaUsuarios.ExisteUsuarioConCorreo(dto.Email))
+        if (_repoUsuarios.ExisteUsuarioConCorreo(dto.Email))
             throw new ArgumentException("El correo ya está en uso");
 
         Usuario nuevoUsuario = Convertidor.AUsuario(dto);
-        listaUsuarios.Add(nuevoUsuario);
+        _repoUsuarios.Add(nuevoUsuario);
     }
 
 
     public void EliminarUsuario(UsuarioDTO dto)
     {
-        Usuario usuarioAEliminar = listaUsuarios.GetById(dto.Id);
+        Usuario usuarioAEliminar = _repoUsuarios.GetById(dto.Id);
         
         if(usuarioAEliminar.EsAdminSistema)
             throw new ArgumentException("El usuario es administrador del sistema");
@@ -44,12 +44,12 @@ public class UsuarioService
             throw new ArgumentException("El usuario es administrador de un proyecto");
         //TODO Eliminar asignaciones de tarea cuando haga tarea service
 
-        listaUsuarios.Remove(usuarioAEliminar);
+        _repoUsuarios.Remove(usuarioAEliminar);
     }
 
     private bool EsAdminDeAlgunProyecto(Usuario usuario)
     {
-        return listaProyecto.esAdminDeAlgunProyecto(usuario);
+        return _repoProyectos.EsAdminDeAlgunProyecto(usuario);
     }
 
     public UsuarioDTO BuscarUsuarioPorCorreoYContraseña(string email, string contraseña)
@@ -57,7 +57,7 @@ public class UsuarioService
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(contraseña))
             throw new ArgumentException("Correo y contraseña son obligatorios");
 
-        Usuario? usuario = listaUsuarios.buscarUsuarioPorCorreoYContraseña(email, contraseña);
+        Usuario? usuario = _repoUsuarios.buscarUsuarioPorCorreoYContraseña(email, contraseña);
 
         if (usuario == null)
             throw new ArgumentException("Credenciales inválidas");
@@ -68,14 +68,14 @@ public class UsuarioService
 
     public UsuarioDTO BuscarUsuarioPorCorreo(string email)
     {
-        Usuario? usuario = listaUsuarios.BuscarUsuarioPorCorreo(email);
+        Usuario? usuario = _repoUsuarios.BuscarUsuarioPorCorreo(email);
         
         return Convertidor.AUsuarioDTO(usuario);
     }
 
     public void ConvertirEnAdmin(UsuarioDTO usuario)
     {
-        Usuario usuarioAdmin = listaUsuarios.GetById(usuario.Id);
+        Usuario usuarioAdmin = _repoUsuarios.GetById(usuario.Id);
         if (usuarioAdmin.EsAdminSistema)
             throw new ArgumentException("El usuario ya es administrador del sistema");
         usuarioAdmin.EsAdminSistema = true;
@@ -83,7 +83,7 @@ public class UsuarioService
 
     public bool EsAdmin(UsuarioDTO usuario)
     {
-        Usuario? usuarioAdmin = listaUsuarios.GetById(usuario.Id);
+        Usuario? usuarioAdmin = _repoUsuarios.GetById(usuario.Id);
         return usuarioAdmin.EsAdminSistema;
     }
     
@@ -91,8 +91,8 @@ public class UsuarioService
 
     // public bool UsuarioEsAdminDelProyecto(UsuarioDTO usuario, Proyecto p)
     // {
-    //     Usuario usuarioAdmin = listaUsuarios.GetById(usuario.Id);
-    //     listaProyecto.GetById()
+    //     Usuario usuarioAdmin = _repoUsuarios.GetById(usuario.Id);
+    //     _repoProyectos.GetById()
     // }
 
 }
