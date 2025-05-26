@@ -35,8 +35,6 @@ namespace Services
         public TareaDTO CrearTarea(int proyectoId, TareaDTO dto)
         {
             var proyecto = _repoProyectos.GetById(proyectoId);
-            if (proyecto == null)
-                throw new ArgumentException("Proyecto no encontrado");
 
             var nuevaTarea = new Tarea(dto.Titulo, dto.Descripcion, dto.FechaInicio, dto.Duracion, esCritica: false);
 
