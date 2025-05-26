@@ -17,16 +17,6 @@ public static class Convertidor
             Contraseña = usuario.Pwd
         };
     }
-
-    public static Usuario AUsuario(UsuarioDTO dto)
-    {
-        return new Usuario(dto.Id, dto.Email, dto.Nombre, dto.Apellido, dto.Contraseña, dto.FechaNacimiento);
-    }
-    
-    public static Usuario AUsuario(UsuarioCreateDTO dto)
-    {
-        return new Usuario(dto.Email, dto.Nombre, dto.Apellido, dto.Contraseña, dto.FechaNacimiento);
-    }
     
     public static ProyectoDTO AProyectoDTO(Proyecto p)
     {
@@ -35,6 +25,20 @@ public static class Convertidor
             Id = p.Id,
             Nombre = p.Nombre,
             Descripcion = p.Descripcion
+        };
+    }
+    
+    public static TareaDTO ATareaDTO(Tarea tarea)
+    {
+        return new TareaDTO
+        {
+            Id = tarea.Id,
+            Titulo = tarea.Titulo,
+            Descripcion = tarea.Descripcion,
+            FechaInicio = tarea.FechaInicio,
+            Duracion = tarea.Duracion,
+            EsCritica = tarea.EsCritica,
+            Estado = tarea.EstadoActual.Valor.ToString()
         };
     }
 
