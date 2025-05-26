@@ -9,9 +9,8 @@ public class Usuario
     public const string CONTRASEÑA_DEFAULT = "1Contraseña!";
     private static int _contadorId = 1;
 
-    public Usuario(bool esAdminSistema)
+    public Usuario()
     {
-        EsAdminSistema = esAdminSistema;
         // Necesario para la deserialización con System.Text.Json
         // el JSON se deserialica en un objeto Usuario sin errores
         // y luego las propiedades se asignan una por una usando los setters públicos

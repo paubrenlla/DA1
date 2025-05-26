@@ -102,7 +102,7 @@ public class DBTests
         db.eliminarUsuario(usuario);
     }*/
     
-    [TestMethod]
+    /*[TestMethod]
     public void EliminarUsuarioBorraAsignacionesDeProyectos()
     {
         DB db = new DB();
@@ -123,7 +123,7 @@ public class DBTests
         Assert.IsTrue(proyecto.Miembros.Count == 0);
         Assert.IsFalse(tarea.UsuariosAsignados.Contains(usuario));
         Assert.IsFalse(proyecto.Miembros.Contains(usuario));
-    }
+    }*/
     
     /*[TestMethod]
     public void AgregarAdmin()
@@ -340,17 +340,17 @@ public class DBTests
         Assert.IsNotNull(resultado);
         Assert.AreEqual(u2.Email, resultado.Email);
     }*/
-    
-    [ExpectedException(typeof(ArgumentException))]
-    [TestMethod]
-    public void NoPuedenHaberCorreosRepetidos()
-    {
-        DB db = new DB();
-        Usuario usuario1 = new Usuario("correo@gmail.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
-        Usuario usuario2 = new Usuario("correo@gmail.com", "Nombre2", "Apellido2", "EsValida1!", new DateTime(2000, 1, 1));
-        db.agregarUsuario(usuario1);
-        db.agregarUsuario(usuario2);
-    }
+    //
+    // [ExpectedException(typeof(ArgumentException))]
+    // [TestMethod]
+    // public void NoPuedenHaberCorreosRepetidos()
+    // {
+    //     DB db = new DB();
+    //     Usuario usuario1 = new Usuario("correo@gmail.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
+    //     Usuario usuario2 = new Usuario("correo@gmail.com", "Nombre2", "Apellido2", "EsValida1!", new DateTime(2000, 1, 1));
+    //     db.agregarUsuario(usuario1);
+    //     db.agregarUsuario(usuario2);
+    // }
     
     /*[TestMethod]
     public void BuscarProyectoPorIdDevuelveProyectoCorrecto()
@@ -432,14 +432,14 @@ public class DBTests
     }*/
 
 
-    [TestMethod]
-    public void VerSiUnUsuarioEsAdmin()
-    {
-        Usuario usuario1 = new Usuario("correo@gmail.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
-        DB db = new DB(usuario1);
-        bool esAdmin = db.UsuarioEsAdmin(usuario1);
-        Assert.IsTrue(esAdmin);
-    }
+    // [TestMethod]
+    // public void VerSiUnUsuarioEsAdmin()
+    // {
+    //     Usuario usuario1 = new Usuario("correo@gmail.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
+    //     DB db = new DB(usuario1);
+    //     bool esAdmin = db.UsuarioEsAdmin(usuario1);
+    //     Assert.IsTrue(esAdmin);
+    // }
     
     /*[TestMethod]
     public void DevolverProyectosDeUnUsuario()

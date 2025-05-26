@@ -21,10 +21,11 @@ public class ProyectoService
         return Convertidor.AProyectoDTO(proyecto);
     }
 
-    public List<ProyectoDTO> ListarTodos()
+    public List<ProyectoDTO> GetAll()
     {
         return _repoProyectos.GetAll()
-            .Select(p => Convertidor.AProyectoDTO(p))
+            .Select(p 
+                => Convertidor.AProyectoDTO(p))
             .ToList();
     }
 
@@ -73,6 +74,6 @@ public class ProyectoService
         return proyecto.Admin.Equals(usuario);
     }
 
-
+    
 
 }
