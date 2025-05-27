@@ -11,8 +11,4 @@
       <ProjectReference Include="..\IDataAccess\IDataAccess.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="DTOs\" />
-    </ItemGroup>
-
 </Project>
