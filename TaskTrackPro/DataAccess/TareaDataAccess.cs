@@ -2,7 +2,7 @@
 using Domain;
 using IDataAcces;
 
-namespace Repositorios;
+namespace DataAccess;
 
 public class TareaDataAccess : IDataAccessTarea
 {

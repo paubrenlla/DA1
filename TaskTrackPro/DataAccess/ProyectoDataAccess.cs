@@ -1,7 +1,7 @@
 ﻿using Domain;
 using IDataAcces;
 
-namespace Repositorios;
+namespace DataAccess;
 
 public class ProyectoDataAccess :IDataAccessProyecto
 {
