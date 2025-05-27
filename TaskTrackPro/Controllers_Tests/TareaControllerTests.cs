@@ -1,5 +1,5 @@
-﻿using BusinessLogic;
-using BusinessLogic.Enums;
+﻿using Domain;
+using Domain.Enums;
 using IDataAcces;
 using Repositorios;
 using Controllers;

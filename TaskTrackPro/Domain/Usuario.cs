@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace BusinessLogic;
+namespace Domain;
 
 public class Usuario
 {

@@ -1,6 +1,6 @@
-using BusinessLogic.Enums;
+using Domain.Enums;
 
-namespace BusinessLogic;
+namespace Domain;
 
 public class Tarea
 {

@@ -1,4 +1,4 @@
-﻿using BusinessLogic;
+﻿using Domain;
 
 namespace Repositorios.DTOs;
 

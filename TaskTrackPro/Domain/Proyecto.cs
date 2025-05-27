@@ -1,6 +1,6 @@
 using System.Data;
 
-namespace BusinessLogic;
+namespace Domain;
 
 public class Proyecto
 {

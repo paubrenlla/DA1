@@ -1,4 +1,4 @@
-﻿using BusinessLogic;
+﻿using Domain;
 using System.Collections.Generic;
 
 namespace IDataAcces

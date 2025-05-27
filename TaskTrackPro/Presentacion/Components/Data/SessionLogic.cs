@@ -1,5 +1,5 @@
 ﻿using Blazored.LocalStorage;
-using BusinessLogic;
+using Domain;
 
 namespace UserInterface.Data;
 

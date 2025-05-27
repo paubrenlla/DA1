@@ -1,7 +1,7 @@
-﻿using BusinessLogic;
+﻿using Domain;
 using System.Reflection;
 
-namespace BusinessLogic_Tests;
+namespace Domain_Tests;
 
 [TestClass]
 public class RecursoTests

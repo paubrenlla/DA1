@@ -1,5 +1,5 @@
 ﻿using System.Net.Sockets;
-using BusinessLogic;
+using Domain;
 using IDataAcces;
 
 namespace Repositorios;

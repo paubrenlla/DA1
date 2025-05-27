@@ -1,4 +1,4 @@
-﻿using BusinessLogic;
+﻿using Domain;
 using IDataAcces;
 using Repositorios.DTOs;
 

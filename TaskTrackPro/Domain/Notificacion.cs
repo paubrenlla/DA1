@@ -1,4 +1,4 @@
-﻿namespace BusinessLogic;
+﻿namespace Domain;
 
 public class Notificacion
 {

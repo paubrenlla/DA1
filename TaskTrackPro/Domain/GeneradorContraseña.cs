@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace BusinessLogic;
+namespace Domain;
 
 public class GeneradorContraseña
 {

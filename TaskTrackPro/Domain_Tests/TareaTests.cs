@@ -1,7 +1,7 @@
-using BusinessLogic;
-using BusinessLogic.Enums;
+using Domain;
+using Domain.Enums;
 
-namespace BusinessLogic_Tests
+namespace Domain_Tests
 {
     [TestClass]
     public class TareaTests
