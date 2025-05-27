@@ -1,15 +1,15 @@
 ﻿using BusinessLogic;
 using IDataAcces;
 using Repositorios;
-using Services;
-using Services.DTOs;
+using Controllers;
+using Controllers.DTOs;
 
-namespace Services_Tests;
+namespace Controllers_Tests;
 
 [TestClass]
-public class UsuarioServiceTests
+public class UsuarioControllerTests
 {
-    private UsuarioService _usuarioService;
+    private UsuarioController _usuarioController;
     private IDataAccessUsuario _repoUsuarios;
     private IDataAccessProyecto _repoProyectos;
 
@@ -21,7 +21,7 @@ public class UsuarioServiceTests
         _repoUsuarios = new UsuarioDataAccess();
         _repoProyectos = new ProyectoDataAccess();
 
-        _usuarioService = new UsuarioService(_repoUsuarios, _repoProyectos);
+        _usuarioController = new UsuarioController(_repoUsuarios, _repoProyectos);
 
         _usuarioEjemplo = new Usuario("juan@mail.com", "Juan", "Pérez", "Contraseña1!", new DateTime(2000, 1, 1));
         _repoUsuarios.Add(_usuarioEjemplo);
@@ -30,7 +30,7 @@ public class UsuarioServiceTests
     [TestMethod]
     public void BuscarUsuarioPorIdDevuelveDTOCorrecto()
     {
-        UsuarioDTO resultado = _usuarioService.BuscarUsuarioPorId(_usuarioEjemplo.Id);
+        UsuarioDTO resultado = _usuarioController.BuscarUsuarioPorId(_usuarioEjemplo.Id);
 
         Assert.AreEqual(_usuarioEjemplo.Id, resultado.Id);
         Assert.AreEqual(_usuarioEjemplo.Email, resultado.Email);
@@ -50,9 +50,9 @@ public class UsuarioServiceTests
             FechaNacimiento = new DateTime(1990, 1, 1)
         };
 
-        _usuarioService.AgregarUsuario(dto);
+        _usuarioController.AgregarUsuario(dto);
 
-        UsuarioDTO resultado = _usuarioService.BuscarUsuarioPorCorreo(dto.Email);
+        UsuarioDTO resultado = _usuarioController.BuscarUsuarioPorCorreo(dto.Email);
 
         Assert.AreEqual(dto.Email, resultado.Email);
         Assert.AreEqual(dto.Nombre, resultado.Nombre);
@@ -72,7 +72,7 @@ public class UsuarioServiceTests
             Contraseña = "Contraseña1!",
             FechaNacimiento = new DateTime(1995, 5, 5)
         };
-        _usuarioService.AgregarUsuario(dto);
+        _usuarioController.AgregarUsuario(dto);
     }
     
     [TestMethod]
@@ -87,13 +87,13 @@ public class UsuarioServiceTests
             Contraseña = "Contraseña1!",
             FechaNacimiento = new DateTime(1995, 5, 5)
         };
-        _usuarioService.AgregarUsuario(dto);
+        _usuarioController.AgregarUsuario(dto);
     }
     
     [TestMethod]
     public void EliminarUsuarioExistenteEliminaCorrectamente()
     {
-        _usuarioService.EliminarUsuario(Convertidor.AUsuarioDTO(_usuarioEjemplo));
+        _usuarioController.EliminarUsuario(Convertidor.AUsuarioDTO(_usuarioEjemplo));
 
         var resultado = _repoUsuarios.BuscarUsuarioPorCorreo(_usuarioEjemplo.Email);
         Assert.IsNull(resultado);
@@ -105,7 +105,7 @@ public class UsuarioServiceTests
     {
         _usuarioEjemplo.EsAdminSistema = true;
         var dto = Convertidor.AUsuarioDTO(_usuarioEjemplo);
-        _usuarioService.EliminarUsuario(dto);
+        _usuarioController.EliminarUsuario(dto);
     }
 
     [TestMethod]
@@ -116,7 +116,7 @@ public class UsuarioServiceTests
         proyecto.AsignarAdmin(_usuarioEjemplo);
         _repoProyectos.Add(proyecto);
         var dto = Convertidor.AUsuarioDTO(_usuarioEjemplo);
-        _usuarioService.EliminarUsuario(dto);
+        _usuarioController.EliminarUsuario(dto);
     }
 
     [TestMethod]
@@ -125,7 +125,7 @@ public class UsuarioServiceTests
         string email = _usuarioEjemplo.Email;
         string contraseña = "Contraseña1!";
 
-        UsuarioDTO resultado = _usuarioService.BuscarUsuarioPorCorreoYContraseña(email, contraseña);
+        UsuarioDTO resultado = _usuarioController.BuscarUsuarioPorCorreoYContraseña(email, contraseña);
 
         Assert.AreEqual(_usuarioEjemplo.Id, resultado.Id);
         Assert.AreEqual(_usuarioEjemplo.Email, resultado.Email);
@@ -139,14 +139,14 @@ public class UsuarioServiceTests
         string email = _usuarioEjemplo.Email;
         string contraseñaIncorrecta = "ContraseñaIncorrecta123";
 
-        _usuarioService.BuscarUsuarioPorCorreoYContraseña(email, contraseñaIncorrecta);
+        _usuarioController.BuscarUsuarioPorCorreoYContraseña(email, contraseñaIncorrecta);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void BuscarUsuarioPorCorreoYContraseñaVacias()
     {
-        _usuarioService.BuscarUsuarioPorCorreoYContraseña("", "Contraseña1!");
+        _usuarioController.BuscarUsuarioPorCorreoYContraseña("", "Contraseña1!");
     }
 
     [TestMethod]
@@ -154,7 +154,7 @@ public class UsuarioServiceTests
     {
         UsuarioDTO dto = Convertidor.AUsuarioDTO(_usuarioEjemplo);
 
-        _usuarioService.ConvertirEnAdmin(dto);
+        _usuarioController.ConvertirEnAdmin(dto);
 
         Assert.IsTrue(_usuarioEjemplo.EsAdminSistema);
     }
@@ -166,7 +166,7 @@ public class UsuarioServiceTests
         _usuarioEjemplo.EsAdminSistema = true;
         UsuarioDTO dto = Convertidor.AUsuarioDTO(_usuarioEjemplo);
 
-        _usuarioService.ConvertirEnAdmin(dto);
+        _usuarioController.ConvertirEnAdmin(dto);
     }
 
     [TestMethod]
@@ -175,7 +175,7 @@ public class UsuarioServiceTests
         _usuarioEjemplo.EsAdminSistema = true;
         UsuarioDTO dto = Convertidor.AUsuarioDTO(_usuarioEjemplo);
 
-        bool esAdmin = _usuarioService.EsAdmin(dto);
+        bool esAdmin = _usuarioController.EsAdmin(dto);
 
         Assert.IsTrue(esAdmin);
     }

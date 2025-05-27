@@ -1,15 +1,15 @@
 ﻿using BusinessLogic;
+using Controllers.DTOs;
 using IDataAcces;
-using Services.DTOs;
 
-namespace Services;
+namespace Controllers;
 
-public class UsuarioService
+public class UsuarioController
 {
     private IDataAccessUsuario _repoUsuarios;
     private IDataAccessProyecto _repoProyectos;
 
-    public UsuarioService(IDataAccessUsuario u, IDataAccessProyecto p)
+    public UsuarioController(IDataAccessUsuario u, IDataAccessProyecto p)
     {
         _repoUsuarios = u;
         _repoProyectos = p;

@@ -12,9 +12,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IDataAccess", "IDataAccess\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess_Tests", "DataAccess_Tests\DataAccess_Tests.csproj", "{7D5D6CBE-5D7C-4420-8A4F-1205089927D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{4C971B41-C9F4-47FC-A41B-780120DA02F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controllers", "Controllers\Controllers.csproj", "{4C971B41-C9F4-47FC-A41B-780120DA02F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services_Tests", "Services_Tests\Services_Tests.csproj", "{77E520AF-2EAA-4E9D-88B6-1B469FB529AD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controllers_Tests", "Controllers_Tests\Controllers_Tests.csproj", "{77E520AF-2EAA-4E9D-88B6-1B469FB529AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

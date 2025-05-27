@@ -1,7 +1,7 @@
 ﻿using BusinessLogic;
-using Services.DTOs;
+using Controllers.DTOs;
 
-namespace Services;
+namespace Controllers;
 
 public static class Convertidor
 {

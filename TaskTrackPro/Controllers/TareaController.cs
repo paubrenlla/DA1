@@ -1,16 +1,16 @@
 ﻿using BusinessLogic;
+using Controllers.DTOs;
 using IDataAcces;
-using Services.DTOs;
 
-namespace Services
+namespace Controllers
 {
-    public class TareaService
+    public class TareaController
     {
         private readonly IDataAccessTarea _repoTareas;
         private readonly IDataAccessProyecto _repoProyectos;
         private readonly IDataAccessUsuario _repoUsuarios;
 
-        public TareaService(IDataAccessTarea t, IDataAccessProyecto p, IDataAccessUsuario u)
+        public TareaController(IDataAccessTarea t, IDataAccessProyecto p, IDataAccessUsuario u)
         {
             _repoTareas = t;
             _repoProyectos = p;

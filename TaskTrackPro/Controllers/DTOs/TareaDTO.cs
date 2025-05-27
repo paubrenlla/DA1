@@ -1,4 +1,4 @@
-﻿namespace Services.DTOs;
+﻿namespace Controllers.DTOs;
 
 public class TareaDTO
 {

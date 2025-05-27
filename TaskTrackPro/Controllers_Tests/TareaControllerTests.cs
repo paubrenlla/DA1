@@ -2,15 +2,15 @@
 using BusinessLogic.Enums;
 using IDataAcces;
 using Repositorios;
-using Services;
-using Services.DTOs;
+using Controllers;
+using Controllers.DTOs;
 
-namespace Services_Tests;
+namespace Controllers_Tests;
 
 [TestClass]
-    public class TareaServiceTests
+    public class TareaControllerTests
     {
-        private TareaService _tareaService;
+        private TareaController _tareaController;
         private IDataAccessTarea _repoTareas;
         private IDataAccessProyecto _repoProyectos;
         private IDataAccessUsuario _repoUsuarios;
@@ -26,7 +26,7 @@ namespace Services_Tests;
             _repoProyectos = new ProyectoDataAccess();
             _repoUsuarios = new UsuarioDataAccess();
 
-            _tareaService = new TareaService(_repoTareas, _repoProyectos, _repoUsuarios);
+            _tareaController = new TareaController(_repoTareas, _repoProyectos, _repoUsuarios);
 
             _proyectoEjemplo = new Proyecto("Proyecto Test", "Descripción Test", DateTime.Today.AddDays(1));
             _repoProyectos.Add(_proyectoEjemplo);
@@ -43,7 +43,7 @@ namespace Services_Tests;
         [TestMethod]
         public void BuscarTareaPorIdDevuelveDTO()
         {
-            TareaDTO dto = _tareaService.BuscarTareaPorId(_tareaEjemplo.Id);
+            TareaDTO dto = _tareaController.BuscarTareaPorId(_tareaEjemplo.Id);
 
             Assert.IsNotNull(dto);
             Assert.AreEqual(_tareaEjemplo.Id, dto.Id);
@@ -57,7 +57,7 @@ namespace Services_Tests;
             _tarea2.Proyecto = _proyectoEjemplo;
             _proyectoEjemplo.TareasAsociadas.Add(_tarea2);
             _repoTareas.Add(_tarea2);
-            List<TareaDTO> lista = _tareaService.ListarTareasPorProyecto(_proyectoEjemplo.Id);
+            List<TareaDTO> lista = _tareaController.ListarTareasPorProyecto(_proyectoEjemplo.Id);
 
             Assert.IsNotNull(lista);
             Assert.AreEqual(2, lista.Count);
@@ -75,11 +75,11 @@ namespace Services_Tests;
                 FechaInicio = DateTime.Today.AddDays(3),
                 Duracion = TimeSpan.FromHours(4)
             };
-            TareaDTO tareaCreada = _tareaService.CrearTarea(_proyectoEjemplo.Id, dto);
+            TareaDTO tareaCreada = _tareaController.CrearTarea(_proyectoEjemplo.Id, dto);
 
             Assert.IsNotNull(tareaCreada);
             Assert.AreEqual(dto.Titulo, tareaCreada.Titulo);
-            List<TareaDTO> tareasDelProyecto = _tareaService.ListarTareasPorProyecto(_proyectoEjemplo.Id);
+            List<TareaDTO> tareasDelProyecto = _tareaController.ListarTareasPorProyecto(_proyectoEjemplo.Id);
             Assert.IsTrue(tareasDelProyecto.Any(t => t.Id == tareaCreada.Id));
         }
         
@@ -94,7 +94,7 @@ namespace Services_Tests;
                 Duracion = TimeSpan.FromHours(8)
             };
 
-            _tareaService.ModificarTarea(_tareaEjemplo.Id, dto);
+            _tareaController.ModificarTarea(_tareaEjemplo.Id, dto);
 
             var modificada = _repoTareas.GetById(_tareaEjemplo.Id);
             Assert.AreEqual(dto.Titulo, modificada.Titulo);
@@ -106,9 +106,9 @@ namespace Services_Tests;
         [TestMethod]
         public void MarcarComoCompletadaCambiaBien()
         {
-            _tareaService.MarcarComoEjecutandose(_tareaEjemplo.Id);
+            _tareaController.MarcarComoEjecutandose(_tareaEjemplo.Id);
             
-            _tareaService.MarcarComoCompletada(_tareaEjemplo.Id);
+            _tareaController.MarcarComoCompletada(_tareaEjemplo.Id);
             
             Tarea tarea = _repoTareas.GetById(_tareaEjemplo.Id);
             Assert.IsNotNull(tarea);
@@ -122,7 +122,7 @@ namespace Services_Tests;
             _tarea2.Proyecto = _proyectoEjemplo;
             _proyectoEjemplo.TareasAsociadas.Add(_tarea2);
             _repoTareas.Add(_tarea2);
-            _tareaService.AgregarDependencia(_tareaEjemplo.Id, _tarea2.Id);            
+            _tareaController.AgregarDependencia(_tareaEjemplo.Id, _tarea2.Id);            
             Tarea tarea1 = _repoTareas.GetById(_tareaEjemplo.Id);
             Tarea tarea2 = _repoTareas.GetById(_tarea2.Id);
             Assert.IsTrue(tarea1.TareasDependencia.Contains(tarea2));
@@ -132,7 +132,7 @@ namespace Services_Tests;
         [TestMethod]
         public void AgregarUsuario_AgregaUsuarioCorrectamente()
         {
-            _tareaService.AgregarUsuario(_tareaEjemplo.Id, _usuarioEjemplo.Id);
+            _tareaController.AgregarUsuario(_tareaEjemplo.Id, _usuarioEjemplo.Id);
             var tarea = _repoTareas.GetById(_tareaEjemplo.Id);
             Assert.IsNotNull(tarea);
             Assert.IsTrue(tarea.UsuariosAsignados.Contains(_usuarioEjemplo));
