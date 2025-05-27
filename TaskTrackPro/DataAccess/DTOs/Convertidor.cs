@@ -1,7 +1,6 @@
 ﻿using BusinessLogic;
-using Controllers.DTOs;
 
-namespace Controllers;
+namespace Repositorios.DTOs;
 
 public static class Convertidor
 {

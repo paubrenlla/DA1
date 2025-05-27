@@ -2,7 +2,7 @@
 using IDataAcces;
 using Repositorios;
 using Controllers;
-using Controllers.DTOs;
+using Repositorios.DTOs;
 
 namespace Controllers_Tests;
 

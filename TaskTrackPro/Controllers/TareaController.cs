@@ -1,6 +1,6 @@
 ﻿using BusinessLogic;
-using Controllers.DTOs;
 using IDataAcces;
+using Repositorios.DTOs;
 
 namespace Controllers
 {
