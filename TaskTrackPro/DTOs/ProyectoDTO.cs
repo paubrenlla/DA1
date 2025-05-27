@@ -1,4 +1,4 @@
-﻿namespace Repositorios.DTOs;
+﻿namespace DTOs;
 
 public class ProyectoDTO
 {

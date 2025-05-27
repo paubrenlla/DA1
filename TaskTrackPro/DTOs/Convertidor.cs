@@ -1,6 +1,5 @@
 ﻿using Domain;
-
-namespace Repositorios.DTOs;
+namespace DTOs;
 
 public static class Convertidor
 {
