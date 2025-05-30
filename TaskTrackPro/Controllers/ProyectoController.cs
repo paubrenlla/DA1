@@ -1,79 +1,65 @@
-﻿using Domain;
-using DTOs;
-using IDataAcces;
+﻿using DTOs;
+using Services;
 
-namespace Controllers;
-
-public class ProyectoController
+namespace Controllers
 {
-    private IDataAccessProyecto _repoProyectos;
-    private IDataAccessUsuario _repoUsuarios;
+    public class ProyectoController
+    {
+        private readonly IProyectoService _service;
 
-    public ProyectoController(IDataAccessProyecto p, IDataAccessUsuario u)
-    {
-        _repoProyectos = p;
-        _repoUsuarios = u;
-    }
+        public ProyectoController(IProyectoService service)
+        {
+            _service = service;
+        }
 
-    public ProyectoDTO BuscarProyectoPorId(int id)
-    {
-        Proyecto? proyecto = _repoProyectos.GetById(id);
-        return Convertidor.AProyectoDTO(proyecto);
-    }
+        public ProyectoController(ProyectoService service)
+        {
+            _service = service;
+        }
 
-    public List<ProyectoDTO> GetAll()
-    {
-        return _repoProyectos.GetAll()
-            .Select(p 
-                => Convertidor.AProyectoDTO(p))
-            .ToList();
-    }
+        public ProyectoDTO BuscarProyectoPorId(int id)
+        {
+            return _service.GetById(id);
+        }
 
-    public void AgregarProyecto(ProyectoDTO dto, DateTime fechaInicio)
-    {
-        Proyecto nuevo = new Proyecto(dto.Nombre, dto.Descripcion, fechaInicio);
-        _repoProyectos.Add(nuevo);
-    }
+        public List<ProyectoDTO> GetAll()
+        {
+            return _service.GetAll();
+        }
 
-    public void EliminarProyecto(int id)
-    {
-        Proyecto? p = _repoProyectos.GetById(id);
-        //TODO eliminar asignaciones de recursos
-        _repoProyectos.Remove(p);
-    }
+        public ProyectoDTO AgregarProyecto(ProyectoDTO dto)
+        {
+            return _service.CrearProyecto(dto);
+        }
 
-    public void ModificarProyecto(ProyectoDTO dto, DateTime fechaInicio)
-    {
-        Proyecto? p = _repoProyectos.GetById(dto.Id);
-        p.Modificar(dto.Descripcion, fechaInicio);
-    }
-    
-    /*public bool EsAdminDeAlgunProyecto(UsuarioDTO usuario)
-    {
-        Usuario u = _repoUsuarios.GetById(usuario.Id);
-        return _repoProyectos.EsAdminDeAlgunProyecto(u);
-    }
-    
-    public void EliminarAsignacionesDeProyectos(UsuarioDTO usuario)
-    {
-        Usuario u = _repoUsuarios.GetById(usuario.Id);
-        _repoProyectos.EliminarAsignacionesDeProyectos(u);
-    }
-    
-    public List<ProyectoDTO> ProyectosDelUsuario(UsuarioDTO usuario)
-    {
-        Usuario u = _repoUsuarios.GetById(usuario.Id);
-        var proyectos = _repoProyectos.ProyectosDelUsuario(u);
-        return proyectos.Select(p => Convertidor.AProyectoDTO(p)).ToList();
-    }
+        public void EliminarProyecto(int id)
+        {
+            _service.Delete(id);
+        }
 
-    public bool UsuarioEsAdminDelProyecto(UsuarioDTO usuarioDto, ProyectoDTO proyectoDto)
-    {
-        Proyecto proyecto = _repoProyectos.GetById(proyectoDto.Id);
-        Usuario usuario = _repoUsuarios.GetById(usuarioDto.Id);
-        return proyecto.Admin.Equals(usuario);
-    }*/
+        public void ModificarProyecto(ProyectoDTO dto)
+        {
+            _service.ModificarProyecto(dto);
+        }
 
-    
+        public bool EsAdminDeAlgunProyecto(int usuarioId)
+        {
+            return _service.UsuarioEsAdminDeAlgunProyecto(usuarioId);
+        }
 
+        public List<ProyectoDTO> ProyectosDelUsuario(int usuarioId)
+        {
+            return _service.ProyectosDelUsuario(usuarioId);
+        }
+
+        public void EliminarAsignacionesUsuario(int usuarioId)
+        {
+            _service.EliminarAsignacionesDeUsuario(usuarioId);
+        }
+
+        public bool UsuarioEsAdminEnProyecto(int usuarioId, int proyectoId)
+        {
+            return _service.UsuarioEsAdminEnProyecto(usuarioId, proyectoId);
+        }
+    }
 }
