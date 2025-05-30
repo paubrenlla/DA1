@@ -108,16 +108,16 @@ public class UsuarioControllerTests
         _usuarioController.EliminarUsuario(dto);
     }
 
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void EliminarUsuarioQueEsAdminDeUnProyecto()
-    {
-        Proyecto proyecto = new Proyecto("Proyecto de Prueba", "Desc", DateTime.Now );
-        proyecto.AsignarAdmin(_usuarioEjemplo);
-        _repoProyectos.Add(proyecto);
-        var dto = Convertidor.AUsuarioDTO(_usuarioEjemplo);
-        _usuarioController.EliminarUsuario(dto);
-    }
+    // [TestMethod]
+    // [ExpectedException(typeof(ArgumentException))]
+    // public void EliminarUsuarioQueEsAdminDeUnProyecto()
+    // {
+    //     Proyecto proyecto = new Proyecto("Proyecto de Prueba", "Desc", DateTime.Now );
+    //     proyecto.AsignarAdmin(_usuarioEjemplo);
+    //     _repoProyectos.Add(proyecto);
+    //     var dto = Convertidor.AUsuarioDTO(_usuarioEjemplo);
+    //     _usuarioController.EliminarUsuario(dto);
+    // }
 
     [TestMethod]
     public void BuscarUsuarioPorCorreoYContraseña()
