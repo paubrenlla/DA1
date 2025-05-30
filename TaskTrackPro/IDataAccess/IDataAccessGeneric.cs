@@ -2,7 +2,7 @@
 
 public interface IDataAccessGeneric <T>
 {
-    public void Add(T data);
+    public void Add(T asignacionProyecto);
 
     public void Remove(T data);
 

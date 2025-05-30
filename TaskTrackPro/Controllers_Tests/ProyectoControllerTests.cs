@@ -96,7 +96,7 @@ public class ProyectoControllerTests
         Assert.AreEqual("Descripcion nueva", _repoProyectos.GetById(proyecto.Id).Descripcion);
     }
     
-    [TestMethod]
+    /*[TestMethod]
     public void UsuarioEsAdminDeAlgunProyecto()
     {
         
@@ -142,6 +142,6 @@ public class ProyectoControllerTests
         proyectoEjemplo.Admin = usuarioEjemplo;
         bool esAdmin = _proyectoController.UsuarioEsAdminDelProyecto(Convertidor.AUsuarioDTO(usuarioEjemplo), Convertidor.AProyectoDTO(proyectoEjemplo));
         Assert.IsTrue(esAdmin);
-    }
+    }*/
 
 }

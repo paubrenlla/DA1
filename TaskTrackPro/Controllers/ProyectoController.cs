@@ -48,7 +48,7 @@ public class ProyectoController
         p.Modificar(dto.Descripcion, fechaInicio);
     }
     
-    public bool EsAdminDeAlgunProyecto(UsuarioDTO usuario)
+    /*public bool EsAdminDeAlgunProyecto(UsuarioDTO usuario)
     {
         Usuario u = _repoUsuarios.GetById(usuario.Id);
         return _repoProyectos.EsAdminDeAlgunProyecto(u);
@@ -72,7 +72,7 @@ public class ProyectoController
         Proyecto proyecto = _repoProyectos.GetById(proyectoDto.Id);
         Usuario usuario = _repoUsuarios.GetById(usuarioDto.Id);
         return proyecto.Admin.Equals(usuario);
-    }
+    }*/
 
     
 

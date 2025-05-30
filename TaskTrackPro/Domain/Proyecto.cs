@@ -11,8 +11,8 @@ public class Proyecto
     private string _descripcion;
     private DateTime _fechaInicio;
     public List<Tarea> TareasAsociadas { get; set; }
-    public List<Usuario> Miembros { get; set; }
-    public Usuario Admin { get; set; }
+
+    public List<AsignacionProyecto> AsignacionesDelProyecto { get; set;}
     public DateTime? FinEstimado { get; set; }
     
     public string Nombre
@@ -56,7 +56,7 @@ public class Proyecto
         Descripcion = descripcion;
         FechaInicio = fechaInicio;
         TareasAsociadas = new List<Tarea>();
-        Miembros = new List<Usuario>();
+        AsignacionesDelProyecto = new List<AsignacionProyecto>();
         Id = _contadorId++;
     }
 
@@ -91,34 +91,26 @@ public class Proyecto
             tareaDependencia.ActualizarEstado();
         }
         Notificacion notificacion = new Notificacion("Se eliminado la tarea " + tarea.Titulo + " del proyecto " + Nombre + ".");
-        notificacion.AgregarUsuarios(tarea.UsuariosAsignados);
-        notificacion.AgregarUsuario(Admin);
+       // notificacion.AgregarUsuarios(tarea.UsuariosAsignados);
+       // notificacion.AgregarUsuario(Admin);
         CalcularRutaCritica();
     }
 
-    public void agregarMiembro(Usuario user)
+    public void agregarMiembro(AsignacionProyecto asignacion)
     {
-        if (Miembros.Contains(user))
-            throw new ArgumentException("Este usuario ya es miembro del proyecto.");
-        Miembros.Add(user);
-        Notificacion notificacion = new Notificacion("Ha sido agregado al proyecto: " + Nombre + ".");
-        notificacion.AgregarUsuario(user);
+        if (AsignacionesDelProyecto.Contains(asignacion))
+            throw new ArgumentException("Este usuario ya fué asignado al proyecto.");
+        AsignacionesDelProyecto.Add(asignacion);
+       // Notificacion notificacion = new Notificacion("Ha sido agregado al proyecto: " + Nombre + ".");
+       // notificacion.AgregarUsuario(user);
     }
     
-    public void eliminarMiembro(Usuario user)
+    public void eliminarMiembro(AsignacionProyecto asignacion)
     {
-        if (!Miembros.Contains(user))
+        if (!AsignacionesDelProyecto.Contains(asignacion))
             throw new ArgumentException("Este usuario no es integrante del proyecto.");
         
-        Miembros.Remove(user);
-        
-        var tareasConUsuario = TareasAsociadas
-            .Where(t => t.UsuariosAsignados.Contains(user));
-
-        foreach (var tarea in tareasConUsuario)
-        {
-            tarea.UsuariosAsignados.Remove(user);
-        }
+        AsignacionesDelProyecto.Remove(asignacion);
     }
     
     public void eliminarMiembroTarea(Usuario user, Tarea tarea)
@@ -238,31 +230,32 @@ public class Proyecto
 
     public void AsignarUsuarioATarea(Usuario usuario, Tarea tarea)
     {
-        if (!Miembros.Contains(usuario))
+        if (!AsignacionesDelProyecto.Any(a => a.Usuario.Id == usuario.Id))
             throw new ArgumentException("El usuario no pertenece al proyecto");
-    
+
         if (!TareasAsociadas.Contains(tarea))
             throw new ArgumentException("La tarea no pertenece al proyecto");
-    
+
         if (tarea.UsuariosAsignados.Contains(usuario))
             throw new ArgumentException("El usuario ya está asignado a esta tarea");
-    
+
         tarea.AgregarUsuario(usuario);
-        Notificacion notificacion = new Notificacion("Ha sido agregado a la tarea " + tarea.Titulo + ".");
+        var notificacion = new Notificacion($"Ha sido agregado a la tarea {tarea.Titulo}.");
         notificacion.AgregarUsuario(usuario);
     }
+
     
-    public void AsignarAdmin(Usuario usuario)
-    {
-        Admin = usuario;
-        Notificacion notificacion = new Notificacion("Eres administrador del proyecto " + Nombre + ".");
-        notificacion.AgregarUsuario(usuario);
-    }
+    // public void AsignarAdmin(Usuario usuario)
+    // {
+    //     Admin = usuario;
+    //     Notificacion notificacion = new Notificacion("Eres administrador del proyecto " + Nombre + ".");
+    //     notificacion.AgregarUsuario(usuario);
+    // }
     
-    public bool EsAdmin(Usuario usuario)
-    {
-        return usuario.Equals(Admin);
-    }
+    // public bool EsAdmin(Usuario usuario)
+    // {
+    //     return usuario.Equals(Admin);
+    // }
     
     public void Modificar(string descripcionNueva, DateTime fechaInicioNueva)
     {

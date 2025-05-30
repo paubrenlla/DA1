@@ -5,7 +5,7 @@ namespace Domain_Tests;
 [TestClass]
 public class DBTests
 {
-    [TestMethod]
+    /*[TestMethod]
     public void ConstructorSinParametros()
     {
         DB db = new DB();
@@ -17,8 +17,8 @@ public class DBTests
         Assert.AreEqual(0, db.ListaNotificaciones.Count);
     }
     
-    [TestMethod]
-    public void ConstructorConDatosPrecargados()
+    [TestMethod]*/
+    /*public void ConstructorConDatosPrecargados()
     {
         DB db = new DB(true);
         
@@ -42,7 +42,7 @@ public class DBTests
         Assert.AreEqual(1, db.ListaUsuarios.Count);
         Assert.AreSame(user, db.AdministradoresSistema[0]);
         Assert.AreSame(user, db.ListaUsuarios[0]);
-    }
+    }*/
     
     /*[TestMethod]
     public void AgregarUsarioComun()

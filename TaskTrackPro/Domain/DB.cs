@@ -17,7 +17,7 @@ public class DB
         ListaNotificaciones = new List<Notificacion>();
     }
 
-    public DB(bool precargarDatos) : this()
+    /*public DB(bool precargarDatos) : this()
     {
         Usuario usuarioAdmin = new Usuario("admin@admin.com", "Administrador", "Administrador", "Administrador1!",
             new DateTime(2000, 3, 17));
@@ -155,7 +155,7 @@ public class DB
     {
         AdministradoresSistema.Add(user);
         ListaUsuarios.Add(user);
-    }
+    }*/
 
     /*
     public void agregarUsuario(Usuario user)

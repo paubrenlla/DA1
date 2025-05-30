@@ -37,31 +37,4 @@ public class ProyectoDataAccess :IDataAccessProyecto
         return _listaProyectos;
     }
     
-    public bool EsAdminDeAlgunProyecto(Usuario usuario)
-    {
-        return _listaProyectos.Any(p => p.Admin.Equals(usuario));
-    }
-    
-    public void EliminarAsignacionesDeProyectos(Usuario usuario)
-    {
-        List<Proyecto> proyectosDelUsuario = ProyectosDelUsuario(usuario);
-        foreach (Proyecto proyecto in proyectosDelUsuario)
-        {
-            proyecto.Miembros.Remove(usuario);
-            foreach (Tarea tarea in proyecto.TareasAsociadas)
-            {
-                if (tarea.UsuariosAsignados.Contains(usuario)) //TODO Ley Demeter, ver si por ejemplo hay Tarea Repo
-                {
-                    tarea.UsuariosAsignados.Remove(usuario);
-                }
-            }
-        }
-    }
-    
-    public List<Proyecto> ProyectosDelUsuario(Usuario usuario)
-    {
-        return _listaProyectos
-            .Where(p => p.Miembros.Any(m => m.Id == usuario.Id) || p.Admin.Id == usuario.Id)
-            .ToList();
-    }
 }

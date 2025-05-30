@@ -67,7 +67,6 @@ public class RecursoDataAccess_Tests
         Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         Tarea tarea = new Tarea("Tarea", "Tarea prueba", DateTime.Now, TimeSpan.FromDays(1), false);
         proyecto.agregarTarea(tarea);
-        proyecto.AsignarAdmin(usuario);
         tarea.AgregarUsuario(usuario);
         tarea.AgregarRecurso(recurso, 2);
         recurso.CantidadEnUso = 1;

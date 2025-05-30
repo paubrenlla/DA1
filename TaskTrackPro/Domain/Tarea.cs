@@ -129,8 +129,8 @@ public class Tarea
         {
             ModificarEstado(TipoEstadoTarea.Pendiente, DateTime.Now);
             Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha pasado a pendiente.");
-            notificacion.AgregarUsuarios(UsuariosAsignados);
-            notificacion.AgregarUsuario(Proyecto.Admin);
+            //notificacion.AgregarUsuarios(UsuariosAsignados);
+            //notificacion.AgregarUsuario(Proyecto.Admin);
             return;
         }
         ModificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Now);
@@ -208,14 +208,14 @@ public class Tarea
         if (DateTime.Now > LateFinish)
         {
             Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha pasado a sido completada con demora.");
-            notificacion.AgregarUsuarios(UsuariosAsignados);
-            notificacion.AgregarUsuario(Proyecto.Admin);
+            //notificacion.AgregarUsuarios(UsuariosAsignados);
+            //notificacion.AgregarUsuario(Proyecto.Admin);
         }
         else
         {
             Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha sido completada en fecha.");
-            notificacion.AgregarUsuarios(UsuariosAsignados);
-            notificacion.AgregarUsuario(Proyecto.Admin);
+            //notificacion.AgregarUsuarios(UsuariosAsignados);
+            //notificacion.AgregarUsuario(Proyecto.Admin);
         }
 
         ReevaluarTareasPosteriores();
@@ -228,8 +228,8 @@ public class Tarea
             ModificarEstado(TipoEstadoTarea.Ejecutandose, DateTime.Now);
             ConsumirRecursos();
             Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha pasado a ejecución.");
-            notificacion.AgregarUsuarios(UsuariosAsignados);
-            notificacion.AgregarUsuario(Proyecto.Admin);
+            //notificacion.AgregarUsuarios(UsuariosAsignados);
+           // notificacion.AgregarUsuario(Proyecto.Admin);
         }
     }
 
@@ -247,10 +247,10 @@ public class Tarea
             throw new ArgumentNullException(nameof(usuario));
         Notificacion notificacion = new Notificacion("El usuario " + Titulo + " ha sido agregado a la tarea " + Titulo);
         notificacion.AgregarUsuarios(UsuariosAsignados);
-        if (Proyecto.Admin != null)
-        {
-            notificacion.AgregarUsuario(Proyecto.Admin);
-        }
+        // if (Proyecto.Admin != null)
+        // {
+        //     notificacion.AgregarUsuario(Proyecto.Admin);
+        // }
         _usuariosAsignados.Add(usuario);
     }
 
@@ -261,9 +261,9 @@ public class Tarea
         FechaInicio = fechaInicio;
         Duracion = duracion;
         
-        Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha sido modificada.");
-        notificacion.AgregarUsuarios(UsuariosAsignados);
-        notificacion.AgregarUsuario(Proyecto.Admin);
+        // Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha sido modificada.");
+        // notificacion.AgregarUsuarios(UsuariosAsignados);
+        // notificacion.AgregarUsuario(Proyecto.Admin);
         Proyecto.CalcularRutaCritica();
     }
 }

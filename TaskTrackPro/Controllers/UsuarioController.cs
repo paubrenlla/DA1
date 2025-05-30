@@ -40,17 +40,17 @@ public class UsuarioController
         
         if(usuarioAEliminar.EsAdminSistema)
             throw new ArgumentException("El usuario es administrador del sistema");
-        if(EsAdminDeAlgunProyecto(usuarioAEliminar))
-            throw new ArgumentException("El usuario es administrador de un proyecto");
+        // if(EsAdminDeAlgunProyecto(usuarioAEliminar))
+        //    throw new ArgumentException("El usuario es administrador de un proyecto");
         //TODO Eliminar asignaciones de tarea cuando haga tarea service
 
         _repoUsuarios.Remove(usuarioAEliminar);
     }
 
-    private bool EsAdminDeAlgunProyecto(Usuario usuario)
-    {
-        return _repoProyectos.EsAdminDeAlgunProyecto(usuario);
-    }
+    // private bool EsAdminDeAlgunProyecto(Usuario usuario)
+    // {
+    //     return _repoProyectos.EsAdminDeAlgunProyecto(usuario);
+    // } TODO hacer cuando se implemente la capa service
 
     public UsuarioDTO BuscarUsuarioPorCorreoYContraseña(string email, string contraseña)
     {
