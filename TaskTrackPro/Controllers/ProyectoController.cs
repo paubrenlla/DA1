@@ -12,11 +12,6 @@ namespace Controllers
             _service = service;
         }
 
-        public ProyectoController(ProyectoService service)
-        {
-            _service = service;
-        }
-
         public ProyectoDTO BuscarProyectoPorId(int id)
         {
             return _service.GetById(id);
