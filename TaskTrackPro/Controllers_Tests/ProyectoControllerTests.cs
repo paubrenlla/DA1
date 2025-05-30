@@ -1,147 +1,164 @@
-﻿using Domain;
-using IDataAcces;
-using DataAccess;
-using Controllers;
+﻿using System;
+using System.Collections.Generic;
 using DTOs;
+using Controllers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Services;
 
-namespace Controllers_Tests;
-
-[TestClass]
-public class ProyectoControllerTests
+namespace Controllers_Tests
 {
-    private ProyectoController _proyectoController;
-    private UsuarioController _usuarioController;
-    private IDataAccessProyecto _repoProyectos;
-    private IDataAccessUsuario _repoUsuarios;
-
-    private Proyecto proyectoEjemplo;
-    private Usuario usuarioEjemplo;
-
-    [TestInitialize]
-    public void SetUp()
+    [TestClass]
+    public class ProyectoControllerTests
     {
-        _repoProyectos = new ProyectoDataAccess();
-        _repoUsuarios = new UsuarioDataAccess();
-        _proyectoController = new ProyectoController(_repoProyectos, _repoUsuarios);
+        private Mock<IProyectoService> _mockService;
+        private ProyectoController _controller;
 
-        proyectoEjemplo = new Proyecto("Proyecto 1", "Descripción del proyecto", DateTime.Today.AddDays(1));
-        usuarioEjemplo = new Usuario("pepe@gmail.com", "Pepe", "Perez", "Contraseña1!",DateTime.Today);
-        _repoProyectos.Add(proyectoEjemplo);
-        _repoUsuarios.Add(usuarioEjemplo);
-    }
-    
-    [TestMethod]
-    public void BuscarProyectoPorIdDevuelveDTOCorrecto()
-    {
-        ProyectoDTO dto = _proyectoController.BuscarProyectoPorId(proyectoEjemplo.Id);
+        private ProyectoDTO _dto1;
+        private ProyectoDTO _dto2;
+        private List<ProyectoDTO> _listaDtos;
 
-        Assert.AreEqual(proyectoEjemplo.Id, dto.Id);
-        Assert.AreEqual(proyectoEjemplo.Nombre, dto.Nombre);
-        Assert.AreEqual(proyectoEjemplo.Descripcion, dto.Descripcion);
-    }
-    
-    [TestMethod]
-    public void ListarTodosLosProyectosExistentes()
-    {
-        Proyecto otroProyecto = new Proyecto("Proyecto 2", "Otro proyecto", DateTime.Today.AddDays(2));
-        _repoProyectos.Add(otroProyecto);
-
-        List<ProyectoDTO> lista = _proyectoController.GetAll();
-
-        Assert.AreEqual(2, lista.Count);
-        Assert.AreEqual(otroProyecto.Nombre, lista[1].Nombre);
-        Assert.AreEqual(proyectoEjemplo.Nombre, lista[0].Nombre);
-    }
-    
-    [TestMethod]
-    public void AgregarProyectoAgregaCorrectamente()
-    {
-        ProyectoDTO dto = new ProyectoDTO
+        [TestInitialize]
+        public void SetUp()
         {
-            Nombre = "Nuevo Proyecto",
-            Descripcion = "Descripción del nuevo proyecto"
-        };
-        DateTime fechaInicio = DateTime.Today.AddDays(5);
+            _mockService = new Mock<IProyectoService>();
+            _controller = new ProyectoController(_mockService.Object);
 
-        _proyectoController.AgregarProyecto(dto, fechaInicio);
+            _dto1 = new ProyectoDTO
+            {
+                Id = 1,
+                Nombre = "P1",
+                Descripcion = "Desc1",
+                FechaInicio = DateTime.Today
+            };
+            _dto2 = new ProyectoDTO
+            {
+                Id = 2,
+                Nombre = "P2",
+                Descripcion = "Desc2",
+                FechaInicio = DateTime.Today.AddDays(1)
+            };
+            _listaDtos = new List<ProyectoDTO> { _dto1, _dto2 };
+        }
 
-        List<ProyectoDTO> lista = _proyectoController.GetAll();
-        ProyectoDTO? proyectoAgregado = lista.FirstOrDefault(p => p.Nombre == dto.Nombre && p.Descripcion == dto.Descripcion);
+        [TestMethod]
+        public void BuscarProyectoPorIdLlamaServiceYDevuelveDto()
+        {
+            _mockService
+                .Setup(s => s.GetById(1))
+                .Returns(_dto1);
 
-        Assert.IsNotNull(proyectoAgregado);
-        Proyecto proyectoEnRepo = _repoProyectos.GetById(proyectoAgregado.Id);
-        Assert.AreEqual(dto.Nombre, proyectoEnRepo.Nombre);
-        Assert.AreEqual(dto.Descripcion, proyectoEnRepo.Descripcion);
-        Assert.AreEqual(fechaInicio, proyectoEnRepo.FechaInicio);
+            ProyectoDTO resultado = _controller.BuscarProyectoPorId(1);
+
+            Assert.AreEqual(_dto1, resultado);
+            _mockService.Verify(s => s.GetById(1), Times.Once);
+        }
+
+        [TestMethod]
+        public void GetAllLlamaServiceYDevuelveLista()
+        {
+            _mockService
+                .Setup(s => s.GetAll())
+                .Returns(_listaDtos);
+
+            List<ProyectoDTO> resultado = _controller.GetAll();
+
+            CollectionAssert.AreEqual(_listaDtos, resultado);
+            _mockService.Verify(s => s.GetAll(), Times.Once);
+        }
+
+        [TestMethod]
+        public void AgregarProyectoLlamaServiceYDevuelveNuevoDto()
+        {
+            ProyectoDTO nuevoDto = new ProyectoDTO
+            {
+                Nombre = "Nuevo",
+                Descripcion = "Nueva desc",
+                FechaInicio = DateTime.Today
+            };
+            ProyectoDTO creadoDto = new ProyectoDTO
+            {
+                Id = 5,
+                Nombre = "Nuevo",
+                Descripcion = "Nueva desc",
+                FechaInicio = DateTime.Today
+            };
+
+            _mockService
+                .Setup(s => s.CrearProyecto(nuevoDto))
+                .Returns(creadoDto);
+
+            ProyectoDTO resultado = _controller.AgregarProyecto(nuevoDto);
+
+            Assert.AreEqual(creadoDto, resultado);
+            _mockService.Verify(s => s.CrearProyecto(nuevoDto), Times.Once);
+        }
+
+        [TestMethod]
+        public void EliminarProyectoLlamaService()
+        {
+            _controller.EliminarProyecto(42);
+
+            _mockService.Verify(s => s.Delete(42), Times.Once);
+        }
+
+        [TestMethod]
+        public void ModificarProyectoLlamaService()
+        {
+            ProyectoDTO dto = new ProyectoDTO
+            {
+                Id = 7,
+                Nombre = "X",
+                Descripcion = "Y",
+                FechaInicio = DateTime.Today
+            };
+
+            _controller.ModificarProyecto(dto);
+
+            _mockService.Verify(s => s.ModificarProyecto(dto), Times.Once);
+        }
+
+        [TestMethod]
+        public void EsAdminDeAlgunProyectoDevuelveLoQueDevuelveService()
+        {
+            _mockService.Setup(s => s.UsuarioEsAdminDeAlgunProyecto(10)).Returns(true);
+
+            bool esAdmin = _controller.EsAdminDeAlgunProyecto(10);
+
+            Assert.IsTrue(esAdmin);
+            _mockService.Verify(s => s.UsuarioEsAdminDeAlgunProyecto(10), Times.Once);
+        }
+
+        [TestMethod]
+        public void ProyectosDelUsuarioLlamaAServiceYDevuelveListaDeProyectos()
+        {
+            _mockService.Setup(s => s.ProyectosDelUsuario(3)).Returns(_listaDtos);
+
+            List<ProyectoDTO> resultado = _controller.ProyectosDelUsuario(3);
+
+            CollectionAssert.AreEqual(_listaDtos, resultado);
+            _mockService.Verify(s => s.ProyectosDelUsuario(3), Times.Once);
+        }
+
+        [TestMethod]
+        public void EliminarAsignacionesUsuarioLlamaService()
+        {
+            _controller.EliminarAsignacionesUsuario(8);
+
+            _mockService.Verify(s => s.EliminarAsignacionesDeUsuario(8), Times.Once);
+        }
+
+        [TestMethod]
+        public void UsuarioEsAdminEnProyectoDevuelveLoQueDevuelveService()
+        {
+            _mockService
+                .Setup(s => s.UsuarioEsAdminEnProyecto(2, 99))
+                .Returns(false);
+
+            bool resultado = _controller.UsuarioEsAdminEnProyecto(2, 99);
+
+            Assert.IsFalse(resultado);
+            _mockService.Verify(s => s.UsuarioEsAdminEnProyecto(2, 99), Times.Once);
+        }
     }
-
-    [TestMethod]
-    public void EliminarProyectoEliminaCorrectamente()
-    {
-        _proyectoController.EliminarProyecto(proyectoEjemplo.Id);
-
-        List<ProyectoDTO> lista = _proyectoController.GetAll();
-        bool existe = lista.Any(p => p.Id == proyectoEjemplo.Id);
-        Assert.IsFalse(existe);
-    }
-
-    [TestMethod]
-    public void ModificarProyectoModificaCorrectamente()
-    {
-        ProyectoDTO proyecto = Convertidor.AProyectoDTO(proyectoEjemplo);
-        proyecto.Descripcion = "Descripcion nueva";
-        _proyectoController.ModificarProyecto(proyecto, DateTime.Today.AddDays(4));
-
-        Assert.AreEqual(_repoProyectos.GetById(proyecto.Id).FechaInicio, DateTime.Today.AddDays(4));
-        Assert.AreEqual("Descripcion nueva", _repoProyectos.GetById(proyecto.Id).Descripcion);
-    }
-    
-    /*[TestMethod]
-    public void UsuarioEsAdminDeAlgunProyecto()
-    {
-        
-        proyectoEjemplo.Admin = usuarioEjemplo;
-       bool esAdminDeAlgunProyecto = _proyectoController.EsAdminDeAlgunProyecto(Convertidor.AUsuarioDTO(usuarioEjemplo));
-       Assert.IsTrue(esAdminDeAlgunProyecto);
-    }
-
-    [TestMethod]
-    public void EliminarAsignacionesDeProyectosEliminaAsignacionesCorrectamente()
-    {
-        Usuario usuarioAdmin = new Usuario("admin@gmail.com", "admin","admin", "Contraseña1!", DateTime.Today.AddDays(-1));
-        proyectoEjemplo.agregarMiembro(usuarioEjemplo);
-        proyectoEjemplo.Admin = usuarioAdmin;
-
-        var tarea = new Tarea("Tarea de ejemplo", "desc",DateTime.Today.AddDays(1), TimeSpan.FromDays(2), false);
-        proyectoEjemplo.agregarTarea(tarea);
-        proyectoEjemplo.AsignarUsuarioATarea(usuarioEjemplo, tarea);
-
-        var usuarioDTO = new UsuarioDTO { Id = usuarioEjemplo.Id };
-
-        Assert.IsTrue(proyectoEjemplo.Miembros.Contains(usuarioEjemplo));
-        Assert.IsTrue(tarea.UsuariosAsignados.Contains(usuarioEjemplo));
-
-        _proyectoController.EliminarAsignacionesDeProyectos(usuarioDTO);
-
-        Assert.IsFalse(proyectoEjemplo.Miembros.Contains(usuarioEjemplo));
-        Assert.IsFalse(tarea.UsuariosAsignados.Contains(usuarioEjemplo));
-    }
-
-    [TestMethod]
-    public void DevolverLosProyectosDeUnUsuario()
-    {
-        proyectoEjemplo.Admin = usuarioEjemplo;
-       List<ProyectoDTO> proyectosDelUsuario = _proyectoController.ProyectosDelUsuario(Convertidor.AUsuarioDTO(usuarioEjemplo));
-       Assert.IsTrue(proyectosDelUsuario.Count == 1);
-       Assert.IsTrue(proyectosDelUsuario[0].Id == proyectoEjemplo.Id);
-    }
-
-    [TestMethod]
-    public void UsuarioEsAdminDelProyectoDevuelveTrue()
-    {
-        proyectoEjemplo.Admin = usuarioEjemplo;
-        bool esAdmin = _proyectoController.UsuarioEsAdminDelProyecto(Convertidor.AUsuarioDTO(usuarioEjemplo), Convertidor.AProyectoDTO(proyectoEjemplo));
-        Assert.IsTrue(esAdmin);
-    }*/
-
 }
