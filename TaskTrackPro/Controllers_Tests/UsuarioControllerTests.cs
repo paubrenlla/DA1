@@ -1,184 +1,123 @@
-﻿using Domain;
-using IDataAcces;
-using DataAccess;
-using Controllers;
+﻿using System;
 using DTOs;
+using Controllers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Services;
 
-namespace Controllers_Tests;
-
-[TestClass]
-public class UsuarioControllerTests
+namespace Controllers_Tests
 {
-    private UsuarioController _usuarioController;
-    private IDataAccessUsuario _repoUsuarios;
-    private IDataAccessProyecto _repoProyectos;
-
-    private Usuario _usuarioEjemplo;
-
-    [TestInitialize]
-    public void SetUp()
+    [TestClass]
+    public class UsuarioControllerTests
     {
-        _repoUsuarios = new UsuarioDataAccess();
-        _repoProyectos = new ProyectoDataAccess();
+        private Mock<IUsuarioService> _mockService;
+        private UsuarioController _controller;
 
-        _usuarioController = new UsuarioController(_repoUsuarios, _repoProyectos);
+        private UsuarioDTO _dto1;
+        private UsuarioDTO _dto2;
 
-        _usuarioEjemplo = new Usuario("juan@mail.com", "Juan", "Pérez", "Contraseña1!", new DateTime(2000, 1, 1));
-        _repoUsuarios.Add(_usuarioEjemplo);
-    }
-
-    [TestMethod]
-    public void BuscarUsuarioPorIdDevuelveDTOCorrecto()
-    {
-        UsuarioDTO resultado = _usuarioController.BuscarUsuarioPorId(_usuarioEjemplo.Id);
-
-        Assert.AreEqual(_usuarioEjemplo.Id, resultado.Id);
-        Assert.AreEqual(_usuarioEjemplo.Email, resultado.Email);
-        Assert.AreEqual(_usuarioEjemplo.Nombre, resultado.Nombre);
-        Assert.AreEqual(_usuarioEjemplo.Apellido, resultado.Apellido);
-    }
-    
-    [TestMethod]
-    public void AgregarUsuarioValidoCorrectamente()
-    {
-        var dto = new UsuarioDTO
+        [TestInitialize]
+        public void SetUp()
         {
-            Email = "nuevo@mail.com",
-            Nombre = "Nuevo",
-            Apellido = "Usuario",
-            Contraseña = "Contraseña1!",
-            FechaNacimiento = new DateTime(1990, 1, 1)
-        };
+            _mockService = new Mock<IUsuarioService>();
+            _controller = new UsuarioController(_mockService.Object);
 
-        _usuarioController.AgregarUsuario(dto);
+            _dto1 = new UsuarioDTO
+            {
+                Id = 1,
+                Nombre = "Usuario1",
+                Email = "usuario1@test.com",
+                Contraseña = "pass1"
+            };
+            
+            _dto2 = new UsuarioDTO
+            {
+                Id = 2,
+                Nombre = "Usuario2",
+                Email = "usuario2@test.com",
+                Contraseña = "pass2"
+            };
+        }
 
-        UsuarioDTO resultado = _usuarioController.BuscarUsuarioPorCorreo(dto.Email);
-
-        Assert.AreEqual(dto.Email, resultado.Email);
-        Assert.AreEqual(dto.Nombre, resultado.Nombre);
-        Assert.AreEqual(dto.Apellido, resultado.Apellido);
-        Assert.AreEqual(dto.FechaNacimiento, resultado.FechaNacimiento);
-    }
-    
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void AgregarUsuarioConCorreoQueYaExiste()
-    {
-        var dto = new UsuarioDTO
+        [TestMethod]
+        public void BuscarUsuarioPorId_LlamaServiceYDevuelveDto()
         {
-            Email = "juan@mail.com",
-            Nombre = "Pepe",
-            Apellido = "Jose",
-            Contraseña = "Contraseña1!",
-            FechaNacimiento = new DateTime(1995, 5, 5)
-        };
-        _usuarioController.AgregarUsuario(dto);
-    }
-    
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void AgregarUsuarioSinCorreo()
-    {
-        var dto = new UsuarioDTO
+            _mockService
+                .Setup(s => s.GetById(1))
+                .Returns(_dto1);
+
+            UsuarioDTO resultado = _controller.BuscarUsuarioPorId(1);
+
+            Assert.AreEqual(_dto1, resultado);
+            _mockService.Verify(s => s.GetById(1), Times.Once);
+        }
+
+        [TestMethod]
+        public void AgregarUsuario_LlamaService()
         {
-            Email = "",
-            Nombre = "Pepe",
-            Apellido = "Jose",
-            Contraseña = "Contraseña1!",
-            FechaNacimiento = new DateTime(1995, 5, 5)
-        };
-        _usuarioController.AgregarUsuario(dto);
+            _controller.AgregarUsuario(_dto1);
+
+            _mockService.Verify(s => s.CrearUsuario(_dto1), Times.Once);
+        }
+
+        [TestMethod]
+        public void EliminarUsuario_LlamaService()
+        {
+            _controller.EliminarUsuario(_dto2);
+
+            _mockService.Verify(s => s.Delete(_dto2), Times.Once);
+        }
+
+        [TestMethod]
+        public void BuscarUsuarioPorCorreoYContraseña_LlamaServiceYDevuelveDto()
+        {
+            string email = "test@test.com";
+            string contraseña = "password";
+            
+            _mockService
+                .Setup(s => s.BuscarUsuarioPorCorreoYContraseña(email, contraseña))
+                .Returns(_dto1);
+
+            UsuarioDTO resultado = _controller.BuscarUsuarioPorCorreoYContraseña(email, contraseña);
+
+            Assert.AreEqual(_dto1, resultado);
+            _mockService.Verify(s => s.BuscarUsuarioPorCorreoYContraseña(email, contraseña), Times.Once);
+        }
+
+        [TestMethod]
+        public void BuscarUsuarioPorCorreo_LlamaServiceYDevuelveDto()
+        {
+            string email = "usuario1@test.com";
+            
+            _mockService
+                .Setup(s => s.GetByEmail(email))
+                .Returns(_dto1);
+
+            UsuarioDTO resultado = _controller.BuscarUsuarioPorCorreo(email);
+
+            Assert.AreEqual(_dto1, resultado);
+            _mockService.Verify(s => s.GetByEmail(email), Times.Once);
+        }
+
+        [TestMethod]
+        public void ConvertirEnAdmin_LlamaService()
+        {
+            _controller.ConvertirEnAdmin(_dto1);
+
+            _mockService.Verify(s => s.ConvertirEnAdmin(_dto1), Times.Once);
+        }
+
+        [TestMethod]
+        public void EsAdmin_DevuelveLoQueDevuelveService()
+        {
+            _mockService
+                .Setup(s => s.EsAdmin(_dto1))
+                .Returns(true);
+
+            bool resultado = _controller.EsAdmin(_dto1);
+
+            Assert.IsTrue(resultado);
+            _mockService.Verify(s => s.EsAdmin(_dto1), Times.Once);
+        }
     }
-    
-    [TestMethod]
-    public void EliminarUsuarioExistenteEliminaCorrectamente()
-    {
-        _usuarioController.EliminarUsuario(Convertidor.AUsuarioDTO(_usuarioEjemplo));
-
-        var resultado = _repoUsuarios.BuscarUsuarioPorCorreo(_usuarioEjemplo.Email);
-        Assert.IsNull(resultado);
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void EliminarUsuarioQueEsAdminSistema()
-    {
-        _usuarioEjemplo.EsAdminSistema = true;
-        var dto = Convertidor.AUsuarioDTO(_usuarioEjemplo);
-        _usuarioController.EliminarUsuario(dto);
-    }
-
-    // [TestMethod]
-    // [ExpectedException(typeof(ArgumentException))]
-    // public void EliminarUsuarioQueEsAdminDeUnProyecto()
-    // {
-    //     Proyecto proyecto = new Proyecto("Proyecto de Prueba", "Desc", DateTime.Now );
-    //     proyecto.AsignarAdmin(_usuarioEjemplo);
-    //     _repoProyectos.Add(proyecto);
-    //     var dto = Convertidor.AUsuarioDTO(_usuarioEjemplo);
-    //     _usuarioController.EliminarUsuario(dto);
-    // }
-
-    [TestMethod]
-    public void BuscarUsuarioPorCorreoYContraseña()
-    {
-        string email = _usuarioEjemplo.Email;
-        string contraseña = "Contraseña1!";
-
-        UsuarioDTO resultado = _usuarioController.BuscarUsuarioPorCorreoYContraseña(email, contraseña);
-
-        Assert.AreEqual(_usuarioEjemplo.Id, resultado.Id);
-        Assert.AreEqual(_usuarioEjemplo.Email, resultado.Email);
-        Assert.AreEqual(_usuarioEjemplo.Nombre, resultado.Nombre);
-    }
-    
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void BuscarUsuarioPorCorreoYContraseñaSinUsuariosAsociados()
-    {
-        string email = _usuarioEjemplo.Email;
-        string contraseñaIncorrecta = "ContraseñaIncorrecta123";
-
-        _usuarioController.BuscarUsuarioPorCorreoYContraseña(email, contraseñaIncorrecta);
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void BuscarUsuarioPorCorreoYContraseñaVacias()
-    {
-        _usuarioController.BuscarUsuarioPorCorreoYContraseña("", "Contraseña1!");
-    }
-
-    [TestMethod]
-    public void ConvertirUsuarioEnAdmin()
-    {
-        UsuarioDTO dto = Convertidor.AUsuarioDTO(_usuarioEjemplo);
-
-        _usuarioController.ConvertirEnAdmin(dto);
-
-        Assert.IsTrue(_usuarioEjemplo.EsAdminSistema);
-    }
-    
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void ConvertirEnAdminUsuarioQueYaEsAdmin()
-    {
-        _usuarioEjemplo.EsAdminSistema = true;
-        UsuarioDTO dto = Convertidor.AUsuarioDTO(_usuarioEjemplo);
-
-        _usuarioController.ConvertirEnAdmin(dto);
-    }
-
-    [TestMethod]
-    public void VerSiUaurioEsAdmin()
-    {
-        _usuarioEjemplo.EsAdminSistema = true;
-        UsuarioDTO dto = Convertidor.AUsuarioDTO(_usuarioEjemplo);
-
-        bool esAdmin = _usuarioController.EsAdmin(dto);
-
-        Assert.IsTrue(esAdmin);
-    }
-
-
 }
