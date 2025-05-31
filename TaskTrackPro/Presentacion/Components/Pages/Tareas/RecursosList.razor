@@ -52,7 +52,7 @@ else
     </tr>
     </thead>
     <tbody>
-    @foreach (RecursoNecesario recursoNecesario in listaDeRecursosNecesarios)
+    @foreach (AsignacionRecursoTarea recursoNecesario in listaDeRecursosNecesarios)
     {
         Recurso recurso = recursoNecesario.Recurso;
         <tr>
@@ -88,7 +88,7 @@ else
     [Parameter]
     public int idTarea { get; set; }
     
-    private List<RecursoNecesario>? listaDeRecursosNecesarios = new List<RecursoNecesario>();
+    private List<AsignacionRecursoTarea>? listaDeRecursosNecesarios = new List<AsignacionRecursoTarea>();
     private bool yaVerifiqueSesion = false;
     
     private int recursoSeleccionadoId;
