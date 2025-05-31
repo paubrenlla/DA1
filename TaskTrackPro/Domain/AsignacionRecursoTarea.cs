@@ -2,9 +2,11 @@ namespace Domain;
 
 public class AsignacionRecursoTarea
 {
+    private static int _contadorId = 1;
     public Recurso Recurso { get; set; }
     public Tarea Tarea { get; set; }
     public int CantidadNecesaria { get; set; }
+    public int Id { get; }
 
     public AsignacionRecursoTarea(Recurso recurso, Tarea tarea, int cantidadNecesaria)
     {
@@ -20,5 +22,6 @@ public class AsignacionRecursoTarea
         Recurso = recurso;
         Tarea = tarea;
         CantidadNecesaria = cantidadNecesaria;
+        Id = _contadorId++;
     }
 }
