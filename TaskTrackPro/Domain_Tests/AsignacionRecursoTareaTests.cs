@@ -39,4 +39,28 @@ public class AsignacionRecursoTareaTests
     {
         AsignacionRecursoTarea asignacionRecursoTarea = new AsignacionRecursoTarea(RECURSO_VALIDO, TAREA_VALIDA, 0);
     }
+
+    [TestMethod]
+    public void Modificar_CantidadNuevaCorrecta_ActualizaCantidad()
+    {
+        AsignacionRecursoTarea asignacion = new AsignacionRecursoTarea(RECURSO_VALIDO, TAREA_VALIDA, 5);
+        asignacion.Modificar(7);
+        Assert.AreEqual(7, asignacion.CantidadNecesaria);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentOutOfRangeException))]
+    public void Modificar_CantidadNuevaMenorOIgualACero_LanzaExcepcion()
+    {
+        AsignacionRecursoTarea asignacion = new AsignacionRecursoTarea(RECURSO_VALIDO, TAREA_VALIDA, 5);
+        asignacion.Modificar(0);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentOutOfRangeException))]
+    public void Modificar_CantidadNuevaMayorQueCantidadDisponible_LanzaExcepcion()
+    {
+        AsignacionRecursoTarea asignacion = new AsignacionRecursoTarea(RECURSO_VALIDO, TAREA_VALIDA, 5);
+        asignacion.Modificar(15);
+    }
 }

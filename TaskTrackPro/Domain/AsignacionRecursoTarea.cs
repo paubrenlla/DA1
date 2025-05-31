@@ -24,4 +24,15 @@ public class AsignacionRecursoTarea
         CantidadNecesaria = cantidadNecesaria;
         Id = _contadorId++;
     }
+
+    public void Modificar(int cantidadNueva)
+    {
+        if (cantidadNueva <= 0)
+            throw new ArgumentOutOfRangeException(nameof(cantidadNueva));
+        
+        if (cantidadNueva > Recurso.CantidadDelRecurso)
+            throw new ArgumentOutOfRangeException(nameof(cantidadNueva), "No hay suficientes recursos");
+        
+        CantidadNecesaria = cantidadNueva;
+    }
 }
