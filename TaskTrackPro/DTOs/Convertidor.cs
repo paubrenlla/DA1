@@ -40,4 +40,29 @@ public static class Convertidor
         };
     }
 
+    public static RecursoDTO ARecursoDTO(Recurso recurso)
+    {
+        return new RecursoDTO()
+        {
+            Id = recurso.Id,
+            Nombre = recurso.Nombre,
+            Tipo = recurso.Tipo,
+            Descripcion = recurso.Descripcion,
+            CantidadDelRecurso = recurso.CantidadDelRecurso,
+            CantidadEnUso = recurso.CantidadEnUso,
+            SePuedeCompartir = recurso.SePuedeCompartir
+        };
+    }
+    
+    public static AsignacionRecursoTareaDTO AAsignacionRecursoTareaDTO (AsignacionRecursoTarea asignacionRecursoTarea)
+    {
+        return new AsignacionRecursoTareaDTO()
+        {
+            Recurso = ARecursoDTO(asignacionRecursoTarea.Recurso),
+            Id = asignacionRecursoTarea.Id,
+            Tarea = ATareaDTO(asignacionRecursoTarea.Tarea),
+            Cantidad = asignacionRecursoTarea.CantidadNecesaria
+        };
+    }
+
 }

@@ -68,7 +68,7 @@ public class RecursoDataAccess_Tests
         Tarea tarea = new Tarea("Tarea", "Tarea prueba", DateTime.Now, TimeSpan.FromDays(1), false);
         proyecto.agregarTarea(tarea);
         tarea.AgregarUsuario(usuario);
-        tarea.AgregarRecurso(recurso, 2);
+        //tarea.AgregarRecurso(recurso, 2);
         recurso.CantidadEnUso = 1;
         recursoRepo.Remove(recurso);
     }
@@ -77,10 +77,11 @@ public class RecursoDataAccess_Tests
     public void BuscarRecursoPorIdDevuelveRecursoCorrecto()
     {
         Recurso recurso = new Recurso("Auto", "Vehiculo", "Transporte", false, 5);
-        Recurso recurso2 = new Recurso("Auto2", "Vehiculo", "Transporte", false, 5);
+        Recurso recurso2 = new Recurso("Auto2", "Vehiculo", "Transporte", false, 2);
         recursoRepo.Add(recurso);
         recursoRepo.Add(recurso2);
         Recurso resultado = recursoRepo.GetById(recurso2.Id);
+        
         Assert.IsNotNull(resultado);
         Assert.AreEqual(recurso2.Nombre, resultado.Nombre);
     }

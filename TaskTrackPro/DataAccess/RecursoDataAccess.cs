@@ -15,6 +15,7 @@ public class RecursoDataAccess :IDataAccessRecurso
     {
         if (_listaRecursos.Contains(recurso))
             throw new ArgumentException("El recurso ya existe en el sistema.");
+        
         _listaRecursos.Add(recurso);
     }
 
