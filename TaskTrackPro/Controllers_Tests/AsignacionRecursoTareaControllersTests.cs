@@ -62,10 +62,10 @@ public class AsignacionRecursoTareaControllersTests
 
         _controller.CrearAsignacionRecursoTarea(dto);
 
-        var lista = _controller.GetAll();
+        List<AsignacionRecursoTareaDTO> asignaciones = _controller.GetAll();
 
-        Assert.IsTrue(lista.Count > 0);
-        Assert.IsTrue(lista.Any(a => a.Tarea.Id == dto.Tarea.Id && a.Recurso.Id == dto.Recurso.Id));
+        Assert.IsTrue(asignaciones.Count > 0);
+        Assert.IsTrue(asignaciones.Any(a => a.Tarea.Id == dto.Tarea.Id && a.Recurso.Id == dto.Recurso.Id));
     }
 
     [TestMethod]
@@ -79,8 +79,8 @@ public class AsignacionRecursoTareaControllersTests
 
         _controller.EliminarRecursoDeTarea(dto.Tarea.Id, dto.Recurso.Id);
 
-        var lista = _controller.GetAll();
-        Assert.IsFalse(lista.Any(a => a.Tarea.Id == dto.Tarea.Id && a.Recurso.Id == dto.Recurso.Id));
+        List<AsignacionRecursoTareaDTO> asignaciones = _controller.GetAll();
+        Assert.IsFalse(asignaciones.Any(a => a.Tarea.Id == dto.Tarea.Id && a.Recurso.Id == dto.Recurso.Id));
     }
 
     [TestMethod]
@@ -110,7 +110,7 @@ public class AsignacionRecursoTareaControllersTests
 
         _controller.CrearAsignacionRecursoTarea(dto);
 
-        var recursos = _controller.RecursosDeLaTarea(_tareaEjemplo.Id);
+        List<RecursoDTO> recursos = _controller.RecursosDeLaTarea(_tareaEjemplo.Id);
 
         Assert.IsNotNull(recursos);
         Assert.IsTrue(recursos.Any(r => r.Id == _recursoEjemplo.Id));
@@ -126,7 +126,7 @@ public class AsignacionRecursoTareaControllersTests
     [TestMethod]
     public void VerificarRecursosDeTareaDisponibles_DevuelveTrueInicialmente()
     {
-        var disponible = _controller.VerificarRecursosDeTareaDisponibles(_tareaEjemplo.Id);
+        bool disponible = _controller.VerificarRecursosDeTareaDisponibles(_tareaEjemplo.Id);
         Assert.IsTrue(disponible);
     }
     
@@ -145,6 +145,25 @@ public class AsignacionRecursoTareaControllersTests
         Assert.AreEqual(asignacionCreada.Recurso.Id, asignacionObtenida.Recurso.Id);
         Assert.AreEqual(asignacionCreada.Tarea.Id, asignacionObtenida.Tarea.Id);
         Assert.AreEqual(asignacionCreada.Cantidad, asignacionObtenida.Cantidad);
+    }
+    
+    [TestMethod]
+    public void EliminarRecursosDeTarea_EliminaTodosLosRecursosDeUnaTarea()
+    {
+        AsignacionRecursoTareaDTO dto = Convertidor.AAsignacionRecursoTareaDTO(new AsignacionRecursoTarea(_recursoEjemplo, _tareaEjemplo, 2));
+        _controller.CrearAsignacionRecursoTarea(dto);
+
+        _controller.EliminarRecursosDeTarea(_tareaEjemplo.Id);
+
+        List<RecursoDTO> recursos = _controller.RecursosDeLaTarea(_tareaEjemplo.Id);
+        Assert.IsFalse(recursos.Any());
+    }
+
+    [TestMethod]
+    public void ActualizarEstadoDeTareasConRecurso_NoLanzaExcepcion()
+    {
+        _controller.ActualizarEstadoDeTareasConRecurso(_recursoEjemplo.Id);
+        Assert.IsTrue(true);
     }
 
 }
