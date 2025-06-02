@@ -9,7 +9,7 @@ public class Recurso
     public bool SePuedeCompartir { get; set; }
     public int CantidadDelRecurso { get; set; }
     public int CantidadEnUso { get; set; }
-    public List<Tarea> TareasQueLoUsan { get; set; }
+    //public List<Tarea> TareasQueLoUsan { get; set; }
     
     public int  Id { get; set; }
 
@@ -31,7 +31,7 @@ public class Recurso
         SePuedeCompartir = sePuedeCompartir;
         CantidadDelRecurso = cantidadDelRecurso;
         CantidadEnUso = 0;
-        TareasQueLoUsan = new List<Tarea>();
+        //TareasQueLoUsan = new List<Tarea>();
     }
     
 
