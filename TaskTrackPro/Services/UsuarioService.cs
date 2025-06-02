@@ -31,13 +31,16 @@ public class UsuarioService : IUsuarioService
     {
         Usuario usuarioAEliminar = _usuarioRepo.GetById(dto.Id);
         
+        if (usuarioAEliminar == null)
+            throw new NullReferenceException("El usuario no existe");
         if(usuarioAEliminar.EsAdminSistema)
             throw new ArgumentException("El usuario es administrador del sistema");
-         if(_serviceProyecto.UsuarioEsAdminDeAlgunProyecto(usuarioAEliminar.Id))
+        if(_serviceProyecto.UsuarioEsAdminDeAlgunProyecto(usuarioAEliminar.Id))
             throw new ArgumentException("El usuario es administrador de un proyecto");
         
-         
-         // TODO Eliminar asignaciones de tarea cuando haga tarea service
+        
+        _usuarioRepo.Remove(usuarioAEliminar);
+        // TODO Eliminar asignaciones de tarea cuando haga tarea service
     }
 
     public UsuarioDTO GetByEmail(string email)
