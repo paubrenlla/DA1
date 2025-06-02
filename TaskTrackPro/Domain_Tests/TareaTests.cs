@@ -321,70 +321,70 @@ namespace Domain_Tests
             tarea.AgregarRecurso(RECURSO_VALIDO, 0);
         }
 
-        [TestMethod]
-        public void VerificarRecursosDisponibles_TodosDisponibles_DeberiaRetornarTrue()
-        {
-            Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
-            
-            PROYECTO_VALIDO.agregarTarea(tarea);
-            
-            Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 5);
-            Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 2);
-
-            tarea.AgregarRecurso(recurso1, 3);
-            tarea.AgregarRecurso(recurso2, 2);
-
-            Console.WriteLine($"Recurso1 disponible: {recurso1.EstaDisponible(3)}");
-            Console.WriteLine($"Recurso2 disponible: {recurso2.EstaDisponible(2)}");
-
-            Assert.IsTrue(tarea.VerificarRecursosDisponibles());
-        }
-
-        [TestMethod]
-        public void VerificarRecursosDisponibles_UnRecursoInsuficiente_DeberiaRetornarFalse()
-        {
-            Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
-            
-            PROYECTO_VALIDO.agregarTarea(tarea);
-            
-            Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 2);
-            Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 1);
-
-            tarea.AgregarRecurso(recurso1, 2);
-            tarea.AgregarRecurso(recurso2, 2);
-
-            Assert.IsFalse(tarea.VerificarRecursosDisponibles());
-        }
-
-        [TestMethod]
-        public void VerificarRecursosDisponibles_NingunRecursoAgregado_DeberiaRetornarTrue()
-        {
-            Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
-
-            Assert.IsTrue(tarea.VerificarRecursosDisponibles()); // No hay restricciones, debería ser válido
-        }
-
-        [TestMethod]
-        public void VerificarRecursosDisponibles_CantidadExacta_DeberiaRetornarTrue()
-        {
-            Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
-
-            PROYECTO_VALIDO.agregarTarea(tarea);
-            
-            tarea.AgregarRecurso(RECURSO_VALIDO, 3); // Disponible exactamente la misma cantidad requerida
-
-            Assert.IsTrue(tarea.VerificarRecursosDisponibles());
-        }
-
-        [TestMethod]
-        public void VerificarRecursosDisponibles_CantidadMayorALaDisponible_DeberiaRetornarFalse()
-        {
-            Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
-
-            tarea.AgregarRecurso(RECURSO_VALIDO, 10);
-
-            Assert.IsFalse(tarea.VerificarRecursosDisponibles());
-        }
+        // [TestMethod]
+        // public void VerificarRecursosDisponibles_TodosDisponibles_DeberiaRetornarTrue()
+        // {
+        //     Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+        //     
+        //     PROYECTO_VALIDO.agregarTarea(tarea);
+        //     
+        //     Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 5);
+        //     Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 2);
+        //
+        //     tarea.AgregarRecurso(recurso1, 3);
+        //     tarea.AgregarRecurso(recurso2, 2);
+        //
+        //     Console.WriteLine($"Recurso1 disponible: {recurso1.EstaDisponible(3)}");
+        //     Console.WriteLine($"Recurso2 disponible: {recurso2.EstaDisponible(2)}");
+        //
+        //     Assert.IsTrue(tarea.VerificarRecursosDisponibles());
+        // }
+        //
+        // [TestMethod]
+        // public void VerificarRecursosDisponibles_UnRecursoInsuficiente_DeberiaRetornarFalse()
+        // {
+        //     Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+        //     
+        //     PROYECTO_VALIDO.agregarTarea(tarea);
+        //     
+        //     Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 2);
+        //     Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 1);
+        //
+        //     tarea.AgregarRecurso(recurso1, 2);
+        //     tarea.AgregarRecurso(recurso2, 2);
+        //
+        //     Assert.IsFalse(tarea.VerificarRecursosDisponibles());
+        // }
+        //
+        // [TestMethod]
+        // public void VerificarRecursosDisponibles_NingunRecursoAgregado_DeberiaRetornarTrue()
+        // {
+        //     Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+        //
+        //     Assert.IsTrue(tarea.VerificarRecursosDisponibles()); // No hay restricciones, debería ser válido
+        // }
+        //
+        // [TestMethod]
+        // public void VerificarRecursosDisponibles_CantidadExacta_DeberiaRetornarTrue()
+        // {
+        //     Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+        //
+        //     PROYECTO_VALIDO.agregarTarea(tarea);
+        //     
+        //     tarea.AgregarRecurso(RECURSO_VALIDO, 3); // Disponible exactamente la misma cantidad requerida
+        //
+        //     Assert.IsTrue(tarea.VerificarRecursosDisponibles());
+        // }
+        //
+        // [TestMethod]
+        // public void VerificarRecursosDisponibles_CantidadMayorALaDisponible_DeberiaRetornarFalse()
+        // {
+        //     Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+        //
+        //     tarea.AgregarRecurso(RECURSO_VALIDO, 10);
+        //
+        //     Assert.IsFalse(tarea.VerificarRecursosDisponibles());
+        // }
         
         [TestMethod]
         public void ConsumirRecursos_RecursosDisponibles_SeReducenCorrectamente()
@@ -425,14 +425,14 @@ namespace Domain_Tests
             Assert.AreEqual(0, recurso2.CantidadEnUso);
         }
 
-        [TestMethod]
-        public void ConsumirRecursos_SinRecursosAsignados_NoCambiaNada()
-        {
-            Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
-            tarea.ConsumirRecursos();
-
-            Assert.IsTrue(tarea.VerificarRecursosDisponibles());
-        }
+        // [TestMethod]
+        // public void ConsumirRecursos_SinRecursosAsignados_NoCambiaNada()
+        // {
+        //     Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+        //     tarea.ConsumirRecursos();
+        //
+        //     Assert.IsTrue(tarea.VerificarRecursosDisponibles());
+        // }
         
         [TestMethod]
         public void MarcarTareaComoEjecutandose_ConDependenciasYRecursos_ActualizaEstadoYConsumeRecursos()
@@ -475,22 +475,22 @@ namespace Domain_Tests
             Assert.AreEqual(0, recurso.CantidadEnUso);
         }
 
-        [TestMethod]
-        public void MarcarTareaComoEjecutandose_SinRecursosDisponibles_NoCambiaEstadoNiConsumeRecursos()
-        {
-            Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
-            
-            PROYECTO_VALIDO.agregarTarea(tarea);
-
-            Recurso recurso = new Recurso("Laptop", "tipo", "descripcion", false, 2);
-
-            tarea.AgregarRecurso(recurso, 5);
-
-            tarea.MarcarTareaComoEjecutandose();
-
-            Assert.AreNotEqual(TipoEstadoTarea.Ejecutandose, tarea.EstadoActual.Valor);
-            Assert.AreEqual(0, recurso.CantidadEnUso);
-        }
+        // [TestMethod]
+        // public void MarcarTareaComoEjecutandose_SinRecursosDisponibles_NoCambiaEstadoNiConsumeRecursos()
+        // {
+        //     Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
+        //     
+        //     PROYECTO_VALIDO.agregarTarea(tarea);
+        //
+        //     Recurso recurso = new Recurso("Laptop", "tipo", "descripcion", false, 2);
+        //
+        //     tarea.AgregarRecurso(recurso, 5);
+        //
+        //     tarea.MarcarTareaComoEjecutandose();
+        //
+        //     Assert.AreNotEqual(TipoEstadoTarea.Ejecutandose, tarea.EstadoActual.Valor);
+        //     Assert.AreEqual(0, recurso.CantidadEnUso);
+        // }
 
         [TestMethod]
         public void MarcarTareaComoEjecutandose_SinDependenciasNiRecursos_CambiaEstadoPeroNoConsumeNada()

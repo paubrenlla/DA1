@@ -10,7 +10,8 @@ public class Recurso
     public int CantidadDelRecurso { get; set; }
     public int CantidadEnUso { get; set; }
     public List<Tarea> TareasQueLoUsan { get; set; }
-    public int Id { get; set; }
+    
+    public int  Id { get; set; }
 
     public Recurso(string nombre, string tipo, string descripcion, bool sePuedeCompartir, int cantidadDelRecurso) 
     {
@@ -48,39 +49,39 @@ public class Recurso
     {
         if (!EstaDisponible(cantidad)) return;
         CantidadEnUso += cantidad;
-        ReevaluarEstadoTareas();
+        //ReevaluarEstadoTareas();
     }
 
-    public void AgregarRecursoATarea(Tarea tarea)
-    {
-        if (!TareasQueLoUsan.Contains(tarea)) TareasQueLoUsan.Add(tarea);
-    }
+    // public void AgregarRecursoATarea(Tarea tarea)
+    // {
+    //     if (!TareasQueLoUsan.Contains(tarea)) TareasQueLoUsan.Add(tarea);
+    // }
+    
+    // public void QuitarRecursoATarea(Tarea tarea)
+    // {
+    //     if(TareasQueLoUsan.Contains(tarea))  TareasQueLoUsan.Remove(tarea);
+    // }
 
-    public void QuitarRecursoATarea(Tarea tarea)
-    {
-        if(TareasQueLoUsan.Contains(tarea))  TareasQueLoUsan.Remove(tarea);
-    }
-
-    public void ReevaluarEstadoTareas()
-    {
-        foreach (Tarea tarea in TareasQueLoUsan)
-        {
-            tarea.ActualizarEstado();
-        }
-    }
-    public bool EsExclusivo()
-    {
-        int cantidadProyectosDistintos = TareasQueLoUsan
-            .Select(p => p.Proyecto)
-            .Distinct()
-            .Count();
-        return cantidadProyectosDistintos == 1;
-    }
+    // public void ReevaluarEstadoTareas()
+    // {
+    //     foreach (Tarea tarea in TareasQueLoUsan)
+    //     {
+    //         tarea.ActualizarEstado();
+    //     }
+    // }
+    // public bool EsExclusivo()
+    // {
+    //     int cantidadProyectosDistintos = TareasQueLoUsan
+    //         .Select(p => p.Proyecto)
+    //         .Distinct()
+    //         .Count();
+    //     return cantidadProyectosDistintos == 1;
+    // }
     
     public void LiberarRecurso(int cantidad)
     {
         CantidadEnUso -= cantidad;
-        ReevaluarEstadoTareas();
+        //ReevaluarEstadoTareas();
     }
 
     public bool EstaEnUso()
@@ -121,6 +122,6 @@ public class Recurso
         CantidadDelRecurso = cantidad;
         SePuedeCompartir = compartir;
         
-        ReevaluarEstadoTareas();
+        //ReevaluarEstadoTareas();
     }
 }

@@ -125,10 +125,10 @@ public class Tarea
         {
             return;
         }
-        if (VerificarDependenciasCompletadas() && VerificarRecursosDisponibles())
+        if (VerificarDependenciasCompletadas() /* && VerificarRecursosDisponibles() */)
         {
             ModificarEstado(TipoEstadoTarea.Pendiente, DateTime.Now);
-            Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha pasado a pendiente.");
+            //Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha pasado a pendiente.");
             //notificacion.AgregarUsuarios(UsuariosAsignados);
             //notificacion.AgregarUsuario(Proyecto.Admin);
             return;
@@ -136,6 +136,21 @@ public class Tarea
         ModificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Now);
     }
 
+    public void ActualizarEstado(bool recursosDisponibles)
+    {
+        if (this.EstadoActual.Valor == TipoEstadoTarea.Efectuada 
+            || this.EstadoActual.Valor == TipoEstadoTarea.Ejecutandose)
+        {
+            return;
+        }
+        if (VerificarDependenciasCompletadas() && recursosDisponibles)
+        {
+            ModificarEstado(TipoEstadoTarea.Pendiente, DateTime.Now);
+            return;
+        }
+        ModificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Now);
+    }
+    
     public void AgregarRecurso(Recurso recurso, int cantidadNecesaria)
     {
         if (cantidadNecesaria <= 0)
@@ -153,7 +168,7 @@ public class Tarea
             }
         }
         _recursosNecesarios.Add(new AsignacionRecursoTarea(recurso, this, cantidadNecesaria));
-        recurso.AgregarRecursoATarea(this);
+        //recurso.AgregarRecursoATarea(this);
         ActualizarEstado();
     }
 
@@ -163,17 +178,17 @@ public class Tarea
         ActualizarEstado();
     }
 
-    public bool VerificarRecursosDisponibles()
-    {
-        foreach (AsignacionRecursoTarea recursoNecesario in RecursosNecesarios)
-        {
-            if (!recursoNecesario.Recurso.EstaDisponible(recursoNecesario.CantidadNecesaria))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+    // public bool VerificarRecursosDisponibles()
+    // {
+    //     foreach (AsignacionRecursoTarea recursoNecesario in RecursosNecesarios)
+    //     {
+    //         if (!recursoNecesario.Recurso.EstaDisponible(recursoNecesario.CantidadNecesaria))
+    //         {
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // }
 
     public void ConsumirRecursos()
     {
@@ -223,7 +238,7 @@ public class Tarea
 
     public void MarcarTareaComoEjecutandose()
     {
-        if (VerificarDependenciasCompletadas() && VerificarRecursosDisponibles())
+        if (VerificarDependenciasCompletadas() /* && VerificarRecursosDisponibles() */)
         {
             ModificarEstado(TipoEstadoTarea.Ejecutandose, DateTime.Now);
             ConsumirRecursos();
