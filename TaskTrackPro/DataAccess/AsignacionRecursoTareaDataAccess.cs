@@ -44,4 +44,12 @@ public class AsignacionRecursoTareaDataAccess : IDataAccessAsignacionRecursoTare
     {
         return GetById(asignacionRecursoTarea.Id).CantidadNecesaria;
     }
+
+    public AsignacionRecursoTarea? GetByRecursoYTarea(Recurso recurso, Tarea tarea)
+    {
+        AsignacionRecursoTarea? asignacion = _asignacionesRecursoTareas.Find(a => a.Recurso == recurso && a.Tarea == tarea);
+        return asignacion;
+    }
+    
+    
 }

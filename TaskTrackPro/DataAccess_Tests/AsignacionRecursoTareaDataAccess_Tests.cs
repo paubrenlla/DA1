@@ -96,5 +96,34 @@ namespace DataAccess_Tests
             var cantidad = repo.CantidadDelRecurso(asign1);
             Assert.AreEqual(5, cantidad);
         }
+        
+        [TestMethod]
+        public void ObtenerAsignacionPorRecursoYTarea_DevuelveAsignacionCorrecta()
+        {
+            repo.Add(asign1);
+            var asignacion = repo.GetByRecursoYTarea(recurso1, tarea1);
+            Assert.IsNotNull(asignacion);
+            Assert.AreEqual(asign1, asignacion);
+        }
+
+        [TestMethod]
+        public void ObtenerAsignacionPorRecursoYTarea_NoEncuentraAsignacionYDevuelveNull()
+        {
+            repo.Add(asign1);
+            var asignacion = repo.GetByRecursoYTarea(recurso2, tarea2);
+            Assert.IsNull(asignacion);
+        }
+
+        [TestMethod]
+        public void ObtenerAsignacionPorRecursoYTarea_EncuentraAsignacionConOtroRecursoYTarea()
+        {
+            repo.Add(asign1);
+            repo.Add(asign2);
+            repo.Add(asign3);
+
+            var asignacion = repo.GetByRecursoYTarea(recurso2, tarea1);
+            Assert.IsNotNull(asignacion);
+            Assert.AreEqual(asign3, asignacion);
+        }
     }
 }
