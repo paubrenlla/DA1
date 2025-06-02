@@ -19,8 +19,7 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
         _tareaRepo = tareaRepo;
         _asignacionRepo = asignacionRepo;
     }
-
-
+    
     public AsignacionRecursoTareaDTO GetById(int id)
     {
         AsignacionRecursoTarea asignacionRecursoTarea = _asignacionRepo.GetById(id);
@@ -40,40 +39,56 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
 
         if (existeAsignacion == null)
         {
-            Recurso recurso = new Recurso(dto.Recurso.Nombre, dto.Recurso.Tipo, dto.Recurso.Descripcion,
-                dto.Recurso.SePuedeCompartir, dto.Recurso.CantidadDelRecurso);
-            
-            Tarea tarea = new Tarea(dto.Tarea.Titulo, dto.Tarea.Descripcion, dto.Tarea.FechaInicio, dto.Tarea.Duracion,
-                dto.Tarea.EsCritica);
-            
-            AsignacionRecursoTarea  asignacionRecursoTarea = new AsignacionRecursoTarea(recurso, tarea, dto.Cantidad);
-            _asignacionRepo.Add(asignacionRecursoTarea);
-            
-            return Convertidor.AAsignacionRecursoTareaDTO(asignacionRecursoTarea);
+            return CrearAsignacionSiNoExiste(dto);
         }
 
         if (dto.Recurso.CantidadDelRecurso < existeAsignacion.CantidadNecesaria + dto.Cantidad)
         {
             throw new ArgumentOutOfRangeException(nameof(dto.Cantidad), "No hay suficiente cantidad del recurso disponible.");
-            return null;
         }
         
-        existeAsignacion.CantidadNecesaria += dto.Cantidad;
-        return Convertidor.AAsignacionRecursoTareaDTO(existeAsignacion);
+        return ActualizarAsignacion(existeAsignacion, dto);
+    }
+
+    private AsignacionRecursoTareaDTO CrearAsignacionSiNoExiste(AsignacionRecursoTareaDTO dto)
+    {
+        Recurso recurso = _recursoRepo.GetById(dto.Recurso.Id);
+        Tarea tarea = _tareaRepo.GetById(dto.Tarea.Id);
+        AsignacionRecursoTarea  asignacionRecursoTarea = new AsignacionRecursoTarea(recurso, tarea, dto.Cantidad);
+        
+        _asignacionRepo.Add(asignacionRecursoTarea);
+            
+        tarea.ActualizarEstado(VerificarRecursosDeTareaDisponibles(tarea.Id));
+            
+        return Convertidor.AAsignacionRecursoTareaDTO(asignacionRecursoTarea);
+    }
+
+    private AsignacionRecursoTareaDTO ActualizarAsignacion(AsignacionRecursoTarea asignacion,  AsignacionRecursoTareaDTO dto)
+    {
+        asignacion.CantidadNecesaria += dto.Cantidad;
+        
+        asignacion.Tarea.ActualizarEstado(VerificarRecursosDeTareaDisponibles(asignacion.Tarea.Id));
+        
+        return Convertidor.AAsignacionRecursoTareaDTO(asignacion);
     }
 
     public void EliminarRecursoDeTarea(int idTarea)
     {
         AsignacionRecursoTarea asignacionRecursoTarea = _asignacionRepo.GetById(idTarea);
         Tarea tarea = asignacionRecursoTarea.Tarea;
+        
         _asignacionRepo.Remove(asignacionRecursoTarea);
-        tarea.ActualizarEstado();
+        
+        tarea.ActualizarEstado(VerificarRecursosDeTareaDisponibles(tarea.Id));
     }
 
     public void ModificarAsignacion(AsignacionRecursoTareaDTO dto)
     {
         AsignacionRecursoTarea asignacionRecursoTarea = _asignacionRepo.GetById(dto.Id);
+        
         asignacionRecursoTarea.Modificar(dto.Cantidad);
+        
+        asignacionRecursoTarea.Tarea.ActualizarEstado(VerificarRecursosDeTareaDisponibles(asignacionRecursoTarea.Tarea.Id));
     }
 
     public List<RecursoDTO> RecursosDeLaTarea(int tareaId)
@@ -95,7 +110,7 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
         {
             _asignacionRepo.Remove(asignacion);
         }
-        tarea.ActualizarEstado();
+        tarea.ActualizarEstado(VerificarRecursosDeTareaDisponibles(tarea.Id));
     }
 
     public void ActualizarEstadoDeTareasConRecurso(int recursoID)
@@ -103,7 +118,7 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
         List<Tarea> tareas = _asignacionRepo.GetByRecurso(recursoID).Select(a => a.Tarea).ToList();
         foreach (Tarea tarea in tareas)
         { 
-            tarea.ActualizarEstado(VerificarRecursosDeTareaDisponibles(recursoID));
+            tarea.ActualizarEstado(VerificarRecursosDeTareaDisponibles(tarea.Id));
         }
     }
 
