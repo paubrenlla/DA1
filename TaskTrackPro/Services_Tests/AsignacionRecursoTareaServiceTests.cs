@@ -52,8 +52,8 @@ namespace Services_Tests
         {
             AsignacionRecursoTareaDTO dto = new AsignacionRecursoTareaDTO
             {
-                Recurso = new RecursoDTO { Nombre = "Recurso1", Tipo = "Tipo1", Descripcion = "Desc1", SePuedeCompartir = false, CantidadDelRecurso = 10 },
-                Tarea = new TareaDTO { Titulo = "Tarea1", Descripcion = "DescTarea1", FechaInicio = DateTime.Today, Duracion = VALID_TIMESPAN, EsCritica = true },
+                Recurso = Convertidor.ARecursoDTO(_recurso2),
+                Tarea = Convertidor.ATareaDTO(_tarea1),
                 Cantidad = 5
             };
 
@@ -137,23 +137,8 @@ namespace Services_Tests
         {
             AsignacionRecursoTareaDTO dtoIn = new AsignacionRecursoTareaDTO
             {
-                Recurso = new RecursoDTO
-                {
-                    Nombre = "Nuevo", 
-                    Tipo = "TipoNuevo", 
-                    Descripcion = "DescNuevo", 
-                    SePuedeCompartir = true, 
-                    CantidadDelRecurso = 10
-                },
-                
-                Tarea = new TareaDTO
-                {
-                    Titulo = "NuevaTarea", 
-                    Descripcion = "DescTareaNueva", 
-                    FechaInicio = DateTime.Today, 
-                    Duracion = VALID_TIMESPAN, 
-                    EsCritica = true
-                },
+                Recurso = Convertidor.ARecursoDTO(_recurso1),
+                Tarea = Convertidor.ATareaDTO(_tarea1),
                 Cantidad = 4
             };
 
