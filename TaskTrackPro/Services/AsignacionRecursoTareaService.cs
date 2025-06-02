@@ -72,9 +72,9 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
         return Convertidor.AAsignacionRecursoTareaDTO(asignacion);
     }
 
-    public void EliminarRecursoDeTarea(int idTarea)
+    public void EliminarRecursoDeTarea(int idTarea, int idRecurso)
     {
-        AsignacionRecursoTarea asignacionRecursoTarea = _asignacionRepo.GetById(idTarea);
+        AsignacionRecursoTarea asignacionRecursoTarea = _asignacionRepo.GetByRecursoYTarea(idRecurso, idTarea);
         Tarea tarea = asignacionRecursoTarea.Tarea;
         
         _asignacionRepo.Remove(asignacionRecursoTarea);

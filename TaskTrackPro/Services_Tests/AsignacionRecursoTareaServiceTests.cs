@@ -168,7 +168,8 @@ namespace Services_Tests
             _repoAsignaciones.Add(asignacion);
 
             Assert.IsNotNull(_repoAsignaciones.GetById(asignacion.Id));
-            _service.EliminarRecursoDeTarea(asignacion.Id);
+            
+            _service.EliminarRecursoDeTarea(asignacion.Tarea.Id, asignacion.Recurso.Id);
             Assert.IsNull(_repoAsignaciones.GetById(asignacion.Id));
         }
 
