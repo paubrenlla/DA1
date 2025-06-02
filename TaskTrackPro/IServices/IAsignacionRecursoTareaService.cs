@@ -8,7 +8,7 @@ namespace Services
         
         List<AsignacionRecursoTareaDTO> GetAll();
         
-        AsignacionRecursoTareaDTO CrearProyecto(AsignacionRecursoTareaDTO dto);
+        AsignacionRecursoTareaDTO CrearAsignacionRecursoTarea(AsignacionRecursoTareaDTO dto);
         
         void EliminarRecursoDeTarea(int idTarea);
         

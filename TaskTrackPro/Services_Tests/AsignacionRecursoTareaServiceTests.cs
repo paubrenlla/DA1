@@ -71,7 +71,7 @@ namespace Services_Tests
                 Cantidad = 2
             };
 
-            AsignacionRecursoTareaDTO resultado = _service.CrearProyecto(dto);
+            AsignacionRecursoTareaDTO resultado = _service.CrearAsignacionRecursoTarea(dto);
 
             Assert.IsNotNull(resultado);
             Assert.AreEqual(dto.Recurso.Nombre, resultado.Recurso.Nombre);
@@ -137,7 +137,7 @@ namespace Services_Tests
                 Cantidad = 4
             };
 
-            AsignacionRecursoTareaDTO asignacionCreadaDto = _service.CrearProyecto(dtoIn);
+            AsignacionRecursoTareaDTO asignacionCreadaDto = _service.CrearAsignacionRecursoTarea(dtoIn);
             Assert.IsNotNull(asignacionCreadaDto);
             Assert.AreEqual(dtoIn.Recurso.Nombre, asignacionCreadaDto.Recurso.Nombre);
             Assert.AreEqual(dtoIn.Tarea.Titulo, asignacionCreadaDto.Tarea.Titulo);

@@ -34,7 +34,7 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
             .ToList();
     }
 
-    public AsignacionRecursoTareaDTO CrearProyecto(AsignacionRecursoTareaDTO dto)
+    public AsignacionRecursoTareaDTO CrearAsignacionRecursoTarea(AsignacionRecursoTareaDTO dto)
     {
         Recurso recurso = new Recurso(dto.Recurso.Nombre, dto.Recurso.Tipo, dto.Recurso.Descripcion,
             dto.Recurso.SePuedeCompartir, dto.Recurso.CantidadDelRecurso);
