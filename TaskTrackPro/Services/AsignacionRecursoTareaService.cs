@@ -125,7 +125,7 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
     public bool RecursoEsExclusivo(int recursoID)
     {
         List<AsignacionRecursoTarea> tareasFiltradas = _asignacionRepo.GetByRecurso(recursoID);
-        return tareasFiltradas.Count() > 1;
+        return ! (tareasFiltradas.Count() > 1);
     }
 
     public bool VerificarRecursosDeTareaDisponibles(int TareaId)

@@ -184,21 +184,21 @@ namespace Services_Tests
         }
 
         [TestMethod]
-        public void RecursoEsExclusivo_DevuelveTrueSiMasDeUnaTareaUsaElRecurso()
+        public void RecursoEsExclusivo_DevuelveFalseSiMasDeUnaTareaUsaElRecurso()
         {
             _repoAsignaciones.Add(new AsignacionRecursoTarea(_recurso1, _tarea1, 2));
             _repoAsignaciones.Add(new AsignacionRecursoTarea(_recurso1, _tarea2, 3));
 
             bool resultado = _service.RecursoEsExclusivo(_recurso1.Id);
-            Assert.IsTrue(resultado);
+            Assert.IsFalse(resultado);
         }
         
         [TestMethod]
-        public void RecursoEsExclusivo_DevuelveFalseSiSoloUnaTareaLoUsa()
+        public void RecursoEsExclusivo_DevuelveTrueSiSoloUnaTareaLoUsa()
         {
             _repoAsignaciones.Add(new AsignacionRecursoTarea(_recurso1, _tarea1, 2));
 
-            Assert.IsFalse(_service.RecursoEsExclusivo(_recurso1.Id));
+            Assert.IsTrue(_service.RecursoEsExclusivo(_recurso1.Id));
         }
         
         [TestMethod]
