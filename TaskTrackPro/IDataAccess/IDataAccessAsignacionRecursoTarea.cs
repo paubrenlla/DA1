@@ -12,11 +12,11 @@ public interface IDataAccessAsignacionRecursoTarea: IDataAccessGeneric<Asignacio
 
     public List<AsignacionRecursoTarea> GetAll();
     
-    public List<AsignacionRecursoTarea> GetByTarea(Tarea tarea);
+    public List<AsignacionRecursoTarea> GetByTarea(int idTarea);
     
-    public List<AsignacionRecursoTarea> GetByRecurso(Recurso recurso);
+    public List<AsignacionRecursoTarea> GetByRecurso(int idRecurso);
     
     public int CantidadDelRecurso(AsignacionRecursoTarea asignacionRecursoTarea);
     
-    public AsignacionRecursoTarea? GetByRecursoYTarea(Recurso recurso, Tarea tarea);
+    public AsignacionRecursoTarea? GetByRecursoYTarea(int idRecurso, int idTarea);
 }

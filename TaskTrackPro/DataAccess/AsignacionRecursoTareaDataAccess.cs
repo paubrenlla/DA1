@@ -30,14 +30,14 @@ public class AsignacionRecursoTareaDataAccess : IDataAccessAsignacionRecursoTare
         return _asignacionesRecursoTareas;
     }
 
-    public List<AsignacionRecursoTarea> GetByTarea(Tarea tarea)
+    public List<AsignacionRecursoTarea> GetByTarea(int idTarea)
     {
-        return _asignacionesRecursoTareas.FindAll(a => a.Tarea == tarea);
+        return _asignacionesRecursoTareas.FindAll(a => a.Tarea.Id == idTarea);
     }
 
-    public List<AsignacionRecursoTarea> GetByRecurso(Recurso recurso)
+    public List<AsignacionRecursoTarea> GetByRecurso(int idRecurso)
     {
-        return _asignacionesRecursoTareas.FindAll(a => a.Recurso == recurso);
+        return _asignacionesRecursoTareas.FindAll(a => a.Recurso.Id == idRecurso);
     }
 
     public int CantidadDelRecurso(AsignacionRecursoTarea asignacionRecursoTarea)
@@ -45,9 +45,9 @@ public class AsignacionRecursoTareaDataAccess : IDataAccessAsignacionRecursoTare
         return GetById(asignacionRecursoTarea.Id).CantidadNecesaria;
     }
 
-    public AsignacionRecursoTarea? GetByRecursoYTarea(Recurso recurso, Tarea tarea)
+    public AsignacionRecursoTarea? GetByRecursoYTarea(int idRecurso, int idTarea)
     {
-        AsignacionRecursoTarea? asignacion = _asignacionesRecursoTareas.Find(a => a.Recurso == recurso && a.Tarea == tarea);
+        AsignacionRecursoTarea? asignacion = _asignacionesRecursoTareas.Find(a => a.Recurso.Id == idRecurso && a.Tarea.Id == idTarea);
         return asignacion;
     }
     
