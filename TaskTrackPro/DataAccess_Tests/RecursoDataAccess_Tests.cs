@@ -68,7 +68,7 @@ public class RecursoDataAccess_Tests
         Tarea tarea = new Tarea("Tarea", "Tarea prueba", DateTime.Now, TimeSpan.FromDays(1), false);
         proyecto.agregarTarea(tarea);
         tarea.AgregarUsuario(usuario);
-        tarea.AgregarRecurso(recurso, 2);
+        //tarea.AgregarRecurso(recurso, 2);
         recurso.CantidadEnUso = 1;
         recursoRepo.Remove(recurso);
     }

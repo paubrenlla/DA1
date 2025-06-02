@@ -48,10 +48,12 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
         return Convertidor.AAsignacionRecursoTareaDTO(asignacionRecursoTarea);
     }
 
-    public void EliminarRecursoDeTarea(int id)
+    public void EliminarRecursoDeTarea(int idTarea)
     {
-        AsignacionRecursoTarea asignacionRecursoTarea = _asignacionRepo.GetById(id);
+        AsignacionRecursoTarea asignacionRecursoTarea = _asignacionRepo.GetById(idTarea);
+        Tarea tarea = asignacionRecursoTarea.Tarea;
         _asignacionRepo.Remove(asignacionRecursoTarea);
+        tarea.ActualizarEstado();
     }
 
     public void ModificarAsignacion(AsignacionRecursoTareaDTO dto)
@@ -80,6 +82,7 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
         {
             _asignacionRepo.Remove(asignacion);
         }
+        tarea.ActualizarEstado();
     }
 
     public void ActualizarEstadoDeTareasConRecurso(int recursoID)
@@ -105,9 +108,9 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
         List<AsignacionRecursoTarea> asignacionesDeTarea = _asignacionRepo.GetByTarea(tarea);
         foreach (AsignacionRecursoTarea asignacion in asignacionesDeTarea)
         {
-            return asignacion.Recurso.EstaDisponible(asignacion.CantidadNecesaria);
+            if (!asignacion.Recurso.EstaDisponible(asignacion.CantidadNecesaria)) return false;
         }
-
+        
         return true;
     }
 }

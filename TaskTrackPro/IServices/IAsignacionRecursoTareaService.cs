@@ -10,7 +10,7 @@ namespace Services
         
         AsignacionRecursoTareaDTO CrearProyecto(AsignacionRecursoTareaDTO dto);
         
-        void EliminarRecursoDeTarea(int id);
+        void EliminarRecursoDeTarea(int idTarea);
         
         void ModificarAsignacion(AsignacionRecursoTareaDTO dto);
         
