@@ -48,44 +48,64 @@ namespace Services_Tests
         }
         
         [TestMethod]
-        public void CrearProyecto_ConRecursoCompartido_NoDebeLanzarError()
+        public void CrearAsignacionRecursoTarea_CreaNuevaSiNoExiste()
         {
             AsignacionRecursoTareaDTO dto = new AsignacionRecursoTareaDTO
             {
-                Recurso = new RecursoDTO 
-                { 
-                    Nombre = "Recurso Compartido", 
-                    Tipo = "Recurso", 
-                    Descripcion = "Prueba", 
-                    SePuedeCompartir = true, 
-                    CantidadDelRecurso = 10 
-                },
-                Tarea = new TareaDTO
-                {
-                    Titulo = "TareaNueva", 
-                    FechaInicio = DateTime.Today, 
-                    Duracion = VALID_TIMESPAN, 
-                    EsCritica = false, 
-                    Descripcion = "Descripcion"
-                },
-                Cantidad = 2
+                Recurso = new RecursoDTO { Nombre = "Recurso1", Tipo = "Tipo1", Descripcion = "Desc1", SePuedeCompartir = false, CantidadDelRecurso = 10 },
+                Tarea = new TareaDTO { Titulo = "Tarea1", Descripcion = "DescTarea1", FechaInicio = DateTime.Today, Duracion = VALID_TIMESPAN, EsCritica = true },
+                Cantidad = 5
             };
 
             AsignacionRecursoTareaDTO resultado = _service.CrearAsignacionRecursoTarea(dto);
 
             Assert.IsNotNull(resultado);
-            Assert.AreEqual(dto.Recurso.Nombre, resultado.Recurso.Nombre);
+            Assert.AreEqual(dto.Cantidad, resultado.Cantidad);
+        }
+
+        [TestMethod]
+        public void CrearAsignacionRecursoTarea_ActualizaCantidadSiYaExiste()
+        {
+            AsignacionRecursoTarea aAsignar = new AsignacionRecursoTarea(_recurso1, _tarea1, 3);
+            _repoAsignaciones.Add(aAsignar);
+
+            AsignacionRecursoTareaDTO dto = new AsignacionRecursoTareaDTO
+            {
+                Recurso = Convertidor.ARecursoDTO(_recurso1),
+                Tarea = Convertidor.ATareaDTO(_tarea1),
+                Cantidad = 4
+            };
+
+            AsignacionRecursoTareaDTO resultado = _service.CrearAsignacionRecursoTarea(dto);
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(7, resultado.Cantidad);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CrearAsignacionRecursoTarea_LanzaExcepcionSiCantidadSuperaDisponibilidad()
+        {
+            _repoAsignaciones.Add(new AsignacionRecursoTarea(_recurso1, _tarea1, 8));
+
+            AsignacionRecursoTareaDTO dto = new AsignacionRecursoTareaDTO
+            {
+                Recurso = Convertidor.ARecursoDTO(_recurso1),
+                Tarea = Convertidor.ATareaDTO(_tarea1),
+                Cantidad = 5 // Esto haría que la cantidad total fuera 8 + 5 = 13, mayor que la disponible (10)
+            };
+
+            _service.CrearAsignacionRecursoTarea(dto);
         }
         
         [TestMethod]
         public void EliminarRecursosDeTarea_EliminaCorrectamenteLosRecursos()
         {
             _repoAsignaciones.Add(new AsignacionRecursoTarea(_recurso1, _tarea1, 2));
-            //_repoAsignaciones.Add(new AsignacionRecursoTarea(_recurso2, _tarea1, 3));
 
             _service.EliminarRecursosDeTarea(_tarea1.Id);
 
-            List<AsignacionRecursoTarea> asignacionesRestantes = _repoAsignaciones.GetByTarea(_tarea1);
+            List<AsignacionRecursoTarea> asignacionesRestantes = _repoAsignaciones.GetByTarea(_tarea1.Id);
             Assert.AreEqual(0, asignacionesRestantes.Count);
         }
         

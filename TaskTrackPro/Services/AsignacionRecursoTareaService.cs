@@ -36,16 +36,30 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
 
     public AsignacionRecursoTareaDTO CrearAsignacionRecursoTarea(AsignacionRecursoTareaDTO dto)
     {
-        Recurso recurso = new Recurso(dto.Recurso.Nombre, dto.Recurso.Tipo, dto.Recurso.Descripcion,
-            dto.Recurso.SePuedeCompartir, dto.Recurso.CantidadDelRecurso);
+        AsignacionRecursoTarea? existeAsignacion = _asignacionRepo.GetByRecursoYTarea(dto.Recurso.Id, dto.Tarea.Id);
+
+        if (existeAsignacion == null)
+        {
+            Recurso recurso = new Recurso(dto.Recurso.Nombre, dto.Recurso.Tipo, dto.Recurso.Descripcion,
+                dto.Recurso.SePuedeCompartir, dto.Recurso.CantidadDelRecurso);
+            
+            Tarea tarea = new Tarea(dto.Tarea.Titulo, dto.Tarea.Descripcion, dto.Tarea.FechaInicio, dto.Tarea.Duracion,
+                dto.Tarea.EsCritica);
+            
+            AsignacionRecursoTarea  asignacionRecursoTarea = new AsignacionRecursoTarea(recurso, tarea, dto.Cantidad);
+            _asignacionRepo.Add(asignacionRecursoTarea);
+            
+            return Convertidor.AAsignacionRecursoTareaDTO(asignacionRecursoTarea);
+        }
+
+        if (dto.Recurso.CantidadDelRecurso < existeAsignacion.CantidadNecesaria + dto.Cantidad)
+        {
+            throw new ArgumentOutOfRangeException(nameof(dto.Cantidad), "No hay suficiente cantidad del recurso disponible.");
+            return null;
+        }
         
-        Tarea tarea = new Tarea(dto.Tarea.Titulo, dto.Tarea.Descripcion, dto.Tarea.FechaInicio, dto.Tarea.Duracion,
-            dto.Tarea.EsCritica);
-        
-        AsignacionRecursoTarea  asignacionRecursoTarea = new AsignacionRecursoTarea(recurso, tarea, dto.Cantidad);
-        _asignacionRepo.Add(asignacionRecursoTarea);
-        
-        return Convertidor.AAsignacionRecursoTareaDTO(asignacionRecursoTarea);
+        existeAsignacion.CantidadNecesaria += dto.Cantidad;
+        return Convertidor.AAsignacionRecursoTareaDTO(existeAsignacion);
     }
 
     public void EliminarRecursoDeTarea(int idTarea)
@@ -64,8 +78,7 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
 
     public List<RecursoDTO> RecursosDeLaTarea(int tareaId)
     {
-        Tarea tarea = _tareaRepo.GetById(tareaId);
-        List<AsignacionRecursoTarea> asignacionesFiltradas = _asignacionRepo.GetByTarea(tarea);
+        List<AsignacionRecursoTarea> asignacionesFiltradas = _asignacionRepo.GetByTarea(tareaId);
         
         List<RecursoDTO> recursosDTO = asignacionesFiltradas.Select(a => a.Recurso)
             .Select(Convertidor.ARecursoDTO)
@@ -76,7 +89,7 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
     public void EliminarRecursosDeTarea(int tareaId)
     {
         Tarea tarea = _tareaRepo.GetById(tareaId);
-        List<AsignacionRecursoTarea> asignacionesFiltradas = _asignacionRepo.GetByTarea(tarea);
+        List<AsignacionRecursoTarea> asignacionesFiltradas = _asignacionRepo.GetByTarea(tareaId);
 
         foreach (var asignacion in asignacionesFiltradas.ToList())
         {
@@ -87,8 +100,7 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
 
     public void ActualizarEstadoDeTareasConRecurso(int recursoID)
     {
-        Recurso recurso = _recursoRepo.GetById(recursoID);
-        List<Tarea> tareas = _asignacionRepo.GetByRecurso(recurso).Select(a => a.Tarea).ToList();
+        List<Tarea> tareas = _asignacionRepo.GetByRecurso(recursoID).Select(a => a.Tarea).ToList();
         foreach (Tarea tarea in tareas)
         { 
             tarea.ActualizarEstado(VerificarRecursosDeTareaDisponibles(recursoID));
@@ -97,15 +109,13 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
 
     public bool RecursoEsExclusivo(int recursoID)
     {
-        Recurso recurso = _recursoRepo.GetById(recursoID);
-        List<AsignacionRecursoTarea> tareasFiltradas = _asignacionRepo.GetByRecurso(recurso);
+        List<AsignacionRecursoTarea> tareasFiltradas = _asignacionRepo.GetByRecurso(recursoID);
         return tareasFiltradas.Count() > 1;
     }
 
     public bool VerificarRecursosDeTareaDisponibles(int TareaId)
     {
-        Tarea tarea = _tareaRepo.GetById(TareaId);
-        List<AsignacionRecursoTarea> asignacionesDeTarea = _asignacionRepo.GetByTarea(tarea);
+        List<AsignacionRecursoTarea> asignacionesDeTarea = _asignacionRepo.GetByTarea(TareaId);
         foreach (AsignacionRecursoTarea asignacion in asignacionesDeTarea)
         {
             if (!asignacion.Recurso.EstaDisponible(asignacion.CantidadNecesaria)) return false;

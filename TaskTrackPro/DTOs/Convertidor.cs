@@ -61,6 +61,7 @@ public static class Convertidor
             Recurso = ARecursoDTO(asignacionRecursoTarea.Recurso),
             Id = asignacionRecursoTarea.Id,
             Tarea = ATareaDTO(asignacionRecursoTarea.Tarea),
+            Cantidad = asignacionRecursoTarea.CantidadNecesaria
         };
     }
 
