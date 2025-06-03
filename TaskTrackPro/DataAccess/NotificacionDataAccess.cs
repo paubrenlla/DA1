@@ -12,6 +12,7 @@ public class NotificacionDataAccess : IDataAccessNotificacion
         _listaNotificaciones = new List<Notificacion>();
     }
 
+    
     public void Add(Notificacion notificacion)
     {
         _listaNotificaciones.Add(notificacion);

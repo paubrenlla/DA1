@@ -1,6 +1,15 @@
+using Domain;
+using DTOs;
+
 namespace Services;
 
-public interface INotificacion
+public interface INotificacionService
 {
-    
+    void Add(NotificacionDTO notificacion);
+    void Remove(NotificacionDTO notificacion);
+    NotificacionDTO? GetById(int id);
+    List<NotificacionDTO?> GetAll();
+    List<NotificacionDTO?> NotificacionesNoLeidas(UsuarioDTO usuario);
 }
+
+
