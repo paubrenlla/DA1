@@ -1,142 +1,144 @@
-﻿using Domain;
-using Domain.Enums;
-using IDataAcces;
-using DataAccess;
-using Controllers;
+﻿using System;
+using System.Collections.Generic;
 using DTOs;
+using Controllers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Services;
 
-namespace Controllers_Tests;
-
-[TestClass]
+namespace Controllers_Tests
+{
+    [TestClass]
     public class TareaControllerTests
     {
-        private TareaController _tareaController;
-        private IDataAccessTarea _repoTareas;
-        private IDataAccessProyecto _repoProyectos;
-        private IDataAccessUsuario _repoUsuarios;
+        private Mock<ITareaService> _mockService;
+        private TareaController _controller;
 
-        private Proyecto _proyectoEjemplo;
-        private Tarea _tareaEjemplo;
-        private Usuario _usuarioEjemplo;
+        private TareaDTO _dto1;
+        private TareaDTO _dto2;
+        private List<TareaDTO> _listaDtos;
 
         [TestInitialize]
         public void SetUp()
         {
-            _repoTareas = new TareaDataAccess();
-            _repoProyectos = new ProyectoDataAccess();
-            _repoUsuarios = new UsuarioDataAccess();
+            _mockService = new Mock<ITareaService>();
+            _controller = new TareaController(_mockService.Object);
 
-            _tareaController = new TareaController(_repoTareas, _repoProyectos, _repoUsuarios);
-
-            _proyectoEjemplo = new Proyecto("Proyecto Test", "Descripción Test", DateTime.Today.AddDays(1));
-            _repoProyectos.Add(_proyectoEjemplo);
-
-            _usuarioEjemplo = new Usuario("user@test.com", "User", "Test", "Contraseña1!", DateTime.Today.AddYears(-20));
-            _repoUsuarios.Add(_usuarioEjemplo);
-
-            _tareaEjemplo = new Tarea("Tarea Test", "Descripción Tarea", DateTime.Today.AddHours(9), TimeSpan.FromHours(4), false);
-            _tareaEjemplo.Proyecto = _proyectoEjemplo;
-            _proyectoEjemplo.TareasAsociadas.Add(_tareaEjemplo);
-            _repoTareas.Add(_tareaEjemplo);
-        }
-
-        [TestMethod]
-        public void BuscarTareaPorIdDevuelveDTO()
-        {
-            TareaDTO dto = _tareaController.BuscarTareaPorId(_tareaEjemplo.Id);
-
-            Assert.IsNotNull(dto);
-            Assert.AreEqual(_tareaEjemplo.Id, dto.Id);
-          
-        }
-        
-        [TestMethod]
-        public void ListarTareasPorProyectoDevuelveTodas()
-        {
-            Tarea _tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddDays(2), TimeSpan.FromHours(3), true);
-            _tarea2.Proyecto = _proyectoEjemplo;
-            _proyectoEjemplo.TareasAsociadas.Add(_tarea2);
-            _repoTareas.Add(_tarea2);
-            List<TareaDTO> lista = _tareaController.ListarTareasPorProyecto(_proyectoEjemplo.Id);
-
-            Assert.IsNotNull(lista);
-            Assert.AreEqual(2, lista.Count);
-            Assert.AreEqual(_tareaEjemplo.Id, lista[0].Id);
-            Assert.AreEqual(_tarea2.Id, lista[1].Id);
-        }
-        
-        [TestMethod]
-        public void CrearTareaAgregaCorrectamente()
-        {
-            var dto = new TareaDTO
+            _dto1 = new TareaDTO
             {
-                Titulo = "Nueva Tarea",
-                Descripcion = "Descripción nueva",
-                FechaInicio = DateTime.Today.AddDays(3),
+                Id = 1,
+                Titulo = "T1",
+                Descripcion = "Desc1",
+                FechaInicio = DateTime.Today,
+                Duracion = TimeSpan.FromHours(2)
+            };
+            _dto2 = new TareaDTO
+            {
+                Id = 2,
+                Titulo = "T2",
+                Descripcion = "Desc2",
+                FechaInicio = DateTime.Today.AddDays(1),
+                Duracion = TimeSpan.FromHours(3)
+            };
+            _listaDtos = new List<TareaDTO> { _dto1, _dto2 };
+        }
+
+        [TestMethod]
+        public void BuscarTareaPorIdLlamaServiceYDevuelveDto()
+        {
+            _mockService.Setup(s => s.BuscarTareaPorId(1)).Returns(_dto1);
+
+            TareaDTO resultado = _controller.BuscarTareaPorId(1);
+
+            Assert.AreEqual(_dto1, resultado);
+            _mockService.Verify(s => s.BuscarTareaPorId(1), Times.Once);
+        }
+
+        [TestMethod]
+        public void ListarTareasPorProyectoLlamaServiceYDevuelveLista()
+        {
+            _mockService.Setup(s => s.ListarTareasPorProyecto(5)).Returns(_listaDtos);
+
+            List<TareaDTO> resultado = _controller.ListarTareasPorProyecto(5);
+
+            CollectionAssert.AreEqual(_listaDtos, resultado);
+            _mockService.Verify(s => s.ListarTareasPorProyecto(5), Times.Once);
+        }
+
+        [TestMethod]
+        public void CrearTareaLlamaServiceYDevuelveNuevoDto()
+        {
+            TareaDTO nuevoDto = new TareaDTO
+            {
+                Titulo = "Nueva",
+                Descripcion = "NuevaDesc",
+                FechaInicio = DateTime.Today.AddDays(2),
                 Duracion = TimeSpan.FromHours(4)
             };
-            TareaDTO tareaCreada = _tareaController.CrearTarea(_proyectoEjemplo.Id, dto);
-
-            Assert.IsNotNull(tareaCreada);
-            Assert.AreEqual(dto.Titulo, tareaCreada.Titulo);
-            List<TareaDTO> tareasDelProyecto = _tareaController.ListarTareasPorProyecto(_proyectoEjemplo.Id);
-            Assert.IsTrue(tareasDelProyecto.Any(t => t.Id == tareaCreada.Id));
-        }
-        
-        [TestMethod]
-        public void ModificarTareaCambiaDatosCorrectamente()
-        {
-            var dto = new TareaDTO
+            TareaDTO creadoDto = new TareaDTO
             {
-                Titulo = "Modificado",
-                Descripcion = "Nueva descripción",
-                FechaInicio = DateTime.Today.AddDays(5),
-                Duracion = TimeSpan.FromHours(8)
+                Id = 10,
+                Titulo = "Nueva",
+                Descripcion = "NuevaDesc",
+                FechaInicio = DateTime.Today.AddDays(2),
+                Duracion = TimeSpan.FromHours(4)
             };
 
-            _tareaController.ModificarTarea(_tareaEjemplo.Id, dto);
+            _mockService.Setup(s => s.CrearTarea(3, nuevoDto)).Returns(creadoDto);
 
-            var modificada = _repoTareas.GetById(_tareaEjemplo.Id);
-            Assert.AreEqual(dto.Titulo, modificada.Titulo);
-            Assert.AreEqual(dto.Descripcion, modificada.Descripcion);
-            Assert.AreEqual(dto.FechaInicio, modificada.FechaInicio);
-            Assert.AreEqual(dto.Duracion, modificada.Duracion);
-        }
-        
-        [TestMethod]
-        public void MarcarComoCompletadaCambiaBien()
-        {
-            _tareaController.MarcarComoEjecutandose(_tareaEjemplo.Id);
-            
-            _tareaController.MarcarComoCompletada(_tareaEjemplo.Id);
-            
-            Tarea tarea = _repoTareas.GetById(_tareaEjemplo.Id);
-            Assert.IsNotNull(tarea);
-            Assert.AreEqual(TipoEstadoTarea.Efectuada, tarea.EstadoActual.Valor);
-        }
-        
-        [TestMethod]
-        public void AgregarDependenciaAgregaCorrectamente()
-        {
-            Tarea _tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddDays(2), TimeSpan.FromHours(3), true);
-            _tarea2.Proyecto = _proyectoEjemplo;
-            _proyectoEjemplo.TareasAsociadas.Add(_tarea2);
-            _repoTareas.Add(_tarea2);
-            _tareaController.AgregarDependencia(_tareaEjemplo.Id, _tarea2.Id);            
-            Tarea tarea1 = _repoTareas.GetById(_tareaEjemplo.Id);
-            Tarea tarea2 = _repoTareas.GetById(_tarea2.Id);
-            Assert.IsTrue(tarea1.TareasDependencia.Contains(tarea2));
-            Assert.IsTrue(tarea2.TareasSucesoras.Contains(tarea1));
-        }
-        
-        [TestMethod]
-        public void AgregarUsuario_AgregaUsuarioCorrectamente()
-        {
-            _tareaController.AgregarUsuario(_tareaEjemplo.Id, _usuarioEjemplo.Id);
-            var tarea = _repoTareas.GetById(_tareaEjemplo.Id);
-            Assert.IsNotNull(tarea);
-            Assert.IsTrue(tarea.UsuariosAsignados.Contains(_usuarioEjemplo));
+            TareaDTO resultado = _controller.CrearTarea(3, nuevoDto);
+
+            Assert.AreEqual(creadoDto, resultado);
+            _mockService.Verify(s => s.CrearTarea(3, nuevoDto), Times.Once);
         }
 
+        [TestMethod]
+        public void ModificarTareaLlamaServiceModificar()
+        {
+            TareaDTO dto = new TareaDTO
+            {
+                Id = 7,
+                Titulo = "Mod",
+                Descripcion = "ModDesc",
+                FechaInicio = DateTime.Today.AddDays(5),
+                Duracion = TimeSpan.FromHours(5)
+            };
+
+            _controller.ModificarTarea(7, dto);
+
+            _mockService.Verify(s => s.ModificarTarea(7, dto), Times.Once);
+        }
+
+        [TestMethod]
+        public void MarcarComoEjecutandoseLlamaService()
+        {
+            _controller.MarcarComoEjecutandose(4);
+
+            _mockService.Verify(s => s.MarcarComoEjecutandose(4), Times.Once);
+        }
+
+        [TestMethod]
+        public void MarcarComoCompletadaLlamaService()
+        {
+            _controller.MarcarComoCompletada(4);
+
+            _mockService.Verify(s => s.MarcarComoCompletada(4), Times.Once);
+        }
+
+        [TestMethod]
+        public void AgregarDependenciaLlamaService()
+        {
+            _controller.AgregarDependencia(2, 8);
+
+            _mockService.Verify(s => s.AgregarDependencia(2, 8), Times.Once);
+        }
+
+        [TestMethod]
+        public void AgregarUsuarioLlamaService()
+        {
+            _controller.AgregarUsuario(6, 12);
+
+            _mockService.Verify(s => s.AgregarUsuario(6, 12), Times.Once);
+        }
     }
-
+}

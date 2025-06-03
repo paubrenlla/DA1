@@ -603,7 +603,7 @@ public class ProyectoTests
         Tarea t1 = new Tarea("T1", "desc", inicio, duracion, false);
         Tarea t2 = new Tarea("T2", "desc", inicio, duracion, false);
         Tarea t3 = new Tarea("T3", "desc", inicio.AddHours(1), duracion, false);
-        Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
+        Tarea t4 = new Tarea("T4", "desc", inicio.AddHours(2), duracion, false);
 
         Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
         proyecto.agregarTarea(t1);
@@ -616,12 +616,11 @@ public class ProyectoTests
 
         proyecto.CalcularRutaCritica();
         List<Tarea> tareasOrdenadas = proyecto.TareasAsociadasPorInicio();
-        
+
         Assert.AreEqual(t1, tareasOrdenadas[0]);
         Assert.AreEqual(t3, tareasOrdenadas[1]);
         Assert.AreEqual(t2, tareasOrdenadas[2]);
         Assert.AreEqual(t4, tareasOrdenadas[3]);
-        
     }
     
     [TestMethod]

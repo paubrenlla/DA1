@@ -112,6 +112,8 @@ public class Tarea
     {
         if (tarea == null)
             throw new ArgumentNullException(nameof(tarea));
+        if (tarea.FechaInicio > this.FechaInicio)
+            throw new ArgumentException("La dependencia no puede iniciar despues de esta tarea");
 
         _tareasDependencia.Add(tarea);
         tarea._tareasSucesoras.Add(this);
