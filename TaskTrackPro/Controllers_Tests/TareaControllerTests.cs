@@ -118,7 +118,7 @@ namespace Controllers_Tests;
         [TestMethod]
         public void AgregarDependenciaAgregaCorrectamente()
         {
-            Tarea _tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddDays(2), TimeSpan.FromHours(3), true);
+            Tarea _tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddHours(1), TimeSpan.FromHours(3), true);
             _tarea2.Proyecto = _proyectoEjemplo;
             _proyectoEjemplo.TareasAsociadas.Add(_tarea2);
             _repoTareas.Add(_tarea2);

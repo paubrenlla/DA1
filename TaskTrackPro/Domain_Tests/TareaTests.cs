@@ -93,7 +93,16 @@ namespace Domain_Tests
             Assert.IsNotNull(tarea.EstadoActual.Fecha);
             Assert.IsTrue(tarea.EstadoActual.Fecha.Value.Date == DateTime.Today);
         }
-
+        
+        
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void AgregarDependenciaNoEsValidaSiDependenciaComienzaDespuesDeLaTarea()
+        {
+            Tarea tarea = new Tarea("Tarea", "Desc ", DateTime.Today.AddHours(1),TimeSpan.FromHours(3), esCritica: true);
+            Tarea tarea2 = new Tarea("Tarea", "Desc ", DateTime.Today.AddHours(2),TimeSpan.FromHours(3), esCritica: true);
+            tarea.AgregarDependencia(tarea2);
+        }
         [TestMethod]
         public void ModificarElEstadoDeTarea()
             // Se modifica el estado de Pendiente a Bloqueada y se valida que la fecha es correcta
