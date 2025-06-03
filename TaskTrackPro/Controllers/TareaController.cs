@@ -1,89 +1,56 @@
-﻿using Domain;
-using DTOs;
-using IDataAcces;
+﻿using DTOs;
+using Services;
+using System.Collections.Generic;
 
 namespace Controllers
 {
     public class TareaController
     {
-        private readonly IDataAccessTarea _repoTareas;
-        private readonly IDataAccessProyecto _repoProyectos;
-        private readonly IDataAccessUsuario _repoUsuarios;
+        private readonly ITareaService _service;
 
-        public TareaController(IDataAccessTarea t, IDataAccessProyecto p, IDataAccessUsuario u)
+        public TareaController(ITareaService service)
         {
-            _repoTareas = t;
-            _repoProyectos = p;
-            _repoUsuarios = u;
+            _service = service;
         }
 
         public TareaDTO BuscarTareaPorId(int id)
         {
-            var tarea = _repoTareas.GetById(id);
-            return Convertidor.ATareaDTO(tarea);
+            return _service.BuscarTareaPorId(id);
         }
 
         public List<TareaDTO> ListarTareasPorProyecto(int proyectoId)
         {
-            var proyecto = _repoProyectos.GetById(proyectoId);
-
-            return proyecto.TareasAsociadas
-                .Select(t => Convertidor.ATareaDTO(t))
-                .ToList();
+            return _service.ListarTareasPorProyecto(proyectoId);
         }
-        
+
         public TareaDTO CrearTarea(int proyectoId, TareaDTO dto)
         {
-            var proyecto = _repoProyectos.GetById(proyectoId);
-
-            var nuevaTarea = new Tarea(dto.Titulo, dto.Descripcion, dto.FechaInicio, dto.Duracion, esCritica: false);
-
-            nuevaTarea.Proyecto = proyecto;
-            proyecto.TareasAsociadas.Add(nuevaTarea);
-
-            _repoTareas.Add(nuevaTarea);
-
-            proyecto.CalcularRutaCritica();
-
-            return Convertidor.ATareaDTO(nuevaTarea);
+            return _service.CrearTarea(proyectoId, dto);
         }
-        
+
         public void ModificarTarea(int tareaId, TareaDTO dto)
         {
-            var tarea = _repoTareas.GetById(tareaId);
-            tarea.Modificar(dto.Titulo, dto.Descripcion, dto.FechaInicio, dto.Duracion);
+            _service.ModificarTarea(tareaId, dto);
         }
-        
+
         public void MarcarComoEjecutandose(int tareaId)
         {
-            var tarea = _repoTareas.GetById(tareaId);
-            tarea.MarcarTareaComoEjecutandose();
+            _service.MarcarComoEjecutandose(tareaId);
         }
-        
+
         public void MarcarComoCompletada(int tareaId)
         {
-            var tarea = _repoTareas.GetById(tareaId);
-            tarea.MarcarTareaComoCompletada();
+            _service.MarcarComoCompletada(tareaId);
         }
-        
+
         public void AgregarDependencia(int tareaId, int dependenciaId)
         {
-            var tarea = _repoTareas.GetById(tareaId);
-            var dependencia = _repoTareas.GetById(dependenciaId);
-            tarea.AgregarDependencia(dependencia);
+            _service.AgregarDependencia(tareaId, dependenciaId);
         }
-        
+
         public void AgregarUsuario(int tareaId, int usuarioId)
         {
-            var tarea = _repoTareas.GetById(tareaId);
-            var usuario = _repoUsuarios.GetById(usuarioId);
-            tarea.AgregarUsuario(usuario);
+            _service.AgregarUsuario(tareaId, usuarioId);
         }
-
-
-//TODO recursos de las tareas cuadno haya RecursoService
-
-
-
     }
 }
