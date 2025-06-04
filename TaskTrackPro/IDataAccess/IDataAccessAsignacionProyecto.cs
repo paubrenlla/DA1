@@ -19,4 +19,6 @@ public interface IDataAccessAsignacionProyecto :IDataAccessGeneric<AsignacionPro
     public bool UsuarioEsAsignadoAProyecto(int usuarioId, int proyectoid);
     
     public bool UsuarioEsAdminDelProyecto(int usuarioId, int proyectoid);
+    
+    public AsignacionProyecto GetAdminProyecto(int proyectoId);
 }

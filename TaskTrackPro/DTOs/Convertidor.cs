@@ -34,7 +34,8 @@ public static class Convertidor
         {
             Id = p.Id,
             Nombre = p.Nombre,
-            Descripcion = p.Descripcion
+            Descripcion = p.Descripcion,
+            FechaInicio = p.FechaInicio
         };
     }
     

@@ -1,11 +1,12 @@
-﻿@*
-@page "/proyectos/crear/"
+﻿@page "/proyectos/crear/"
 
 <PageTitle>Crear Proyecto</PageTitle>
 
-@using Domain
+@using Controllers
+@using DTOs
 @using UserInterface.Data
-@inject DB DataBase
+@inject ProyectoController Proyectos
+@inject UsuarioController Usuarios
 @inject NavigationManager NavigationManager
 @inject SessionLogic SessionLogic
 
@@ -53,11 +54,14 @@
         if (!yaVerifiqueSesion)
         {
             yaVerifiqueSesion = true;
-            var activo = await SessionLogic.isUserActive();
+            var activo = await SessionLogic.IsUserActive();
             if (!activo)
             {
                 NavigationManager.NavigateTo("/Login");
             }
+            
+            fecha = DateTime.Today;
+            StateHasChanged();
         }
     }
 
@@ -67,10 +71,11 @@
 
         try
         {
-            Proyecto proyectoNuevo = new Proyecto(nombre, descripcion, fecha);
-            Usuario usuarioAdmin = DataBase.buscarUsuarioPorCorreo(correoAdmin);
-            proyectoNuevo.AsignarAdmin(usuarioAdmin);
-            DataBase.agregarProyecto(proyectoNuevo);
+            ProyectoDTO proyectoNuevo = new ProyectoDTO { Nombre = nombre, Descripcion = descripcion, FechaInicio = fecha};
+            UsuarioDTO usuarioAdmin = Usuarios.GetByEmail(correoAdmin);
+            
+            ProyectoDTO nuevo = Proyectos.AgregarProyecto(proyectoNuevo);
+            Proyectos.AsignarAdminProyecto(usuarioAdmin.Id, nuevo.Id);
             NavigationManager.NavigateTo("/proyectos");
         }
         catch (Exception ex)
@@ -79,4 +84,3 @@
         }
     }
 }
-*@

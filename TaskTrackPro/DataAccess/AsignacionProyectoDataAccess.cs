@@ -57,5 +57,9 @@ namespace DataAccess
                                              && a.Rol.Equals(Rol.Administrador));
         }
 
+        public AsignacionProyecto GetAdminProyecto(int proyectoId)
+        {
+            return _asignaciones.FirstOrDefault(a => a.Proyecto.Id == proyectoId && a.Rol.Equals(Rol.Administrador));
+        }
     }
 }

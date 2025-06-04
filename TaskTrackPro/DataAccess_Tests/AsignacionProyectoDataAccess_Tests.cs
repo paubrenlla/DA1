@@ -105,5 +105,18 @@ namespace DataAccess_Tests
             repo.Add(asign1);
             Assert.IsFalse(repo.UsuarioEsAdminDelProyecto(user1.Id, proyecto1.Id));
         }
+        
+        [TestMethod]
+        public void GetAdminProyectoDevuelveCorrectamenteElAdmin()
+        {
+            repo.Add(asign1);
+            repo.Add(asign2);
+            repo.Add(asign3);
+
+            AsignacionProyecto admin = repo.GetAdminProyecto(proyecto2.Id);
+
+            Assert.IsNotNull(admin);
+            Assert.AreEqual(asign2, admin);
+        }
     }
 }

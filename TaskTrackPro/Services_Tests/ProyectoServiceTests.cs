@@ -134,5 +134,34 @@ namespace Services_Tests
             Assert.IsTrue(_service.UsuarioEsAdminEnProyecto(_usuario2.Id, _proyecto2.Id));
             Assert.IsFalse(_service.UsuarioEsAdminEnProyecto(_usuario1.Id, _proyecto2.Id));
         }
+        
+        [TestMethod]
+        public void AsignarAdminDeProyecto_ReemplazaCorrectamenteElAdministradorAnterior()
+        {
+            _repoAsignaciones.Add(new AsignacionProyecto(_proyecto1, _usuario1, Rol.Administrador));
+
+            _service.AsignarAdminDeProyecto(_usuario2.Id, _proyecto1.Id);
+
+            List<AsignacionProyecto> asignaciones = _repoAsignaciones.UsuariosDelProyecto(_proyecto1.Id).ToList();
+
+            Assert.AreEqual(1, asignaciones.Count);
+            Assert.AreEqual(_usuario2.Id, asignaciones[0].Usuario.Id);
+            Assert.AreEqual(Rol.Administrador, asignaciones[0].Rol);
+        }
+    
+        [TestMethod]
+        public void GetAdminDeProyecto_DevuelveElAdminCorrectamente()
+        {
+            AsignacionProyecto asignAdmin = new AsignacionProyecto(_proyecto2, _usuario2, Rol.Administrador);
+            _repoAsignaciones.Add(asignAdmin);
+
+            UsuarioDTO adminDTO = _service.GetAdminDeProyecto(_proyecto2.Id);
+
+            Assert.IsNotNull(adminDTO);
+            Assert.AreEqual(_usuario2.Id, adminDTO.Id);
+            Assert.AreEqual(_usuario2.Nombre, adminDTO.Nombre);
+            Assert.AreEqual(_usuario2.Apellido, adminDTO.Apellido);
+            Assert.AreEqual(_usuario2.Email, adminDTO.Email);
+        }
     }
 }

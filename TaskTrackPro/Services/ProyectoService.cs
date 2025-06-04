@@ -86,5 +86,25 @@ namespace Services
         {
             return _asignacionRepo.UsuarioEsAdminDelProyecto(usuarioId, proyectoId);
         }
+
+        private void EliminarAdminAnterior(int proyectoId)
+        {
+            AsignacionProyecto antiguoAdmin = _asignacionRepo.GetAdminProyecto(proyectoId);
+            _asignacionRepo.Remove(antiguoAdmin);
+        }
+        public void AsignarAdminDeProyecto(int usuarioId, int proyectoId)
+        {
+            EliminarAdminAnterior(proyectoId);
+            
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
+            Usuario  usuario = _usuarioRepo.GetById(usuarioId);
+            AsignacionProyecto nuevoAdmin = new AsignacionProyecto(proyecto, usuario, Rol.Administrador);
+            _asignacionRepo.Add(nuevoAdmin);
+        }
+        
+        public UsuarioDTO GetAdminDeProyecto(int id)
+        {
+            return Convertidor.AUsuarioDTO(_asignacionRepo.GetAdminProyecto(id).Usuario);
+        }
     }
 }
