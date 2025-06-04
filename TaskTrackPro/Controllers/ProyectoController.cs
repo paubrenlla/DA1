@@ -61,5 +61,10 @@ namespace Controllers
         {
             _service.AsignarAdminDeProyecto(usuarioId, proyectoId);
         }
+
+        public UsuarioDTO GetAdminDeProyecto(int id)
+        {
+            return _service.GetAdminDeProyecto(id);
+        }
     }
 }

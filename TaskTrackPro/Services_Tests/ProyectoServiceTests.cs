@@ -148,6 +148,20 @@ namespace Services_Tests
             Assert.AreEqual(_usuario2.Id, asignaciones[0].Usuario.Id);
             Assert.AreEqual(Rol.Administrador, asignaciones[0].Rol);
         }
+    
+        [TestMethod]
+        public void GetAdminDeProyecto_DevuelveElAdminCorrectamente()
+        {
+            AsignacionProyecto asignAdmin = new AsignacionProyecto(_proyecto2, _usuario2, Rol.Administrador);
+            _repoAsignaciones.Add(asignAdmin);
 
+            UsuarioDTO adminDTO = _service.GetAdminDeProyecto(_proyecto2.Id);
+
+            Assert.IsNotNull(adminDTO);
+            Assert.AreEqual(_usuario2.Id, adminDTO.Id);
+            Assert.AreEqual(_usuario2.Nombre, adminDTO.Nombre);
+            Assert.AreEqual(_usuario2.Apellido, adminDTO.Apellido);
+            Assert.AreEqual(_usuario2.Email, adminDTO.Email);
+        }
     }
 }

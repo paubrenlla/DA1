@@ -169,5 +169,26 @@ namespace Controllers_Tests
             _mockService.Verify(s => s.AsignarAdminDeProyecto(usuarioId, proyectoId), Times.Once);
         }
 
+        [TestMethod]
+        public void GetAdminDeProyecto_LlamaServiceYDevuelveUsuarioDTO()
+        {
+            int proyectoId = 123;
+            UsuarioDTO adminEsperado = new UsuarioDTO
+            {
+                Id = 10,
+                Nombre = "Admin",
+                Email = "admin@example.com"
+            };
+
+            _mockService
+                .Setup(s => s.GetAdminDeProyecto(proyectoId))
+                .Returns(adminEsperado);
+
+            UsuarioDTO resultado = _controller.GetAdminDeProyecto(proyectoId);
+
+            Assert.AreEqual(adminEsperado, resultado);
+            _mockService.Verify(s => s.GetAdminDeProyecto(proyectoId), Times.Once);
+        }
+
     }
 }

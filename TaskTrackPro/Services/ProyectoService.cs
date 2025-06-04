@@ -101,5 +101,10 @@ namespace Services
             AsignacionProyecto nuevoAdmin = new AsignacionProyecto(proyecto, usuario, Rol.Administrador);
             _asignacionRepo.Add(nuevoAdmin);
         }
+        
+        public UsuarioDTO GetAdminDeProyecto(int id)
+        {
+            return Convertidor.AUsuarioDTO(_asignacionRepo.GetAdminProyecto(id).Usuario);
+        }
     }
 }

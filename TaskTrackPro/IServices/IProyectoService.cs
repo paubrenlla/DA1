@@ -23,5 +23,6 @@ namespace Services
         bool UsuarioEsAdminEnProyecto(int usuarioId, int proyectoId);
 
         void AsignarAdminDeProyecto(int usuarioId, int proyectoId);
+        UsuarioDTO GetAdminDeProyecto(int id);
     }
 }
