@@ -12,14 +12,18 @@ public class RecursoService : IRecursoService
     private readonly List<IRecursoObserver> _observadores = new List<IRecursoObserver>();
     
     public RecursoService(
-        IDataAccessRecurso recursoRepo)
+        IDataAccessRecurso recursoRepo,
+        IDataAccessAsignacionRecursoTarea asignacionRepo)
     {
         _recursoRepo = recursoRepo;
+        _asignacionRepo = asignacionRepo;
     }
     
     public RecursoDTO GetById(int idRecurso)
     {
-        return Convertidor.ARecursoDTO(_recursoRepo.GetById(idRecurso));
+        Recurso recurso = _recursoRepo.GetById(idRecurso);
+        if (recurso == null) throw new NullReferenceException("Recurso");
+        return Convertidor.ARecursoDTO(recurso);
     }
 
     public List<RecursoDTO> GetAll()
