@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using DTOs;
+﻿using DTOs;
 using Controllers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Services;
 
@@ -160,5 +157,17 @@ namespace Controllers_Tests
             Assert.IsFalse(resultado);
             _mockService.Verify(s => s.UsuarioEsAdminEnProyecto(2, 99), Times.Once);
         }
+        
+        [TestMethod]
+        public void AsignarAdminProyecto_LlamaServiceConParametrosCorrectos()
+        {
+            int usuarioId = 7;
+            int proyectoId = 4;
+
+            _controller.AsignarAdminProyecto(usuarioId, proyectoId);
+
+            _mockService.Verify(s => s.AsignarAdminDeProyecto(usuarioId, proyectoId), Times.Once);
+        }
+
     }
 }
