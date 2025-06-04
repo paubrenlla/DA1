@@ -14,18 +14,21 @@ namespace Services_Tests
         private UsuarioService _service;
         private Mock<IDataAccessUsuario> _mockUsuarioRepo;
         private Mock<IProyectoService> _mockProyectoService;
-        
+
         private Usuario _usuario1;
         private Usuario _usuario2;
         private UsuarioDTO _dto1;
         private UsuarioDTO _dto2;
+        private UsuarioConContraseñaDTO _dtoConPwd;
 
         [TestInitialize]
         public void SetUp()
         {
             _mockUsuarioRepo = new Mock<IDataAccessUsuario>();
             _mockProyectoService = new Mock<IProyectoService>();
-            _service = new UsuarioService(_mockUsuarioRepo.Object);
+
+            _service = new UsuarioService(
+                _mockUsuarioRepo.Object);
 
             _usuario1 = new Usuario(
                 "u1@test.com",
@@ -48,7 +51,6 @@ namespace Services_Tests
                 Apellido = "Apellido1",
                 Email = "u1@test.com",
                 FechaNacimiento = new DateTime(1990, 1, 1),
-                Contraseña = "Contraseña1!"
             };
 
             _dto2 = new UsuarioDTO
@@ -58,7 +60,16 @@ namespace Services_Tests
                 Apellido = "Apellido2",
                 Email = "u2@test.com",
                 FechaNacimiento = new DateTime(1991, 1, 1),
-                Contraseña = "Contraseña1!"
+            };
+
+            _dtoConPwd = new UsuarioConContraseñaDTO
+            {
+                Id               = 3,
+                Email            = "nuevo@test.com",
+                Nombre           = "Nuevo",
+                Apellido         = "Usuario",
+                FechaNacimiento  = new DateTime(2000, 1, 1),
+                Contraseña       = "PwdSegura1!"
             };
         }
 
@@ -78,13 +89,14 @@ namespace Services_Tests
         [TestMethod]
         public void CrearUsuarioGuardaUsuarioCorrectamente()
         {
+            _mockUsuarioRepo.Setup(r => r.BuscarUsuarioPorCorreo(_dtoConPwd.Email)).Returns((Usuario)null);
             _mockUsuarioRepo.Setup(r => r.Add(It.IsAny<Usuario>()));
 
-            _service.CrearUsuario(_dto1);
+            _service.CrearUsuario(_dtoConPwd);
 
             _mockUsuarioRepo.Verify(r => r.Add(It.Is<Usuario>(u =>
-                u.Nombre == _dto1.Nombre &&
-                u.Email == _dto1.Email)), Times.Once);
+                u.Nombre == _dtoConPwd.Nombre &&
+                u.Email == _dtoConPwd.Email)), Times.Once);
         }
 
         [TestMethod]
@@ -114,12 +126,16 @@ namespace Services_Tests
         {
             string email = "u1@test.com";
             string contraseña = "Contraseña1!";
-            _mockUsuarioRepo.Setup(r => r.buscarUsuarioPorCorreoYContraseña(email, contraseña)).Returns(_usuario1);
+            string encriptada = Usuario.EncriptarPassword(contraseña);
+
+            _mockUsuarioRepo
+                .Setup(r => r.buscarUsuarioPorCorreoYContraseña(email, encriptada))
+                .Returns(_usuario1);
 
             UsuarioDTO resultado = _service.BuscarUsuarioPorCorreoYContraseña(email, contraseña);
 
             Assert.AreEqual(_usuario1.Id, resultado.Id);
-            _mockUsuarioRepo.Verify(r => r.buscarUsuarioPorCorreoYContraseña(email, contraseña), Times.Once);
+            _mockUsuarioRepo.Verify(r => r.buscarUsuarioPorCorreoYContraseña(email, encriptada), Times.Once);
         }
 
         [TestMethod]
@@ -135,7 +151,11 @@ namespace Services_Tests
         {
             string email = "u1@test.com";
             string contraseña = "incorrecta";
-            _mockUsuarioRepo.Setup(r => r.buscarUsuarioPorCorreoYContraseña(email, contraseña)).Returns((Usuario)null);
+            string encriptada = Usuario.EncriptarPassword(contraseña);
+
+            _mockUsuarioRepo
+                .Setup(r => r.buscarUsuarioPorCorreoYContraseña(email, encriptada))
+                .Returns((Usuario)null);
 
             _service.BuscarUsuarioPorCorreoYContraseña(email, contraseña);
         }
@@ -181,5 +201,69 @@ namespace Services_Tests
             Assert.IsFalse(resultado);
             _mockUsuarioRepo.Verify(r => r.GetById(1), Times.Once);
         }
+
+
+        [TestMethod]
+        public void ModificarUsuarioCambiaDatosCorrectamente()
+        {
+            UsuarioConContraseñaDTO dtoModificado = new UsuarioConContraseñaDTO
+            {
+                Id               = _usuario1.Id,
+                Email            = "nuevoEmail@test.com",
+                Nombre           = "NombreNuevo",
+                Apellido         = "ApellidoNuevo",
+                FechaNacimiento  = new DateTime(1990, 5, 5),
+                Contraseña       = "NuevaPwd1!"
+            };
+
+            _mockUsuarioRepo.Setup(r => r.GetById(_usuario1.Id)).Returns(_usuario1);
+
+            _service.ModificarUsuario(dtoModificado);
+
+            Assert.AreEqual(dtoModificado.Email, _usuario1.Email);
+            Assert.AreEqual(dtoModificado.Nombre, _usuario1.Nombre);
+            Assert.AreEqual(dtoModificado.Apellido, _usuario1.Apellido);
+            Assert.AreEqual(dtoModificado.FechaNacimiento, _usuario1.FechaNacimiento);
+            _mockUsuarioRepo.Verify(r => r.GetById(_usuario1.Id), Times.Once);
+        }
+
+        [TestMethod]
+        public void ResetearContraseñaDevuelvePwdEncriptada()
+        {
+            _mockUsuarioRepo.Setup(r => r.GetById(1)).Returns(_usuario1);
+
+            string encriptada = _service.ResetearContraseña(1);
+
+            Assert.IsNotNull(encriptada);
+            Assert.AreEqual(_usuario1.Pwd, encriptada);
+            _mockUsuarioRepo.Verify(r => r.GetById(1), Times.Once);
+        }
+
+        [TestMethod]
+        public void GenerarContraseñaAleatoriaDevuelveNuevaEncriptada()
+        {
+            _mockUsuarioRepo.Setup(r => r.GetById(1)).Returns(_usuario1);
+
+            string anterior = _usuario1.Pwd;
+            string nueva = _service.GenerarContraseñaAleatoria(1);
+
+            Assert.IsNotNull(nueva);
+            Assert.AreNotEqual(anterior, nueva);
+            _mockUsuarioRepo.Verify(r => r.GetById(1), Times.Once);
+        }
+
+        [TestMethod]
+        public void DesencriptarContraseñaDevuelveTextoPlano()
+        {
+            string textoPlano = "Secreto1!";
+            _usuario1.Pwd = textoPlano;
+            _mockUsuarioRepo.Setup(r => r.GetById(1)).Returns(_usuario1);
+
+            string resultado = _service.DesencriptarContraseña(1);
+
+            Assert.AreEqual(textoPlano, resultado);
+            _mockUsuarioRepo.Verify(r => r.GetById(1), Times.Once);
+        }
+
     }
 }

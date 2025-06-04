@@ -43,7 +43,7 @@ public class UsuarioDataAccess : IDataAccessUsuario
     public Usuario? buscarUsuarioPorCorreoYContraseña(string email, string contraseña)
     {
         return _listaUsuarios.FirstOrDefault(u =>
-            u.Email == email && u.Pwd == Usuario.EncriptarPassword(contraseña));
+            u.Email == email && u.Pwd == contraseña);
     }
 
     public Usuario? BuscarUsuarioPorCorreo(string email)
