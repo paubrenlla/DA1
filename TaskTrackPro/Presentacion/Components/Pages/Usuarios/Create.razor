@@ -1,13 +1,12 @@
-﻿@*
-@page "/usuarios/crear/"
+﻿@page "/usuarios/crear"
+@using Controllers
+@using DTOs
+@using UserInterface.Data
+@inject SessionLogic SessionLogic
+@inject UsuarioController UsuarioController
+@inject NavigationManager NavigationManager
 
 <PageTitle>Crear Usuario</PageTitle>
-
-@using Domain
-@using UserInterface.Data
-@inject DB BaseDeDatos
-@inject NavigationManager NavigationManager
-@inject SessionLogic SessionLogic
 
 <h1>Crear Usuario</h1>
 
@@ -19,22 +18,22 @@
 <form onsubmit="return false">
     <div class="form-group">
         <label for="email">Email</label>
-        <input type="text" class="form-control" id="email" @bind="email">
+        <input type="text" class="form-control" id="email" @bind="email" />
     </div>
 
     <div class="form-group">
         <label for="nombre">Nombre</label>
-        <input type="text" class="form-control" id="nombre" @bind="nombre">
+        <input type="text" class="form-control" id="nombre" @bind="nombre" />
     </div>
 
     <div class="form-group">
         <label for="apellido">Apellido</label>
-        <input type="text" class="form-control" id="apellido" @bind="apellido">
+        <input type="text" class="form-control" id="apellido" @bind="apellido" />
     </div>
 
     <div class="form-group">
         <label for="contraseña">Contraseña</label>
-        <input type="password" class="form-control" id="contraseña" @bind="contraseña">
+        <input type="password" class="form-control" id="contraseña" @bind="contraseña" />
     </div>
 
     <div class="form-group">
@@ -42,7 +41,7 @@
         <input type="date" class="form-control" id="fecha" @bind="fecha" />
     </div>
 
-    <input type="submit" class="btn btn-primary" value="Agregar" @onclick="Crear_Usuario">
+    <button class="btn btn-primary" @onclick="CrearUsuario">Agregar</button>
 </form>
 
 @code {
@@ -50,11 +49,11 @@
     private string nombre;
     private string apellido;
     private string contraseña;
-    private DateTime fecha;
-    private string mensajeError;
+    private DateTime fecha = DateTime.Today;
+    private string mensajeError = string.Empty;
 
-    Usuario usuarioLogeado;
-    private bool yaVerifiqueSesion = false;
+    private bool yaVerifiqueSesion  = false;
+    private UsuarioDTO? usuarioLogeadoDto;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -62,33 +61,47 @@
         {
             yaVerifiqueSesion = true;
 
-            var activo = await SessionLogic.isUserActive();
-            if (!activo)
+            bool sesionActiva = await SessionLogic.IsUserActive();
+            if (!sesionActiva)
             {
-                NavigationManager.NavigateTo("/Login");
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+
+            usuarioLogeadoDto = await SessionLogic.GetCurrentUser();
+            if (usuarioLogeadoDto is null)
+            {
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+
+            bool esAdmin = UsuarioController.EsAdmin(usuarioLogeadoDto);
+            if (!esAdmin)
+            {
+                NavigationManager.NavigateTo("/");
                 return;
             }
 
             StateHasChanged();
         }
-        usuarioLogeado = await SessionLogic.GetCurrentUser();
-        if (!BaseDeDatos.UsuarioEsAdmin(usuarioLogeado))
-        {
-            NavigationManager.NavigateTo("/");
-        }
     }
 
-    private void Crear_Usuario()
+    private void CrearUsuario()
     {
-        mensajeError = "";
+        mensajeError = string.Empty;
 
         try
         {
-            Usuario usuarioNuevo = new Usuario(
-                email, nombre, apellido, contraseña, fecha
-            );
+            var nuevoDto = new UsuarioConContraseñaDTO
+            {
+                Email           = email,
+                Nombre          = nombre,
+                Apellido        = apellido,
+                FechaNacimiento = fecha,
+                Contraseña      = contraseña
+            };
 
-            BaseDeDatos.agregarUsuario(usuarioNuevo);
+            UsuarioController.CrearUsuario(nuevoDto);
             NavigationManager.NavigateTo("/usuarios");
         }
         catch (Exception ex)
@@ -97,4 +110,3 @@
         }
     }
 }
-*@

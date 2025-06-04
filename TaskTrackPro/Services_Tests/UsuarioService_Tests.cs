@@ -26,7 +26,7 @@ namespace Services_Tests
             _mockProyectoService = new Mock<IProyectoService>();
 
             _service = new UsuarioService(
-                _mockUsuarioRepo.Object);
+                _mockUsuarioRepo.Object, _mockProyectoService.Object);
 
             _usuario1 = new Usuario(
                 "u1@test.com",
