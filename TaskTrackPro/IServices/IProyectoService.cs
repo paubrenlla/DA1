@@ -21,5 +21,7 @@ namespace Services
         void EliminarAsignacionesDeUsuario(int usuarioId);
         
         bool UsuarioEsAdminEnProyecto(int usuarioId, int proyectoId);
+
+        void AsignarAdminDeProyecto(int usuarioId, int proyectoId);
     }
 }
