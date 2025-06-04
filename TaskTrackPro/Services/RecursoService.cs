@@ -12,11 +12,9 @@ public class RecursoService : IRecursoService
     private readonly List<IRecursoObserver> _observadores = new List<IRecursoObserver>();
     
     public RecursoService(
-        IDataAccessRecurso recursoRepo,
-        IDataAccessAsignacionRecursoTarea asignacionRepo)
+        IDataAccessRecurso recursoRepo)
     {
         _recursoRepo = recursoRepo;
-        _asignacionRepo = asignacionRepo;
     }
     
     public RecursoDTO GetById(int idRecurso)

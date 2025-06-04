@@ -24,7 +24,7 @@ public class RecursoServiceTests
         _repoRecursos = new RecursoDataAccess();
         _repoAsignaciones = new AsignacionRecursoTareaDataAccess();
 
-        _service = new RecursoService(_repoRecursos, _repoAsignaciones);
+        _service = new RecursoService(_repoRecursos);
 
         _recurso1 = new Recurso("Recurso1", "Tipo1", "Desc1", false, 10);
         _recurso2 = new Recurso("Recurso2", "Tipo2", "Desc2", false, 5);
