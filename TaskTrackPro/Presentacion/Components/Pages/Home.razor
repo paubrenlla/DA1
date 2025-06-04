@@ -1,9 +1,12 @@
 ﻿@page "/"
-@using Domain
+@using Blazored.LocalStorage
+@using Controllers
+@using DTOs
 @using UserInterface.Data
 @inject SessionLogic SessionLogic
 @inject NavigationManager NavigationManager
-@inject DB BaseDeDatos
+@inject UsuarioController UsuarioController
+@inject ILocalStorageService LocalStorage
 
 <PageTitle>Home</PageTitle>
 
@@ -14,7 +17,7 @@
     <p>@mensaje</p>
 }
 
-@if (usuario != null)
+@if (usuarioModificableDto is not null)
 {
     <hr />
     <h3>Editar tu información</h3>
@@ -27,27 +30,27 @@
     <form onsubmit="return false">
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="text" class="form-control" id="email" @bind="emailNuevo" />
+            <input type="text" class="form-control" id="email" @bind="usuarioModificableDto.Email" />
         </div>
 
         <div class="form-group">
             <label for="nombre">Nombre</label>
-            <input type="text" class="form-control" id="nombre" @bind="nombreNuevo" />
+            <input type="text" class="form-control" id="nombre" @bind="usuarioModificableDto.Nombre" />
         </div>
 
         <div class="form-group">
             <label for="apellido">Apellido</label>
-            <input type="text" class="form-control" id="apellido" @bind="apellidoNuevo" />
+            <input type="text" class="form-control" id="apellido" @bind="usuarioModificableDto.Apellido" />
         </div>
 
         <div class="form-group">
             <label for="contraseña">Contraseña</label>
-            <input type="password" class="form-control" id="contraseña" @bind="contraseñaNuevo" />
+            <input type="password" class="form-control" id="contraseña" @bind="usuarioModificableDto.Contraseña" />
         </div>
 
         <div class="form-group">
             <label for="fecha">Fecha de Nacimiento</label>
-            <input type="date" class="form-control" id="fecha" @bind="fechaNueva" />
+            <input type="date" class="form-control" id="fecha" @bind="usuarioModificableDto.FechaNacimiento" />
         </div>
 
         <button class="btn btn-primary mt-2" @onclick="GuardarCambios">Guardar cambios</button>
@@ -64,13 +67,7 @@
     private string mensajeError;
     private bool yaRenderice = false;
 
-    private Usuario? usuario;
-
-    private string emailNuevo;
-    private string nombreNuevo;
-    private string apellidoNuevo;
-    private string contraseñaNuevo;
-    private DateTime fechaNueva;
+    private UsuarioConContraseñaDTO? usuarioModificableDto;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -78,36 +75,46 @@
         {
             yaRenderice = true;
 
-            var isUserActive = await SessionLogic.isUserActive();
+            bool isUserActive = await SessionLogic.IsUserActive();
             if (!isUserActive)
             {
                 NavigationManager.NavigateTo("/Login");
+                return;
             }
-            else
-            {
-                usuario = await SessionLogic.GetCurrentUser();
-                mensaje = $"Sesión activa: {usuario.Email}";
-                CargarDatosUsuario();
-                StateHasChanged();
-            }
-        }
-    }
 
-    private void CargarDatosUsuario()
-    {
-        emailNuevo = usuario.Email;
-        nombreNuevo = usuario.Nombre;
-        apellidoNuevo = usuario.Apellido;
-        contraseñaNuevo = Usuario.DesencriptarPassword(usuario.Pwd);
-        fechaNueva = usuario.FechaNacimiento;
+            UsuarioDTO? usuarioDto = await SessionLogic.GetCurrentUser();
+            if (usuarioDto is null)
+            {
+                NavigationManager.NavigateTo("/Login");
+                return;
+            }
+
+            usuarioModificableDto = new UsuarioConContraseñaDTO
+            {
+                Id = usuarioDto.Id,
+                Email = usuarioDto.Email,
+                Nombre = usuarioDto.Nombre,
+                Apellido = usuarioDto.Apellido,
+                FechaNacimiento = usuarioDto.FechaNacimiento,
+                Contraseña = UsuarioController.DesencriptarContraseña(usuarioDto.Id)
+            };
+
+            mensaje = $"Sesión activa: {usuarioModificableDto.Email}";
+            StateHasChanged();
+        }
     }
 
     private void GuardarCambios()
     {
         try
         {
-            usuario.Modificar(emailNuevo, nombreNuevo, apellidoNuevo, contraseñaNuevo, fechaNueva);
+            if (usuarioModificableDto is null)
+                return;
+
+            UsuarioController.ModificarUsuario(usuarioModificableDto);
+
             mensaje = "Cambios guardados correctamente.";
+            mensajeError = string.Empty;
         }
         catch (Exception ex)
         {
@@ -117,13 +124,19 @@
 
     private void SetearContraseñaPorDefecto()
     {
-        contraseñaNuevo = Usuario.CONTRASEÑA_DEFAULT;
-        usuario.Pwd = contraseñaNuevo;
+        if (usuarioModificableDto is null)
+            return;
+
+        string pwdDefault = UsuarioController.ResetearContraseña(usuarioModificableDto.Id);
+        usuarioModificableDto.Contraseña = pwdDefault;
     }
 
     private void GenerarContraseñaAleatoria()
     {
-        usuario.GenerarContraseñaAleatoria();
-        contraseñaNuevo = Usuario.DesencriptarPassword(usuario.Pwd);
+        if (usuarioModificableDto is null)
+            return;
+
+        string randomPwd = UsuarioController.GenerarContraseñaAleatoria(usuarioModificableDto.Id);
+        usuarioModificableDto.Contraseña = randomPwd;
     }
 }

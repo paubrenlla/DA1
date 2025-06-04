@@ -1,20 +1,33 @@
 using Blazored.LocalStorage;
+using Controllers;
+using DataAccess;
 using Domain;
+using IDataAcces;
 using Presentacion.Components;
+using Services;
 using UserInterface.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<DB>(_ => new DB(precargarDatos: true));
+builder.Services.AddScoped<IDataAccessUsuario, UsuarioDataAccess>();
+builder.Services.AddScoped<IDataAccessProyecto, ProyectoDataAccess>();
+builder.Services.AddScoped<IDataAccessTarea, TareaDataAccess>();
+builder.Services.AddScoped<IDataAccessAsignacionProyecto, AsignacionProyectoDataAccess>();
+
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IProyectoService, ProyectoService>();
+builder.Services.AddScoped<ITareaService, TareaService>();
+
+builder.Services.AddScoped<UsuarioController>();
+builder.Services.AddScoped<ProyectoController>();
+builder.Services.AddScoped<TareaController>();
+
 builder.Services.AddScoped<SessionLogic>();
-
-
 
 var app = builder.Build();
 

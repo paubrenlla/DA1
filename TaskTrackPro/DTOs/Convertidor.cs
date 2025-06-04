@@ -12,7 +12,19 @@ public static class Convertidor
             Nombre = usuario.Nombre,
             Apellido = usuario.Apellido,
             FechaNacimiento = usuario.FechaNacimiento,
-            Contraseña = usuario.Pwd
+        };
+    }
+    
+    public static UsuarioConContraseñaDTO AUsuarioConContraseñaDTO(Usuario u)
+    {
+        return new UsuarioConContraseñaDTO
+        {
+            Id = u.Id,
+            Email = u.Email,
+            Nombre = u.Nombre,
+            Apellido = u.Apellido,
+            FechaNacimiento = u.FechaNacimiento,
+            Contraseña = Usuario.DesencriptarPassword(u.Pwd)
         };
     }
     

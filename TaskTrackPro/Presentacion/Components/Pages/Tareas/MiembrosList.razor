@@ -1,4 +1,4 @@
-@page "/proyectos/{idProyecto:int}/tareas/{idTarea:int}/miembros"
+@*@page "/proyectos/{idProyecto:int}/tareas/{idTarea:int}/miembros"
 @using Domain
 @using UserInterface.Data
 
@@ -137,4 +137,4 @@ else
     {
         listaDeMiembros = BaseDeDatos.buscarProyectoPorId(idProyecto).BuscarTareaPorId(idTarea).UsuariosAsignados;
     }
-}
+}*@

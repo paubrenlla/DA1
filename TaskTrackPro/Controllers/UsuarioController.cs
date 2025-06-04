@@ -1,54 +1,70 @@
 ﻿using DTOs;
 using Services;
-namespace Controllers;
 
-
-public class UsuarioController
+namespace Controllers
 {
-    private readonly IUsuarioService _service;
-
-
-    public UsuarioController(IUsuarioService s)
+    public class UsuarioController
     {
-        _service = s;
+        private readonly IUsuarioService _service;
+
+        public UsuarioController(IUsuarioService service)
+        {
+            _service = service;
+        }
+
+        public UsuarioDTO GetById(int id)
+        {
+            return _service.GetById(id);
+        }
+
+        public void EliminarUsuario(UsuarioDTO usuario)
+        {
+            _service.Delete(usuario);
+        }
+
+        public UsuarioDTO BuscarUsuarioPorCorreoYContraseña(string email, string contraseña)
+        {
+            return _service.BuscarUsuarioPorCorreoYContraseña(email, contraseña);
+        }
+
+        public UsuarioDTO GetByEmail(string email)
+        {
+            return _service.GetByEmail(email);
+        }
+
+        public void ConvertirEnAdmin(UsuarioDTO usuarioDTO) 
+        {
+            _service.ConvertirEnAdmin(usuarioDTO);
+        }
+
+        public bool EsAdmin(UsuarioDTO usuarioDto) 
+        {
+            return _service.EsAdmin(usuarioDto);
+        }
+
+        public void CrearUsuario(UsuarioConContraseñaDTO dto)
+        {
+            _service.CrearUsuario(dto);
+        }
+
+        public void ModificarUsuario(UsuarioConContraseñaDTO dto)
+        {
+            _service.ModificarUsuario(dto);
+        }
+
+        public string ResetearContraseña(int usuarioId)
+        {
+            return _service.ResetearContraseña(usuarioId);
+        }
+
+        public string GenerarContraseñaAleatoria(int usuarioId)
+        {
+            return _service.GenerarContraseñaAleatoria(usuarioId);
+        }
+
+        public string DesencriptarContraseña(int usuarioId)
+        {
+            return _service.DesencriptarContraseña(usuarioId);
+        }
     }
-
-
-    public UsuarioDTO BuscarUsuarioPorId(int id)
-    {
-        return _service.GetById(id);
-    }
-    
-    public void AgregarUsuario(UsuarioDTO dto)
-    {
-        _service.CrearUsuario(dto);
-    }
-
-
-    public void EliminarUsuario(UsuarioDTO dto)
-    {
-        _service.Delete(dto);
-    }
-
-    public UsuarioDTO BuscarUsuarioPorCorreoYContraseña(string email, string contraseña)
-    {
-        return _service.BuscarUsuarioPorCorreoYContraseña(email, contraseña);
-    }
-
-
-    public UsuarioDTO BuscarUsuarioPorCorreo(string email)
-    {
-        return _service.GetByEmail(email);
-    }
-
-    public void ConvertirEnAdmin(UsuarioDTO usuario)
-    {
-        _service.ConvertirEnAdmin(usuario);
-    }
-
-    public bool EsAdmin(UsuarioDTO usuario)
-    {
-        return _service.EsAdmin(usuario);
-    }
-    
 }
