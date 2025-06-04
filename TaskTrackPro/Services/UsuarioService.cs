@@ -68,17 +68,18 @@ public class UsuarioService : IUsuarioService
         return Convertidor.AUsuarioDTO(usuario);
     }
 
-    public void ConvertirEnAdmin(UsuarioDTO usuario)
+    public void ConvertirEnAdmin(int usuarioId)
     {
-        Usuario usuarioAdmin = _usuarioRepo.GetById(usuario.Id);
+        Usuario usuarioAdmin = _usuarioRepo.GetById(usuarioId);
         if (usuarioAdmin.EsAdminSistema)
             throw new ArgumentException("El usuario ya es administrador del sistema");
         usuarioAdmin.EsAdminSistema = true;
     }
+
     
-    public bool EsAdmin(UsuarioDTO usuario)
+    public bool EsAdmin(int usuarioId)
     {
-        Usuario? usuarioBuscado = _usuarioRepo.GetById(usuario.Id);
+        Usuario? usuarioBuscado = _usuarioRepo.GetById(usuarioId);
         return usuarioBuscado.EsAdminSistema;
     }
 

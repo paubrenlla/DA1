@@ -75,7 +75,7 @@
                 return;
             }
 
-            bool esAdmin = UsuarioController.EsAdmin(usuarioLogeadoDto);
+            bool esAdmin = UsuarioController.EsAdmin(usuarioLogeadoDto.Id);
             if (!esAdmin)
             {
                 NavigationManager.NavigateTo("/");

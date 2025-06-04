@@ -37,14 +37,14 @@ namespace Controllers
             return _service.GetByEmail(email);
         }
 
-        public void ConvertirEnAdmin(UsuarioDTO usuarioDTO) 
+        public void ConvertirEnAdmin(int usuarioId)
         {
-            _service.ConvertirEnAdmin(usuarioDTO);
+            _service.ConvertirEnAdmin(usuarioId);
         }
 
-        public bool EsAdmin(UsuarioDTO usuarioDto) 
+        public bool EsAdmin(int usuarioDtoId) 
         {
-            return _service.EsAdmin(usuarioDto);
+            return _service.EsAdmin(usuarioDtoId);
         }
 
         public void CrearUsuario(UsuarioConContraseñaDTO dto)

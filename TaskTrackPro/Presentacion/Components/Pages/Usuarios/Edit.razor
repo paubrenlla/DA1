@@ -1,13 +1,12 @@
-﻿@*
-@page "/usuarios/{id:int}/editar/"
+﻿@page "/usuarios/{id:int}/editar"
+@using Controllers
+@using DTOs
+@using UserInterface.Data
+@inject SessionLogic SessionLogic
+@inject UsuarioController UsuarioController
+@inject NavigationManager NavigationManager
 
 <PageTitle>Editar Usuario</PageTitle>
-
-@using Domain
-@using UserInterface.Data
-@inject DB BaseDeDatos
-@inject NavigationManager NavigationManager
-@inject SessionLogic SessionLogic
 
 <h1>Editar Usuario</h1>
 
@@ -16,118 +15,122 @@
     <div class="alert alert-danger">@mensajeError</div>
 }
 
-<form onsubmit="return false">
-    <div class="form-group">
-        <label for="email">Email</label>
-        <input type="text" class="form-control" id="email" @bind="emailNuevo">
-    </div>
+@if (usuarioConDto is not null)
+{
+    <form onsubmit="return false">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="text" class="form-control" id="email" @bind="usuarioConDto.Email" />
+        </div>
 
-    <div class="form-group">
-        <label for="nombre">Nombre</label>
-        <input type="text" class="form-control" id="nombre" @bind="nombreNuevo">
-    </div>
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" class="form-control" id="nombre" @bind="usuarioConDto.Nombre" />
+        </div>
 
-    <div class="form-group">
-        <label for="apellido">Apellido</label>
-        <input type="text" class="form-control" id="apellido" @bind="apellidoNuevo">
-    </div>
+        <div class="form-group">
+            <label for="apellido">Apellido</label>
+            <input type="text" class="form-control" id="apellido" @bind="usuarioConDto.Apellido" />
+        </div>
 
-    <div class="form-group">
-        <label for="contraseña">Contraseña</label>
-        <input type="password" class="form-control" id="contraseña" @bind="contraseñaNuevo">
-    </div>
-    
-    <div class="form-group">
-        <label for="fecha">Fecha de Nacimiento</label>
-        <input type="date" class="form-control" id="fecha" @bind="fechaNueva" />
-    </div>
+        <div class="form-group">
+            <label for="contraseña">Contraseña</label>
+            <input type="password" class="form-control" id="contraseña" @bind="usuarioConDto.Contraseña" />
+        </div>
 
-    @if (!esAdmin)
-    {
-        <button class="btn btn-warning mt-3" @onclick="ConcederPrivilegios">
-            Conceder privilegios del sistema
+        <div class="form-group">
+            <label for="fecha">Fecha de Nacimiento</label>
+            <input type="date" class="form-control" id="fecha" @bind="usuarioConDto.FechaNacimiento" />
+        </div>
+
+        @if (!UsuarioController.EsAdmin(usuarioConDto.Id))
+        {
+            <button class="btn btn-warning mt-3" @onclick="ConcederPrivilegios">
+                Conceder privilegios del sistema
+            </button>
+        }
+
+        <button class="btn btn-primary mt-3" @onclick="GuardarCambios">
+            Guardar cambios
         </button>
-    }
 
-    <input type="submit" class="btn btn-primary" value="Guardar cambios" @onclick="GuardarCambios">
-
-    <div class="form-group mt-2">
-        <button class="btn btn-secondary" @onclick="SetearContraseñaPorDefecto">
-            Contraseña por defecto
-        </button>
-    </div>
-
-    <div class="form-group mt-2">
-        <button class="btn btn-info" @onclick="GenerarContraseñaAleatoria">
-            Generar contraseña aleatoria
-        </button>
-    </div>
-    
-</form>
+        <div class="form-group mt-2">
+            <button class="btn btn-secondary" @onclick="SetearContraseñaPorDefecto">
+                Contraseña por defecto
+            </button>
+            <button class="btn btn-info ml-2" @onclick="GenerarContraseñaAleatoria">
+                Generar contraseña aleatoria
+            </button>
+        </div>
+    </form>
+}
+else
+{
+    <p>Cargando…</p>
+}
 
 @code {
     [Parameter]
     public int id { get; set; }
 
-    private string emailNuevo;
-    private string nombreNuevo;
-    private string apellidoNuevo;
-    private string contraseñaNuevo; 
-    private DateTime fechaNueva;
-    private string mensajeError;
+    private UsuarioConContraseñaDTO? usuarioConDto;
+    private UsuarioDTO? usuarioLogeadoDto;
+    private bool esAdminSistema;
+    private bool yaVerifiqueSesion = false;
+    private string mensajeError = string.Empty;
 
-    Usuario usuarioACambiar;
-    Usuario usuarioLogeado;
-
-    @code {
-        private bool esAdmin;
-        private bool yaVerifiqueSesion = false;
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!yaVerifiqueSesion)
         {
-            if (!yaVerifiqueSesion)
+            yaVerifiqueSesion = true;
+
+            bool sesionActiva = await SessionLogic.IsUserActive();
+            if (!sesionActiva)
             {
-                yaVerifiqueSesion = true;
-
-                bool activo = await SessionLogic.isUserActive();
-                if (!activo)
-                {
-                    NavigationManager.NavigateTo("/Login");
-                    return;
-                }
-                
-                
-                usuarioLogeado = await SessionLogic.GetCurrentUser();
-                if (!BaseDeDatos.UsuarioEsAdmin(usuarioLogeado))
-                {
-                    NavigationManager.NavigateTo("/");
-                }
-
-                usuarioACambiar = BaseDeDatos.buscarUsuarioPorId(id);
-                esAdmin = BaseDeDatos.AdministradoresSistema.Contains(usuarioACambiar);
-                if (usuarioACambiar != null)
-                {
-                    emailNuevo = usuarioACambiar.Email;
-                    nombreNuevo = usuarioACambiar.Nombre;
-                    apellidoNuevo = usuarioACambiar.Apellido;
-                    contraseñaNuevo = Usuario.DesencriptarPassword(usuarioACambiar.Pwd);
-                    fechaNueva = usuarioACambiar.FechaNacimiento;
-                }
-                else
-                {
-                    mensajeError = "Usuario no encontrado.";
-                }
-
-                StateHasChanged();
+                NavigationManager.NavigateTo("/login");
+                return;
             }
-        }
 
+            usuarioLogeadoDto = await SessionLogic.GetCurrentUser();
+            if (usuarioLogeadoDto is null)
+            {
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+
+            esAdminSistema = UsuarioController.EsAdmin(usuarioLogeadoDto.Id);
+            if (!esAdminSistema)
+            {
+                NavigationManager.NavigateTo("/");
+                return;
+            }
+
+            UsuarioDTO usuarioDto = UsuarioController.GetById(id);
+            string pwdPlano = UsuarioController.DesencriptarContraseña(id);
+
+            usuarioConDto = new UsuarioConContraseñaDTO
+            {
+                Id              = usuarioDto.Id,
+                Email           = usuarioDto.Email,
+                Nombre          = usuarioDto.Nombre,
+                Apellido        = usuarioDto.Apellido,
+                FechaNacimiento = usuarioDto.FechaNacimiento,
+                Contraseña      = pwdPlano
+            };
+
+            StateHasChanged();
+        }
     }
+
     private void GuardarCambios()
     {
+        if (usuarioConDto is null)
+            return;
+
         try
         {
-            usuarioACambiar.Modificar(emailNuevo,nombreNuevo,apellidoNuevo,contraseñaNuevo,fechaNueva);
+            UsuarioController.ModificarUsuario(usuarioConDto);
             NavigationManager.NavigateTo("/usuarios");
         }
         catch (Exception ex)
@@ -135,33 +138,52 @@
             mensajeError = ex.Message;
         }
     }
-    
+
     private void ConcederPrivilegios()
     {
-        if (!BaseDeDatos.AdministradoresSistema.Contains(usuarioACambiar))
+        if (usuarioConDto is null)
+            return;
+
+        try
         {
-            BaseDeDatos.AdministradoresSistema.Add(usuarioACambiar);
-            esAdmin = true;
+            UsuarioController.ConvertirEnAdmin(usuarioConDto.Id);
+            esAdminSistema = true;
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
         }
     }
-    
+
     private void SetearContraseñaPorDefecto()
     {
-        contraseñaNuevo = Usuario.CONTRASEÑA_DEFAULT;
-        usuarioACambiar = BaseDeDatos.buscarUsuarioPorId(id);
-        usuarioACambiar.Pwd = contraseñaNuevo;
+        if (usuarioConDto is null)
+            return;
 
+        try
+        {
+            string pwdDefault = UsuarioController.ResetearContraseña(usuarioConDto.Id);
+            usuarioConDto.Contraseña = UsuarioController.DesencriptarContraseña(usuarioConDto.Id);
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
     }
-    
+
     private void GenerarContraseñaAleatoria()
     {
-        usuarioACambiar = BaseDeDatos.buscarUsuarioPorId(id);
-        usuarioACambiar.GenerarContraseñaAleatoria();
-        contraseñaNuevo = Usuario.DesencriptarPassword(usuarioACambiar.Pwd);
-        StateHasChanged();
+        if (usuarioConDto is null)
+            return;
+
+        try
+        {
+            string nuevaHash = UsuarioController.GenerarContraseñaAleatoria(usuarioConDto.Id);
+            usuarioConDto.Contraseña = UsuarioController.DesencriptarContraseña(usuarioConDto.Id);
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
     }
-
-
-
 }
-*@

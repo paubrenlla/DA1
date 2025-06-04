@@ -163,7 +163,7 @@ namespace Services_Tests
         {
             _mockUsuarioRepo.Setup(r => r.GetById(1)).Returns(_usuario1);
 
-            _service.ConvertirEnAdmin(_dto1);
+            _service.ConvertirEnAdmin(1);
 
             Assert.IsTrue(_usuario1.EsAdminSistema);
             _mockUsuarioRepo.Verify(r => r.GetById(1), Times.Once);
@@ -175,15 +175,16 @@ namespace Services_Tests
         {
             _mockUsuarioRepo.Setup(r => r.GetById(2)).Returns(_usuario2);
 
-            _service.ConvertirEnAdmin(_dto2);
+            _service.ConvertirEnAdmin(2);
         }
+
 
         [TestMethod]
         public void EsAdminDevuelveTrueCuandoUsuarioEsAdmin()
         {
             _mockUsuarioRepo.Setup(r => r.GetById(2)).Returns(_usuario2);
 
-            bool resultado = _service.EsAdmin(_dto2);
+            bool resultado = _service.EsAdmin(2);
 
             Assert.IsTrue(resultado);
             _mockUsuarioRepo.Verify(r => r.GetById(2), Times.Once);
@@ -194,7 +195,7 @@ namespace Services_Tests
         {
             _mockUsuarioRepo.Setup(r => r.GetById(1)).Returns(_usuario1);
 
-            bool resultado = _service.EsAdmin(_dto1);
+            bool resultado = _service.EsAdmin(1);
 
             Assert.IsFalse(resultado);
             _mockUsuarioRepo.Verify(r => r.GetById(1), Times.Once);

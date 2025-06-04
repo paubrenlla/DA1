@@ -113,22 +113,20 @@ namespace Controllers_Tests
         [TestMethod]
         public void ConvertirEnAdmin_LlamaService()
         {
-            _controller.ConvertirEnAdmin(_dto1);
+            _controller.ConvertirEnAdmin(1);
 
-            _mockService.Verify(s => s.ConvertirEnAdmin(_dto1), Times.Once);
+            _mockService.Verify(s => s.ConvertirEnAdmin(1), Times.Once);
         }
 
         [TestMethod]
         public void EsAdmin_DevuelveLoQueDevuelveService()
         {
-            _mockService
-                .Setup(s => s.EsAdmin(_dto1))
-                .Returns(true);
+            _mockService.Setup(s => s.EsAdmin(1)).Returns(true);
 
-            bool resultado = _controller.EsAdmin(_dto1);
+            bool resultado = _controller.EsAdmin(1);
 
             Assert.IsTrue(resultado);
-            _mockService.Verify(s => s.EsAdmin(_dto1), Times.Once);
+            _mockService.Verify(s => s.EsAdmin(1), Times.Once);
         }
 
         [TestMethod]
