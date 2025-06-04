@@ -249,27 +249,27 @@ public class DB
     */
     // }
 
-    public void agregarRecurso(Recurso recurso)
-    {
-        if (ListaRecursos.Contains(recurso))
-            throw new ArgumentException("Este recurso ya existe");
-        ListaRecursos.Add(recurso);
-    }
+    // public void agregarRecurso(Recurso recurso)
+    // {
+    //     if (ListaRecursos.Contains(recurso))
+    //         throw new ArgumentException("Este recurso ya existe");
+    //     ListaRecursos.Add(recurso);
+    // }
 
-    public void eliminarRecurso(Recurso recurso)
-    {
-        ListaRecursos.Remove(recurso);
-    }
+    // public void eliminarRecurso(Recurso recurso)
+    // {
+    //     ListaRecursos.Remove(recurso);
+    // }
 
     // public Proyecto buscarProyectoPorId(int id)
     // {
     //     return ListaProyectos.FirstOrDefault(p => p.Id == id);
     // }
 
-    public Recurso? buscarRecursoPorId(int id)
-    {
-        return ListaRecursos.FirstOrDefault(r => r.Id == id);
-    }
+    // public Recurso? buscarRecursoPorId(int id)
+    // {
+    //     return ListaRecursos.FirstOrDefault(r => r.Id == id);
+    // }
 
     /*/*public void agregarNotificacion(Notificacion notificacion)
     {
