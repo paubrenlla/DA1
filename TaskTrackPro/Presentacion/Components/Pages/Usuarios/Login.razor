@@ -1,6 +1,5 @@
 ﻿@page "/login"
 
-@using Domain
 @using UserInterface.Data
 @inject SessionLogic SessionManager
 @inject NavigationManager NavigationManager
@@ -15,15 +14,15 @@
 <form onsubmit="return false">
     <div class="form-group">
         <label for="email">Email</label>
-        <input type="text" class="form-control" id="email" @bind="email">
+        <input type="text" class="form-control" id="email" @bind="email" />
     </div>
 
     <div class="form-group">
         <label for="password">Contraseña</label>
-        <input type="password" class="form-control" id="password" @bind="password">
+        <input type="password" class="form-control" id="password" @bind="password" />
     </div>
 
-    <input type="submit" class="btn btn-primary" value="Iniciar sesión" @onclick="IniciarSesion">
+    <input type="submit" class="btn btn-primary" value="Iniciar sesión" @onclick="IniciarSesion" />
 </form>
 
 @code {
@@ -31,16 +30,16 @@
     private string password;
     private string mensajeError;
     private bool yaVerifiqueSesion = false;
-    private bool sesionActiva;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && !yaVerifiqueSesion)
         {
+            yaVerifiqueSesion = true;
+
             try
             {
-                sesionActiva = await SessionManager.isUserActive();
-                
+                bool sesionActiva = await SessionManager.IsUserActive();
                 if (sesionActiva)
                 {
                     NavigationManager.NavigateTo("/");
@@ -50,14 +49,10 @@
             catch (Exception ex)
             {
                 mensajeError = ex.Message;
-                
-            }   
-            yaVerifiqueSesion = true;
-            StateHasChanged();
+                StateHasChanged();
+            }
         }
-    }  
-    
-
+    }
 
     private async Task IniciarSesion()
     {
