@@ -1,9 +1,8 @@
-﻿@*
-@page "/usuarios"
-@using Domain
+﻿@page "/usuarios"
+@using Controllers
+@using DTOs
 @using UserInterface.Data
-
-@inject DB BaseDeDatos
+@inject UsuarioController UsuarioController
 @inject SessionLogic SessionLogic
 @inject NavigationManager NavigationManager
 
@@ -17,32 +16,32 @@
     <div class="alert alert-danger">@mensajeError</div>
 }
 
-@if (listaDeUsuarios is not null)
+@if (listaUsuariosDto is not null)
 {
     <table class="table">
         <thead>
-        <tr>
-            <th>Email</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Fecha de Nacimiento</th>
-            <th>Acciones</th>
-        </tr>
+            <tr>
+                <th>Email</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Fecha de Nacimiento</th>
+                <th>Acciones</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var usuario in listaDeUsuarios)
-        {
-            <tr>
-                <td>@usuario.Email</td>
-                <td>@usuario.Nombre</td>
-                <td>@usuario.Apellido</td>
-                <td>@usuario.FechaNacimiento.ToShortDateString()</td>
-                <td>
-                    <a class="btn btn-success btn-sm" href="usuarios/@usuario.Id/editar/">Editar</a>
-                    <button class="btn btn-danger btn-sm" @onclick="() => EliminarUsuario(usuario.Id)">Eliminar</button>
-                </td>
-            </tr>
-        }
+            @foreach (UsuarioDTO usuario in listaUsuariosDto)
+            {
+                <tr>
+                    <td>@usuario.Email</td>
+                    <td>@usuario.Nombre</td>
+                    <td>@usuario.Apellido</td>
+                    <td>@usuario.FechaNacimiento.ToShortDateString()</td>
+                    <td>
+                        <a class="btn btn-success btn-sm" href="usuarios/@usuario.Id/editar">Editar</a>
+                        <button class="btn btn-danger btn-sm" @onclick="() => EliminarUsuario(usuario)">Eliminar</button>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 }
@@ -52,43 +51,49 @@ else
 }
 
 @code {
-    private List<Usuario>? listaDeUsuarios;
+    private List<UsuarioDTO>? listaUsuariosDto;
     private bool yaVerifiqueSesion = false;
     private string mensajeError = string.Empty;
-    Usuario usuarioLogeado;
+    private UsuarioDTO? usuarioLogeadoDto;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && !yaVerifiqueSesion)
         {
-            var isUserActive = await SessionLogic.isUserActive();
-            if (!isUserActive)
+            bool sesionActiva = await SessionLogic.IsUserActive();
+            if (!sesionActiva)
             {
-                NavigationManager.NavigateTo("/Login");
+                NavigationManager.NavigateTo("/login");
+                return;
             }
-            
-            usuarioLogeado = await SessionLogic.GetCurrentUser();
-            if (!BaseDeDatos.UsuarioEsAdmin(usuarioLogeado))
+
+            usuarioLogeadoDto = await SessionLogic.GetCurrentUser();
+            if (usuarioLogeadoDto is null)
+            {
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+
+            bool esAdmin = UsuarioController.EsAdmin(usuarioLogeadoDto.Id);
+            if (!esAdmin)
             {
                 NavigationManager.NavigateTo("/");
+                return;
             }
-            else
-            {
-                listaDeUsuarios = BaseDeDatos.ListaUsuarios;
-                yaVerifiqueSesion = true;
-                StateHasChanged(); 
-            }
+
+            listaUsuariosDto = UsuarioController.GetAll();
+            yaVerifiqueSesion = true;
+            StateHasChanged();
         }
     }
 
-    private void EliminarUsuario(int id)
+    private void EliminarUsuario(UsuarioDTO usuario)
     {
         try
         {
             mensajeError = string.Empty;
-            Usuario usuarioAEliminar = BaseDeDatos.buscarUsuarioPorId(id);
-            BaseDeDatos.eliminarUsuario(usuarioAEliminar);
-            listaDeUsuarios = BaseDeDatos.ListaUsuarios;
+            UsuarioController.EliminarUsuario(usuario);
+            listaUsuariosDto = UsuarioController.GetAll();
             StateHasChanged();
         }
         catch (Exception ex)
@@ -97,4 +102,3 @@ else
         }
     }
 }
-*@

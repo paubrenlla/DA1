@@ -26,7 +26,7 @@ namespace Services_Tests
             _mockProyectoService = new Mock<IProyectoService>();
 
             _service = new UsuarioService(
-                _mockUsuarioRepo.Object);
+                _mockUsuarioRepo.Object, _mockProyectoService.Object);
 
             _usuario1 = new Usuario(
                 "u1@test.com",
@@ -163,7 +163,7 @@ namespace Services_Tests
         {
             _mockUsuarioRepo.Setup(r => r.GetById(1)).Returns(_usuario1);
 
-            _service.ConvertirEnAdmin(_dto1);
+            _service.ConvertirEnAdmin(1);
 
             Assert.IsTrue(_usuario1.EsAdminSistema);
             _mockUsuarioRepo.Verify(r => r.GetById(1), Times.Once);
@@ -175,15 +175,16 @@ namespace Services_Tests
         {
             _mockUsuarioRepo.Setup(r => r.GetById(2)).Returns(_usuario2);
 
-            _service.ConvertirEnAdmin(_dto2);
+            _service.ConvertirEnAdmin(2);
         }
+
 
         [TestMethod]
         public void EsAdminDevuelveTrueCuandoUsuarioEsAdmin()
         {
             _mockUsuarioRepo.Setup(r => r.GetById(2)).Returns(_usuario2);
 
-            bool resultado = _service.EsAdmin(_dto2);
+            bool resultado = _service.EsAdmin(2);
 
             Assert.IsTrue(resultado);
             _mockUsuarioRepo.Verify(r => r.GetById(2), Times.Once);
@@ -194,7 +195,7 @@ namespace Services_Tests
         {
             _mockUsuarioRepo.Setup(r => r.GetById(1)).Returns(_usuario1);
 
-            bool resultado = _service.EsAdmin(_dto1);
+            bool resultado = _service.EsAdmin(1);
 
             Assert.IsFalse(resultado);
             _mockUsuarioRepo.Verify(r => r.GetById(1), Times.Once);
@@ -261,6 +262,47 @@ namespace Services_Tests
 
             Assert.AreEqual(textoPlano, resultado);
             _mockUsuarioRepo.Verify(r => r.GetById(1), Times.Once);
+        }
+        
+        [TestMethod]
+        public void GetAllDevuelveListaVaciaCuandoNoHayUsuarios()
+        {
+            _mockUsuarioRepo
+                .Setup(r => r.GetAll())
+                .Returns(new List<Usuario>());
+
+            List<UsuarioDTO> resultado = _service.GetAll();
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(0, resultado.Count);
+            _mockUsuarioRepo.Verify(r => r.GetAll(), Times.Once);
+        }
+
+        [TestMethod]
+        public void GetAllDevuelveListaDeUsuarioDTOs()
+        {
+            List<Usuario> lista = new List<Usuario> { _usuario1, _usuario2 };
+
+            _mockUsuarioRepo
+                .Setup(r => r.GetAll())
+                .Returns(lista);
+
+            List<UsuarioDTO> resultado = _service.GetAll();
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(2, resultado.Count);
+
+            Assert.AreEqual(_usuario1.Id, resultado[0].Id);
+            Assert.AreEqual(_usuario1.Email, resultado[0].Email);
+            Assert.AreEqual(_usuario1.Nombre, resultado[0].Nombre);
+            Assert.AreEqual(_usuario1.Apellido, resultado[0].Apellido);
+
+            Assert.AreEqual(_usuario2.Id, resultado[1].Id);
+            Assert.AreEqual(_usuario2.Email, resultado[1].Email);
+            Assert.AreEqual(_usuario2.Nombre, resultado[1].Nombre);
+            Assert.AreEqual(_usuario2.Apellido, resultado[1].Apellido);
+
+            _mockUsuarioRepo.Verify(r => r.GetAll(), Times.Once);
         }
 
     }

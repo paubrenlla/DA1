@@ -16,7 +16,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddScoped<IDataAccessUsuario, UsuarioDataAccess>();
+builder.Services.AddSingleton<IDataAccessUsuario, UsuarioDataAccess>();
 builder.Services.AddScoped<IDataAccessProyecto, ProyectoDataAccess>();
 builder.Services.AddScoped<IDataAccessTarea, TareaDataAccess>();
 builder.Services.AddScoped<IDataAccessAsignacionProyecto, AsignacionProyectoDataAccess>();
