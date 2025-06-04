@@ -9,15 +9,23 @@ public class UsuarioService : IUsuarioService
     private readonly IDataAccessUsuario _usuarioRepo;
     private readonly IProyectoService _serviceProyecto;
     
-    public UsuarioService(IDataAccessUsuario usuarioRepo)
+    public UsuarioService(IDataAccessUsuario usuarioRepo, IProyectoService serviceProyecto)
     {
-        _usuarioRepo = usuarioRepo;
+        _usuarioRepo       = usuarioRepo;
+        _serviceProyecto   = serviceProyecto;
     }
 
 
     public UsuarioDTO GetById(int id)
     {
         return Convertidor.AUsuarioDTO(_usuarioRepo.GetById(id));
+    }
+
+    public List<UsuarioDTO> GetAll()
+    {
+        return _usuarioRepo.GetAll()
+            .Select(u => Convertidor.AUsuarioDTO(u))
+            .ToList();
     }
 
     public void CrearUsuario(UsuarioConContraseñaDTO dto)

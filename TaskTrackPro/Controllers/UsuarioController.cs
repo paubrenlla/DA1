@@ -16,6 +16,11 @@ namespace Controllers
         {
             return _service.GetById(id);
         }
+        
+        public List<UsuarioDTO> GetAll()
+        {
+            return _service.GetAll();
+        }
 
         public void EliminarUsuario(UsuarioDTO usuario)
         {

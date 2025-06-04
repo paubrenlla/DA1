@@ -177,5 +177,24 @@ namespace Controllers_Tests
             Assert.AreEqual("textoPlano", resultado);
             _mockService.Verify(s => s.DesencriptarContraseña(3), Times.Once);
         }
+        
+        [TestMethod]
+        public void GetAll_LlamaServiceYDevuelveLista()
+        {
+            List<UsuarioDTO> listaDtos = new List<UsuarioDTO>();
+            listaDtos.Add(_dto1);
+            listaDtos.Add(_dto2);
+            _mockService
+                .Setup(s => s.GetAll())
+                .Returns(listaDtos);
+
+            List<UsuarioDTO> resultado = _controller.GetAll();
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(2, resultado.Count);
+            Assert.AreEqual(_dto1, resultado[0]);
+            Assert.AreEqual(_dto2, resultado[1]);
+            _mockService.Verify(s => s.GetAll(), Times.Once);
+        }
     }
 }

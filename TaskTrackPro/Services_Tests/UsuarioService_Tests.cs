@@ -262,6 +262,47 @@ namespace Services_Tests
             Assert.AreEqual(textoPlano, resultado);
             _mockUsuarioRepo.Verify(r => r.GetById(1), Times.Once);
         }
+        
+        [TestMethod]
+        public void GetAllDevuelveListaVaciaCuandoNoHayUsuarios()
+        {
+            _mockUsuarioRepo
+                .Setup(r => r.GetAll())
+                .Returns(new List<Usuario>());
+
+            List<UsuarioDTO> resultado = _service.GetAll();
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(0, resultado.Count);
+            _mockUsuarioRepo.Verify(r => r.GetAll(), Times.Once);
+        }
+
+        [TestMethod]
+        public void GetAllDevuelveListaDeUsuarioDTOs()
+        {
+            List<Usuario> lista = new List<Usuario> { _usuario1, _usuario2 };
+
+            _mockUsuarioRepo
+                .Setup(r => r.GetAll())
+                .Returns(lista);
+
+            List<UsuarioDTO> resultado = _service.GetAll();
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(2, resultado.Count);
+
+            Assert.AreEqual(_usuario1.Id, resultado[0].Id);
+            Assert.AreEqual(_usuario1.Email, resultado[0].Email);
+            Assert.AreEqual(_usuario1.Nombre, resultado[0].Nombre);
+            Assert.AreEqual(_usuario1.Apellido, resultado[0].Apellido);
+
+            Assert.AreEqual(_usuario2.Id, resultado[1].Id);
+            Assert.AreEqual(_usuario2.Email, resultado[1].Email);
+            Assert.AreEqual(_usuario2.Nombre, resultado[1].Nombre);
+            Assert.AreEqual(_usuario2.Apellido, resultado[1].Apellido);
+
+            _mockUsuarioRepo.Verify(r => r.GetAll(), Times.Once);
+        }
 
     }
 }

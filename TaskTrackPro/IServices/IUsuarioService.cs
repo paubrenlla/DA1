@@ -5,6 +5,7 @@ namespace Services;
 public interface IUsuarioService
 {
     UsuarioDTO GetById(int id);
+    List<UsuarioDTO> GetAll();
     void CrearUsuario(UsuarioConContraseñaDTO dto);
     void Delete(UsuarioDTO dto);
     UsuarioDTO GetByEmail(string email);
