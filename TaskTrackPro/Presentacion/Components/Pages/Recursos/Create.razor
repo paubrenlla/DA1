@@ -1,10 +1,12 @@
-﻿@*@page "/recursos/crear/"
+﻿@page "/recursos/crear/"
 
 <PageTitle>Crear Recurso</PageTitle>
 
-@using Domain
+@using Controllers
+@using DTOs
 @using UserInterface.Data
-@inject DB BaseDeDatos
+@inject RecursoController Recursos
+@inject UsuarioController Usuarios
 @inject NavigationManager NavigationManager
 @inject SessionLogic SessionLogic
 
@@ -56,9 +58,9 @@
     private bool compartir;
     private string mensajeError;
 
-    Recurso recursoACambiar;
+    RecursoDTO recursoACambiar;
     private bool yaVerifiqueSesion = false;
-    Usuario usuarioLogeado;
+    UsuarioDTO usuarioLogeado;
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -66,14 +68,14 @@
         {
             yaVerifiqueSesion = true;
 
-            var activo = await SessionLogic.isUserActive();
+            var activo = await SessionLogic.IsUserActive();
             if (!activo)
             {
                 NavigationManager.NavigateTo("/Login");
                 return;
             }
             usuarioLogeado = await SessionLogic.GetCurrentUser();
-            if (!BaseDeDatos.UsuarioEsAdmin(usuarioLogeado))
+            if (!Usuarios.EsAdmin(usuarioLogeado))
             {
                 NavigationManager.NavigateTo("/");
             }
@@ -88,11 +90,16 @@
 
         try
         {
-            Recurso recursoNuevo = new Recurso(
-                nombre, tipo, descripcion, compartir, cantidad
-            );
+            RecursoDTO recursoNuevo = new RecursoDTO
+            {
+                Nombre = nombre,
+                Tipo = tipo,
+                Descripcion = descripcion,
+                SePuedeCompartir = compartir,
+                CantidadDelRecurso = cantidad
+            };
 
-            BaseDeDatos.agregarRecurso(recursoNuevo);
+            Recursos.Add(recursoNuevo);
             NavigationManager.NavigateTo("/recursos");
         }
         catch (Exception ex)
@@ -101,4 +108,4 @@
         }
     }
 
-}*@
+}
