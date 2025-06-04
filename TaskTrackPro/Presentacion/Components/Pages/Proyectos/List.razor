@@ -1,7 +1,9 @@
-﻿@*@page "/proyectos"
-@using Domain
+﻿@page "/proyectos"
+@using Controllers
+@using DTOs
 @using UserInterface.Data
-@inject DB BaseDeDatos
+@inject ProyectoController Proyectos
+@inject UsuarioController Usuarios
 @inject SessionLogic SessionManager
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
@@ -58,7 +60,7 @@ else
                             <div class="btn-group" role="group">
                                 <a class="btn btn-primary btn-sm" href="proyectos/@proyecto.Id/tareas">Ver Tareas</a>
                                 
-                                @if (esAdminSistema || BaseDeDatos.UsuarioEsAdminDelProyecto(usuarioLogueado,proyecto))
+                                @if (esAdminSistema || Proyectos.UsuarioEsAdminEnProyecto(usuarioLogueado.Id, proyecto.Id))
                                 {
                                     <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/tareas/crear">Agregar Tarea</a>
                                     <a class="btn btn-success btn-sm" href="proyectos/@proyecto.Id/miembros">Ver Miembros</a>
@@ -81,8 +83,8 @@ else
 }
 
 @code {
-    private List<Proyecto>? proyectosVisibles;
-    private Usuario? usuarioLogueado;
+    private List<ProyectoDTO>? proyectosVisibles;
+    private UsuarioDTO? usuarioLogueado;
     private bool esAdminSistema;
     private bool yaVerifiqueSesion;
     private bool sesionActiva;
@@ -93,7 +95,7 @@ else
         {
             try
             {
-                sesionActiva = await SessionManager.isUserActive();
+                sesionActiva = await SessionManager.IsUserActive();
                 
                 if (!sesionActiva)
                 {
@@ -105,15 +107,15 @@ else
                 
                 if (usuarioLogueado != null)
                 {
-                    esAdminSistema = BaseDeDatos.UsuarioEsAdmin(usuarioLogueado);
+                    esAdminSistema = Usuarios.EsAdmin(usuarioLogueado.Id);
             
                     if (esAdminSistema)
                     {
-                        proyectosVisibles = BaseDeDatos.ListaProyectos;
+                        proyectosVisibles = Proyectos.GetAll();
                     }
                     else
                     {
-                        proyectosVisibles = BaseDeDatos.ProyectosDelUsuario(usuarioLogueado);
+                        proyectosVisibles = Proyectos.ProyectosDelUsuario(usuarioLogueado.Id);
                     }
                     
                 }
@@ -129,4 +131,4 @@ else
             }
         }
     }
-}*@
+}
