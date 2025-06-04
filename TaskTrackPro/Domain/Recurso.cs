@@ -9,7 +9,6 @@ public class Recurso
     public bool SePuedeCompartir { get; set; }
     public int CantidadDelRecurso { get; set; }
     public int CantidadEnUso { get; set; }
-    //public List<Tarea> TareasQueLoUsan { get; set; }
     
     public int  Id { get; set; }
 
@@ -49,39 +48,11 @@ public class Recurso
     {
         if (!EstaDisponible(cantidad)) return;
         CantidadEnUso += cantidad;
-        //ReevaluarEstadoTareas();
     }
-
-    // public void AgregarRecursoATarea(Tarea tarea)
-    // {
-    //     if (!TareasQueLoUsan.Contains(tarea)) TareasQueLoUsan.Add(tarea);
-    // }
-    
-    // public void QuitarRecursoATarea(Tarea tarea)
-    // {
-    //     if(TareasQueLoUsan.Contains(tarea))  TareasQueLoUsan.Remove(tarea);
-    // }
-
-    // public void ReevaluarEstadoTareas()
-    // {
-    //     foreach (Tarea tarea in TareasQueLoUsan)
-    //     {
-    //         tarea.ActualizarEstado();
-    //     }
-    // }
-    // public bool EsExclusivo()
-    // {
-    //     int cantidadProyectosDistintos = TareasQueLoUsan
-    //         .Select(p => p.Proyecto)
-    //         .Distinct()
-    //         .Count();
-    //     return cantidadProyectosDistintos == 1;
-    // }
     
     public void LiberarRecurso(int cantidad)
     {
         CantidadEnUso -= cantidad;
-        //ReevaluarEstadoTareas();
     }
 
     public bool EstaEnUso()
@@ -121,7 +92,5 @@ public class Recurso
         Descripcion = descripcion;
         CantidadDelRecurso = cantidad;
         SePuedeCompartir = compartir;
-        
-        //ReevaluarEstadoTareas();
     }
 }
