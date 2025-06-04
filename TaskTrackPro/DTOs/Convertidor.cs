@@ -65,4 +65,18 @@ public static class Convertidor
         };
     }
 
+
+    public static NotificacionDTO? ANotificacionDTO(Notificacion? notificacion)
+    {
+        if (notificacion == null)
+        {
+            return null;
+        }
+
+        return new NotificacionDTO
+        {
+            Id = notificacion.Id,
+            Mensaje = notificacion.Mensaje,
+        };
+    }
 }

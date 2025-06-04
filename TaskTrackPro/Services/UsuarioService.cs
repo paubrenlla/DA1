@@ -1,6 +1,5 @@
 using DTOs;
 using Domain;
-using Domain.Enums;
 using IDataAcces;
 
 namespace Services;
