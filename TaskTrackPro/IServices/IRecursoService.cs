@@ -1,3 +1,4 @@
+using Domain.Observers;
 using DTOs;
 
 namespace Services;
@@ -22,4 +23,5 @@ public interface IRecursoService
 
     bool EstaDisponible(int idRecurso, int cantidad);
 
+    void AgregarObservador(IRecursoObserver observer);
 }
