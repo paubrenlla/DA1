@@ -26,7 +26,6 @@ namespace Controllers_Tests
                 Id = 1,
                 Nombre = "Test User",
                 Email = "test@test.com",
-                Contraseña = "password"
             };
 
             _dto1 = new NotificacionDTO

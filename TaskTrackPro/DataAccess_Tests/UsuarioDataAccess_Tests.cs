@@ -20,14 +20,14 @@ public class DataAccessUsuarioTest
         Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         usuarioRepo.Add(user);
 
-        Assert.AreEqual(1, usuarioRepo.GetAll().Count);
+        Assert.AreEqual(3, usuarioRepo.GetAll().Count);
 
         Usuario user2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!",
             new DateTime(2000, 01, 01));
 
         usuarioRepo.Add(user2);
-        Assert.AreEqual(2, usuarioRepo.GetAll().Count);
-        Assert.AreSame(user2, usuarioRepo.GetAll()[1]);
+        Assert.AreEqual(4, usuarioRepo.GetAll().Count);
+        Assert.AreSame(user2, usuarioRepo.GetAll()[3]);
     }
 
     [TestMethod]
@@ -53,11 +53,11 @@ public class DataAccessUsuarioTest
             new DateTime(2000, 01, 01));
 
         usuarioRepo.Add(user2);
-        Assert.AreEqual(2, usuarioRepo.GetAll().Count);
-        Assert.AreSame(user2, usuarioRepo.GetAll()[1]);
+        Assert.AreEqual(4, usuarioRepo.GetAll().Count);
+        Assert.AreSame(user2, usuarioRepo.GetAll()[3]);
 
         usuarioRepo.Remove(user2);
-        Assert.AreEqual(1, usuarioRepo.GetAll().Count);
+        Assert.AreEqual(3, usuarioRepo.GetAll().Count);
         Assert.IsFalse(usuarioRepo.GetAll().Contains(user2));
     }
     
@@ -120,7 +120,7 @@ public class DataAccessUsuarioTest
         usuarioRepo.Add(u1);
         usuarioRepo.Add(u2);
 
-        Usuario resultado = usuarioRepo.buscarUsuarioPorCorreoYContraseña(email2,contraseña2);
+        Usuario resultado = usuarioRepo.buscarUsuarioPorCorreoYContraseña(email2,Usuario.EncriptarPassword(contraseña2));
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(u2.Email, resultado.Email);
