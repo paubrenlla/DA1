@@ -61,4 +61,9 @@ public class AsignacionRecursoTareaControllers
     {
         return _service.VerificarRecursosDeTareaDisponibles(TareaId);
     }
+
+    public List<AsignacionRecursoTareaDTO>? GetAsignacionesDeTarea(int idTarea)
+    {
+        return _service.GetAsignacionesDeTarea(idTarea);
+    }
 }

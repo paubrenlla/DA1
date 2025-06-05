@@ -166,4 +166,78 @@ public class AsignacionRecursoTareaControllersTests
         Assert.IsTrue(true);
     }
 
+    [TestMethod]
+    public void GetAsignacionesDeTarea_DevuelveListaVacia_CuandoTareaNoTieneAsignaciones()
+    {
+        List<AsignacionRecursoTareaDTO> resultado = _controller.GetAsignacionesDeTarea(_tareaEjemplo.Id);
+
+        Assert.IsNotNull(resultado);
+        Assert.AreEqual(0, resultado.Count);
+    }
+
+    [TestMethod]
+    public void GetAsignacionesDeTarea_DevuelveUnaAsignacion_CuandoTareaTieneUnaAsignacion()
+    {
+        AsignacionRecursoTareaDTO dto = Convertidor.AAsignacionRecursoTareaDTO(
+            new AsignacionRecursoTarea(_recursoEjemplo, _tareaEjemplo, 3)
+        );
+        AsignacionRecursoTareaDTO asignacionCreada = _controller.CrearAsignacionRecursoTarea(dto);
+
+        List<AsignacionRecursoTareaDTO> resultado = _controller.GetAsignacionesDeTarea(_tareaEjemplo.Id);
+
+        Assert.IsNotNull(resultado);
+        Assert.AreEqual(1, resultado.Count);
+        Assert.AreEqual(asignacionCreada.Id, resultado[0].Id);
+        Assert.AreEqual(_recursoEjemplo.Id, resultado[0].Recurso.Id);
+        Assert.AreEqual(_tareaEjemplo.Id, resultado[0].Tarea.Id);
+        Assert.AreEqual(3, resultado[0].Cantidad);
+    }
+
+    [TestMethod]
+    public void GetAsignacionesDeTarea_DevuelveMultiplesAsignaciones_CuandoTareaTieneVariasAsignaciones()
+    {
+        Recurso recurso2 = new Recurso("Recurso2", "tipo2", "descripcion2", false, 5);
+        _repoRecursos.Add(recurso2);
+
+        AsignacionRecursoTareaDTO dto1 = Convertidor.AAsignacionRecursoTareaDTO(
+            new AsignacionRecursoTarea(_recursoEjemplo, _tareaEjemplo, 2)
+        );
+        AsignacionRecursoTareaDTO dto2 = Convertidor.AAsignacionRecursoTareaDTO(
+            new AsignacionRecursoTarea(recurso2, _tareaEjemplo, 4)
+        );
+
+        _controller.CrearAsignacionRecursoTarea(dto1);
+        _controller.CrearAsignacionRecursoTarea(dto2);
+
+        List<AsignacionRecursoTareaDTO> resultado = _controller.GetAsignacionesDeTarea(_tareaEjemplo.Id);
+
+        Assert.IsNotNull(resultado);
+        Assert.AreEqual(2, resultado.Count);
+        Assert.IsTrue(resultado.Any(a => a.Recurso.Id == _recursoEjemplo.Id && a.Cantidad == 2));
+        Assert.IsTrue(resultado.Any(a => a.Recurso.Id == recurso2.Id && a.Cantidad == 4));
+    }
+
+    [TestMethod]
+    public void GetAsignacionesDeTarea_NoDevuelveAsignacionesDeOtrasTareas()
+    {
+        Tarea tarea2 = new Tarea("Tarea2", "desc2", DateTime.Now, VALID_TIMESPAN, false);
+        _repoTareas.Add(tarea2);
+
+        AsignacionRecursoTareaDTO dtoTarea1 = Convertidor.AAsignacionRecursoTareaDTO(
+            new AsignacionRecursoTarea(_recursoEjemplo, _tareaEjemplo, 2)
+        );
+        AsignacionRecursoTareaDTO dtoTarea2 = Convertidor.AAsignacionRecursoTareaDTO(
+            new AsignacionRecursoTarea(_recursoEjemplo, tarea2, 3)
+        );
+
+        _controller.CrearAsignacionRecursoTarea(dtoTarea1);
+        _controller.CrearAsignacionRecursoTarea(dtoTarea2);
+
+        List<AsignacionRecursoTareaDTO> resultado = _controller.GetAsignacionesDeTarea(_tareaEjemplo.Id);
+
+        Assert.IsNotNull(resultado);
+        Assert.AreEqual(1, resultado.Count);
+        Assert.AreEqual(_tareaEjemplo.Id, resultado[0].Tarea.Id);
+        Assert.AreEqual(2, resultado[0].Cantidad);
+    }
 }
