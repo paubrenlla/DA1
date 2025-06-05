@@ -10,24 +10,6 @@ namespace DataAccess
         public UsuarioDataAccess()
         {
             _listaUsuarios = new List<Usuario>();
-                Usuario admin = new Usuario(
-                    "admin@prueba.com",
-                    "Admin",
-                    "Prueba",
-                    "Admin123!",
-                    new DateTime(1990, 1, 1)
-                );
-                admin.EsAdminSistema = true;
-                _listaUsuarios.Add(admin);
-
-                Usuario user = new Usuario(
-                    "user@prueba.com",
-                    "Usuario",
-                    "Prueba",
-                    "User1234!",
-                    new DateTime(1995, 5, 5)
-                );
-                _listaUsuarios.Add(user);
         }
 
         public void Add(Usuario usuario)
