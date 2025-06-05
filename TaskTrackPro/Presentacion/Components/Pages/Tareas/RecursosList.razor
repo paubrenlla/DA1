@@ -72,17 +72,26 @@ else
             <td>@recurso.CantidadEnUso.ToString()</td>
             <td>@recurso.SePuedeCompartir</td>
             <td>
-                @if (Tareas.GetEstadoTarea(idTarea) == TipoEstadoTarea.Ejecutandose
-                          || Tareas.GetEstadoTarea(idTarea) == TipoEstadoTarea.Efectuada)
+                @if (Tareas.GetEstadoTarea(idTarea) == TipoEstadoTarea.Ejecutandose)
                 {
                     <button class="btn btn-danger btn-sm" disabled>Eliminar</button>
                 }
                 else
                 {
-                    <button class="btn btn-danger btn-sm" @onclick="EliminarRecurso">
+                    <button class="btn btn-danger btn-sm" @onclick="() => EliminarRecurso(recurso.Id)">
                         Eliminar
                     </button>
                 }
+                @if (Asignaciones.RecursoEsExclusivo(@recurso.Id))
+                {
+                    <a class="btn btn-primary btn-sm"
+                       href="proyectos/@idProyecto/tareas/@idTarea/recursos/@recurso.Id/editar">
+                        Modificar
+                    </a>
+                }
+            </td>
+            <td>
+                
             </td>
         </tr>
     }
@@ -160,14 +169,20 @@ else
         }
     }
 
-    private async Task EliminarRecurso()
+    private async Task EliminarRecurso(int idRecursoAEliminar)
     {
-        mensajeError = string.Empty;
-        RecursoDTO recurso = listaDeRecursosDisponibles.FirstOrDefault(r => r.Id == recursoSeleccionadoId);
+        try
+        {
+            mensajeError = string.Empty;
         
-        Asignaciones.EliminarRecursoDeTarea(idTarea, recurso.Id);
+            Asignaciones.EliminarRecursoDeTarea(idTarea, idRecursoAEliminar);
         
-        listaDeRecursosNecesarios = Asignaciones.GetAsignacionesDeTarea(idTarea);
-        StateHasChanged();    
+            listaDeRecursosNecesarios = Asignaciones.GetAsignacionesDeTarea(idTarea);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
     }
 }
