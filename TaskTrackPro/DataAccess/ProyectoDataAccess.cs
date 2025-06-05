@@ -29,7 +29,6 @@ public class ProyectoDataAccess :IDataAccessProyecto
         if (proyecto == null)
             throw new ArgumentException("No existe el proyecto");
         return proyecto;
-
     }
 
     public List<Proyecto> GetAll()

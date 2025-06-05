@@ -61,5 +61,11 @@ namespace DataAccess
         {
             return _asignaciones.FirstOrDefault(a => a.Proyecto.Id == proyectoId && a.Rol.Equals(Rol.Administrador));
         }
+
+        public List<Usuario>? GetMiembrosDeProyecto(int id)
+        {
+            List<AsignacionProyecto> asignacionProyectos = _asignaciones.Where(a => a.Proyecto.Id == id).ToList();
+            return asignacionProyectos.Select(p => p.Usuario).ToList();
+        }
     }
 }

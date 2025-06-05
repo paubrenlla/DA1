@@ -118,5 +118,44 @@ namespace DataAccess_Tests
             Assert.IsNotNull(admin);
             Assert.AreEqual(asign2, admin);
         }
+        
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetByIdLanzaExcepcionSiProyectoNoExiste()
+        {
+            ProyectoDataAccess repo = new ProyectoDataAccess();
+
+            int idInexistente = 999;
+
+            repo.GetById(idInexistente);
+        }
+        
+        [TestMethod]
+        public void GetMiembrosDeProyectoDevuelveUsuariosCorrectamente()
+        {
+            repo.Add(asign1); 
+            repo.Add(asign2); 
+            repo.Add(asign3); 
+
+            List<Usuario>? miembrosProyecto1 = repo.GetMiembrosDeProyecto(proyecto1.Id);
+            List<Usuario>? miembrosProyecto2 = repo.GetMiembrosDeProyecto(proyecto2.Id);
+
+            Assert.AreEqual(2, miembrosProyecto1.Count);
+            Assert.IsTrue(miembrosProyecto1.Contains(user1));
+            Assert.IsTrue(miembrosProyecto1.Contains(user2));
+
+            Assert.AreEqual(1, miembrosProyecto2.Count);
+            Assert.IsTrue(miembrosProyecto2.Contains(user1));
+        }
+        
+        [TestMethod]
+        public void GetMiembrosDeProyectoDevuelveListaVaciaSiNoHayAsignaciones()
+        {
+            List<Usuario>? miembros = repo.GetMiembrosDeProyecto(proyecto1.Id);
+
+            Assert.IsNotNull(miembros);
+            Assert.AreEqual(0, miembros.Count);
+        }
+
     }
 }

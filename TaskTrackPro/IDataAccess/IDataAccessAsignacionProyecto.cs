@@ -21,4 +21,5 @@ public interface IDataAccessAsignacionProyecto :IDataAccessGeneric<AsignacionPro
     public bool UsuarioEsAdminDelProyecto(int usuarioId, int proyectoid);
     
     public AsignacionProyecto GetAdminProyecto(int proyectoId);
+    List<Usuario>? GetMiembrosDeProyecto(int id);
 }
