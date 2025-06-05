@@ -125,5 +125,11 @@ namespace Services
             _tareaRepo.Remove(tarea);
             
         }
+
+        public List<UsuarioDTO>? ListarUsuariosDeTarea(int tareaID)
+        {
+            Tarea tarea = _tareaRepo.GetById(tareaID);
+            return tarea?.UsuariosAsignados.Select(Convertidor.AUsuarioDTO).ToList();
+        }
     }
 }

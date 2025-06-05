@@ -108,4 +108,5 @@ public class UsuarioService : IUsuarioService
         Usuario user = _usuarioRepo.GetById(usuarioId);
         return Usuario.DesencriptarPassword(user.Pwd);
     }
+    
 }
