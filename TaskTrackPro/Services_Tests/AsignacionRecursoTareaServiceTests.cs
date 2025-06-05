@@ -225,6 +225,62 @@ namespace Services_Tests
             Assert.AreNotEqual(TipoEstadoTarea.Pendiente, tarea1.EstadoActual.Valor);
             Assert.AreNotEqual(TipoEstadoTarea.Pendiente, tarea2.EstadoActual.Valor);
         }
+        
+        [TestMethod]
+        public void GetAsignacionesDeTarea_DevuelveListaVacia_CuandoTareaNoTieneAsignaciones()
+        {
+            List<AsignacionRecursoTareaDTO> resultado = _service.GetAsignacionesDeTarea(_tarea1.Id);
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(0, resultado.Count);
+        }
+
+        [TestMethod]
+        public void GetAsignacionesDeTarea_DevuelveUnaAsignacion_CuandoTareaTieneUnaAsignacion()
+        {
+            AsignacionRecursoTarea asignacion = new AsignacionRecursoTarea(_recurso1, _tarea1, 3);
+            _repoAsignaciones.Add(asignacion);
+
+            List<AsignacionRecursoTareaDTO> resultado = _service.GetAsignacionesDeTarea(_tarea1.Id);
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(1, resultado.Count);
+            Assert.AreEqual(asignacion.Id, resultado[0].Id);
+            Assert.AreEqual(_recurso1.Nombre, resultado[0].Recurso.Nombre);
+            Assert.AreEqual(3, resultado[0].Cantidad);
+        }
+
+        [TestMethod]
+        public void GetAsignacionesDeTarea_DevuelveMultiplesAsignaciones_CuandoTareaTieneVariasAsignaciones()
+        {
+            AsignacionRecursoTarea asignacion1 = new AsignacionRecursoTarea(_recurso1, _tarea1, 2);
+            AsignacionRecursoTarea asignacion2 = new AsignacionRecursoTarea(_recurso2, _tarea1, 4);
+            _repoAsignaciones.Add(asignacion1);
+            _repoAsignaciones.Add(asignacion2);
+
+            List<AsignacionRecursoTareaDTO> resultado = _service.GetAsignacionesDeTarea(_tarea1.Id);
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(2, resultado.Count);
+            Assert.IsTrue(resultado.Any(a => a.Recurso.Nombre == _recurso1.Nombre && a.Cantidad == 2));
+            Assert.IsTrue(resultado.Any(a => a.Recurso.Nombre == _recurso2.Nombre && a.Cantidad == 4));
+        }
+
+        [TestMethod]
+        public void GetAsignacionesDeTarea_NoDevuelveAsignacionesDeOtrasTareas()
+        {
+            AsignacionRecursoTarea asignacionTarea1 = new AsignacionRecursoTarea(_recurso1, _tarea1, 2);
+            AsignacionRecursoTarea asignacionTarea2 = new AsignacionRecursoTarea(_recurso2, _tarea2, 3);
+            _repoAsignaciones.Add(asignacionTarea1);
+            _repoAsignaciones.Add(asignacionTarea2);
+
+            List<AsignacionRecursoTareaDTO> resultado = _service.GetAsignacionesDeTarea(_tarea1.Id);
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(1, resultado.Count);
+            Assert.AreEqual(_recurso1.Nombre, resultado[0].Recurso.Nombre);
+            Assert.AreEqual(_tarea1.Titulo, resultado[0].Tarea.Titulo);
+        }
 
     }
 }
