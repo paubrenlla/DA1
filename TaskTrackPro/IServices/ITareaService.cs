@@ -25,5 +25,6 @@ namespace Services
         bool UsuarioPerteneceALaTarea(int usuarioDtoId, int tareaId);
         void EliminarTarea(int tareaId);
         TipoEstadoTarea GetEstadoTarea(int tareaId);
+        List<UsuarioDTO>? ListarUsuariosDeTarea(int tareaId);
     }
-}
+}        

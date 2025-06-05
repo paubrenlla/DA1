@@ -303,5 +303,56 @@ namespace Services_Tests
         {
             _service.GetEstadoTarea(-1);
         }
+
+        [TestMethod]
+        public void ListarUsuariosDeTarea_ConTareaExistenteYUsuarios_DevuelveListaUsuarios()
+        {
+            _tareaEjemplo.AgregarUsuario(_usuarioEjemplo);
+    
+            var resultado = _service.ListarUsuariosDeTarea(_tareaEjemplo.Id);
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(1, resultado.Count);
+            Assert.AreEqual(_usuarioEjemplo.Email, resultado[0].Email);
+        }
+
+        [TestMethod]
+        public void ListarUsuariosDeTarea_ConTareaExistenteSinUsuarios_DevuelveListaVacia()
+        {
+            var resultado = _service.ListarUsuariosDeTarea(_tareaEjemplo.Id);
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(0, resultado.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ListarUsuariosDeTarea_ConTareaInexistente_DevuelveNull()
+        {
+            int idInexistente = 9999;
+            var resultado = _service.ListarUsuariosDeTarea(idInexistente);
+        }
+
+        [TestMethod]
+        public void ListarUsuariosDeTarea_ConMultiplesUsuarios_DevuelveTodosCorrectamente()
+        {
+            var usuario2 = new Usuario(
+                "user2@test.com",
+                "User2",
+                "Test2",
+                "Password2!",
+                DateTime.Today.AddYears(-25));
+            _repoUsuarios.Add(usuario2);
+
+            _tareaEjemplo.AgregarUsuario(_usuarioEjemplo);
+            _tareaEjemplo.AgregarUsuario(usuario2);
+
+            var resultado = _service.ListarUsuariosDeTarea(_tareaEjemplo.Id);
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(2, resultado.Count);
+            Assert.IsTrue(resultado.Any(u => u.Email == _usuarioEjemplo.Email));
+            Assert.IsTrue(resultado.Any(u => u.Email == usuario2.Email));
+        }    
     }
 }

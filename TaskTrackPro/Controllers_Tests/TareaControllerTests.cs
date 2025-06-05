@@ -225,5 +225,55 @@ namespace Controllers_Tests
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, resultado);
             _mockService.Verify(s => s.GetEstadoTarea(tareaId), Times.Once);
         }
+
+        [TestMethod]
+        public void ListarUsuariosDeTarea_ConTareaExistente_DevuelveListaUsuarios()
+        {
+            int tareaId = 1;
+            var usuariosEsperados = new List<UsuarioDTO>
+            {
+                new UsuarioDTO { Id = 1, Nombre = "Usuario 1", Email = "u1@test.com" },
+                new UsuarioDTO { Id = 2, Nombre = "Usuario 2", Email = "u2@test.com" }
+            };
+    
+            _mockService.Setup(s => s.ListarUsuariosDeTarea(tareaId)).Returns(usuariosEsperados);
+            
+            var resultado = _controller.ListarUsuariosDeTarea(tareaId);
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(2, resultado.Count);
+            Assert.AreEqual("Usuario 1", resultado[0].Nombre);
+            _mockService.Verify(s => s.ListarUsuariosDeTarea(tareaId), Times.Once);
+        }
+
+        [TestMethod]
+        public void ListarUsuariosDeTarea_ConTareaSinUsuarios_DevuelveListaVacia()
+        {
+            int tareaId = 2;
+            var listaVacia = new List<UsuarioDTO>();
+    
+            _mockService.Setup(s => s.ListarUsuariosDeTarea(tareaId))
+                .Returns(listaVacia);
+
+            var resultado = _controller.ListarUsuariosDeTarea(tareaId);
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(0, resultado.Count);
+            _mockService.Verify(s => s.ListarUsuariosDeTarea(tareaId), Times.Once);
+        }
+
+        [TestMethod]
+        public void ListarUsuariosDeTarea_ConTareaInexistente_DevuelveNull()
+        {
+            int tareaId = 999;
+    
+            _mockService.Setup(s => s.ListarUsuariosDeTarea(tareaId))
+                .Returns((List<UsuarioDTO>)null);
+
+            var resultado = _controller.ListarUsuariosDeTarea(tareaId);
+
+            Assert.IsNull(resultado);
+            _mockService.Verify(s => s.ListarUsuariosDeTarea(tareaId), Times.Once);
+        }
     }
 }
