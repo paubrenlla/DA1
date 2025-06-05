@@ -16,11 +16,13 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddServerSideBlazor();
+
 builder.Services.AddSingleton<IDataAccessUsuario, UsuarioDataAccess>();
 builder.Services.AddSingleton<IDataAccessProyecto, ProyectoDataAccess>();
 builder.Services.AddSingleton<IDataAccessTarea, TareaDataAccess>();
+builder.Services.AddSingleton<IDataAccessRecurso, RecursoDataAccess>();
+
 builder.Services.AddScoped<IDataAccessAsignacionProyecto, AsignacionProyectoDataAccess>();
-builder.Services.AddScoped<IDataAccessRecurso, RecursoDataAccess>();
 builder.Services.AddScoped<IDataAccessAsignacionRecursoTarea, AsignacionRecursoTareaDataAccess>();
 
 builder.Services.AddScoped<IRecursoObserver, ActualizadorEstadoTareas>();
