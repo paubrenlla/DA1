@@ -174,5 +174,98 @@ namespace Services_Tests
             Assert.IsNotNull(tareaGuardada);
             Assert.IsTrue(tareaGuardada.UsuariosAsignados.Contains(_usuarioEjemplo));
         }
+        
+        [TestMethod]
+        public void TieneSucesorasDevuelveFalseCuandoNoHaySucesoras()
+        {
+            TareaDTO dtoSinSucesoras = Convertidor.ATareaDTO(_tareaEjemplo);
+            bool resultado = _service.TieneSucesoras(dtoSinSucesoras);
+            Assert.IsFalse(resultado);
+        }
+        
+        [TestMethod]
+        public void TieneSucesorasDevuelveTrueCuandoHaySucesoras()
+        {
+            Tarea tarea2 = new Tarea(
+                "Tarea 2",
+                "Desc 2",
+                DateTime.Today.AddHours(1),
+                TimeSpan.FromHours(3),
+                esCritica: true);
+            tarea2.Proyecto = _proyectoEjemplo;
+            _proyectoEjemplo.TareasAsociadas.Add(tarea2);
+            _repoTareas.Add(tarea2);
+
+            _service.AgregarDependencia(_tareaEjemplo.Id, tarea2.Id);
+
+            TareaDTO dtoConSucesoras = Convertidor.ATareaDTO(tarea2);
+
+            bool resultado = _service.TieneSucesoras(dtoConSucesoras);
+
+            Assert.IsTrue(resultado);
+        }
+        [TestMethod]
+        public void UsuarioPerteneceALaTareaDevuelveTrueCuandoUsuarioAsignado()
+        {
+            _tareaEjemplo.AgregarUsuario(_usuarioEjemplo);
+            bool resultado = _service.UsuarioPerteneceALaTarea(_usuarioEjemplo.Id, _tareaEjemplo.Id);
+            Assert.IsTrue(resultado);
+        }
+        
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void EliminarTareaSinSucesorasNiDependenciasEliminaCorrectamente()
+        {
+            _service.EliminarTarea(_tareaEjemplo.Id);
+            _service.BuscarTareaPorId(_tareaEjemplo.Id);
+        }
+        
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void EliminarTarea_LanzaExcepcionSiTieneSucesoras()
+        {
+            Tarea _tarea2 = new Tarea("Tarea Test",
+            "Descripción Tarea",
+            DateTime.Today.AddHours(9),
+            TimeSpan.FromHours(4),
+            esCritica: false);
+            _tarea2.Proyecto = _proyectoEjemplo;
+            _proyectoEjemplo.TareasAsociadas.Add(_tarea2);
+            _repoTareas.Add(_tarea2);
+            _tarea2.AgregarDependencia(_tareaEjemplo);
+            _service.EliminarTarea(_tareaEjemplo.Id);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void EliminarTareaLanzaExcepcionSiTieneDependencias()
+        {
+            Tarea _tarea2 = new Tarea("Tarea Test",
+                "Descripción Tarea",
+                DateTime.Today.AddHours(9),
+                TimeSpan.FromHours(4),
+                esCritica: false);
+            _tarea2.Proyecto = _proyectoEjemplo;
+            _proyectoEjemplo.TareasAsociadas.Add(_tarea2);
+            _repoTareas.Add(_tarea2);
+            _tarea2.AgregarDependencia(_tareaEjemplo);
+            _service.EliminarTarea(_tarea2.Id);
+        }
+
+        [TestMethod]
+        public void TieneDependenciasReturnTrueCuandoTiene()
+        {
+            Tarea _tarea2 = new Tarea("Tarea Test",
+                "Descripción Tarea",
+                DateTime.Today.AddHours(9),
+                TimeSpan.FromHours(4),
+                esCritica: false);
+            _tarea2.Proyecto = _proyectoEjemplo;
+            _proyectoEjemplo.TareasAsociadas.Add(_tarea2);
+            _repoTareas.Add(_tarea2);
+            _tareaEjemplo.AgregarDependencia(_tarea2);
+            bool resultado = _service.TieneDependencias(Convertidor.ATareaDTO(_tareaEjemplo));
+            Assert.IsTrue(resultado);
+        }
     }
 }

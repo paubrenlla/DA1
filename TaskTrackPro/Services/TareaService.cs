@@ -93,5 +93,37 @@ namespace Services
             Usuario usuario = _usuarioRepo.GetById(usuarioId);
             tarea.AgregarUsuario(usuario);
         }
+
+        public bool TieneSucesoras(TareaDTO tareaDto)
+        {
+            Tarea tarea = _tareaRepo.GetById(tareaDto.Id);
+            return tarea.TareasSucesoras.Count != 0;
+        }
+
+        public bool UsuarioPerteneceALaTarea(int usuarioDtoId, int tareaId)
+        {
+            Tarea tarea = _tareaRepo.GetById(tareaId);
+            return tarea.UsuariosAsignados.Any(usuario => usuario.Id == usuarioDtoId);
+        }
+        
+        public bool TieneDependencias(TareaDTO tareaDto)
+        {
+            Tarea tarea = _tareaRepo.GetById(tareaDto.Id);
+            return tarea.TareasDependencia.Count != 0;
+        }
+        
+        public void EliminarTarea(int tareaId)
+        {
+            TareaDTO dto = new TareaDTO { Id = tareaId };
+            if (TieneSucesoras(dto))
+                throw new InvalidOperationException("No se puede eliminar: la tarea tiene sucesoras.");
+            if (TieneDependencias(dto))
+                throw new InvalidOperationException("No se puede eliminar: la tarea tiene dependencias.");
+            Tarea tarea = _tareaRepo.GetById(tareaId);
+            Proyecto proyecto = tarea.Proyecto;
+            proyecto.eliminarTarea(tarea);
+            _tareaRepo.Remove(tarea);
+            
+        }
     }
 }

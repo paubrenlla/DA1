@@ -93,7 +93,8 @@ public class Proyecto
         Notificacion notificacion = new Notificacion("Se eliminado la tarea " + tarea.Titulo + " del proyecto " + Nombre + ".");
        // notificacion.AgregarUsuarios(tarea.UsuariosAsignados);
        // notificacion.AgregarUsuario(Admin);
-        CalcularRutaCritica();
+       if(TareasAsociadas.Count >0)
+            CalcularRutaCritica();
     }
 
     public void agregarMiembro(AsignacionProyecto asignacion)

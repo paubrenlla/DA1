@@ -19,5 +19,9 @@ namespace Services
         void AgregarDependencia(int tareaId, int dependenciaId);
         
         void AgregarUsuario(int tareaId, int usuarioId);
+        bool TieneSucesoras(TareaDTO tarea);
+        bool TieneDependencias(TareaDTO tareaDto);
+        bool UsuarioPerteneceALaTarea(int usuarioDtoId, int tareaId);
+        void EliminarTarea(int tareaId);
     }
 }
