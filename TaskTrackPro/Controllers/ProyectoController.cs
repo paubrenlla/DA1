@@ -1,4 +1,5 @@
-﻿using DTOs;
+﻿using Domain;
+using DTOs;
 using Services;
 
 namespace Controllers
@@ -65,6 +66,21 @@ namespace Controllers
         public UsuarioDTO GetAdminDeProyecto(int id)
         {
             return _service.GetAdminDeProyecto(id);
+        }
+
+        public List<UsuarioDTO>? GetMiembrosDeProyecto(int id)
+        {
+            return _service.GetMiembrosDeProyecto(id);
+        }
+
+        public void AgregarMiembroProyecto(int usuarioId, int proyectoId)
+        {
+            _service.AgregarMiembroProyecto(usuarioId, proyectoId);
+        }
+
+        public void EliminarMiembro(int miembroId, int proyectoId)
+        {
+            _service.EliminarMiembroDeProyecto(miembroId, proyectoId);
         }
     }
 }

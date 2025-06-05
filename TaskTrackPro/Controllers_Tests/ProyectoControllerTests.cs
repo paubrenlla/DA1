@@ -189,6 +189,47 @@ namespace Controllers_Tests
             Assert.AreEqual(adminEsperado, resultado);
             _mockService.Verify(s => s.GetAdminDeProyecto(proyectoId), Times.Once);
         }
+        
+        [TestMethod]
+        public void GetMiembrosDeProyecto_LlamaServiceYDevuelveLista()
+        {
+            int proyectoId = 1;
+            List<UsuarioDTO> miembrosEsperados = new List<UsuarioDTO>
+            {
+                new UsuarioDTO { Id = 1, Nombre = "Juan", Email = "juan@example.com" },
+                new UsuarioDTO { Id = 2, Nombre = "Ana", Email = "ana@example.com" }
+            };
 
+            _mockService
+                .Setup(s => s.GetMiembrosDeProyecto(proyectoId))
+                .Returns(miembrosEsperados);
+
+            List<UsuarioDTO>? resultado = _controller.GetMiembrosDeProyecto(proyectoId);
+
+            CollectionAssert.AreEqual(miembrosEsperados, resultado);
+            _mockService.Verify(s => s.GetMiembrosDeProyecto(proyectoId), Times.Once);
+        }
+
+        [TestMethod]
+        public void AgregarMiembroProyecto_LlamaServiceConParametrosCorrectos()
+        {
+            int usuarioId = 5;
+            int proyectoId = 10;
+
+            _controller.AgregarMiembroProyecto(usuarioId, proyectoId);
+
+            _mockService.Verify(s => s.AgregarMiembroProyecto(usuarioId, proyectoId), Times.Once);
+        }
+
+        [TestMethod]
+        public void EliminarMiembro_LlamaServiceConParametrosCorrectos()
+        {
+            int miembroId = 3;
+            int proyectoId = 7;
+
+            _controller.EliminarMiembro(miembroId, proyectoId);
+
+            _mockService.Verify(s => s.EliminarMiembroDeProyecto(miembroId, proyectoId), Times.Once);
+        }
     }
 }
