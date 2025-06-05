@@ -1,5 +1,6 @@
 ﻿using DTOs;
 using Domain;
+using Domain.Enums;
 using IDataAcces;
 
 namespace Services
@@ -124,6 +125,11 @@ namespace Services
             proyecto.eliminarTarea(tarea);
             _tareaRepo.Remove(tarea);
             
+        }
+
+        public TipoEstadoTarea GetEstadoTarea(int tareaId)
+        {
+            return _tareaRepo.GetById(tareaId).EstadoActual.Valor;
         }
     }
 }

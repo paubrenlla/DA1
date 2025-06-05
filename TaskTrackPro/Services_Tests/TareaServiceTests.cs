@@ -267,5 +267,41 @@ namespace Services_Tests
             bool resultado = _service.TieneDependencias(Convertidor.ATareaDTO(_tareaEjemplo));
             Assert.IsTrue(resultado);
         }
+        
+        [TestMethod]
+        public void GetEstadoTarea_DevuelveEstadoInicial()
+        {
+            TipoEstadoTarea estado = _service.GetEstadoTarea(_tareaEjemplo.Id);
+    
+            Assert.AreEqual(TipoEstadoTarea.Pendiente, estado);
+        }
+
+        [TestMethod]
+        public void GetEstadoTarea_DevuelveRealizandose_CuandoTareaEstaEjecutandose()
+        {
+            _service.MarcarComoEjecutandose(_tareaEjemplo.Id);
+    
+            TipoEstadoTarea estado = _service.GetEstadoTarea(_tareaEjemplo.Id);
+    
+            Assert.AreEqual(TipoEstadoTarea.Ejecutandose, estado);
+        }
+
+        [TestMethod]
+        public void GetEstadoTarea_DevuelveEfectuada_CuandoTareaEstaCompletada()
+        {
+            _service.MarcarComoEjecutandose(_tareaEjemplo.Id);
+            _service.MarcarComoCompletada(_tareaEjemplo.Id);
+    
+            TipoEstadoTarea estado = _service.GetEstadoTarea(_tareaEjemplo.Id);
+    
+            Assert.AreEqual(TipoEstadoTarea.Efectuada, estado);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetEstadoTarea_LanzaExcepcion_CuandoTareaNoExiste()
+        {
+            _service.GetEstadoTarea(-1);
+        }
     }
 }
