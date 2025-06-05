@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using DTOs;
+﻿using DTOs;
 using Controllers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Domain.Enums;
 using Moq;
 using Services;
 
@@ -178,6 +176,54 @@ namespace Controllers_Tests
             _controller.EliminarTarea(tareaId);
 
             _mockService.Verify(s => s.EliminarTarea(tareaId), Times.Once);
+        }
+        
+        [TestMethod]
+        public void GetEstadoTarea_LlamaServiceYDevuelveEstadoPendiente()
+        {
+            int tareaId = 1;
+            _mockService.Setup(s => s.GetEstadoTarea(tareaId)).Returns(TipoEstadoTarea.Pendiente);
+
+            TipoEstadoTarea resultado = _controller.GetEstadoTarea(tareaId);
+
+            Assert.AreEqual(TipoEstadoTarea.Pendiente, resultado);
+            _mockService.Verify(s => s.GetEstadoTarea(tareaId), Times.Once);
+        }
+
+        [TestMethod]
+        public void GetEstadoTarea_LlamaServiceYDevuelveEstadoRealizandose()
+        {
+            int tareaId = 2;
+            _mockService.Setup(s => s.GetEstadoTarea(tareaId)).Returns(TipoEstadoTarea.Ejecutandose);
+
+            TipoEstadoTarea resultado = _controller.GetEstadoTarea(tareaId);
+
+            Assert.AreEqual(TipoEstadoTarea.Ejecutandose, resultado);
+            _mockService.Verify(s => s.GetEstadoTarea(tareaId), Times.Once);
+        }
+
+        [TestMethod]
+        public void GetEstadoTarea_LlamaServiceYDevuelveEstadoEfectuada()
+        {
+            int tareaId = 3;
+            _mockService.Setup(s => s.GetEstadoTarea(tareaId)).Returns(TipoEstadoTarea.Efectuada);
+
+            TipoEstadoTarea resultado = _controller.GetEstadoTarea(tareaId);
+
+            Assert.AreEqual(TipoEstadoTarea.Efectuada, resultado);
+            _mockService.Verify(s => s.GetEstadoTarea(tareaId), Times.Once);
+        }
+
+        [TestMethod]
+        public void GetEstadoTarea_LlamaServiceYDevuelveEstadoBloqueada()
+        {
+            int tareaId = 4;
+            _mockService.Setup(s => s.GetEstadoTarea(tareaId)).Returns(TipoEstadoTarea.Bloqueada);
+
+            TipoEstadoTarea resultado = _controller.GetEstadoTarea(tareaId);
+
+            Assert.AreEqual(TipoEstadoTarea.Bloqueada, resultado);
+            _mockService.Verify(s => s.GetEstadoTarea(tareaId), Times.Once);
         }
     }
 }

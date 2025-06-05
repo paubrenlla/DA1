@@ -1,6 +1,7 @@
 ﻿using DTOs;
 using Services;
 using System.Collections.Generic;
+using Domain.Enums;
 
 namespace Controllers
 {
@@ -66,6 +67,11 @@ namespace Controllers
         public void EliminarTarea(int tareaId)
         {
             _service.EliminarTarea(tareaId);
+        }
+
+        public TipoEstadoTarea GetEstadoTarea(int tareaId)
+        {
+            return _service.GetEstadoTarea(tareaId);
         }
     }
 }
