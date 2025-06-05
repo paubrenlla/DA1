@@ -1,4 +1,5 @@
-﻿using DTOs;
+﻿using Domain.Enums;
+using DTOs;
 
 namespace Services
 {
@@ -23,5 +24,6 @@ namespace Services
         bool TieneDependencias(TareaDTO tareaDto);
         bool UsuarioPerteneceALaTarea(int usuarioDtoId, int tareaId);
         void EliminarTarea(int tareaId);
+        TipoEstadoTarea GetEstadoTarea(int tareaId);
     }
 }
