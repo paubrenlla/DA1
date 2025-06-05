@@ -1,11 +1,11 @@
-@*
 @page "/proyectos/{idProyecto:int}/miembros/{idUsuario:int}/editar"
 
 <PageTitle>Editar Usuario</PageTitle>
 
-@using Domain
+@using Controllers
+@using DTOs
 @using UserInterface.Data
-@inject DB DataBase
+@inject UsuarioController Usuarios
 @inject NavigationManager NavigationManager
 @inject SessionLogic SessionLogic
 
@@ -42,13 +42,6 @@
         <input type="date" class="form-control" id="fecha" @bind="fechaNueva" readonly>
     </div>
 
-    @if (!esAdmin)
-    {
-        <button class="btn btn-warning mt-3" @onclick="ConcederPrivilegios">
-            Conceder privilegios del sistema
-        </button>
-    }
-
     <input type="submit" class="btn btn-primary" value="Guardar cambios" @onclick="GuardarCambios">
 
     <div class="form-group mt-2">
@@ -79,50 +72,58 @@
     private DateTime fechaNueva;
     private string mensajeError;
 
-    Usuario usuarioACambiar;
+    UsuarioDTO usuarioACambiar;
 
-    @code {
-        private bool esAdmin;
-        private bool yaVerifiqueSesion = false;
+    private bool esAdmin;
+    private bool yaVerifiqueSesion = false;
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!yaVerifiqueSesion)
         {
-            if (!yaVerifiqueSesion)
+            yaVerifiqueSesion = true;
+
+            bool activo = await SessionLogic.IsUserActive();
+            if (!activo)
             {
-                yaVerifiqueSesion = true;
-
-                var activo = await SessionLogic.isUserActive();
-                if (!activo)
-                {
-                    NavigationManager.NavigateTo("/Login");
-                    return;
-                }
-
-                usuarioACambiar = DataBase.buscarUsuarioPorId(idUsuario);
-                esAdmin = DataBase.AdministradoresSistema.Contains(usuarioACambiar);
-                if (usuarioACambiar != null)
-                {
-                    emailNuevo = usuarioACambiar.Email;
-                    nombreNuevo = usuarioACambiar.Nombre;
-                    apellidoNuevo = usuarioACambiar.Apellido;
-                    contraseñaNuevo = Usuario.DesencriptarPassword(usuarioACambiar.Pwd);
-                    fechaNueva = usuarioACambiar.FechaNacimiento;
-                }
-                else
-                {
-                    mensajeError = "Usuario no encontrado.";
-                }
-
-                StateHasChanged();
+                NavigationManager.NavigateTo("/Login");
+                return;
             }
+
+            usuarioACambiar = Usuarios.GetById(idUsuario);
+            esAdmin = Usuarios.EsAdmin(idUsuario);
+            if (usuarioACambiar != null)
+            {
+                emailNuevo = usuarioACambiar.Email;
+                nombreNuevo = usuarioACambiar.Nombre;
+                apellidoNuevo = usuarioACambiar.Apellido;
+                contraseñaNuevo = Usuarios.DesencriptarContraseña(idUsuario);
+                fechaNueva = usuarioACambiar.FechaNacimiento;
+            }
+            else
+            {
+                mensajeError = "Usuario no encontrado.";
+            }
+
+            StateHasChanged();
         }
 
     }
+    
     private void GuardarCambios()
     {
         try
         {
-            usuarioACambiar.Modificar(emailNuevo,nombreNuevo,apellidoNuevo,contraseñaNuevo,fechaNueva);
+            UsuarioConContraseñaDTO usuarioNuevo = new UsuarioConContraseñaDTO
+            {
+                Id = idUsuario,
+                Email = emailNuevo, 
+                Nombre = nombreNuevo, 
+                Apellido = apellidoNuevo, 
+                FechaNacimiento = fechaNueva, 
+                Contraseña = contraseñaNuevo
+            };
+            Usuarios.ModificarUsuario(usuarioNuevo);
             NavigationManager.NavigateTo($"/proyectos/{idProyecto}/miembros");
         }
         catch (Exception ex)
@@ -131,32 +132,14 @@
         }
     }
     
-    private void ConcederPrivilegios()
-    {
-        if (!DataBase.AdministradoresSistema.Contains(usuarioACambiar))
-        {
-            DataBase.AdministradoresSistema.Add(usuarioACambiar);
-            esAdmin = true;
-        }
-    }
-    
     private void SetearContraseñaPorDefecto()
     {
-        contraseñaNuevo = Usuario.CONTRASEÑA_DEFAULT;
-        usuarioACambiar = DataBase.buscarUsuarioPorId(idUsuario);
-        usuarioACambiar.Pwd = contraseñaNuevo;
-
+        Usuarios.ResetearContraseña(idUsuario);
     }
     
     private void GenerarContraseñaAleatoria()
     {
-        usuarioACambiar = DataBase.buscarUsuarioPorId(idUsuario);
-        usuarioACambiar.GenerarContraseñaAleatoria();
-        contraseñaNuevo = Usuario.DesencriptarPassword(usuarioACambiar.Pwd);
+        Usuarios.GenerarContraseñaAleatoria(idUsuario);
         StateHasChanged();
     }
-
-
-
 }
-*@
