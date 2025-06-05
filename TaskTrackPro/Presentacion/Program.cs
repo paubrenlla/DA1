@@ -59,12 +59,13 @@ using (var scope = app.Services.CreateScope())
     var observer = servicio.GetRequiredService<IRecursoObserver>();
 
     recursoService.AgregarObservador(observer);
-    
+
     //De aca para abajo se borra//
     //USUARIOS//
     var usuarioService = servicio.GetRequiredService<IUsuarioService>();
-    
-    UsuarioConContraseñaDTO admin = new UsuarioConContraseñaDTO{
+
+    UsuarioConContraseñaDTO admin = new UsuarioConContraseñaDTO
+    {
         Email = "admin@prueba.com",
         Nombre = "Admin",
         Apellido = "Prueba",
@@ -75,7 +76,8 @@ using (var scope = app.Services.CreateScope())
     UsuarioDTO usuarioCreadoAdmin = usuarioService.GetByEmail(admin.Email);
     usuarioService.ConvertirEnAdmin(usuarioCreadoAdmin.Id);
 
-    UsuarioConContraseñaDTO admin2 = new UsuarioConContraseñaDTO { 
+    UsuarioConContraseñaDTO admin2 = new UsuarioConContraseñaDTO
+    {
         Email = "admin2@prueba.com",
         Nombre = "Admin2",
         Apellido = "Prueba",
@@ -86,7 +88,8 @@ using (var scope = app.Services.CreateScope())
     UsuarioDTO usuarioCreadoAdmin2 = usuarioService.GetByEmail(admin2.Email);
     usuarioService.ConvertirEnAdmin(usuarioCreadoAdmin2.Id);
 
-    UsuarioConContraseñaDTO user1 = new UsuarioConContraseñaDTO { 
+    UsuarioConContraseñaDTO user1 = new UsuarioConContraseñaDTO
+    {
         Email = "user@prueba.com",
         Nombre = "Usuario",
         Apellido = "Prueba",
@@ -96,7 +99,8 @@ using (var scope = app.Services.CreateScope())
     usuarioService.CrearUsuario(user1);
     UsuarioDTO usuarioCreado1 = usuarioService.GetByEmail(user1.Email);
 
-    UsuarioConContraseñaDTO user2 = new UsuarioConContraseñaDTO { 
+    UsuarioConContraseñaDTO user2 = new UsuarioConContraseñaDTO
+    {
         Email = "user2@prueba.com",
         Nombre = "Usuario2",
         Apellido = "Prueba",
@@ -106,7 +110,8 @@ using (var scope = app.Services.CreateScope())
     usuarioService.CrearUsuario(user2);
     UsuarioDTO usuarioCreado2 = usuarioService.GetByEmail(user2.Email);
 
-    UsuarioConContraseñaDTO user3 = new UsuarioConContraseñaDTO { 
+    UsuarioConContraseñaDTO user3 = new UsuarioConContraseñaDTO
+    {
         Email = "user3@prueba.com",
         Nombre = "Usuario3",
         Apellido = "Prueba",
@@ -116,7 +121,8 @@ using (var scope = app.Services.CreateScope())
     usuarioService.CrearUsuario(user3);
     UsuarioDTO usuarioCreado3 = usuarioService.GetByEmail(user3.Email);
 
-    UsuarioConContraseñaDTO user4 = new UsuarioConContraseñaDTO { 
+    UsuarioConContraseñaDTO user4 = new UsuarioConContraseñaDTO
+    {
         Email = "user4@prueba.com",
         Nombre = "Usuario4",
         Apellido = "Prueba",
@@ -126,7 +132,8 @@ using (var scope = app.Services.CreateScope())
     usuarioService.CrearUsuario(user4);
     UsuarioDTO usuarioCreado4 = usuarioService.GetByEmail(user4.Email);
 
-    UsuarioConContraseñaDTO user5 = new UsuarioConContraseñaDTO { 
+    UsuarioConContraseñaDTO user5 = new UsuarioConContraseñaDTO
+    {
         Email = "user5@prueba.com",
         Nombre = "Usuario5",
         Apellido = "Prueba",
@@ -135,65 +142,71 @@ using (var scope = app.Services.CreateScope())
     };
     usuarioService.CrearUsuario(user5);
     UsuarioDTO usuarioCreado5 = usuarioService.GetByEmail(user5.Email);
-        
+
     //PROYECTOS//
     var proyectoService = servicio.GetRequiredService<IProyectoService>();
-    
+
     ProyectoDTO proyecto1 = new ProyectoDTO
     {
-        Nombre = "Proyecto 1", 
-        Descripcion = "Descripcion1", 
+        Nombre = "Proyecto 1",
+        Descripcion = "Descripcion1",
         FechaInicio = DateTime.Now.Add(new TimeSpan(3, 0, 0, 0))
-    }; 
+    };
     ProyectoDTO proyectoCreado1 = proyectoService.CrearProyecto(proyecto1);
 
-    ProyectoDTO proyecto2 = new ProyectoDTO { 
+    ProyectoDTO proyecto2 = new ProyectoDTO
+    {
         Nombre = "Proyecto 2",
         Descripcion = "Descripcion2",
         FechaInicio = DateTime.Now.Add(new TimeSpan(40, 0, 0, 0))
     };
     ProyectoDTO proyectoCreado2 = proyectoService.CrearProyecto(proyecto2);
 
-    ProyectoDTO proyecto3 = new ProyectoDTO { 
+    ProyectoDTO proyecto3 = new ProyectoDTO
+    {
         Nombre = "Proyecto 3",
         Descripcion = "Descripcion3",
         FechaInicio = DateTime.Now
     };
     ProyectoDTO proyectoCreado3 = proyectoService.CrearProyecto(proyecto3);
 
-    ProyectoDTO proyecto4 = new ProyectoDTO { 
+    ProyectoDTO proyecto4 = new ProyectoDTO
+    {
         Nombre = "Proyecto 4",
         Descripcion = "Descripcion4",
         FechaInicio = DateTime.Now.Add(new TimeSpan(15, 0, 0, 0))
     };
     ProyectoDTO proyectoCreado4 = proyectoService.CrearProyecto(proyecto4);
 
-    ProyectoDTO proyecto5 = new ProyectoDTO { 
+    ProyectoDTO proyecto5 = new ProyectoDTO
+    {
         Nombre = "Proyecto 5",
         Descripcion = "Descripcion5",
         FechaInicio = DateTime.Now.Add(new TimeSpan(60, 0, 0, 0))
     };
     ProyectoDTO proyectoCreado5 = proyectoService.CrearProyecto(proyecto5);
-    
-    ProyectoDTO proyecto6 = new ProyectoDTO { 
+
+    ProyectoDTO proyecto6 = new ProyectoDTO
+    {
         Nombre = "Proyecto 6",
         Descripcion = "Descripcion6",
         FechaInicio = DateTime.Now.Add(new TimeSpan(31, 0, 0, 0))
     };
     ProyectoDTO proyectoCreado6 = proyectoService.CrearProyecto(proyecto6);
-    
+
     //RECURSOS//
     RecursoDTO recurso1 = new RecursoDTO
     {
-        Nombre = "Auto Rojo", 
-        Tipo = "Vehiculo", 
-        Descripcion = "Auto rojo electrico", 
-        SePuedeCompartir = false, 
+        Nombre = "Auto Rojo",
+        Tipo = "Vehiculo",
+        Descripcion = "Auto rojo electrico",
+        SePuedeCompartir = false,
         CantidadDelRecurso = 1
-    }; 
+    };
     RecursoDTO recursoCreado1 = recursoService.Add(recurso1);
-    
-    RecursoDTO recurso2 = new RecursoDTO { 
+
+    RecursoDTO recurso2 = new RecursoDTO
+    {
         Nombre = "Desarrollador Frontend",
         Tipo = "Humano",
         Descripcion = "Experto en tecnologías como React, Angular y Vue.js",
@@ -202,7 +215,8 @@ using (var scope = app.Services.CreateScope())
     };
     RecursoDTO recursoCreado2 = recursoService.Add(recurso2);
 
-    RecursoDTO recurso3 = new RecursoDTO { 
+    RecursoDTO recurso3 = new RecursoDTO
+    {
         Nombre = "Desarrollador Backend",
         Tipo = "Humano",
         Descripcion = "Especialista en Node.js, Python y bases de datos SQL/NoSQL",
@@ -211,7 +225,8 @@ using (var scope = app.Services.CreateScope())
     };
     RecursoDTO recursoCreado3 = recursoService.Add(recurso3);
 
-    RecursoDTO recurso4 = new RecursoDTO { 
+    RecursoDTO recurso4 = new RecursoDTO
+    {
         Nombre = "Desarrollador Full Stack",
         Tipo = "Humano",
         Descripcion = "Con habilidades tanto en frontend como en backend",
@@ -220,7 +235,8 @@ using (var scope = app.Services.CreateScope())
     };
     RecursoDTO recursoCreado4 = recursoService.Add(recurso4);
 
-    RecursoDTO recurso5 = new RecursoDTO { 
+    RecursoDTO recurso5 = new RecursoDTO
+    {
         Nombre = "Laptop de Desarrollo",
         Tipo = "Equipo Electrónico",
         Descripcion = "Computadora portátil con alto rendimiento para programación",
@@ -229,7 +245,8 @@ using (var scope = app.Services.CreateScope())
     };
     RecursoDTO recursoCreado5 = recursoService.Add(recurso5);
 
-    RecursoDTO recurso6 = new RecursoDTO { 
+    RecursoDTO recurso6 = new RecursoDTO
+    {
         Nombre = "Servidor Dedicado",
         Tipo = "Equipo Electrónico",
         Descripcion = "Máquina potente para alojar aplicaciones y servicios web",
@@ -237,7 +254,7 @@ using (var scope = app.Services.CreateScope())
         CantidadDelRecurso = 6
     };
     RecursoDTO recursoCreado6 = recursoService.Add(recurso6);
-    
+
     //ASIGNACION USUARIO-PROYECTO//
     //administradores
     proyectoService.AsignarAdminDeProyecto(usuarioCreado1.Id, proyectoCreado1.Id);
@@ -245,16 +262,16 @@ using (var scope = app.Services.CreateScope())
     proyectoService.AsignarAdminDeProyecto(usuarioCreado2.Id, proyectoCreado3.Id);
     proyectoService.AsignarAdminDeProyecto(usuarioCreado4.Id, proyectoCreado4.Id);
     proyectoService.AsignarAdminDeProyecto(usuarioCreadoAdmin.Id, proyectoCreado5.Id);
-    
+
     //miembros 1
     proyectoService.AgregarMiembroProyecto(usuarioCreado2.Id, proyectoCreado1.Id);
     proyectoService.AgregarMiembroProyecto(usuarioCreado3.Id, proyectoCreado1.Id);
     proyectoService.AgregarMiembroProyecto(usuarioCreado4.Id, proyectoCreado1.Id);
-    
+
     //miembros 2
     proyectoService.AgregarMiembroProyecto(usuarioCreado2.Id, proyectoCreado2.Id);
     proyectoService.AgregarMiembroProyecto(usuarioCreado3.Id, proyectoCreado2.Id);
-    
+
     //miembros 3
     proyectoService.AgregarMiembroProyecto(usuarioCreadoAdmin2.Id, proyectoCreado3.Id);
 
@@ -263,23 +280,23 @@ using (var scope = app.Services.CreateScope())
     proyectoService.AgregarMiembroProyecto(usuarioCreado3.Id, proyectoCreado4.Id);
 
     //miembros 5 - empty
-    
+
     //miembrps 6 - empty
 
     //TAREAS//
     var tareaService = servicio.GetRequiredService<ITareaService>();
 
     // Proyecto 1
-    TareaDTO tarea1 = new TareaDTO 
-        { 
-            Titulo = "Tarea 1", 
-            Descripcion = "Tarea 2", 
-            Duracion = new TimeSpan(15, 0, 0, 0), 
-            EsCritica = false, 
-            FechaInicio = DateTime.Now.Add(new TimeSpan(15, 0, 0, 0)) 
-        }; 
+    TareaDTO tarea1 = new TareaDTO
+    {
+        Titulo = "Tarea 1",
+        Descripcion = "Tarea 2",
+        Duracion = new TimeSpan(15, 0, 0, 0),
+        EsCritica = false,
+        FechaInicio = DateTime.Now.Add(new TimeSpan(15, 0, 0, 0))
+    };
     TareaDTO tarea1_1 = tareaService.CrearTarea(proyectoCreado1.Id, tarea1);
-    
+
     // Proyecto con 2
     TareaDTO tareaUnica = new TareaDTO
     {
@@ -321,9 +338,9 @@ using (var scope = app.Services.CreateScope())
         FechaInicio = DateTime.Now.Add(new TimeSpan(12, 0, 0, 0))
     };
     TareaDTO tarea3_3 = tareaService.CrearTarea(proyectoCreado3.Id, tarea4);
-    
+
     // Proyecto 4 - empty (con usuarios sin tareas)
-    
+
     // Proyecto 5 (sin usuarios con taras)
     TareaDTO tareaProyecto4_1 = new TareaDTO
     {
@@ -344,9 +361,9 @@ using (var scope = app.Services.CreateScope())
         FechaInicio = DateTime.Now.Add(new TimeSpan(5, 0, 0, 0))
     };
     TareaDTO tarea4_2 = tareaService.CrearTarea(proyectoCreado5.Id, tareaProyecto4_2);
-    
+
     // Proyecto 6 - empty (sin tareas ni usuarios)
-    
+
     // ASIGNACION RECURSO - TAREA
     var asignacionRecursoTareaService = servicio.GetRequiredService<IAsignacionRecursoTareaService>();
 
@@ -370,7 +387,7 @@ using (var scope = app.Services.CreateScope())
     asignacionRecursoTareaService.CrearAsignacionRecursoTarea(new AsignacionRecursoTareaDTO
     {
         Recurso = recursoCreado5,
-        Tarea = tarea1_1,  
+        Tarea = tarea1_1,
         Cantidad = 2
     });
     asignacionRecursoTareaService.CrearAsignacionRecursoTarea(new AsignacionRecursoTareaDTO
@@ -403,7 +420,7 @@ using (var scope = app.Services.CreateScope())
     // 5. Recurso usado en una tarea de un proyecto y también en otras de otros proyectos (Desarrollador Backend)
     asignacionRecursoTareaService.CrearAsignacionRecursoTarea(new AsignacionRecursoTareaDTO
     {
-        Recurso = recursoCreado3, 
+        Recurso = recursoCreado3,
         Tarea = tarea3_2,
         Cantidad = 1
     });
@@ -413,6 +430,26 @@ using (var scope = app.Services.CreateScope())
         Tarea = tarea2_1,
         Cantidad = 2
     });
+
+    //Asignacion a Tareas
+    tareaService.AgregarUsuario(tarea1_1.Id, usuarioCreado1.Id);
+    tareaService.AgregarUsuario(tarea1_1.Id, usuarioCreado2.Id);
+
+    tareaService.AgregarUsuario(tarea2_1.Id, usuarioCreado3.Id);
+
+    tareaService.AgregarUsuario(tarea3_1.Id, usuarioCreado4.Id);
+    tareaService.AgregarUsuario(tarea3_1.Id, usuarioCreado5.Id);
+    tareaService.AgregarUsuario(tarea3_2.Id, usuarioCreado4.Id);
+    tareaService.AgregarUsuario(tarea3_3.Id, usuarioCreado5.Id);
+
+    tareaService.AgregarUsuario(tarea4_2.Id, usuarioCreado5.Id);
+
+    //Asignacion de dependendencia de tareas
+    tareaService.AgregarDependencia(tarea3_3.Id, tarea3_1.Id);
+    tareaService.AgregarDependencia(tarea3_3.Id, tarea3_2.Id);
+
+    tareaService.AgregarDependencia(tarea4_2.Id, tarea4_1.Id);
+
 }
 
 app.UseHttpsRedirection();
