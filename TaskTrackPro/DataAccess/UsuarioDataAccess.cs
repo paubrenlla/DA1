@@ -20,14 +20,60 @@ namespace DataAccess
                 admin.EsAdminSistema = true;
                 _listaUsuarios.Add(admin);
 
-                Usuario user = new Usuario(
+                Usuario admin2 = new Usuario(
+                    "admin2@prueba.com",
+                    "Admin2",
+                    "Prueba",
+                    "Admin123!",
+                    new DateTime(2004, 3, 17)
+                );
+                admin2.EsAdminSistema = true;
+                _listaUsuarios.Add(admin2);
+                
+                Usuario user1 = new Usuario(
                     "user@prueba.com",
                     "Usuario",
                     "Prueba",
                     "User1234!",
                     new DateTime(1995, 5, 5)
                 );
-                _listaUsuarios.Add(user);
+                _listaUsuarios.Add(user1);
+                
+                Usuario user2 = new Usuario(
+                    "user2@prueba.com",
+                    "Usuario2",
+                    "Prueba",
+                    "User1234!",
+                    new DateTime(1983, 4, 9)
+                );
+                _listaUsuarios.Add(user2);
+                
+                Usuario user3 = new Usuario(
+                    "user3@prueba.com",
+                    "Usuario3",
+                    "Prueba",
+                    "User1234!",
+                    new DateTime(207, 9, 17)
+                );
+                _listaUsuarios.Add(user3);
+                
+                Usuario user4 = new Usuario(
+                    "user4@prueba.com",
+                    "Usuario4",
+                    "Prueba",
+                    "User1234!",
+                    new DateTime(2007, 9, 17)
+                );
+                _listaUsuarios.Add(user4);
+                
+                Usuario user5 = new Usuario(
+                    "user5@prueba.com",
+                    "Usuario5",
+                    "Prueba",
+                    "User1234!",
+                    new DateTime(2005, 2, 24)
+                );
+                _listaUsuarios.Add(user5);
         }
 
         public void Add(Usuario usuario)
