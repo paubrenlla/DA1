@@ -163,5 +163,62 @@ namespace Services_Tests
             Assert.AreEqual(_usuario2.Apellido, adminDTO.Apellido);
             Assert.AreEqual(_usuario2.Email, adminDTO.Email);
         }
+        
+        [TestMethod]
+        public void GetMiembrosDeProyecto_DevuelveListaCorrecta()
+        {
+            _repoAsignaciones.Add(new AsignacionProyecto(_proyecto1, _usuario1, Rol.Miembro));
+            _repoAsignaciones.Add(new AsignacionProyecto(_proyecto1, _usuario2, Rol.Miembro));
+
+            List<UsuarioDTO> miembros = _service.GetMiembrosDeProyecto(_proyecto1.Id)!;
+
+            Assert.AreEqual(2, miembros.Count);
+            Assert.IsTrue(miembros.Any(u => u.Id == _usuario1.Id));
+            Assert.IsTrue(miembros.Any(u => u.Id == _usuario2.Id));
+        }
+
+        [TestMethod]
+        public void AgregarMiembroProyecto_AgregaCorrectamenteUnMiembro()
+        {
+            _service.AgregarMiembroProyecto(_usuario1.Id, _proyecto1.Id);
+
+            List<AsignacionProyecto> asignaciones = _repoAsignaciones.UsuariosDelProyecto(_proyecto1.Id);
+            Assert.AreEqual(1, asignaciones.Count());
+            AsignacionProyecto asignacion = asignaciones.First();
+            Assert.AreEqual(_usuario1.Id, asignacion.Usuario.Id);
+            Assert.AreEqual(Rol.Administrador, asignacion.Rol); // según tu implementación actual
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void AgregarMiembroProyecto_UsuarioYaAsignado_LanzaExcepcion()
+        {
+            _repoAsignaciones.Add(new AsignacionProyecto(_proyecto1, _usuario1, Rol.Miembro));
+
+            _service.AgregarMiembroProyecto(_usuario1.Id, _proyecto1.Id);
+        }
+
+        [TestMethod]
+        public void EliminarMiembroDeProyecto_EliminaCorrectamenteUnMiembro()
+        {
+            _repoAsignaciones.Add(new AsignacionProyecto(_proyecto1, _usuario2, Rol.Administrador));
+            _repoAsignaciones.Add(new AsignacionProyecto(_proyecto1, _usuario1, Rol.Miembro));
+
+            _service.EliminarMiembroDeProyecto(_usuario1.Id, _proyecto1.Id);
+
+            List<AsignacionProyecto> asignacionesRestantes = _repoAsignaciones.UsuariosDelProyecto(_proyecto1.Id);
+            Assert.IsFalse(asignacionesRestantes.Any(a => a.Usuario.Id == _usuario1.Id));
+        }
+
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void EliminarMiembroDeProyecto_NoPermiteEliminarAdmin_LanzaExcepcion()
+        {
+            _repoAsignaciones.Add(new AsignacionProyecto(_proyecto1, _usuario1, Rol.Administrador));
+
+            _service.EliminarMiembroDeProyecto(_usuario1.Id, _proyecto1.Id);
+        }
+
     }
 }

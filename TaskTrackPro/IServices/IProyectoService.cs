@@ -1,4 +1,5 @@
-﻿using DTOs;
+﻿using Domain;
+using DTOs;
 
 namespace Services
 {
@@ -24,5 +25,8 @@ namespace Services
 
         void AsignarAdminDeProyecto(int usuarioId, int proyectoId);
         UsuarioDTO GetAdminDeProyecto(int id);
+        List<UsuarioDTO>? GetMiembrosDeProyecto(int id);
+        void AgregarMiembroProyecto(int usuarioId, int proyectoId);
+        void EliminarMiembroDeProyecto(int miembroId, int proyectoId);
     }
 }

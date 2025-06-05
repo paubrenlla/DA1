@@ -106,5 +106,29 @@ namespace Services
         {
             return Convertidor.AUsuarioDTO(_asignacionRepo.GetAdminProyecto(id).Usuario);
         }
+
+        public List<UsuarioDTO>? GetMiembrosDeProyecto(int id)
+        {
+            return _asignacionRepo.GetMiembrosDeProyecto(id).Select(Convertidor.AUsuarioDTO).ToList();
+        }
+
+        public void AgregarMiembroProyecto(int usuarioId, int proyectoId)
+        {
+            Usuario usuario = _usuarioRepo.GetById(usuarioId);
+            if (_asignacionRepo.GetMiembrosDeProyecto(proyectoId).Contains(usuario))
+                throw new ArgumentException("El usuario ya se encuentra asignado al proyecto.");
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
+            AsignacionProyecto asignacion = new AsignacionProyecto(proyecto, usuario, Rol.Administrador); 
+            _asignacionRepo.Add(asignacion);
+        }
+
+        public void EliminarMiembroDeProyecto(int miembroId, int proyectoId)
+        {
+            if(_asignacionRepo.GetAdminProyecto(proyectoId).Usuario.Id == miembroId)
+                throw new ArgumentException("No puedes eliminar al Administrador de Proyecto");
+            List<AsignacionProyecto> asignaciones = _asignacionRepo.AsignacionesDelUsuario(miembroId);
+            AsignacionProyecto aEliminar = asignaciones.FirstOrDefault(a => a.Proyecto.Id == proyectoId);
+            _asignacionRepo.Remove(aEliminar);
+        }
     }
 }
