@@ -140,5 +140,44 @@ namespace Controllers_Tests
 
             _mockService.Verify(s => s.AgregarUsuario(6, 12), Times.Once);
         }
+        
+        [TestMethod]
+        public void TieneSucesoras_RetornaTrueCuandoServiceDevuelveTrue()
+        {
+            _mockService
+                .Setup(s => s.TieneSucesoras(_dto1))
+                .Returns(false);
+
+            bool resultado = _controller.TieneSucesoras(_dto1);
+
+            Assert.IsFalse(resultado);
+            _mockService.Verify(s => s.TieneSucesoras(_dto1), Times.Once);
+        }
+        
+        [TestMethod]
+        public void UsuarioPerteneceALaTareaLlamaServiceYDevuelveTrue()
+        {
+            int usuarioId = 7;
+            int tareaId = 20;
+
+            _mockService
+                .Setup(s => s.UsuarioPerteneceALaTarea(usuarioId, tareaId))
+                .Returns(true);
+
+            bool resultado = _controller.UsuarioPerteneceALaTarea(usuarioId, tareaId);
+
+            Assert.IsTrue(resultado);
+            _mockService.Verify(s => s.UsuarioPerteneceALaTarea(usuarioId, tareaId), Times.Once);
+        }
+        
+        [TestMethod]
+        public void EliminarTarea_LlamaService()
+        {
+            int tareaId = 123;
+
+            _controller.EliminarTarea(tareaId);
+
+            _mockService.Verify(s => s.EliminarTarea(tareaId), Times.Once);
+        }
     }
 }

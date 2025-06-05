@@ -52,5 +52,20 @@ namespace Controllers
         {
             _service.AgregarUsuario(tareaId, usuarioId);
         }
+
+        public bool TieneSucesoras(TareaDTO tarea)
+        {
+            return _service.TieneSucesoras(tarea);
+        }
+
+        public bool UsuarioPerteneceALaTarea(int usuarioDtoId, int tareaId)
+        {
+            return _service.UsuarioPerteneceALaTarea(usuarioDtoId, tareaId);
+        }
+
+        public void EliminarTarea(int tareaId)
+        {
+            _service.EliminarTarea(tareaId);
+        }
     }
 }

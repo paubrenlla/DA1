@@ -1,10 +1,11 @@
-@*
-@page "/proyectos/{id:int}/tareas/crear/"
-
-<PageTitle>Crear Tarea</PageTitle>
-
-@using Domain
-@inject DB DataBase
+@page "/proyectos/{id:int}/tareas/crear"
+@using Controllers
+@using DTOs
+@using UserInterface.Data
+@inject TareaController TareaController
+@inject ProyectoController ProyectoController
+@inject UsuarioController UsuarioController
+@inject SessionLogic SessionLogic
 @inject NavigationManager NavigationManager
 
 <h1>Crear Tarea</h1>
@@ -17,12 +18,12 @@
 <form onsubmit="return false">
     <div class="form-group">
         <label for="titulo">Título</label>
-        <input type="text" class="form-control" id="titulo" @bind="titulo">
+        <input type="text" class="form-control" id="titulo" @bind="titulo" />
     </div>
 
     <div class="form-group">
         <label for="descripcion">Descripción</label>
-        <input type="text" class="form-control" id="descripcion" @bind="descripcion">
+        <input type="text" class="form-control" id="descripcion" @bind="descripcion" />
     </div>
 
     <div class="form-group">
@@ -31,7 +32,7 @@
     </div>
 
     <div class="form-group">
-        <label>Duración (días:horas)</label>
+        <label>Duración (días : horas)</label>
         <div class="d-flex align-items-center">
             <input type="number" class="form-control me-1" style="width: 80px;" min="0" @bind="dias" />
             <span class="mx-1">:</span>
@@ -39,34 +40,74 @@
         </div>
     </div>
 
-    <input type="submit" class="btn btn-primary" value="Guardar cambios" style="margin-top: 5px" @onclick="Crear_Tarea">
+    <button class="btn btn-primary mt-2" @onclick="CrearTarea">Guardar cambios</button>
 </form>
 
 @code {
-    [Parameter]
-    public int id { get; set; }
+    [Parameter] public int id { get; set; }
 
-    private string titulo;
-    private string descripcion;
-    private DateTime fechaInicio;
-
+    private string titulo = string.Empty;
+    private string descripcion = string.Empty;
+    private DateTime fechaInicio = DateTime.Today;
     private int dias = 0;
     private int horas = 0;
+    private string mensajeError = string.Empty;
 
-    private bool esCritica;
-    private string mensajeError;
+    private bool yaVerifiqueSesion = false;
+    private UsuarioDTO? usuarioDto;
+    private bool esAdminSistema = false;
+    private bool esAdminProyecto = false;
 
-    private void Crear_Tarea()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        mensajeError = "";
+        if (!yaVerifiqueSesion)
+        {
+            yaVerifiqueSesion = true;
+
+            bool activo = await SessionLogic.IsUserActive();
+            if (!activo)
+            {
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+
+            usuarioDto = await SessionLogic.GetCurrentUser();
+            if (usuarioDto is null)
+            {
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+
+            esAdminSistema  = UsuarioController.EsAdmin(usuarioDto.Id);
+            esAdminProyecto = ProyectoController.UsuarioEsAdminEnProyecto(usuarioDto.Id, id);
+            if (!esAdminSistema && !esAdminProyecto)
+            {
+                NavigationManager.NavigateTo($"/proyectos/{id}/tareas");
+                return;
+            }
+
+            StateHasChanged();
+        }
+    }
+
+    private void CrearTarea()
+    {
+        mensajeError = string.Empty;
 
         try
         {
             TimeSpan duracion = new TimeSpan(dias, horas, 0, 0);
 
-            Tarea tarea = new Tarea(titulo, descripcion, fechaInicio, duracion, esCritica);
-            DataBase.buscarProyectoPorId(id).agregarTarea(tarea);
-            NavigationManager.NavigateTo($"/proyectos/{id}/tareas/");
+            var dto = new TareaDTO
+            {
+                Titulo = titulo,
+                Descripcion = descripcion,
+                FechaInicio = fechaInicio,
+                Duracion = duracion
+            };
+
+            TareaController.CrearTarea(id, dto);
+            NavigationManager.NavigateTo($"/proyectos/{id}/tareas");
         }
         catch (Exception ex)
         {
@@ -74,5 +115,3 @@
         }
     }
 }
-*@
-
