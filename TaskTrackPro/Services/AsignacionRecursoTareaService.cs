@@ -138,4 +138,9 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
         
         return true;
     }
+
+    public List<AsignacionRecursoTareaDTO>? GetAsignacionesDeTarea(int idTarea)
+    {
+        return _asignacionRepo.GetByTarea(idTarea).Select(Convertidor.AAsignacionRecursoTareaDTO).ToList();
+    }
 }

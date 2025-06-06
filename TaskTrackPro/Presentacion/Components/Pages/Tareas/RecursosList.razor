@@ -1,18 +1,26 @@
-@*@page "/proyectos/{idProyecto:int}/tareas/{idTarea:int}/recursos"
+@page "/proyectos/{idProyecto:int}/tareas/{idTarea:int}/recursos"
+@using DTOs
+@using Controllers
 @using Domain
 @using Domain.Enums
 @using UserInterface.Data
+@inject RecursoController Recursos
+@inject AsignacionRecursoTareaControllers Asignaciones
+@inject UsuarioController Usuarios
+@inject TareaController Tareas
 @inject SessionLogic SessionLogic
 @inject NavigationManager NavigationManager
-
-
-@inject DB BaseDeDatos
 
 <h1>
     RecursosNecesarios
 </h1>
 
+
 <div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <div class="alert alert-danger">@mensajeError</div>
+    }
     <label for="recursoSelect">Seleccionar Recurso:</label>
     <select id="recursoSelect" @bind="recursoSeleccionadoId">
         <option value="">Seleccione un recurso</option>
@@ -28,8 +36,8 @@
     <input type="number" id="cantidadInput" @bind="cantidadNecesaria" />
 </div>
 
-@if (BaseDeDatos.buscarProyectoPorId(idProyecto).BuscarTareaPorId(idTarea).EstadoActual.Valor == TipoEstadoTarea.Ejecutandose
-     || BaseDeDatos.buscarProyectoPorId(idProyecto).BuscarTareaPorId(idTarea).EstadoActual.Valor == TipoEstadoTarea.Efectuada)
+@if (Tareas.GetEstadoTarea(idTarea) == TipoEstadoTarea.Ejecutandose
+     || Tareas.GetEstadoTarea(idTarea) == TipoEstadoTarea.Efectuada)
 {
     <button class="btn btn-success" disabled>Agregar Recurso</button>
 }
@@ -52,29 +60,38 @@ else
     </tr>
     </thead>
     <tbody>
-    @foreach (AsignacionRecursoTarea recursoNecesario in listaDeRecursosNecesarios)
+    @foreach (AsignacionRecursoTareaDTO recursoNecesario in listaDeRecursosNecesarios)
     {
-        Recurso recurso = recursoNecesario.Recurso;
+        RecursoDTO recurso = recursoNecesario.Recurso;
         <tr>
             <td>@recurso.Nombre</td>
             <td>@recurso.Tipo</td>
             <td>@recurso.Descripcion</td>
-            <td>@recursoNecesario.CantidadNecesaria</td>
+            <td>@recursoNecesario.Cantidad</td>
             <td>@recurso.CantidadDelRecurso.ToString()</td>
             <td>@recurso.CantidadEnUso.ToString()</td>
             <td>@recurso.SePuedeCompartir</td>
             <td>
-                @if (BaseDeDatos.buscarProyectoPorId(idProyecto).BuscarTareaPorId(idTarea).EstadoActual.Valor == TipoEstadoTarea.Ejecutandose
-                          || BaseDeDatos.buscarProyectoPorId(idProyecto).BuscarTareaPorId(idTarea).EstadoActual.Valor == TipoEstadoTarea.Efectuada)
+                @if (Tareas.GetEstadoTarea(idTarea) == TipoEstadoTarea.Ejecutandose)
                 {
                     <button class="btn btn-danger btn-sm" disabled>Eliminar</button>
                 }
                 else
                 {
-                    <button class="btn btn-danger btn-sm" @onclick="@(() => BaseDeDatos.buscarProyectoPorId(idProyecto).BuscarTareaPorId(idTarea).EliminarRecurso(recursoNecesario))">
+                    <button class="btn btn-danger btn-sm" @onclick="() => EliminarRecurso(recurso.Id)">
                         Eliminar
                     </button>
                 }
+                @if (Asignaciones.RecursoEsExclusivo(@recurso.Id))
+                {
+                    <a class="btn btn-primary btn-sm"
+                       href="proyectos/@idProyecto/tareas/@idTarea/recursos/@recurso.Id/editar">
+                        Modificar
+                    </a>
+                }
+            </td>
+            <td>
+                
             </td>
         </tr>
     }
@@ -88,16 +105,18 @@ else
     [Parameter]
     public int idTarea { get; set; }
     
-    private List<AsignacionRecursoTarea>? listaDeRecursosNecesarios = new List<AsignacionRecursoTarea>();
+    private List<AsignacionRecursoTareaDTO>? listaDeRecursosNecesarios = new List<AsignacionRecursoTareaDTO>();
     private bool yaVerifiqueSesion = false;
     
     private int recursoSeleccionadoId;
     private int cantidadNecesaria = 1;
-    private List<Recurso> listaDeRecursosDisponibles = new List<Recurso>();
+    private List<RecursoDTO> listaDeRecursosDisponibles = new List<RecursoDTO>();
+    
+    private string mensajeError = String.Empty;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var isUserActive = await SessionLogic.isUserActive();
+        var isUserActive = await SessionLogic.IsUserActive();
         if (firstRender && !yaVerifiqueSesion)
         {
             if (!isUserActive)
@@ -106,9 +125,8 @@ else
             }
             else
             {
-                Proyecto proyectoActual = BaseDeDatos.buscarProyectoPorId(idProyecto);
-                Tarea tareaActual = proyectoActual.BuscarTareaPorId(idTarea);
-                listaDeRecursosNecesarios = tareaActual.RecursosNecesarios;
+                TareaDTO tareaActual = Tareas.BuscarTareaPorId(idTarea);
+                listaDeRecursosNecesarios = Asignaciones.GetAsignacionesDeTarea(idTarea);
                 StateHasChanged();
             }
         }
@@ -116,24 +134,55 @@ else
     
     protected override async Task OnInitializedAsync()
     {
-        Proyecto proyectoActual = BaseDeDatos.buscarProyectoPorId(idProyecto);
-        Tarea tareaActual = proyectoActual.BuscarTareaPorId(idTarea);
+        TareaDTO tareaActual = Tareas.BuscarTareaPorId(idTarea);
 
-        listaDeRecursosDisponibles = BaseDeDatos.ListaRecursos;
+        listaDeRecursosDisponibles = Recursos.GetAll();
     }
 
     private async Task AgregarRecurso()
     {
-        var recurso = listaDeRecursosDisponibles.FirstOrDefault(r => r.Id == recursoSeleccionadoId);
+        mensajeError = string.Empty;
+        RecursoDTO recurso = listaDeRecursosDisponibles.FirstOrDefault(r => r.Id == recursoSeleccionadoId);
         
         if (recurso != null && cantidadNecesaria > 0)
         {
-            Proyecto proyectoActual = BaseDeDatos.buscarProyectoPorId(idProyecto);
-            Tarea tareaActual = proyectoActual.BuscarTareaPorId(idTarea);
+            TareaDTO tareaActual = Tareas.BuscarTareaPorId(idTarea);
+
+            AsignacionRecursoTareaDTO asignacionNueva = new AsignacionRecursoTareaDTO
+            {
+                Recurso = recurso,
+                Tarea = tareaActual,
+                Cantidad = cantidadNecesaria
+            };
+
+            try
+            {
+                Asignaciones.CrearAsignacionRecursoTarea(asignacionNueva);
+            }
+            catch(Exception ex)
+            {
+                mensajeError = ex.Message;
+            }
             
-            tareaActual.AgregarRecurso(recurso, cantidadNecesaria);
-            
-            NavigationManager.NavigateTo($"/proyectos/{idProyecto}/tareas/{idTarea}/recursos");
+            listaDeRecursosNecesarios = Asignaciones.GetAsignacionesDeTarea(idTarea);
+            StateHasChanged();
         }
     }
-}*@
+
+    private async Task EliminarRecurso(int idRecursoAEliminar)
+    {
+        try
+        {
+            mensajeError = string.Empty;
+        
+            Asignaciones.EliminarRecursoDeTarea(idTarea, idRecursoAEliminar);
+        
+            listaDeRecursosNecesarios = Asignaciones.GetAsignacionesDeTarea(idTarea);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+}

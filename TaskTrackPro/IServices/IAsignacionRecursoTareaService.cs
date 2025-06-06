@@ -23,5 +23,6 @@ namespace Services
         bool RecursoEsExclusivo(int recursoID);
         
         bool VerificarRecursosDeTareaDisponibles(int TareaId);
+        List<AsignacionRecursoTareaDTO>? GetAsignacionesDeTarea(int idTarea);
     }
 }

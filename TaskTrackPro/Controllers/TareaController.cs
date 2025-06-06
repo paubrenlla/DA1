@@ -1,6 +1,7 @@
 ﻿using DTOs;
 using Services;
 using System.Collections.Generic;
+using Domain.Enums;
 
 namespace Controllers
 {
@@ -67,6 +68,10 @@ namespace Controllers
         {
             _service.EliminarTarea(tareaId);
         }
+
+        public TipoEstadoTarea GetEstadoTarea(int tareaId)
+        {
+            return _service.GetEstadoTarea(tareaId);
         
         public List<UsuarioDTO>? ListarUsuariosDeTarea(int tareaId)
         {
