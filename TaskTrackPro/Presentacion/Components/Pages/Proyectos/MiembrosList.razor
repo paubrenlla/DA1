@@ -6,6 +6,7 @@
 
 @inject UsuarioController Usuarios
 @inject ProyectoController Proyectos
+@inject TareaController Tareas
 
 @inject SessionLogic SessionLogic
 @inject NavigationManager NavigationManager
@@ -161,6 +162,7 @@ else
         {
             ProyectoDTO proyecto = Proyectos.BuscarProyectoPorId(id);
             Proyectos.EliminarMiembro(miembro.Id, id);
+            Tareas.EliminarAUsuarioDeTareasDeProyecto(miembro.Id, id);
             CargarMiembros();
             ActualizarUsuariosDisponibles();
             StateHasChanged();
