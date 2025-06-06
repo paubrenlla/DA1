@@ -27,5 +27,6 @@ namespace Services
         TipoEstadoTarea GetEstadoTarea(int tareaId);
         List<UsuarioDTO>? ListarUsuariosDeTarea(int tareaId);
         void EliminarUsuarioDeTarea(int miembroId, int idTarea);
+        void EliminarUsuarioDeTareasDeProyecto(int miembroId, int proyectoId);
     }
 }        
