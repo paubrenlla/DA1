@@ -56,7 +56,6 @@ else
                 <td>@usuario.Apellido</td>
                 <td>@usuario.FechaNacimiento.ToShortDateString()</td>
                 <td>
-                    <a class="btn btn-success btn-sm" href="/proyectos/@idProyecto/tareas/@idTarea/miembros/@usuario.Id/editar">Editar</a>
                     <button class="btn btn-danger btn-sm" @onclick="@(() => EliminarMiembro(usuario))">
                         Eliminar
                     </button>
