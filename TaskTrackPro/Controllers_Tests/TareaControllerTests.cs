@@ -275,5 +275,16 @@ namespace Controllers_Tests
             Assert.IsNull(resultado);
             _mockService.Verify(s => s.ListarUsuariosDeTarea(tareaId), Times.Once);
         }
+        
+        [TestMethod]
+        public void EliminarMiembroDeTarea_LlamaService()
+        {
+            int miembroId = 15;
+            int idTarea = 8;
+
+            _controller.EliminarMiembroDeTarea(miembroId, idTarea);
+
+            _mockService.Verify(s => s.EliminarUsuarioDeTarea(miembroId, idTarea), Times.Once);
+        }
     }
 }
