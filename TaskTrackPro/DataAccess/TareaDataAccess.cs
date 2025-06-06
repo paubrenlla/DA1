@@ -36,5 +36,13 @@ public class TareaDataAccess : IDataAccessTarea
     {
         return _listaTareas;
     }
-    
+
+    public List<Tarea> GetTareasDeUsuarioEnProyecto(int miembroId, int proyectoId)
+    {
+        return _listaTareas
+            .Where(t => t.Proyecto.Id == proyectoId)
+            .Where(t => t.UsuariosAsignados
+                .FirstOrDefault(u => u.Id == miembroId) != null)
+            .ToList();
+    }
 }
