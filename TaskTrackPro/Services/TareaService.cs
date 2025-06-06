@@ -136,5 +136,26 @@ namespace Services
             Tarea tarea = _tareaRepo.GetById(tareaID);
             return tarea?.UsuariosAsignados.Select(Convertidor.AUsuarioDTO).ToList();
         }
+
+        public void EliminarUsuarioDeTarea(int miembroId, int idTarea)
+        {
+            Tarea tarea = _tareaRepo.GetById(idTarea);
+    
+            Usuario usuario = _usuarioRepo.GetById(miembroId);
+    
+            tarea.UsuariosAsignados.Remove(usuario);
+        }
+
+        public void EliminarUsuarioDeTareasDeProyecto(int miembroId, int proyectoId)
+        {
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
+            Usuario usuario = _usuarioRepo.GetById(miembroId);
+            List<Tarea> TareasDeProyectoYUsuario = _tareaRepo.GetTareasDeUsuarioEnProyecto(miembroId, proyectoId);
+    
+            foreach (Tarea tarea in TareasDeProyectoYUsuario)
+            {
+                tarea.UsuariosAsignados.Remove(tarea.UsuariosAsignados.First(u => u.Id == miembroId));
+            }
+        }
     }
 }

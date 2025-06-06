@@ -78,5 +78,15 @@ namespace Controllers
         {
             return _service.ListarUsuariosDeTarea(tareaId);
         }
+
+        public void EliminarMiembroDeTarea(int miembroId, int idTarea)
+        {
+            _service.EliminarUsuarioDeTarea(miembroId, idTarea);
+        }
+
+        public void EliminarAUsuarioDeTareasDeProyecto(int miembroId, int proyectoId)
+        {
+            _service.EliminarUsuarioDeTareasDeProyecto(miembroId, proyectoId);
+        }
     }
 }
