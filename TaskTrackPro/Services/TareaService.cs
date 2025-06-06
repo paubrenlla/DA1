@@ -145,5 +145,17 @@ namespace Services
     
             tarea.UsuariosAsignados.Remove(usuario);
         }
+
+        public void EliminarUsuarioDeTareasDeProyecto(int miembroId, int proyectoId)
+        {
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
+            Usuario usuario = _usuarioRepo.GetById(miembroId);
+            List<Tarea> TareasDeProyectoYUsuario = _tareaRepo.GetTareasDeUsuarioEnProyecto(miembroId, proyectoId);
+    
+            foreach (Tarea tarea in TareasDeProyectoYUsuario)
+            {
+                tarea.UsuariosAsignados.Remove(tarea.UsuariosAsignados.First(u => u.Id == miembroId));
+            }
+        }
     }
 }
