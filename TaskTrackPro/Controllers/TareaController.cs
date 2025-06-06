@@ -72,7 +72,8 @@ namespace Controllers
         public TipoEstadoTarea GetEstadoTarea(int tareaId)
         {
             return _service.GetEstadoTarea(tareaId);
-        
+        }
+
         public List<UsuarioDTO>? ListarUsuariosDeTarea(int tareaId)
         {
             return _service.ListarUsuariosDeTarea(tareaId);
