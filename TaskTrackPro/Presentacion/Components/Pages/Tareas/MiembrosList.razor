@@ -125,7 +125,6 @@ else
         List<UsuarioDTO> miembrosActualesTarea = TareaController.ListarUsuariosDeTarea(idTarea);
         List<UsuarioDTO> miembrosProyecto = ProyectoController.GetMiembrosDeProyecto(idProyecto);
         
-        // Solo los miembros del proyecto pueden ser asignados a la tarea
         usuariosDisponibles = miembrosProyecto
             .Where(u => !miembrosActualesTarea.Any(m => m.Id == u.Id))
             .ToList();

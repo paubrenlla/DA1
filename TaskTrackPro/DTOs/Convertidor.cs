@@ -35,7 +35,8 @@ public static class Convertidor
             Id = p.Id,
             Nombre = p.Nombre,
             Descripcion = p.Descripcion,
-            FechaInicio = p.FechaInicio
+            FechaInicio = p.FechaInicio,
+            FinEstimado = p.FinEstimado
         };
     }
     
@@ -49,7 +50,10 @@ public static class Convertidor
             FechaInicio = tarea.FechaInicio,
             Duracion = tarea.Duracion,
             EsCritica = tarea.EsCritica,
-            Estado = tarea.EstadoActual.Valor.ToString()
+            Estado = tarea.EstadoActual.Valor.ToString(),
+            Holgura = tarea.Holgura,
+            EarlyFinish = tarea.EarlyFinish,
+            EarlyStart = tarea.EarlyStart,
         };
     }
 

@@ -1,5 +1,4 @@
-﻿
-using DataAccess;
+﻿using DataAccess;
 using Domain;
 using Domain.Enums;
 using DTOs;
@@ -15,10 +14,14 @@ namespace Services_Tests
         private IDataAccessProyecto _repoProyectos;
         private IDataAccessUsuario _repoUsuarios;
         private IDataAccessAsignacionProyecto _repoAsignaciones;
+        private IDataAccessTarea _repoTareas;
         private Usuario _usuario1;
         private Usuario _usuario2;
         private Proyecto _proyecto1;
         private Proyecto _proyecto2;
+        private Tarea _t1;
+        private Tarea _t2;
+        private Tarea _t3;
 
         [TestInitialize]
         public void SetUp()
@@ -37,6 +40,17 @@ namespace Services_Tests
             _proyecto2 = new Proyecto("P2", "Desc2", DateTime.Today.AddDays(2));
             _repoProyectos.Add(_proyecto1);
             _repoProyectos.Add(_proyecto2);
+            
+            _t1 = new Tarea("T1", "D1", DateTime.Today.AddDays(1), TimeSpan.FromDays(2), esCritica:false);
+            _t2 = new Tarea("T2", "D2", DateTime.Today.AddDays(3), TimeSpan.FromDays(1), esCritica:false);
+            _t3 = new Tarea("T3", "D3", DateTime.Today.AddDays(4), TimeSpan.FromDays(2), esCritica:false);
+
+            _proyecto1.TareasAsociadas.Add(_t1);
+            _proyecto1.TareasAsociadas.Add(_t2);
+            _proyecto1.TareasAsociadas.Add(_t3);
+            
+            _t2.AgregarDependencia(_t1);
+            _t3.AgregarDependencia(_t2);
         }
 
         [TestMethod]
@@ -219,6 +233,28 @@ namespace Services_Tests
 
             _service.EliminarMiembroDeProyecto(_usuario1.Id, _proyecto1.Id);
         }
+        
+        [TestMethod]
+        public void ObtenerRutaCriticaDevuelveSoloCriticas()
+        {
+            List<TareaDTO> criticas = _service.ObtenerRutaCritica(_proyecto1.Id);
+            Assert.AreEqual(3, criticas.Count);
+        }
 
+        [TestMethod]
+        public void TareasNoCriticasDevuelveVacioCuandoTodasSonCriticas()
+        {
+            List<TareaDTO> noCrit = _service.TareasNoCriticas(_proyecto1.Id);
+            Assert.AreEqual(0, noCrit.Count);
+        }
+
+        [TestMethod]
+        public void TareasOrdenadasPorInicio_OrdenCorrecto()
+        {
+            List<TareaDTO> orden = _service.TareasOrdenadasPorInicio(_proyecto1.Id);
+            Assert.AreEqual(_t1.Id, orden[0].Id);
+            Assert.AreEqual(_t2.Id, orden[1].Id);
+            Assert.AreEqual(_t3.Id, orden[2].Id);
+        }
     }
 }
