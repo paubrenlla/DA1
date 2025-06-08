@@ -75,7 +75,6 @@ public class Proyecto
             }
         }
         TareasAsociadas.Add(tarea);
-        tarea.Proyecto = this;
         CalcularRutaCritica();
     }
     

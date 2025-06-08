@@ -171,12 +171,14 @@ namespace Controllers_Tests
         [TestMethod]
         public void EliminarTarea_LlamaService()
         {
-            int tareaId = 123;
+            int proyectoId = 42;
+            int tareaId    = 123;
 
-            _controller.EliminarTarea(tareaId);
+            _controller.EliminarTarea(proyectoId, tareaId);
 
-            _mockService.Verify(s => s.EliminarTarea(tareaId), Times.Once);
+            _mockService.Verify(s => s.EliminarTarea(proyectoId, tareaId), Times.Once);
         }
+
         
         [TestMethod]
         public void GetEstadoTarea_LlamaServiceYDevuelveEstadoPendiente()
