@@ -43,7 +43,6 @@ public class NotificacionDataAccess_Tests
     [TestMethod]
     public void BuscarNotificacionPorIdDevuelveNotificacionCorrecta()
     {
-        DB db = new DB();
 
         Notificacion notificacion = new Notificacion("Notificación de prueba");
         Notificacion notificacion2 = new Notificacion("Notificación de prueba");

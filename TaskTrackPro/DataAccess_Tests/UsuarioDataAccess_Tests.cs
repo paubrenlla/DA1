@@ -71,25 +71,10 @@ public class DataAccessUsuarioTest
 
         usuarioRepo.Remove(user);
     }
-    /*[TestMethod] //TODO Moverlo a UsuarioLogic
-    public void AgregarAdmin()
-    {
-        Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        DB db = new DB(user);
-
-        Usuario user2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-
-        db.agregarAdmin(user2);
-        Assert.AreEqual(2, db.AdministradoresSistema.Count);
-        Assert.AreSame(user2, db.AdministradoresSistema[1]);
-        Assert.AreEqual(2, db.ListaUsuarios.Count);
-        Assert.AreSame(user2, db.ListaUsuarios[1]);
-    }*/
 
     [TestMethod]
     public void BuscarUsuarioPorIdDevuelveUsuarioCorrecto()
     {
-        DB db = new DB();
         Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", "123AAaa!!", new DateTime(2000, 1, 1));
         Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", "456AAaa!!", new DateTime(1999, 2, 2));
         usuarioRepo.Add(u1);

@@ -68,7 +68,6 @@ public class ProyectoDataAccess_Tests
     [TestMethod]
     public void BuscarProyectoPorIdDevuelveProyectoCorrecto()
     { 
-        DB db = new DB();
         Proyecto p1= new Proyecto("Proyecto 1", "desc", DateTime.Today);
         Proyecto p2= new Proyecto("Proyecto 1", "desc", DateTime.Today);
         
