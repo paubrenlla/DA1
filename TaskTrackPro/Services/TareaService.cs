@@ -49,7 +49,8 @@ namespace Services
                 dto.FechaInicio,
                 dto.Duracion,
                 esCritica: false);
-
+            if (dto.FechaInicio <= proyecto.FechaInicio)
+                throw new ArgumentException("La tarea no puede tener fecha de inicio menor al proyecto");
             proyecto.TareasAsociadas.Add(nuevaTarea);
 
             _tareaRepo.Add(nuevaTarea);

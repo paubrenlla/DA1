@@ -182,7 +182,7 @@ using (var scope = app.Services.CreateScope())
     {
         Nombre = "Proyecto 5",
         Descripcion = "Descripcion5",
-        FechaInicio = DateTime.Now.Add(new TimeSpan(60, 0, 0, 0))
+        FechaInicio = DateTime.Now.Add(new TimeSpan(10, 0, 0, 0))
     };
     ProyectoDTO proyectoCreado5 = proyectoService.CrearProyecto(proyecto5);
 
@@ -304,7 +304,7 @@ using (var scope = app.Services.CreateScope())
         Descripcion = "Revisión detallada de los requerimientos del proyecto.",
         Duracion = new TimeSpan(10, 0, 0, 0),
         EsCritica = false,
-        FechaInicio = DateTime.Now.Add(new TimeSpan(5, 0, 0, 0))
+        FechaInicio = DateTime.Now.Add(new TimeSpan(45, 0, 0, 0))
     };
     TareaDTO tarea2_1 = tareaService.CrearTarea(proyectoCreado2.Id, tareaUnica);
 
@@ -348,7 +348,7 @@ using (var scope = app.Services.CreateScope())
         Descripcion = "Definir ajustes y parámetros iniciales del sistema.",
         Duracion = new TimeSpan(12, 0, 0, 0),
         EsCritica = false,
-        FechaInicio = DateTime.Now.Add(new TimeSpan(3, 0, 0, 0))
+        FechaInicio = DateTime.Now.Add(new TimeSpan(20, 0, 0, 0))
     };
     TareaDTO tarea4_1 = tareaService.CrearTarea(proyectoCreado5.Id, tareaProyecto4_1);
 
@@ -358,7 +358,7 @@ using (var scope = app.Services.CreateScope())
         Descripcion = "Mejorar la velocidad y eficiencia del sistema.",
         Duracion = new TimeSpan(8, 0, 0, 0),
         EsCritica = true,
-        FechaInicio = DateTime.Now.Add(new TimeSpan(5, 0, 0, 0))
+        FechaInicio = DateTime.Now.Add(new TimeSpan(25, 0, 0, 0))
     };
     TareaDTO tarea4_2 = tareaService.CrearTarea(proyectoCreado5.Id, tareaProyecto4_2);
 

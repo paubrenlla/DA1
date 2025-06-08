@@ -134,9 +134,8 @@ else
             try
             {
                 proyectoDto = ProyectoController.BuscarProyectoPorId(idProyecto);
-                inicioProyecto = ProyectoController.BuscarProyectoPorId(idProyecto).FechaInicio;
+                inicioProyecto = proyectoDto.FechaInicio;
 
-                List<TareaDTO> todas = TareaController.ListarTareasPorProyecto(idProyecto);
                 tareasCriticas = ProyectoController.ObtenerRutaCritica(idProyecto);
                 tareasNoCriticas = ProyectoController.TareasNoCriticas(idProyecto);
                 tareasDelDiagrama = ProyectoController.TareasOrdenadasPorInicio(idProyecto);
@@ -148,6 +147,7 @@ else
                 diasTotales = (int)duracionTotal.TotalDays + 1;
                 
                 proyectoDto.FinEstimado = fin;
+                proyectoDto.FechaInicio = inicio;
 
             }
             catch (Exception ex)
