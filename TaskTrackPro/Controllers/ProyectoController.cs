@@ -82,5 +82,20 @@ namespace Controllers
         {
             _service.EliminarMiembroDeProyecto(miembroId, proyectoId);
         }
+        
+        public List<TareaDTO> ObtenerRutaCritica(int proyectoId)
+        {
+            return _service.ObtenerRutaCritica(proyectoId);
+        }
+
+        public List<TareaDTO> TareasNoCriticas(int proyectoId)
+        {
+            return _service.TareasNoCriticas(proyectoId);
+        }
+
+        public List<TareaDTO> TareasOrdenadasPorInicio(int proyectoId)
+        {
+            return _service.TareasOrdenadasPorInicio(proyectoId);
+        }
     }
 }

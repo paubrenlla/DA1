@@ -225,7 +225,8 @@ public class Proyecto
             tarea.Holgura = tarea.LateStart - tarea.EarlyStart;
             tarea.EsCritica = tarea.Holgura == TimeSpan.Zero;
         }
-        
+
+        CalcularFinEstimado();
         return TareasAsociadas.Where(t => t.Holgura == TimeSpan.Zero).ToList();
     }
 

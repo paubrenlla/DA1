@@ -28,5 +28,8 @@ namespace Services
         List<UsuarioDTO>? GetMiembrosDeProyecto(int id);
         void AgregarMiembroProyecto(int usuarioId, int proyectoId);
         void EliminarMiembroDeProyecto(int miembroId, int proyectoId);
+        List<TareaDTO> ObtenerRutaCritica(int proyectoId);
+        List<TareaDTO> TareasNoCriticas(int proyectoId);
+        List<TareaDTO> TareasOrdenadasPorInicio(int proyectoId);
     }
 }

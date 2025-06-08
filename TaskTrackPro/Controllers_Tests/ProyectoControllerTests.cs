@@ -14,6 +14,9 @@ namespace Controllers_Tests
         private ProyectoDTO _dto1;
         private ProyectoDTO _dto2;
         private List<ProyectoDTO> _listaDtos;
+        private List<TareaDTO> _listaCriticas;
+        private List<TareaDTO> _listaNoCrit;
+        private List<TareaDTO> _listaOrden;
 
         [TestInitialize]
         public void SetUp()
@@ -36,6 +39,19 @@ namespace Controllers_Tests
                 FechaInicio = DateTime.Today.AddDays(1)
             };
             _listaDtos = new List<ProyectoDTO> { _dto1, _dto2 };
+
+            _listaCriticas = new List<TareaDTO>
+            {
+                new TareaDTO { Id = 1 }, new TareaDTO { Id = 2 }
+            };
+            _listaNoCrit = new List<TareaDTO>
+            {
+                new TareaDTO { Id = 3 }
+            };
+            _listaOrden = new List<TareaDTO>
+            {
+                new TareaDTO { Id = 1 }, new TareaDTO { Id = 3 }, new TareaDTO { Id = 2 }
+            };
         }
 
         [TestMethod]
@@ -230,6 +246,33 @@ namespace Controllers_Tests
             _controller.EliminarMiembro(miembroId, proyectoId);
 
             _mockService.Verify(s => s.EliminarMiembroDeProyecto(miembroId, proyectoId), Times.Once);
+        }
+        
+        [TestMethod]
+        public void ObtenerRutaCritica_LlamaServiceYRetorna()
+        {
+            _mockService.Setup(s => s.ObtenerRutaCritica(10)).Returns(_listaCriticas);
+            List<TareaDTO> resultado = _controller.ObtenerRutaCritica(10);
+            CollectionAssert.AreEqual(_listaCriticas, resultado);
+            _mockService.Verify(s => s.ObtenerRutaCritica(10), Times.Once);
+        }
+
+        [TestMethod]
+        public void TareasNoCriticas_LlamaServiceYRetorna()
+        {
+            _mockService.Setup(s => s.TareasNoCriticas(20)).Returns(_listaNoCrit);
+            List<TareaDTO> resultado = _controller.TareasNoCriticas(20);
+            CollectionAssert.AreEqual(_listaNoCrit, resultado);
+            _mockService.Verify(s => s.TareasNoCriticas(20), Times.Once);
+        }
+
+        [TestMethod]
+        public void TareasOrdenadasPorInicio_LlamaServiceYRetorna()
+        {
+            _mockService.Setup(s => s.TareasOrdenadasPorInicio(30)).Returns(_listaOrden);
+            List<TareaDTO> resultado = _controller.TareasOrdenadasPorInicio(30);
+            CollectionAssert.AreEqual(_listaOrden, resultado);
+            _mockService.Verify(s => s.TareasOrdenadasPorInicio(30), Times.Once);
         }
     }
 }

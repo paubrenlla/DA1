@@ -130,5 +130,26 @@ namespace Services
             AsignacionProyecto aEliminar = asignaciones.FirstOrDefault(a => a.Proyecto.Id == proyectoId);
             _asignacionRepo.Remove(aEliminar);
         }
+        
+        public List<TareaDTO> ObtenerRutaCritica(int proyectoId)
+        {
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
+            List<Tarea> criticas = proyecto.CalcularRutaCritica();
+            return criticas.Select(Convertidor.ATareaDTO).ToList();
+        }
+
+        public List<TareaDTO> TareasNoCriticas(int proyectoId)
+        {
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
+            List<Tarea> naoCriticas = proyecto.TareasNoCriticas();
+            return naoCriticas.Select(Convertidor.ATareaDTO).ToList();
+        }
+
+        public List<TareaDTO> TareasOrdenadasPorInicio(int proyectoId)
+        {
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
+            List<Tarea> ordenadas = proyecto.TareasAsociadasPorInicio();
+            return ordenadas.Select(Convertidor.ATareaDTO).ToList();
+        }
     }
 }

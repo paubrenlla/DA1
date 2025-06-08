@@ -118,7 +118,6 @@ public class Tarea
         _tareasDependencia.Add(tarea);
         tarea._tareasSucesoras.Add(this);
         ActualizarEstado();
-        Proyecto.CalcularRutaCritica();
     }
     public void ActualizarEstado()
     {

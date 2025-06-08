@@ -9,4 +9,7 @@ public class TareaDTO
     public TimeSpan Duracion { get; set; }
     public bool EsCritica { get; set; }
     public string Estado { get; set; }
+    public DateTime EarlyStart { get; set; }
+    public DateTime EarlyFinish { get; set; }
+    public object Holgura { get; set; }
 }
