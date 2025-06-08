@@ -1,60 +1,62 @@
 ﻿using Blazored.LocalStorage;
-using BusinessLogic;
+using DTOs;
+using Services;
 
-namespace UserInterface.Data;
-
-public class SessionLogic
+namespace UserInterface.Data
 {
-    private const string CURRENT_USER = "current_user";
-
-    private readonly ILocalStorageService _localStorage;
-    private readonly DB _db;
-
-    public SessionLogic(ILocalStorageService localStorage, DB db)
+    public class SessionLogic
     {
-        _localStorage = localStorage;
-        _db = db;
-    }
+        private const string CURRENT_USER = "current_user";
 
-    public async Task Login(string email, string contraseña)
-    {
+        private readonly ILocalStorageService _localStorage;
+        private readonly IUsuarioService _usuarioService;
 
-        Usuario? user = _db.buscarUsuarioPorCorreoYContraseña(email, contraseña);
-
-        if (user is null)
+        public SessionLogic(
+            ILocalStorageService localStorage,
+            IUsuarioService usuarioService)
         {
-            throw new Exception("Credenciales inválidas");
+            _localStorage = localStorage;
+            _usuarioService = usuarioService;
         }
 
-        await _localStorage.SetItemAsync(CURRENT_USER, user);
-    }
+        public async Task Login(string email, string contraseña)
+        {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(contraseña))
+            {
+                throw new Exception("Credenciales inválidas");
+            }
 
-    public async Task<bool> isUserActive()
-    {
-        Usuario? user = await _localStorage.GetItemAsync<Usuario>(CURRENT_USER);
-        return user is not null;
-    }
+            UsuarioDTO userDto = _usuarioService.BuscarUsuarioPorCorreoYContraseña(email, contraseña);
 
-    public async Task LogOut()
-    {
-        await _localStorage.RemoveItemAsync(CURRENT_USER);
-    }
+            if (userDto == null)
+            {
+                throw new Exception("Credenciales inválidas");
+            }
 
-    public async Task<Usuario?> GetCurrentUser()
-    {
-        var storedUser = await _localStorage.GetItemAsync<Usuario>(CURRENT_USER);
-        if (storedUser == null) return null;
+            await _localStorage.SetItemAsync(CURRENT_USER, userDto);
+        }
 
-        return _db.ListaUsuarios.FirstOrDefault(u => u.Email == storedUser.Email);
-    }
+        public async Task<bool> IsUserActive()
+        {
+            UsuarioDTO stored = await _localStorage.GetItemAsync<UsuarioDTO>(CURRENT_USER);
+            return stored is not null;
+        }
 
-    
-    public async Task<bool> EsAdminSistema()
-    {
-        var user = await GetCurrentUser();
-        if (user == null) return false;
-    
-        return _db.AdministradoresSistema
-            .Any(a => a.Id == user.Id);
+        public async Task LogOut()
+        {
+            await _localStorage.RemoveItemAsync(CURRENT_USER);
+        }
+
+        public async Task<UsuarioDTO?> GetCurrentUser()
+        {
+            UsuarioDTO? stored = await _localStorage.GetItemAsync<UsuarioDTO>(CURRENT_USER);
+            if (stored == null)
+            {
+                return null;
+            }
+
+            UsuarioDTO usuario = _usuarioService.GetById(stored.Id);
+            return usuario;
+        }
     }
 }

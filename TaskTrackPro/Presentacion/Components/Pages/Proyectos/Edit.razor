@@ -2,9 +2,12 @@
 
 <PageTitle>Editar Proyecto</PageTitle>
 
-@using BusinessLogic
+@using DTOs
+@using Controllers
+@using Domain
 @using UserInterface.Data
-@inject DB DataBase
+@inject UsuarioController Usuarios
+@inject ProyectoController Proyectos
 @inject NavigationManager NavigationManager
 @inject SessionLogic SessionLogic
 
@@ -43,10 +46,10 @@
     private string descripcionNueva;
     private DateTime fechaNueva;
     private string correoAdminNuevo;
-    private Usuario adminNuevo;
+    private UsuarioDTO adminNuevo;
     private string mensajeError;
 
-    private Proyecto proyectoACambiar;
+    private ProyectoDTO proyectoACambiar;
 
     private bool yaVerifiqueSesion = false;
 
@@ -56,7 +59,7 @@
         {
             yaVerifiqueSesion = true;
 
-            var activo = await SessionLogic.isUserActive();
+            var activo = await SessionLogic.IsUserActive();
             if (!activo)
             {
                 NavigationManager.NavigateTo("/Login");
@@ -65,14 +68,14 @@
 
             try
             {
-                proyectoACambiar = DataBase.buscarProyectoPorId(id);
+                proyectoACambiar = Proyectos.BuscarProyectoPorId(id);
                 if (proyectoACambiar == null)
                 {
                     mensajeError = "Proyecto no encontrado.";
                     return;
                 }
 
-                adminNuevo = proyectoACambiar.Admin;
+                adminNuevo = Proyectos.GetAdminDeProyecto(id);
                 nombre = proyectoACambiar.Nombre;
                 descripcionNueva = proyectoACambiar.Descripcion;
                 fechaNueva = proyectoACambiar.FechaInicio;
@@ -91,11 +94,14 @@
     {
         try
         {
-            if (adminNuevo.Email != correoAdminNuevo && DataBase.buscarUsuarioPorCorreo(correoAdminNuevo) != null)
-            {
-                proyectoACambiar.Admin = DataBase.buscarUsuarioPorCorreo(correoAdminNuevo);
+            UsuarioDTO administradorAAsignar = Usuarios.GetByEmail(correoAdminNuevo);
+            if (adminNuevo.Email != correoAdminNuevo && administradorAAsignar != null)
+            {;
+                Proyectos.AsignarAdminProyecto(administradorAAsignar.Id, id);
             }
-            proyectoACambiar.Modificar(descripcionNueva, fechaNueva);
+
+            ProyectoDTO cambiosProyecto = new ProyectoDTO { Id = id, Nombre = nombre, Descripcion = descripcionNueva, FechaInicio = fechaNueva };
+            Proyectos.ModificarProyecto(cambiosProyecto);
             NavigationManager.NavigateTo("/proyectos");
         }
         catch (Exception ex)
