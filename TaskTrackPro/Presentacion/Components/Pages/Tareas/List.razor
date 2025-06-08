@@ -1,4 +1,4 @@
-@page "/proyectos/{id:int}/tareas"
+@page "/proyectos/{proyectoId:int}/tareas"
 @using Controllers
 @using DTOs
 @using UserInterface.Data
@@ -40,9 +40,9 @@
                 <td>
                     @if (esAdminSistema || esAdminProyecto)
                     {
-                        <a class="btn btn-success btn-sm" href="/proyectos/@id/tareas/@tarea.Id/editar">Editar</a>
-                        <a class="btn btn-info btn-sm" href="/proyectos/@id/tareas/@tarea.Id/miembros">Miembros</a>
-                        <a class="btn btn-warning btn-sm" href="/proyectos/@id/tareas/@tarea.Id/recursos">Recursos</a>
+                        <a class="btn btn-success btn-sm" href="/proyectos/@proyectoId/tareas/@tarea.Id/editar">Editar</a>
+                        <a class="btn btn-info btn-sm" href="/proyectos/@proyectoId/tareas/@tarea.Id/miembros">Miembros</a>
+                        <a class="btn btn-warning btn-sm" href="/proyectos/@proyectoId/tareas/@tarea.Id/recursos">Recursos</a>
                         <button class="btn btn-danger btn-sm" @onclick="() => EliminarTarea(tarea.Id)" 
                                 disabled="@TareaController.TieneSucesoras(tarea)">
                             Eliminar
@@ -62,10 +62,10 @@
     </tbody>
 </table>
 
-@* Modales omitidos para brevedad; se llamarían a TareaController para actualizar estado o agregar dependencias *@
+@* Modales omitproyectoIdos para brevedad; se llamarían a TareaController para actualizar estado o agregar dependencias *@
 
 @code {
-    [Parameter] public int id { get; set; }
+    [Parameter] public int proyectoId { get; set; }
 
     private List<TareaDTO> tareasDto = new List<TareaDTO>();
     private string mensajeError = string.Empty;
@@ -92,9 +92,9 @@
             }
 
             esAdminSistema = UsuarioController.EsAdmin(usuarioDto.Id);
-            esAdminProyecto = ProyectoController.UsuarioEsAdminEnProyecto(usuarioDto.Id, id);
+            esAdminProyecto = ProyectoController.UsuarioEsAdminEnProyecto(usuarioDto.Id, proyectoId);
 
-            List<TareaDTO> todas = TareaController.ListarTareasPorProyecto(id);
+            List<TareaDTO> todas = TareaController.ListarTareasPorProyecto(proyectoId);
 
             if (esAdminSistema || esAdminProyecto)
             {
@@ -115,8 +115,8 @@
     {
         try
         {
-            TareaController.EliminarTarea(tareaId);
-            tareasDto = TareaController.ListarTareasPorProyecto(id);
+            TareaController.EliminarTarea(proyectoId, tareaId);
+            tareasDto = TareaController.ListarTareasPorProyecto(proyectoId);
         }
         catch (Exception ex)
         {

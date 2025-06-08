@@ -11,7 +11,6 @@ public class Tarea
     private DateTime _fechaInicio;
     private TimeSpan _duracion;
     private bool _esCritica;
-    public Proyecto? Proyecto { get; set; }
     private Estado _estadoActual = new Estado(TipoEstadoTarea.Pendiente);
     private List<Tarea> _tareasDependencia = new List<Tarea>();
     private List<Tarea> _tareasSucesoras = new List<Tarea>();
@@ -280,7 +279,6 @@ public class Tarea
         // Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha sido modificada.");
         // notificacion.AgregarUsuarios(UsuariosAsignados);
         // notificacion.AgregarUsuario(Proyecto.Admin);
-        Proyecto.CalcularRutaCritica();
     }
 }
 

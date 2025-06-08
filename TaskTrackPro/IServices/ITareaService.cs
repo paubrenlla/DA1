@@ -23,7 +23,7 @@ namespace Services
         bool TieneSucesoras(TareaDTO tarea);
         bool TieneDependencias(TareaDTO tareaDto);
         bool UsuarioPerteneceALaTarea(int usuarioDtoId, int tareaId);
-        void EliminarTarea(int tareaId);
+        void EliminarTarea(int proyectoId, int tareaId);
         TipoEstadoTarea GetEstadoTarea(int tareaId);
         List<UsuarioDTO>? ListarUsuariosDeTarea(int tareaId);
         void EliminarUsuarioDeTarea(int miembroId, int idTarea);

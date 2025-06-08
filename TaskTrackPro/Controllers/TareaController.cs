@@ -64,9 +64,9 @@ namespace Controllers
             return _service.UsuarioPerteneceALaTarea(usuarioDtoId, tareaId);
         }
 
-        public void EliminarTarea(int tareaId)
+        public void EliminarTarea(int proyectoId, int tareaId)
         {
-            _service.EliminarTarea(tareaId);
+            _service.EliminarTarea( proyectoId, tareaId);
         }
 
         public TipoEstadoTarea GetEstadoTarea(int tareaId)

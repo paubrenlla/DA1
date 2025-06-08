@@ -50,7 +50,6 @@ namespace Services
                 dto.Duracion,
                 esCritica: false);
 
-            nuevaTarea.Proyecto = proyecto;
             proyecto.TareasAsociadas.Add(nuevaTarea);
 
             _tareaRepo.Add(nuevaTarea);
@@ -113,16 +112,17 @@ namespace Services
             return tarea.TareasDependencia.Count != 0;
         }
         
-        public void EliminarTarea(int tareaId)
+        public void EliminarTarea(int proyectoId, int tareaId)
         {
-            TareaDTO dto = new TareaDTO { Id = tareaId };
+            var dto = new TareaDTO { Id = tareaId };
             if (TieneSucesoras(dto))
                 throw new InvalidOperationException("No se puede eliminar: la tarea tiene sucesoras.");
             if (TieneDependencias(dto))
                 throw new InvalidOperationException("No se puede eliminar: la tarea tiene dependencias.");
+
             Tarea tarea = _tareaRepo.GetById(tareaId);
-            Proyecto proyecto = tarea.Proyecto;
-            proyecto.eliminarTarea(tarea);
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
+            proyecto.TareasAsociadas.Remove(tarea);
             _tareaRepo.Remove(tarea);
         }
 
@@ -149,12 +149,12 @@ namespace Services
         public void EliminarUsuarioDeTareasDeProyecto(int miembroId, int proyectoId)
         {
             Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
-            Usuario usuario = _usuarioRepo.GetById(miembroId);
-            List<Tarea> TareasDeProyectoYUsuario = _tareaRepo.GetTareasDeUsuarioEnProyecto(miembroId, proyectoId);
-    
-            foreach (Tarea tarea in TareasDeProyectoYUsuario)
+            Usuario usuario   = _usuarioRepo.GetById(miembroId);
+
+            foreach (Tarea tarea in proyecto.TareasAsociadas
+                         .Where(t => t.UsuariosAsignados.Any(u => u.Id == miembroId)))
             {
-                tarea.UsuariosAsignados.Remove(tarea.UsuariosAsignados.First(u => u.Id == miembroId));
+                tarea.UsuariosAsignados.Remove(usuario);
             }
         }
     }
