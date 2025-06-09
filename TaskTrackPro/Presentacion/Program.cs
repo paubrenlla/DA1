@@ -1,10 +1,10 @@
 using Blazored.LocalStorage;
 using Controllers;
 using DataAccess;
-using Domain;
 using Domain.Observers;
 using DTOs;
 using IDataAcces;
+using Microsoft.EntityFrameworkCore;
 using Presentacion.Components;
 using Services;
 using Services.Observers;
@@ -18,7 +18,11 @@ builder.Services.AddRazorComponents()
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddSingleton<IDataAccessUsuario, UsuarioDataAccess>();
+builder.Services.AddDbContext<SqlContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+builder.Services.AddScoped<IDataAccessUsuario, UsuarioDataAccess>();
 builder.Services.AddSingleton<IDataAccessProyecto, ProyectoDataAccess>();
 builder.Services.AddSingleton<IDataAccessTarea, TareaDataAccess>();
 builder.Services.AddSingleton<IDataAccessRecurso, RecursoDataAccess>();
@@ -43,6 +47,12 @@ builder.Services.AddScoped<SessionLogic>();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var ctx = scope.ServiceProvider.GetRequiredService<SqlContext>();
+    ctx.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -51,6 +61,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+/*
 using (var scope = app.Services.CreateScope())
 {
     var servicio = scope.ServiceProvider;
@@ -449,8 +460,8 @@ using (var scope = app.Services.CreateScope())
     tareaService.AgregarDependencia(tarea3_3.Id, tarea3_2.Id);
 
     tareaService.AgregarDependencia(tarea4_2.Id, tarea4_1.Id);
-
 }
+*/
 
 app.UseHttpsRedirection();
 

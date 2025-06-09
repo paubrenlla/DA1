@@ -1,34 +1,42 @@
 ﻿using Domain;
 using IDataAcces;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DataAccess
 {
     public class UsuarioDataAccess : IDataAccessUsuario
     {
-        private readonly List<Usuario> _listaUsuarios;
-        public UsuarioDataAccess()
+        private readonly SqlContext _context;
+
+        public UsuarioDataAccess(SqlContext context)
         {
-            _listaUsuarios = new List<Usuario>();
+            _context = context;
         }
 
         public void Add(Usuario usuario)
         {
-            if (_listaUsuarios.Contains(usuario) || ExisteUsuarioConCorreo(usuario.Email))
+            if (ExisteUsuarioConCorreo(usuario.Email))
                 throw new ArgumentException("Usuario ya existe");
-            _listaUsuarios.Add(usuario);
+
+            _context.Usuarios.Add(usuario);
+            _context.SaveChanges();
         }
 
         public void Remove(Usuario usuario)
         {
             if (usuario.EsAdminSistema)
                 throw new ArgumentException("El usuario es administrador");
-            _listaUsuarios.Remove(usuario);
+
+            _context.Usuarios.Remove(usuario);
+            _context.SaveChanges();
         }
 
         public Usuario? GetById(int id)
         {
-            Usuario usuario = _listaUsuarios.FirstOrDefault(u => u.Id == id);
+            var usuario = _context.Usuarios.Find(id);
             if (usuario == null)
                 throw new ArgumentException("No existe el usuario");
             return usuario;
@@ -36,23 +44,24 @@ namespace DataAccess
 
         public List<Usuario> GetAll()
         {
-            return _listaUsuarios;
+            return _context.Usuarios.AsNoTracking().ToList();
         }
 
         public Usuario? buscarUsuarioPorCorreoYContraseña(string email, string contraseña)
         {
-            return _listaUsuarios.FirstOrDefault(u =>
-                u.Email == email && u.Pwd == contraseña);
+            return _context.Usuarios
+                .FirstOrDefault(u => u.Email == email && u.Pwd == contraseña);
         }
 
         public Usuario? BuscarUsuarioPorCorreo(string email)
         {
-            return _listaUsuarios.FirstOrDefault(u => u.Email == email);
+            return _context.Usuarios
+                .FirstOrDefault(u => u.Email == email);
         }
 
         public bool ExisteUsuarioConCorreo(string email)
         {
-            return _listaUsuarios.Any(u => u.Email == email);
+            return _context.Usuarios.Any(u => u.Email == email);
         }
     }
 }

@@ -10,6 +10,7 @@
       <ProjectReference Include="..\Controllers\Controllers.csproj" />
       <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
       <ProjectReference Include="..\Domain\Domain.csproj" />
+      <ProjectReference Include="..\DTOs\DTOs.csproj" />
       <ProjectReference Include="..\IDataAccess\IDataAccess.csproj" />
       <ProjectReference Include="..\IServices\IServices.csproj" />
       <ProjectReference Include="..\Services\Services.csproj" />
@@ -17,6 +18,15 @@
 
     <ItemGroup>
       <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.16">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.16" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.16">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     </ItemGroup>
 
 </Project>
