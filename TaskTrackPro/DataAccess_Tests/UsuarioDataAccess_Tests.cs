@@ -159,5 +159,18 @@ namespace DataAccess_Tests
             Assert.IsNotNull(result);
             Assert.AreEqual(u2.Email, result.Email);
         }
+        
+        [TestMethod]
+        public void ModificarUsuarioActualizaCorrectamente()
+        {
+            Usuario user = new Usuario("email@x.com", "Nombre", "Apellido", "Contraseña1!", new DateTime(1990, 1, 1));
+            _usuarioRepo.Add(user);
+
+            user.Modificar("nuevo@x.com", "NuevoNombre", "NuevoApellido", "Contraseña1!", new DateTime(1991, 2, 2));
+            _usuarioRepo.Update(user);
+
+            Usuario modificado = _usuarioRepo.GetById(user.Id);
+            Assert.AreEqual("nuevo@x.com", modificado.Email);
+        }
     }
 }

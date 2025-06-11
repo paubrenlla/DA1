@@ -53,7 +53,7 @@ public class RecursoService : IRecursoService
     {
         Recurso recurso = _recursoRepo.GetById(dto.Id);
         recurso.Modificar(dto.Nombre, dto.Tipo, dto.Descripcion, dto.CantidadDelRecurso, dto.SePuedeCompartir);
-
+        _recursoRepo.Update(recurso);
         NotificarObservadores(recurso);
     }
 

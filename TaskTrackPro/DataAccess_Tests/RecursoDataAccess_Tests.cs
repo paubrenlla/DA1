@@ -95,4 +95,18 @@ public class RecursoDataAccess_Tests
         Assert.IsNotNull(resultado);
         Assert.AreEqual(recurso2.Nombre, resultado.Nombre);
     }
+    
+    [TestMethod]
+    public void ModificarUsuarioActualizaCorrectamente()
+    {
+        Recurso recurso = new Recurso("Auto", "Vehiculo", "Transporte", false, 5);
+        recursoRepo.Add(recurso);
+
+        recurso.Modificar("Auto nuevo", "Vehiculo", "Transporte", 3,false);
+        recursoRepo.Update(recurso);
+
+        Recurso modificado = recursoRepo.GetById(recurso.Id);
+        Assert.AreEqual("Auto nuevo", modificado.Nombre);
+        Assert.AreEqual(3, modificado.CantidadDelRecurso);
+    }
 }

@@ -87,6 +87,8 @@ public class UsuarioService : IUsuarioService
     {
         Usuario user = _usuarioRepo.GetById(dto.Id);
         user.Modificar(dto.Email, dto.Nombre, dto.Apellido, dto.Contraseña, dto.FechaNacimiento);
+        
+        _usuarioRepo.Update(user);
     }
 
     public string ResetearContraseña(int usuarioId)

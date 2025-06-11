@@ -43,6 +43,12 @@ namespace DataAccess
         {
             return _context.Usuarios.AsNoTracking().ToList();
         }
+        
+        public void Update(Usuario user)
+        {
+            _context.Usuarios.Update(user);
+            _context.SaveChanges();
+        }
 
         public Usuario? buscarUsuarioPorCorreoYContraseña(string email, string contraseña)
         {

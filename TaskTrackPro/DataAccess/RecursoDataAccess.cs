@@ -24,12 +24,21 @@ public class RecursoDataAccess :IDataAccessRecurso
 
     public Recurso? GetById(int id)
     {
-        return _context.Recursos.Find(id);
+        Recurso recurso = _context.Recursos.Find(id);
+        if (recurso is null)
+            throw new ArgumentException("No existe el Recurso.");
+        return recurso;
     }
 
     public List<Recurso> GetAll()
     {
         return _context.Recursos.AsNoTracking().ToList(); //Usamos AsNoTracking para no modificar nada en la DB
+    }
+    
+    public void Update(Recurso recurso)
+    {
+        _context.Recursos.Update(recurso);
+        _context.SaveChanges();
     }
 
     public void Remove(Recurso recurso)
