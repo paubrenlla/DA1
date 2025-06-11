@@ -71,13 +71,20 @@ namespace DataAccess
 
         public AsignacionProyecto GetAdminProyecto(int proyectoId)
         {
-            return _context.AsignacionesProyecto.FirstOrDefault(a => a.Proyecto.Id == proyectoId && a.Rol.Equals(Rol.Administrador));
+            return _context.AsignacionesProyecto
+                .Include(a => a.Usuario)
+                .Include(a => a.Proyecto)
+                .FirstOrDefault(a => a.Proyecto.Id == proyectoId && a.Rol == Rol.Administrador);
         }
 
-        public List<Usuario>? GetMiembrosDeProyecto(int id)
+        public List<Usuario> GetMiembrosDeProyecto(int id)
         {
-            List<AsignacionProyecto> asignacionProyectos = _context.AsignacionesProyecto.Where(a => a.Proyecto.Id == id).ToList();
-            return asignacionProyectos.Select(p => p.Usuario).ToList();
+            return _context.AsignacionesProyecto
+                .Where(a => a.Proyecto.Id == id)
+                .Include(a => a.Usuario)
+                .Select(a => a.Usuario)
+                .ToList();
         }
+
     }
 }
