@@ -3,6 +3,7 @@ using Domain;
 using Domain.Enums;
 using DataAccess;
 using IDataAcces;
+using Microsoft.EntityFrameworkCore;
 using Services;
 
 namespace Services_Tests;
@@ -22,9 +23,13 @@ public class TareaServiceTests
     [TestInitialize]
     public void SetUp()
     {
+        var options = new DbContextOptionsBuilder<SqlContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+        var context = new SqlContext(options);
         _repoTareas = new TareaDataAccess();
         _repoProyectos = new ProyectoDataAccess();
-        _repoUsuarios = new UsuarioDataAccess();
+        _repoUsuarios = new UsuarioDataAccess(context);
 
         _service = new TareaService(_repoTareas, _repoProyectos, _repoUsuarios);
 

@@ -3,6 +3,7 @@ using Domain;
 using Domain.Enums;
 using DTOs;
 using IDataAcces;
+using Microsoft.EntityFrameworkCore;
 using Services;
 
 namespace Services_Tests
@@ -15,6 +16,7 @@ namespace Services_Tests
         private IDataAccessUsuario _repoUsuarios;
         private IDataAccessAsignacionProyecto _repoAsignaciones;
         private IDataAccessTarea _repoTareas;
+
         private Usuario _usuario1;
         private Usuario _usuario2;
         private Proyecto _proyecto1;
@@ -26,13 +28,19 @@ namespace Services_Tests
         [TestInitialize]
         public void SetUp()
         {
+            var options = new DbContextOptionsBuilder<SqlContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+            var context = new SqlContext(options);
+
+            _repoUsuarios = new UsuarioDataAccess(context);
             _repoProyectos = new ProyectoDataAccess();
-            _repoUsuarios = new UsuarioDataAccess();
             _repoAsignaciones = new AsignacionProyectoDataAccess();
+
             _service = new ProyectoService(_repoProyectos, _repoUsuarios, _repoAsignaciones);
 
-            _usuario1 = new Usuario("u1@test.com", "Nombre1", "Apellido1", "Contraseña1!", new DateTime(1990,1,1));
-            _usuario2 = new Usuario("u2@test.com", "Nombre2", "Apellido2", "Contraseña1!", new DateTime(1991,1,1));
+            _usuario1 = new Usuario("u1@test.com", "Nombre1", "Apellido1", "Contraseña1!", new DateTime(1990, 1, 1));
+            _usuario2 = new Usuario("u2@test.com", "Nombre2", "Apellido2", "Contraseña1!", new DateTime(1991, 1, 1));
             _repoUsuarios.Add(_usuario1);
             _repoUsuarios.Add(_usuario2);
 
@@ -40,18 +48,19 @@ namespace Services_Tests
             _proyecto2 = new Proyecto("P2", "Desc2", DateTime.Today.AddDays(2));
             _repoProyectos.Add(_proyecto1);
             _repoProyectos.Add(_proyecto2);
-            
-            _t1 = new Tarea("T1", "D1", DateTime.Today.AddDays(1), TimeSpan.FromDays(2), esCritica:false);
-            _t2 = new Tarea("T2", "D2", DateTime.Today.AddDays(3), TimeSpan.FromDays(1), esCritica:false);
-            _t3 = new Tarea("T3", "D3", DateTime.Today.AddDays(4), TimeSpan.FromDays(2), esCritica:false);
+
+            _t1 = new Tarea("T1", "D1", DateTime.Today.AddDays(1), TimeSpan.FromDays(2), esCritica: false);
+            _t2 = new Tarea("T2", "D2", DateTime.Today.AddDays(3), TimeSpan.FromDays(1), esCritica: false);
+            _t3 = new Tarea("T3", "D3", DateTime.Today.AddDays(4), TimeSpan.FromDays(2), esCritica: false);
 
             _proyecto1.TareasAsociadas.Add(_t1);
             _proyecto1.TareasAsociadas.Add(_t2);
             _proyecto1.TareasAsociadas.Add(_t3);
-            
+
             _t2.AgregarDependencia(_t1);
             _t3.AgregarDependencia(_t2);
         }
+
 
         [TestMethod]
         public void GetByIdDevuelveDTOBien()

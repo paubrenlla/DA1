@@ -10,6 +10,6 @@ public class SqlContext : DbContext
 
     public SqlContext(DbContextOptions<SqlContext> options) : base(options)
     {
-        //if(!Database.IsInMemory()) this.Database.Migrate();
+        if(!Database.IsInMemory()) this.Database.Migrate();
     }
 }

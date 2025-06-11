@@ -32,7 +32,6 @@ public class Usuario
         Pwd = pwd;
         FechaNacimiento = fechaNacimiento;
         EsAdminSistema = false;
-        Id = _contadorId++;
     }
 
     public Usuario(int dtoId, string dtoEmail, string dtoNombre, string dtoApellido, string dtoContraseña, DateTime dtoFechaNacimiento)

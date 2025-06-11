@@ -24,6 +24,8 @@ namespace DataAccess_Tests
             user2 = new Usuario("u2@example.com", "Nombre2", "Apellido2", "Pass123!", new DateTime(1991,1,1));
             proyecto1 = new Proyecto("P1", "Desc1", DateTime.Now.Date);
             proyecto2 = new Proyecto("P2", "Desc2", DateTime.Now.Date);
+            user1.Id = 1;
+            user2.Id = 2;
 
             asign1 = new AsignacionProyecto(proyecto1, user1, Rol.Miembro);
             asign2 = new AsignacionProyecto(proyecto2, user1, Rol.Administrador);

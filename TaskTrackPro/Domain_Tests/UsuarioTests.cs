@@ -27,30 +27,6 @@ public class UsuarioTests
     }
     
     [TestMethod]
-    public void UsuariosConIdCorrecta()
-    {
-        Usuario u = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        Usuario u2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-
-        Assert.AreEqual(u.Id, 1);
-        Assert.AreEqual(u2.Id, 2);
-    }
-    
-    [TestMethod]
-    public void UsuariosConIdCorrectaTrasCatchearExcpecion()
-    {
-        try
-        {
-            Usuario u = new Usuario("", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        }
-        catch(Exception ex){}
-        
-        Usuario u2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-
-        Assert.AreEqual(u2.Id, 1);
-    }
-
-    [TestMethod]
     public void ModificarAtributosDeUnUsuarioExistente()
     {
         Usuario u = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
@@ -376,6 +352,14 @@ public class UsuarioTests
         
         Assert.AreEqual(contraseñaOriginal, desencriptado);
     }
-    
-    
+
+    [TestMethod]
+    public void AgregarAdminPasaUsuarioAAdmin()
+    {
+        Usuario usuario = new Usuario("test@email.com", "Paula", "Apellido", "OldPassword123!", new DateTime(1990, 5, 10));
+        usuario.AgregarAdmin();
+        
+        Assert.IsTrue(usuario.EsAdminSistema);
+
+    }
 }
