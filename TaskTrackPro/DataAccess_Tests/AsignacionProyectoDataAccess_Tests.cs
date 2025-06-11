@@ -1,12 +1,15 @@
 ﻿using Domain;
 using Domain.Enums;
 using DataAccess;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DataAccess_Tests
 {
     [TestClass]
     public class AsignacionProyectoDataAccess_Tests
     {
+        private SqlContext _context;
         private AsignacionProyectoDataAccess repo;
         private Usuario user1;
         private Usuario user2;
@@ -19,7 +22,11 @@ namespace DataAccess_Tests
         [TestInitialize]
         public void SetUp()
         {
-            repo = new AsignacionProyectoDataAccess();
+            var options = new DbContextOptionsBuilder<SqlContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
+            _context = new SqlContext(options);
+            repo = new AsignacionProyectoDataAccess(_context);
             user1 = new Usuario("u1@example.com", "Nombre1", "Apellido1", "Pass123!", new DateTime(1990,1,1));
             user2 = new Usuario("u2@example.com", "Nombre2", "Apellido2", "Pass123!", new DateTime(1991,1,1));
             proyecto1 = new Proyecto("P1", "Desc1", DateTime.Now.Date);
@@ -38,16 +45,16 @@ namespace DataAccess_Tests
             repo.Add(asign1);
             List<AsignacionProyecto> asignaciones = repo.GetAll();
             Assert.AreEqual(1, asignaciones.Count);
-            Assert.IsTrue(asignaciones.Contains(asign1));
+            Assert.IsTrue(asignaciones[0].Id == asign1.Id);
         }
 
         [TestMethod]
         public void ElimiarAsigancionEliminaDeLaLista()
         {
             repo.Add(asign1);
-            Assert.IsTrue(repo.GetAll().Contains(asign1));
+            Assert.IsTrue(repo.GetAll()[0].Id == asign1.Id);
             repo.Remove(asign1);
-            Assert.IsFalse(repo.GetAll().Contains(asign1));
+            Assert.IsTrue(repo.GetAll().Count() == 0);
         }
 
         [TestMethod]
@@ -66,7 +73,8 @@ namespace DataAccess_Tests
             repo.Add(asign2);
             List<AsignacionProyecto> asignaciones = repo.GetAll();
             Assert.AreEqual(2, asignaciones.Count);
-            CollectionAssert.AreEquivalent(new List<AsignacionProyecto>{asign1, asign2}, asignaciones);
+            Assert.IsTrue(asignaciones[0].Id == asign1.Id);
+            Assert.IsTrue(asignaciones[1].Id == asign2.Id);
         }
 
         [TestMethod]
@@ -125,7 +133,7 @@ namespace DataAccess_Tests
         [ExpectedException(typeof(ArgumentException))]
         public void GetByIdLanzaExcepcionSiProyectoNoExiste()
         {
-            ProyectoDataAccess repo = new ProyectoDataAccess();
+            ProyectoDataAccess repo = new ProyectoDataAccess(_context);
 
             int idInexistente = 999;
 

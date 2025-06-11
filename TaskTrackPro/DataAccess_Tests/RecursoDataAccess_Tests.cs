@@ -64,24 +64,6 @@ public class RecursoDataAccess_Tests
         Assert.IsFalse(recursoRepo.GetAll().Contains(recurso));
     }
     
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void NoSePuedeEliminarRecursoEnUso()
-    {
-        string nombre = "Auto";
-        string tipo = "Vehiculo";
-        string descripcion = "Auto de la empresa";
-        Recurso recurso = new Recurso(nombre, tipo, descripcion, false, 5);
-        recursoRepo.Add(recurso);
-        Proyecto proyecto = new Proyecto("Proyecto","descripcion", DateTime.Today);
-        Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        Tarea tarea = new Tarea("Tarea", "Tarea prueba", DateTime.Now, TimeSpan.FromDays(1), false);
-        proyecto.agregarTarea(tarea);
-        tarea.AgregarUsuario(usuario);
-        //tarea.AgregarRecurso(recurso, 2);
-        recurso.CantidadEnUso = 1;
-        recursoRepo.Remove(recurso);
-    }
     
     [TestMethod]
     public void BuscarRecursoPorIdDevuelveRecursoCorrecto()

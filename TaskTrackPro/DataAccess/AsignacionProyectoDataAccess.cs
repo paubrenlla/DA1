@@ -25,15 +25,22 @@ namespace DataAccess
         }
         public AsignacionProyecto? GetById(int Id)
         {
-            AsignacionProyecto asignacionProyecto = _context.AsignacionesProyecto.Find(Id);
-            if(asignacionProyecto is null)
-                throw new ArgumentException("No se encontro la asigancion de proyecto");
-            return asignacionProyecto;
+            AsignacionProyecto asign = _context.AsignacionesProyecto
+                .Include(x => x.Usuario)
+                .Include(x => x.Proyecto)
+                .FirstOrDefault(x => x.Id == Id);
+            if (asign is null)
+                throw new ArgumentException("No existe la asignación");
+            return asign;
         }
 
         public List<AsignacionProyecto> GetAll()
         {
-           return _context.AsignacionesProyecto.AsNoTracking().ToList();
+           return _context.AsignacionesProyecto
+               .Include(x=>x.Usuario)
+               .Include(x=>x.Proyecto)
+               .AsNoTracking()
+               .ToList();
         }
         public List<AsignacionProyecto> AsignacionesDelUsuario(int usuarioId)
         {
