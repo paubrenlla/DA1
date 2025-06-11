@@ -299,5 +299,234 @@ namespace Controllers_Tests
 
             _mockService.Verify(s => s.EliminarUsuarioDeTareasDeProyecto(miembroId, proyectoId), Times.Once);
         }
+        
+        [TestMethod]
+        public void ObtenerDependenciasDeTarea_ConTareaConDependencias_DevuelveListaDependencias()
+        {
+            int tareaId = 1;
+            var dependenciasEsperadas = new List<TareaDTO>
+            {
+                new TareaDTO { Id = 3, Titulo = "Dependencia 1", Descripcion = "Desc Dep 1" },
+                new TareaDTO { Id = 4, Titulo = "Dependencia 2", Descripcion = "Desc Dep 2" }
+            };
+
+            _mockService.Setup(s => s.ObtenerDependenciasDeTarea(tareaId))
+                .Returns(dependenciasEsperadas);
+
+            List<TareaDTO>? resultado = _controller.ObtenerDependenciasDeTarea(tareaId);
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(2, resultado.Count);
+            Assert.AreEqual("Dependencia 1", resultado[0].Titulo);
+            _mockService.Verify(s => s.ObtenerDependenciasDeTarea(tareaId), Times.Once);
+        }
+
+        [TestMethod]
+        public void ObtenerDependenciasDeTarea_ConTareaSinDependencias_DevuelveListaVacia()
+        {
+            int tareaId = 2;
+            var listaVacia = new List<TareaDTO>();
+
+            _mockService.Setup(s => s.ObtenerDependenciasDeTarea(tareaId))
+                .Returns(listaVacia);
+
+            List<TareaDTO>? resultado = _controller.ObtenerDependenciasDeTarea(tareaId);
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(0, resultado.Count);
+            _mockService.Verify(s => s.ObtenerDependenciasDeTarea(tareaId), Times.Once);
+        }
+
+        [TestMethod]
+        public void ObtenerDependenciasDeTarea_ConTareaInexistente_DevuelveNull()
+        {
+            int tareaId = 999;
+
+            _mockService.Setup(s => s.ObtenerDependenciasDeTarea(tareaId))
+                .Returns((List<TareaDTO>?)null);
+
+            List<TareaDTO>? resultado = _controller.ObtenerDependenciasDeTarea(tareaId);
+
+            Assert.IsNull(resultado);
+            _mockService.Verify(s => s.ObtenerDependenciasDeTarea(tareaId), Times.Once);
+        }
+
+        [TestMethod]
+        public void EliminarDependencia_LlamaService()
+        {
+            int tareaId = 10;
+            int dependenciaId = 15;
+
+            _controller.EliminarDependencia(tareaId, dependenciaId);
+
+            _mockService.Verify(s => s.EliminarDependencia(tareaId, dependenciaId), Times.Once);
+        }
+
+        [TestMethod]
+        public void ListarTareasDelUsuario_LlamaServiceYDevuelveLista()
+        {
+            int usuarioId = 7;
+            int proyectoId = 3;
+            var tareasEsperadas = new List<TareaDTO> { _dto1, _dto2 };
+
+            _mockService.Setup(s => s.ListarTareasDelUsuario(usuarioId, proyectoId))
+                .Returns(tareasEsperadas);
+
+            List<TareaDTO> resultado = _controller.ListarTareasDelUsuario(usuarioId, proyectoId);
+
+            CollectionAssert.AreEqual(tareasEsperadas, resultado);
+            _mockService.Verify(s => s.ListarTareasDelUsuario(usuarioId, proyectoId), Times.Once);
+        }
+
+        [TestMethod]
+        public void ListarTareasDelUsuario_ConUsuarioSinTareas_DevuelveListaVacia()
+        {
+            int usuarioId = 8;
+            int proyectoId = 4;
+            var listaVacia = new List<TareaDTO>();
+
+            _mockService.Setup(s => s.ListarTareasDelUsuario(usuarioId, proyectoId))
+                .Returns(listaVacia);
+
+            List<TareaDTO> resultado = _controller.ListarTareasDelUsuario(usuarioId, proyectoId);
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(0, resultado.Count);
+            _mockService.Verify(s => s.ListarTareasDelUsuario(usuarioId, proyectoId), Times.Once);
+        }
+
+        [TestMethod]
+        public void PuedeCambiarDeEstado_RetornaTrue_CuandoServiceDevuelveTrue()
+        {
+            int tareaId = 5;
+
+            _mockService.Setup(s => s.PuedeCambiarDeEstado(tareaId))
+                .Returns(true);
+
+            bool resultado = _controller.PuedeCambiarDeEstado(tareaId);
+
+            Assert.IsTrue(resultado);
+            _mockService.Verify(s => s.PuedeCambiarDeEstado(tareaId), Times.Once);
+        }
+
+        [TestMethod]
+        public void PuedeCambiarDeEstado_RetornaFalse_CuandoServiceDevuelveFalse()
+        {
+            int tareaId = 6;
+
+            _mockService.Setup(s => s.PuedeCambiarDeEstado(tareaId))
+                .Returns(false);
+
+            bool resultado = _controller.PuedeCambiarDeEstado(tareaId);
+
+            Assert.IsFalse(resultado);
+            _mockService.Verify(s => s.PuedeCambiarDeEstado(tareaId), Times.Once);
+        }
+
+        [TestMethod]
+        public void ObtenerTareasParaAgregarDependencia_ConTareasDisponibles_DevuelveLista()
+        {
+            int tareaSeleccionadaId = 1;
+            int proyectoId = 5;
+            var tareasDisponibles = new List<TareaDTO>
+            {
+                new TareaDTO { Id = 10, Titulo = "Tarea Disponible 1" },
+                new TareaDTO { Id = 11, Titulo = "Tarea Disponible 2" }
+            };
+
+            _mockService.Setup(s => s.ObtenerTareasParaAgregarDependencia(tareaSeleccionadaId, proyectoId))
+                .Returns(tareasDisponibles);
+
+            List<TareaDTO>? resultado = _controller.ObtenerTareasParaAgregarDependencia(tareaSeleccionadaId, proyectoId);
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(2, resultado.Count);
+            Assert.AreEqual("Tarea Disponible 1", resultado[0].Titulo);
+            _mockService.Verify(s => s.ObtenerTareasParaAgregarDependencia(tareaSeleccionadaId, proyectoId), Times.Once);
+        }
+
+        [TestMethod]
+        public void ObtenerTareasParaAgregarDependencia_SinTareasDisponibles_DevuelveListaVacia()
+        {
+            int tareaSeleccionadaId = 2;
+            int proyectoId = 6;
+            var listaVacia = new List<TareaDTO>();
+
+            _mockService.Setup(s => s.ObtenerTareasParaAgregarDependencia(tareaSeleccionadaId, proyectoId))
+                .Returns(listaVacia);
+
+            List<TareaDTO>? resultado = _controller.ObtenerTareasParaAgregarDependencia(tareaSeleccionadaId, proyectoId);
+
+            Assert.IsNotNull(resultado);
+            Assert.AreEqual(0, resultado.Count);
+            _mockService.Verify(s => s.ObtenerTareasParaAgregarDependencia(tareaSeleccionadaId, proyectoId), Times.Once);
+        }
+
+        [TestMethod]
+        public void ObtenerTareasParaAgregarDependencia_ConTareaInvalida_DevuelveNull()
+        {
+            int tareaSeleccionadaId = 999;
+            int proyectoId = 7;
+
+            _mockService.Setup(s => s.ObtenerTareasParaAgregarDependencia(tareaSeleccionadaId, proyectoId))
+                .Returns((List<TareaDTO>?)null);
+
+            List<TareaDTO>? resultado = _controller.ObtenerTareasParaAgregarDependencia(tareaSeleccionadaId, proyectoId);
+
+            Assert.IsNull(resultado);
+            _mockService.Verify(s => s.ObtenerTareasParaAgregarDependencia(tareaSeleccionadaId, proyectoId), Times.Once);
+        }
+
+        [TestMethod]
+        public void PuedeAgregarDependencias_RetornaTrue_CuandoServiceDevuelveTrue()
+        {
+            int tareaId = 3;
+
+            _mockService.Setup(s => s.PuedeAgregarDependencias(tareaId))
+                .Returns(true);
+
+            bool resultado = _controller.PuedeAgregarDependencias(tareaId);
+
+            Assert.IsTrue(resultado);
+            _mockService.Verify(s => s.PuedeAgregarDependencias(tareaId), Times.Once);
+        }
+
+        [TestMethod]
+        public void PuedeAgregarDependencias_RetornaFalse_CuandoServiceDevuelveFalse()
+        {
+            int tareaId = 4;
+
+            _mockService.Setup(s => s.PuedeAgregarDependencias(tareaId))
+                .Returns(false);
+
+            bool resultado = _controller.PuedeAgregarDependencias(tareaId);
+
+            Assert.IsFalse(resultado);
+            _mockService.Verify(s => s.PuedeAgregarDependencias(tareaId), Times.Once);
+        }
+
+        [TestMethod]
+        public void TieneDependencias_RetornaTrue_CuandoServiceDevuelveTrue()
+        {
+            _mockService.Setup(s => s.TieneDependencias(_dto1))
+                .Returns(true);
+
+            bool resultado = _controller.TieneDependencias(_dto1);
+
+            Assert.IsTrue(resultado);
+            _mockService.Verify(s => s.TieneDependencias(_dto1), Times.Once);
+        }
+
+        [TestMethod]
+        public void TieneDependencias_RetornaFalse_CuandoServiceDevuelveFalse()
+        {
+            _mockService.Setup(s => s.TieneDependencias(_dto2))
+                .Returns(false);
+
+            bool resultado = _controller.TieneDependencias(_dto2);
+
+            Assert.IsFalse(resultado);
+            _mockService.Verify(s => s.TieneDependencias(_dto2), Times.Once);
+        }
     }
 }
