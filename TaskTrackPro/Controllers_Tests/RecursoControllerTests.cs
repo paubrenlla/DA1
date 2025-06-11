@@ -3,6 +3,7 @@ using DTOs;
 using Domain;
 using IDataAcces;
 using DataAccess;
+using Microsoft.EntityFrameworkCore;
 using Services;
 
 namespace Controllers_Tests;
@@ -19,7 +20,12 @@ public class RecursoControllerTests
     [TestInitialize]
     public void SetUp()
     {
-        _recursoRepo = new RecursoDataAccess();
+        var options = new DbContextOptionsBuilder<SqlContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+
+        SqlContext context = new SqlContext(options);
+        _recursoRepo = new RecursoDataAccess(context);
         _asignacionRepo = new AsignacionRecursoTareaDataAccess();
         _service = new RecursoService(_recursoRepo, _asignacionRepo);
         _controller = new RecursoController(_service);
@@ -50,7 +56,8 @@ public class RecursoControllerTests
     [TestMethod]
     public void Add_FuncionaCorrectamente()
     {
-        RecursoDTO nuevoDTO = Convertidor.ARecursoDTO(_recursoEjemplo);
+        Recurso recurso = new Recurso("ProyectorGrande", "Audiovisual", "Proyector HD", false, 3);
+        RecursoDTO nuevoDTO = Convertidor.ARecursoDTO(recurso);
         RecursoDTO agregado = _controller.Add(nuevoDTO);
 
         Assert.IsNotNull(agregado);

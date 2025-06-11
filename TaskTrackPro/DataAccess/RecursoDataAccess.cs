@@ -1,38 +1,43 @@
 ﻿using Domain;
 using IDataAcces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess;
 
 public class RecursoDataAccess :IDataAccessRecurso
 {
-    private List<Recurso> _listaRecursos;
+    private readonly SqlContext _context;
     
-    public RecursoDataAccess()
+    public RecursoDataAccess(SqlContext context)
     {
-        _listaRecursos = new List<Recurso>();
+        _context = context;
     }
     public void Add(Recurso recurso)
     {
-        if (_listaRecursos.Contains(recurso))
+        if (_context.Recursos.Any(r => r.Nombre == recurso.Nombre))
             throw new ArgumentException("El recurso ya existe en el sistema.");
-        
-        _listaRecursos.Add(recurso);
+
+        _context.Recursos.Add(recurso);
+        _context.SaveChanges();
     }
 
-    public Recurso? GetById(int Id)
+
+    public Recurso? GetById(int id)
     {
-       return _listaRecursos.FirstOrDefault(r => r.Id == Id);
+        return _context.Recursos.Find(id);
     }
 
     public List<Recurso> GetAll()
     {
-        return _listaRecursos;
+        return _context.Recursos.AsNoTracking().ToList(); //Usamos AsNoTracking para no modificar nada en la DB
     }
 
     public void Remove(Recurso recurso)
     {
         if (recurso.EstaEnUso())
             throw new ArgumentException("No se puede eliminar un recurso que está en uso.");
-        _listaRecursos.Remove(recurso);
+
+        _context.Recursos.Remove(recurso);
+        _context.SaveChanges();
     }
 }

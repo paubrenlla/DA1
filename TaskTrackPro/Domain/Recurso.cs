@@ -23,14 +23,12 @@ public class Recurso
         if (cantidadDelRecurso <= 0)
             throw new ArgumentException("La cantidad del recurso debe ser mayor a 0.");
 
-        Id = _contadorId++;
         Nombre = nombre;
         Tipo = tipo;
         Descripcion = descripcion;
         SePuedeCompartir = sePuedeCompartir;
         CantidadDelRecurso = cantidadDelRecurso;
         CantidadEnUso = 0;
-        //TareasQueLoUsan = new List<Tarea>();
     }
     
 

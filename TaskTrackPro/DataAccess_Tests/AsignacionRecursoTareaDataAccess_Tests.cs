@@ -123,7 +123,8 @@ namespace DataAccess_Tests
 
             var asignacion = repo.GetByRecursoYTarea(recurso2.Id, tarea1.Id);
             Assert.IsNotNull(asignacion);
-            Assert.AreEqual(asign3, asignacion);
+            Assert.AreEqual(asign3.Recurso.Id, asignacion.Recurso.Id);
+            Assert.AreEqual(asign3.Tarea.Id,   asignacion.Tarea.Id);
         }
     }
 }

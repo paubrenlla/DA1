@@ -3,6 +3,7 @@ using DTOs;
 using Domain;
 using IDataAcces;
 using DataAccess;
+using Microsoft.EntityFrameworkCore;
 using Services;
 
 namespace Controllers_Tests;
@@ -25,9 +26,14 @@ public class AsignacionRecursoTareaControllersTests
     [TestInitialize]
     public void SetUp()
     {
+        var options = new DbContextOptionsBuilder<SqlContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+
+        SqlContext context = new SqlContext(options);
         _repoAsignaciones = new AsignacionRecursoTareaDataAccess();
         _repoTareas = new TareaDataAccess();
-        _repoRecursos = new RecursoDataAccess();
+        _repoRecursos = new RecursoDataAccess(context);
 
         _service = new AsignacionRecursoTareaService(_repoRecursos, _repoTareas, _repoAsignaciones);
         _controller = new AsignacionRecursoTareaControllers(_service);

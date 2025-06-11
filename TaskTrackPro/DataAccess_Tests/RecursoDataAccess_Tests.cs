@@ -1,5 +1,6 @@
 ﻿using Domain;
 using DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess_Tests;
 
@@ -7,11 +8,18 @@ namespace DataAccess_Tests;
 public class RecursoDataAccess_Tests
 {
     private RecursoDataAccess recursoRepo;
+    private SqlContext _context;
+
 
     [TestInitialize]
     public void SetUp()
     {
-        recursoRepo = new RecursoDataAccess();
+        var options = new DbContextOptionsBuilder<SqlContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+
+        _context = new SqlContext(options);
+        recursoRepo = new RecursoDataAccess(_context);
     }
     
     [TestMethod]
@@ -22,8 +30,9 @@ public class RecursoDataAccess_Tests
         string descripcion = "Auto de la empresa";
         Recurso recurso = new Recurso(nombre, tipo, descripcion, false, 5);
         recursoRepo.Add(recurso);
-        Assert.AreEqual(1, recursoRepo.GetAll().Count);
-        Assert.AreSame(recurso, recursoRepo.GetAll()[0]);
+        List<Recurso> repo = recursoRepo.GetAll();
+        Assert.AreEqual(1, repo.Count);
+        Assert.AreEqual(recurso.Id, repo[0].Id);
     }
     
     [TestMethod]
@@ -46,8 +55,9 @@ public class RecursoDataAccess_Tests
         string descripcion = "Auto de la empresa";
         Recurso recurso = new Recurso(nombre, tipo, descripcion, false, 5);
         recursoRepo.Add(recurso);
-        Assert.AreEqual(1, recursoRepo.GetAll().Count);
-        Assert.AreSame(recurso, recursoRepo.GetAll()[0]);
+        List<Recurso> repo = recursoRepo.GetAll();
+        Assert.AreEqual(1, repo.Count);
+        Assert.AreEqual(recurso.Id, repo[0].Id);
         
         recursoRepo.Remove(recurso);
         Assert.AreEqual(0, recursoRepo.GetAll().Count);
