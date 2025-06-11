@@ -56,4 +56,21 @@ public class TareaDataAccess_Tests
         
         Assert.AreEqual(1, tareaRepo.GetAll().Count);
     }
+
+    [TestMethod]
+    public void ActualizarTarea()
+    {
+        Tarea tarea = new Tarea("Tarea", "Descripcion", DateTime.Now, TimeSpan.FromDays(1), false);
+        tareaRepo.Add(tarea);
+        
+        Assert.AreEqual(1, tareaRepo.GetAll().Count);
+        
+        tarea.Descripcion = "Descripcion Cambiada";
+        tarea.Titulo = "Tarea Nueva";
+        tareaRepo.Update(tarea);
+        Assert.AreEqual(tarea.Id, tareaRepo.GetAll()[0].Id);
+        Assert.AreEqual("Tarea Nueva", tareaRepo.GetAll()[0].Titulo);
+        Assert.AreEqual("Descripcion Cambiada", tareaRepo.GetAll()[0].Descripcion);
+        
+    }
 }

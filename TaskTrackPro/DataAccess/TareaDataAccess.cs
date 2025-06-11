@@ -26,6 +26,12 @@ public class TareaDataAccess : IDataAccessTarea
         _context.SaveChanges();
     }
 
+    public void Update(Tarea tarea)
+    {
+        _context.Update(tarea);
+        _context.SaveChanges();
+    }
+
     public Tarea? GetById(int Id)
     {
         Tarea tarea = _context.Tareas.Find(Id);
