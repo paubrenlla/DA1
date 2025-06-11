@@ -26,7 +26,7 @@ public class RecursoDataAccess :IDataAccessRecurso
     {
         Recurso recurso = _context.Recursos.Find(id);
         if (recurso is null)
-            throw new ArgumentException("No existe el Recurso.");
+            throw new NullReferenceException("No existe el Recurso.");
         return recurso;
     }
 
@@ -43,9 +43,6 @@ public class RecursoDataAccess :IDataAccessRecurso
 
     public void Remove(Recurso recurso)
     {
-        if (recurso.EstaEnUso())
-            throw new ArgumentException("No se puede eliminar un recurso que está en uso.");
-
         _context.Recursos.Remove(recurso);
         _context.SaveChanges();
     }

@@ -1,12 +1,10 @@
-using System.Data;
-
 namespace Domain;
 
 public class Proyecto
 {
     private static int _contadorId = 1;
 
-    public int Id { get; }
+    public int Id { get; set; }
     private string _nombre;
     private string _descripcion;
     private DateTime _fechaInicio;
@@ -57,7 +55,6 @@ public class Proyecto
         FechaInicio = fechaInicio;
         TareasAsociadas = new List<Tarea>();
         AsignacionesDelProyecto = new List<AsignacionProyecto>();
-        Id = _contadorId++;
     }
 
     public void agregarTarea(Tarea tarea)

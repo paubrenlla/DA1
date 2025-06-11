@@ -23,10 +23,10 @@ builder.Services.AddDbContext<SqlContext>(options =>
 
 
 builder.Services.AddScoped<IDataAccessUsuario, UsuarioDataAccess>();
-builder.Services.AddSingleton<IDataAccessProyecto, ProyectoDataAccess>();
-builder.Services.AddSingleton<IDataAccessTarea, TareaDataAccess>();
+builder.Services.AddScoped<IDataAccessProyecto, ProyectoDataAccess>();
+builder.Services.AddScoped<IDataAccessTarea, TareaDataAccess>();
 builder.Services.AddScoped<IDataAccessRecurso, RecursoDataAccess>();
-builder.Services.AddSingleton<IDataAccessAsignacionProyecto, AsignacionProyectoDataAccess>();
+builder.Services.AddScoped<IDataAccessAsignacionProyecto, AsignacionProyectoDataAccess>();
 builder.Services.AddSingleton<IDataAccessAsignacionRecursoTarea, AsignacionRecursoTareaDataAccess>();
 
 builder.Services.AddScoped<IRecursoObserver, ActualizadorEstadoTareas>();

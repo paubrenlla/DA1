@@ -32,7 +32,7 @@ public class AsignacionRecursoTareaControllersTests
 
         SqlContext context = new SqlContext(options);
         _repoAsignaciones = new AsignacionRecursoTareaDataAccess();
-        _repoTareas = new TareaDataAccess();
+        _repoTareas = new TareaDataAccess(context);
         _repoRecursos = new RecursoDataAccess(context);
 
         _service = new AsignacionRecursoTareaService(_repoRecursos, _repoTareas, _repoAsignaciones);

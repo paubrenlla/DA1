@@ -34,8 +34,8 @@ namespace Services_Tests
             var context = new SqlContext(options);
 
             _repoUsuarios = new UsuarioDataAccess(context);
-            _repoProyectos = new ProyectoDataAccess();
-            _repoAsignaciones = new AsignacionProyectoDataAccess();
+            _repoProyectos = new ProyectoDataAccess(context);
+            _repoAsignaciones = new AsignacionProyectoDataAccess(context);
 
             _service = new ProyectoService(_repoProyectos, _repoUsuarios, _repoAsignaciones);
 

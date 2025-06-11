@@ -26,9 +26,9 @@ public class TareaServiceTests
         var options = new DbContextOptionsBuilder<SqlContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
-        var context = new SqlContext(options);
-        _repoTareas = new TareaDataAccess();
-        _repoProyectos = new ProyectoDataAccess();
+        SqlContext context = new SqlContext(options);
+        _repoTareas = new TareaDataAccess(context);
+        _repoProyectos = new ProyectoDataAccess(context);
         _repoUsuarios = new UsuarioDataAccess(context);
 
         _service = new TareaService(_repoTareas, _repoProyectos, _repoUsuarios);
@@ -60,7 +60,7 @@ public class TareaServiceTests
     [TestMethod]
     public void BuscarTareaPorIdDevuelveDTO()
     {
-        var resultado = _service.BuscarTareaPorId(_tareaEjemplo.Id);
+        TareaDTO resultado = _service.BuscarTareaPorId(_tareaEjemplo.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(_tareaEjemplo.Id, resultado.Id);
@@ -71,7 +71,7 @@ public class TareaServiceTests
     [TestMethod]
     public void ListarTareasPorProyectoDevuelveTodas()
     {
-        var tarea2 = new Tarea(
+        Tarea tarea2 = new Tarea(
             "Tarea 2",
             "Desc 2",
             DateTime.Today.AddDays(2),
@@ -80,7 +80,7 @@ public class TareaServiceTests
         _proyectoEjemplo.TareasAsociadas.Add(tarea2);
         _repoTareas.Add(tarea2);
 
-        var lista = _service.ListarTareasPorProyecto(_proyectoEjemplo.Id);
+        List<TareaDTO> lista = _service.ListarTareasPorProyecto(_proyectoEjemplo.Id);
 
         Assert.IsNotNull(lista);
         Assert.AreEqual(2, lista.Count);
@@ -93,7 +93,7 @@ public class TareaServiceTests
     [TestMethod]
     public void CrearTareaAgregaCorrectamente()
     {
-        var dtoNueva = new TareaDTO
+        TareaDTO dtoNueva = new TareaDTO
         {
             Titulo = "Nueva Tarea",
             Descripcion = "Descripción nueva",
@@ -101,21 +101,21 @@ public class TareaServiceTests
             Duracion = TimeSpan.FromHours(4)
         };
 
-        var creada = _service.CrearTarea(_proyectoEjemplo.Id, dtoNueva);
+        TareaDTO creada = _service.CrearTarea(_proyectoEjemplo.Id, dtoNueva);
 
         Assert.IsNotNull(creada);
         Assert.AreEqual(dtoNueva.Titulo, creada.Titulo);
         Assert.AreEqual(dtoNueva.Descripcion, creada.Descripcion);
 
-        var tareasDelProyecto = _service.ListarTareasPorProyecto(_proyectoEjemplo.Id);
-        var contiene = tareasDelProyecto.Any(t => t.Id == creada.Id);
+        List<TareaDTO> tareasDelProyecto = _service.ListarTareasPorProyecto(_proyectoEjemplo.Id);
+        bool contiene = tareasDelProyecto.Any(t => t.Id == creada.Id);
         Assert.IsTrue(contiene);
     }
 
     [TestMethod]
     public void ModificarTareaCambiaDatosCorrectamente()
     {
-        var dtoModificada = new TareaDTO
+        TareaDTO dtoModificada = new TareaDTO
         {
             Titulo = "Modificado",
             Descripcion = "Nueva descripción",
@@ -125,7 +125,7 @@ public class TareaServiceTests
 
         _service.ModificarTarea(_tareaEjemplo.Id, dtoModificada);
 
-        var tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
+        Tarea tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
         Assert.AreEqual(dtoModificada.Titulo, tareaGuardada.Titulo);
         Assert.AreEqual(dtoModificada.Descripcion, tareaGuardada.Descripcion);
     }
@@ -135,7 +135,7 @@ public class TareaServiceTests
     {
         _service.MarcarComoEjecutandose(_tareaEjemplo.Id);
 
-        var tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
+        Tarea tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
         Assert.IsNotNull(tareaGuardada.EstadoActual);
         Assert.AreEqual(TipoEstadoTarea.Ejecutandose, tareaGuardada.EstadoActual.Valor);
     }
@@ -146,7 +146,7 @@ public class TareaServiceTests
         _service.MarcarComoEjecutandose(_tareaEjemplo.Id);
         _service.MarcarComoCompletada(_tareaEjemplo.Id);
 
-        var tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
+        Tarea tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
         Assert.IsNotNull(tareaGuardada.EstadoActual);
         Assert.AreEqual(TipoEstadoTarea.Efectuada, tareaGuardada.EstadoActual.Valor);
     }
@@ -154,14 +154,14 @@ public class TareaServiceTests
     [TestMethod]
     public void AgregarDependenciaAgregaCorrectamente()
     {
-        var tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddHours(1), TimeSpan.FromHours(3), true);
+        Tarea tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddHours(1), TimeSpan.FromHours(3), true);
         _proyectoEjemplo.TareasAsociadas.Add(tarea2);
         _repoTareas.Add(tarea2);
 
         _service.AgregarDependencia(_tareaEjemplo.Id, tarea2.Id);
 
-        var tareaOriginal = _repoTareas.GetById(_tareaEjemplo.Id);
-        var tareaDependencia = _repoTareas.GetById(tarea2.Id);
+        Tarea tareaOriginal = _repoTareas.GetById(_tareaEjemplo.Id);
+        Tarea tareaDependencia = _repoTareas.GetById(tarea2.Id);
 
         Assert.IsTrue(tareaOriginal.TareasDependencia.Contains(tareaDependencia));
         Assert.IsTrue(tareaDependencia.TareasSucesoras.Contains(tareaOriginal));
@@ -172,7 +172,7 @@ public class TareaServiceTests
     {
         _service.AgregarUsuario(_tareaEjemplo.Id, _usuarioEjemplo.Id);
 
-        var tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
+        Tarea tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
         Assert.IsNotNull(tareaGuardada);
         Assert.IsTrue(tareaGuardada.UsuariosAsignados.Contains(_usuarioEjemplo));
     }
@@ -180,15 +180,15 @@ public class TareaServiceTests
     [TestMethod]
     public void TieneSucesorasDevuelveFalseCuandoNoHaySucesoras()
     {
-        var dtoSinSucesoras = Convertidor.ATareaDTO(_tareaEjemplo);
-        var resultado = _service.TieneSucesoras(dtoSinSucesoras);
+        TareaDTO dtoSinSucesoras = Convertidor.ATareaDTO(_tareaEjemplo);
+        bool resultado = _service.TieneSucesoras(dtoSinSucesoras);
         Assert.IsFalse(resultado);
     }
 
     [TestMethod]
     public void TieneSucesorasDevuelveTrueCuandoHaySucesoras()
     {
-        var tarea2 = new Tarea(
+        Tarea tarea2 = new Tarea(
             "Tarea 2",
             "Desc 2",
             DateTime.Today.AddHours(1),
@@ -199,9 +199,9 @@ public class TareaServiceTests
 
         _service.AgregarDependencia(_tareaEjemplo.Id, tarea2.Id);
 
-        var dtoConSucesoras = Convertidor.ATareaDTO(tarea2);
+        TareaDTO dtoConSucesoras = Convertidor.ATareaDTO(tarea2);
 
-        var resultado = _service.TieneSucesoras(dtoConSucesoras);
+        bool resultado = _service.TieneSucesoras(dtoConSucesoras);
 
         Assert.IsTrue(resultado);
     }
@@ -210,20 +210,17 @@ public class TareaServiceTests
     public void UsuarioPerteneceALaTareaDevuelveTrueCuandoUsuarioAsignado()
     {
         _tareaEjemplo.AgregarUsuario(_usuarioEjemplo);
-        var resultado = _service.UsuarioPerteneceALaTarea(_usuarioEjemplo.Id, _tareaEjemplo.Id);
+        bool resultado = _service.UsuarioPerteneceALaTarea(_usuarioEjemplo.Id, _tareaEjemplo.Id);
         Assert.IsTrue(resultado);
     }
 
     [TestMethod]
     public void EliminarTareaSinSucesorasNiDependenciasEliminaCorrectamente()
     {
-        // Act
         _service.EliminarTarea(_proyectoEjemplo.Id, _tareaEjemplo.Id);
 
-        // Assert: la tarea ya no está en el proyecto
         Assert.IsFalse(_proyectoEjemplo.TareasAsociadas.Contains(_tareaEjemplo));
 
-        // Y al intentar buscarla, lanzará ArgumentException
         Assert.ThrowsException<ArgumentException>(() =>
             _service.BuscarTareaPorId(_tareaEjemplo.Id)
         );
@@ -233,8 +230,7 @@ public class TareaServiceTests
     [ExpectedException(typeof(InvalidOperationException))]
     public void EliminarTarea_LanzaExcepcionSiTieneSucesoras()
     {
-        // Preparamos una segunda tarea que dependa de la primera
-        var tarea2 = new Tarea(
+        Tarea tarea2 = new Tarea(
             "Tarea 2",
             "Desc",
             DateTime.Today.AddHours(9),
@@ -244,21 +240,16 @@ public class TareaServiceTests
         _proyectoEjemplo.TareasAsociadas.Add(tarea2);
         _repoTareas.Add(tarea2);
 
-        // tarea2 depende de tareaEjemplo → tareaEjemplo tiene sucesoras
         tarea2.AgregarDependencia(_tareaEjemplo);
 
-        // Act: debe lanzar InvalidOperationException
         _service.EliminarTarea(_proyectoEjemplo.Id, _tareaEjemplo.Id);
-
-        // (No llega aquí)
     }
 
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void EliminarTarea_LanzaExcepcionSiTieneDependencias()
     {
-        // Preparamos una segunda tarea de la que dependa la original
-        var tarea2 = new Tarea(
+        Tarea tarea2 = new Tarea(
             "Tarea 2",
             "Desc",
             DateTime.Today.AddHours(9),
@@ -268,17 +259,15 @@ public class TareaServiceTests
         _proyectoEjemplo.TareasAsociadas.Add(tarea2);
         _repoTareas.Add(tarea2);
 
-        // tareaEjemplo depende de tarea2 → tareaEjemplo tiene dependencias
         _tareaEjemplo.AgregarDependencia(tarea2);
 
-        // Act: debe lanzar InvalidOperationException
         _service.EliminarTarea(_proyectoEjemplo.Id, _tareaEjemplo.Id);
     }
 
     [TestMethod]
     public void TieneDependenciasReturnTrueCuandoTiene()
     {
-        var _tarea2 = new Tarea("Tarea Test",
+        Tarea _tarea2 = new Tarea("Tarea Test",
             "Descripción Tarea",
             DateTime.Today.AddHours(9),
             TimeSpan.FromHours(4),
@@ -286,14 +275,14 @@ public class TareaServiceTests
         _proyectoEjemplo.TareasAsociadas.Add(_tarea2);
         _repoTareas.Add(_tarea2);
         _tareaEjemplo.AgregarDependencia(_tarea2);
-        var resultado = _service.TieneDependencias(Convertidor.ATareaDTO(_tareaEjemplo));
+        bool resultado = _service.TieneDependencias(Convertidor.ATareaDTO(_tareaEjemplo));
         Assert.IsTrue(resultado);
     }
 
     [TestMethod]
     public void GetEstadoTarea_DevuelveEstadoInicial()
     {
-        var estado = _service.GetEstadoTarea(_tareaEjemplo.Id);
+        TipoEstadoTarea estado = _service.GetEstadoTarea(_tareaEjemplo.Id);
 
         Assert.AreEqual(TipoEstadoTarea.Pendiente, estado);
     }
@@ -303,7 +292,7 @@ public class TareaServiceTests
     {
         _service.MarcarComoEjecutandose(_tareaEjemplo.Id);
 
-        var estado = _service.GetEstadoTarea(_tareaEjemplo.Id);
+        TipoEstadoTarea estado = _service.GetEstadoTarea(_tareaEjemplo.Id);
 
         Assert.AreEqual(TipoEstadoTarea.Ejecutandose, estado);
     }
@@ -314,7 +303,7 @@ public class TareaServiceTests
         _service.MarcarComoEjecutandose(_tareaEjemplo.Id);
         _service.MarcarComoCompletada(_tareaEjemplo.Id);
 
-        var estado = _service.GetEstadoTarea(_tareaEjemplo.Id);
+        TipoEstadoTarea estado = _service.GetEstadoTarea(_tareaEjemplo.Id);
 
         Assert.AreEqual(TipoEstadoTarea.Efectuada, estado);
     }

@@ -30,7 +30,7 @@ namespace Services_Tests
                 .Options;
             var context = new SqlContext(options);
             _repoRecursos = new RecursoDataAccess(context);
-            _repoTareas = new TareaDataAccess();
+            _repoTareas = new TareaDataAccess(context);
             _repoAsignaciones = new AsignacionRecursoTareaDataAccess();
             _service = new AsignacionRecursoTareaService(_repoRecursos, _repoTareas, _repoAsignaciones);
 
