@@ -1,55 +1,82 @@
+using System.Collections.Generic;
+using System.Linq;
+using DataAccess;
 using Domain;
 using IDataAcces;
+using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess;
-
-public class AsignacionRecursoTareaDataAccess : IDataAccessAsignacionRecursoTarea
+namespace DataAccess
 {
-    private List<AsignacionRecursoTarea> _asignacionesRecursoTareas;
-    
-    public AsignacionRecursoTareaDataAccess()
+    public class AsignacionRecursoTareaDataAccess : IDataAccessAsignacionRecursoTarea
     {
-        _asignacionesRecursoTareas = new List<AsignacionRecursoTarea>();
-    }
-    public void Add(AsignacionRecursoTarea asignacionRecursoTarea)
-    {
-        _asignacionesRecursoTareas.Add(asignacionRecursoTarea);
-    }
+        private readonly SqlContext _context;
 
-    public void Remove(AsignacionRecursoTarea asignacionProyecto)
-    {
-        _asignacionesRecursoTareas.Remove(asignacionProyecto);
-    }
-    public AsignacionRecursoTarea? GetById(int Id)
-    {
-        return _asignacionesRecursoTareas.FirstOrDefault(a => a.Id == Id);
-    }
+        public AsignacionRecursoTareaDataAccess(SqlContext context)
+        {
+            _context = context;
+        }
 
-    public List<AsignacionRecursoTarea> GetAll()
-    {
-        return _asignacionesRecursoTareas;
-    }
+        public void Add(AsignacionRecursoTarea asignacion)
+        {
+            _context.AsignacionesRecursoTarea.Add(asignacion);
+            _context.SaveChanges();
+        }
 
-    public List<AsignacionRecursoTarea> GetByTarea(int idTarea)
-    {
-        return _asignacionesRecursoTareas.FindAll(a => a.Tarea.Id == idTarea);
-    }
+        public void Remove(AsignacionRecursoTarea asignacion)
+        {
+            _context.AsignacionesRecursoTarea.Remove(asignacion);
+            _context.SaveChanges();
+        }
 
-    public List<AsignacionRecursoTarea> GetByRecurso(int idRecurso)
-    {
-        return _asignacionesRecursoTareas.FindAll(a => a.Recurso.Id == idRecurso);
-    }
+        public AsignacionRecursoTarea? GetById(int id)
+        {
+            return _context.AsignacionesRecursoTarea
+                .Include(a => a.Recurso)
+                .Include(a => a.Tarea)
+                .FirstOrDefault(a => a.Id == id);
+        }
 
-    public int CantidadDelRecurso(AsignacionRecursoTarea asignacionRecursoTarea)
-    {
-        return GetById(asignacionRecursoTarea.Id).CantidadNecesaria;
-    }
+        public List<AsignacionRecursoTarea> GetAll()
+        {
+            return _context.AsignacionesRecursoTarea
+                .Include(a => a.Recurso)
+                .Include(a => a.Tarea)
+                .AsNoTracking()
+                .ToList();
+        }
 
-    public AsignacionRecursoTarea? GetByRecursoYTarea(int idRecurso, int idTarea)
-    {
-        AsignacionRecursoTarea? asignacion = _asignacionesRecursoTareas.Find(a => a.Recurso.Id == idRecurso && a.Tarea.Id == idTarea);
-        return asignacion;
+        public List<AsignacionRecursoTarea> GetByTarea(int tareaId)
+        {
+            return _context.AsignacionesRecursoTarea
+                .Include(a => a.Recurso)
+                .Include(a => a.Tarea)
+                .Where(a => a.Tarea.Id == tareaId)
+                .ToList();
+        }
+
+        public List<AsignacionRecursoTarea> GetByRecurso(int recursoId)
+        {
+            return _context.AsignacionesRecursoTarea
+                .Include(a => a.Recurso)
+                .Include(a => a.Tarea)
+                .Where(a => a.Recurso.Id == recursoId)
+                .ToList();
+        }
+
+        public int CantidadDelRecurso(AsignacionRecursoTarea asignacion)
+        {
+            AsignacionRecursoTarea asign = GetById(asignacion.Id);
+            if (asign is null)
+                throw new KeyNotFoundException("Asignación no encontrada");
+            return asign.CantidadNecesaria;
+        }
+
+        public AsignacionRecursoTarea? GetByRecursoYTarea(int recursoId, int tareaId)
+        {
+            return _context.AsignacionesRecursoTarea
+                .Include(a => a.Recurso)
+                .Include(a => a.Tarea)
+                .FirstOrDefault(a => a.Recurso.Id == recursoId && a.Tarea.Id == tareaId);
+        }
     }
-    
-    
 }

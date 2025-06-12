@@ -26,7 +26,7 @@ public class RecursoControllerTests
 
         SqlContext context = new SqlContext(options);
         _recursoRepo = new RecursoDataAccess(context);
-        _asignacionRepo = new AsignacionRecursoTareaDataAccess();
+        _asignacionRepo = new AsignacionRecursoTareaDataAccess(context);
         _service = new RecursoService(_recursoRepo, _asignacionRepo);
         _controller = new RecursoController(_service);
 

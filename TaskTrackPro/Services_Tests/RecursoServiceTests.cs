@@ -27,7 +27,7 @@ public class RecursoServiceTests
             .Options;
         var context = new SqlContext(options);
         _repoRecursos = new RecursoDataAccess(context);
-        _repoAsignaciones = new AsignacionRecursoTareaDataAccess();
+        _repoAsignaciones = new AsignacionRecursoTareaDataAccess(context);
 
         _service = new RecursoService(_repoRecursos, _repoAsignaciones);
 

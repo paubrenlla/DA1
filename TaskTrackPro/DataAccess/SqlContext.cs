@@ -12,6 +12,8 @@ public class SqlContext : DbContext
     public DbSet<Tarea> Tareas { get; set; }
     public DbSet<AsignacionProyecto> AsignacionesProyecto { get; set; }
     public DbSet<Proyecto> Proyectos { get; set; }
+    
+    public DbSet<AsignacionRecursoTarea> AsignacionesRecursoTarea { get; set; }
     public SqlContext(DbContextOptions<SqlContext> options) : base(options)
     {
         if(!Database.IsInMemory()) this.Database.Migrate();
@@ -67,6 +69,24 @@ public class SqlContext : DbContext
             b.HasMany(t => t.UsuariosAsignados)
                 .WithMany(u => u.TareasAsignadas)
                 .UsingEntity(j => j.ToTable("UsuarioTarea"));
+        });
+        modelBuilder.Entity<AsignacionRecursoTarea>(b =>
+        {
+            b.ToTable("AsignacionesRecursoTarea");
+            b.HasKey(a => a.Id);
+
+            b.HasOne(a => a.Recurso)
+                .WithMany() 
+                .HasForeignKey("RecursoId")
+                .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne(a => a.Tarea)
+                .WithMany()
+                .HasForeignKey("TareaId")
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.Property(a => a.CantidadNecesaria)
+                .IsRequired();
         });
     }
 }

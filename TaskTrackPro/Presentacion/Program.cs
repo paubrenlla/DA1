@@ -27,7 +27,7 @@ builder.Services.AddScoped<IDataAccessProyecto, ProyectoDataAccess>();
 builder.Services.AddScoped<IDataAccessTarea, TareaDataAccess>();
 builder.Services.AddScoped<IDataAccessRecurso, RecursoDataAccess>();
 builder.Services.AddScoped<IDataAccessAsignacionProyecto, AsignacionProyectoDataAccess>();
-builder.Services.AddSingleton<IDataAccessAsignacionRecursoTarea, AsignacionRecursoTareaDataAccess>();
+builder.Services.AddScoped<IDataAccessAsignacionRecursoTarea, AsignacionRecursoTareaDataAccess>();
 
 builder.Services.AddScoped<IRecursoObserver, ActualizadorEstadoTareas>();
 

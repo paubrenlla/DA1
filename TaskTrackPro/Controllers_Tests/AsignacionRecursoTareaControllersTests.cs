@@ -1,249 +1,175 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Controllers;
 using DTOs;
 using Domain;
+using Domain.Enums;
 using IDataAcces;
-using DataAccess;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Services;
 
-namespace Controllers_Tests;
-
-[TestClass]
-public class AsignacionRecursoTareaControllersTests
+namespace Controllers_Tests
 {
-    private static readonly TimeSpan VALID_TIMESPAN = new TimeSpan(6, 5, 0, 0);
-
-    private AsignacionRecursoTareaControllers _controller;
-    private IAsignacionRecursoTareaService _service;
-
-    private IDataAccessAsignacionRecursoTarea _repoAsignaciones;
-    private IDataAccessTarea _repoTareas;
-    private IDataAccessRecurso _repoRecursos;
-
-    private Tarea _tareaEjemplo;
-    private Recurso _recursoEjemplo;
-
-    [TestInitialize]
-    public void SetUp()
+    [TestClass]
+    public class AsignacionRecursoTareaControllersTests
     {
-        var options = new DbContextOptionsBuilder<SqlContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
+        private Mock<IAsignacionRecursoTareaService> _serviceMock;
+        private AsignacionRecursoTareaControllers _controller;
+        private readonly RecursoDTO _recursoDto = new RecursoDTO { Id = 42 };
+        private readonly TareaDTO   _tareaDto   = new TareaDTO   { Id = 99 };
 
-        SqlContext context = new SqlContext(options);
-        _repoAsignaciones = new AsignacionRecursoTareaDataAccess();
-        _repoTareas = new TareaDataAccess(context);
-        _repoRecursos = new RecursoDataAccess(context);
+        [TestInitialize]
+        public void SetUp()
+        {
+            _serviceMock = new Mock<IAsignacionRecursoTareaService>(MockBehavior.Strict);
+            _controller  = new AsignacionRecursoTareaControllers(_serviceMock.Object);
+        }
 
-        _service = new AsignacionRecursoTareaService(_repoRecursos, _repoTareas, _repoAsignaciones);
-        _controller = new AsignacionRecursoTareaControllers(_service);
+        [TestMethod]
+        public void GetAll_ShouldReturnServiceList()
+        {
+            List<AsignacionRecursoTareaDTO> esperado = new List<AsignacionRecursoTareaDTO>
+            {
+                new AsignacionRecursoTareaDTO { Id = 1, Recurso = _recursoDto, Tarea = _tareaDto, Cantidad = 3 }
+            };
+            _serviceMock
+                .Setup(s => s.GetAll())
+                .Returns(esperado);
 
-        _tareaEjemplo = new Tarea("Tarea Valida", "descripcion", DateTime.Now, VALID_TIMESPAN, false);
-        _repoTareas.Add(_tareaEjemplo);
+            List<AsignacionRecursoTareaDTO> actual = _controller.GetAll();
 
-        _recursoEjemplo = new Recurso("Computadora", "tipo", "desripcion", false, 8 );
-        _repoRecursos.Add(_recursoEjemplo);
-    }
+            Assert.AreSame(esperado, actual);
+            _serviceMock.Verify(s => s.GetAll(), Times.Once);
+        }
 
-    [TestMethod]
-    public void CrearAsignacionRecursoTarea_CreaCorrectamente()
-    {
-        RecursoDTO recursoDTO = Convertidor.ARecursoDTO(_recursoEjemplo);
-        TareaDTO tareaDTO = Convertidor.ATareaDTO(_tareaEjemplo);
-        AsignacionRecursoTareaDTO dto = Convertidor.AAsignacionRecursoTareaDTO(new AsignacionRecursoTarea(_recursoEjemplo, _tareaEjemplo, 2));
+        [TestMethod]
+        public void GetById_ShouldReturnServiceValue()
+        {
+            AsignacionRecursoTareaDTO dto = new AsignacionRecursoTareaDTO { Id = 7, Recurso = _recursoDto, Tarea = _tareaDto, Cantidad = 2 };
+            _serviceMock
+                .Setup(s => s.GetById(7))
+                .Returns(dto);
+            AsignacionRecursoTareaDTO resultado = _controller.GetById(7);
+            Assert.AreEqual(7, resultado.Id);
+            Assert.AreEqual(2, resultado.Cantidad);
+            _serviceMock.Verify(s => s.GetById(7), Times.Once);
+        }
 
-        AsignacionRecursoTareaDTO resultado = _controller.CrearAsignacionRecursoTarea(dto);
+        [TestMethod]
+        public void CrearAsignacionRecursoTarea_ShouldCallServiceAndReturn()
+        {
+            AsignacionRecursoTareaDTO inputDto = new AsignacionRecursoTareaDTO { Recurso = _recursoDto, Tarea = _tareaDto, Cantidad = 5 };
+            AsignacionRecursoTareaDTO creado  = new AsignacionRecursoTareaDTO { Id = 13, Recurso = _recursoDto, Tarea = _tareaDto, Cantidad = 5 };
+            _serviceMock
+                .Setup(s => s.CrearAsignacionRecursoTarea(inputDto))
+                .Returns(creado);
 
-        Assert.IsNotNull(resultado);
-        Assert.AreEqual(dto.Tarea.Id, resultado.Tarea.Id);
-        Assert.AreEqual(dto.Recurso.Id, resultado.Recurso.Id);
-    }
+            AsignacionRecursoTareaDTO resultado = _controller.CrearAsignacionRecursoTarea(inputDto);
 
-    [TestMethod]
-    public void GetAll_DevuelveListaDeAsignaciones()
-    {
-        RecursoDTO recursoDTO = Convertidor.ARecursoDTO(_recursoEjemplo);
-        TareaDTO tareaDTO = Convertidor.ATareaDTO(_tareaEjemplo);
-        AsignacionRecursoTareaDTO dto = Convertidor.AAsignacionRecursoTareaDTO(new AsignacionRecursoTarea(_recursoEjemplo, _tareaEjemplo, 2));
+            Assert.AreEqual(13, resultado.Id);
+            Assert.AreEqual(5, resultado.Cantidad);
+            _serviceMock.Verify(s => s.CrearAsignacionRecursoTarea(inputDto), Times.Once);
+        }
 
-        _controller.CrearAsignacionRecursoTarea(dto);
+        [TestMethod]
+        public void EliminarRecursoDeTarea_ShouldCallService()
+        {
+            int tareaId   = 7, recursoId = 21;
+            _serviceMock
+                .Setup(s => s.EliminarRecursoDeTarea(tareaId, recursoId));
 
-        List<AsignacionRecursoTareaDTO> asignaciones = _controller.GetAll();
+            _controller.EliminarRecursoDeTarea(tareaId, recursoId);
 
-        Assert.IsTrue(asignaciones.Count > 0);
-        Assert.IsTrue(asignaciones.Any(a => a.Tarea.Id == dto.Tarea.Id && a.Recurso.Id == dto.Recurso.Id));
-    }
+            _serviceMock.Verify(s => s.EliminarRecursoDeTarea(tareaId, recursoId), Times.Once);
+        }
 
-    [TestMethod]
-    public void EliminarRecursoDeTarea_EliminaCorrectamente()
-    {
-        RecursoDTO recursoDTO = Convertidor.ARecursoDTO(_recursoEjemplo);
-        TareaDTO tareaDTO = Convertidor.ATareaDTO(_tareaEjemplo);
-        AsignacionRecursoTareaDTO dto = Convertidor.AAsignacionRecursoTareaDTO(new AsignacionRecursoTarea(_recursoEjemplo, _tareaEjemplo, 2));
+        [TestMethod]
+        public void ModificarAsignacion_ShouldCallService()
+        {
+            AsignacionRecursoTareaDTO dto = new AsignacionRecursoTareaDTO { Id = 5, Cantidad = 9 };
+            _serviceMock
+                .Setup(s => s.ModificarAsignacion(dto));
 
-        _controller.CrearAsignacionRecursoTarea(dto);
+            _controller.ModificarAsignacion(dto);
 
-        _controller.EliminarRecursoDeTarea(dto.Tarea.Id, dto.Recurso.Id);
+            _serviceMock.Verify(s => s.ModificarAsignacion(dto), Times.Once);
+        }
 
-        List<AsignacionRecursoTareaDTO> asignaciones = _controller.GetAll();
-        Assert.IsFalse(asignaciones.Any(a => a.Tarea.Id == dto.Tarea.Id && a.Recurso.Id == dto.Recurso.Id));
-    }
+        [TestMethod]
+        public void RecursosDeLaTarea_ShouldReturnServiceList()
+        {
+            List<RecursoDTO> recursos = new List<RecursoDTO>
+            {
+                new RecursoDTO { Id = 2 },
+                new RecursoDTO { Id = 3 },
+            };
+            _serviceMock
+                .Setup(s => s.RecursosDeLaTarea(99))
+                .Returns(recursos);
 
-    [TestMethod]
-    public void ModificarAsignacion_ModificaCorrectamente()
-    {
-        AsignacionRecursoTareaDTO asignacionInicial = Convertidor.AAsignacionRecursoTareaDTO(
-            new AsignacionRecursoTarea(_recursoEjemplo, _tareaEjemplo, cantidadNecesaria: 2)
-        );
+            var resultado = _controller.RecursosDeLaTarea(99);
+            CollectionAssert.AreEqual(recursos, resultado);
+            _serviceMock.Verify(s => s.RecursosDeLaTarea(99), Times.Once);
+        }
 
-        AsignacionRecursoTareaDTO asignacionCreada = _controller.CrearAsignacionRecursoTarea(asignacionInicial);
+        [TestMethod]
+        public void EliminarRecursosDeTarea_ShouldCallService()
+        {
+            int tareaId = 5;
+            _serviceMock.Setup(s => s.EliminarRecursosDeTarea(tareaId));
+            _controller.EliminarRecursosDeTarea(tareaId);
 
-        asignacionCreada.Cantidad = 5;
-        _controller.ModificarAsignacion(asignacionCreada);
+            _serviceMock.Verify(s => s.EliminarRecursosDeTarea(tareaId), Times.Once);
+        }
 
-        AsignacionRecursoTareaDTO asignacionModificada = _controller.GetById(asignacionCreada.Id);
-        Assert.IsNotNull(asignacionModificada);
-        Assert.AreEqual(5, asignacionModificada.Cantidad);
+        [TestMethod]
+        public void ActualizarEstadoDeTareasConRecurso_ShouldCallService()
+        {
+            int recursoId = 7;
+            _serviceMock.Setup(s => s.ActualizarEstadoDeTareasConRecurso(recursoId));
 
-    }
-    
-    [TestMethod]
-    public void RecursosDeLaTarea_DevuelveRecursosCorrectamente()
-    {
-        RecursoDTO recursoDTO = Convertidor.ARecursoDTO(_recursoEjemplo);
-        TareaDTO tareaDTO = Convertidor.ATareaDTO(_tareaEjemplo);
-        AsignacionRecursoTareaDTO dto = Convertidor.AAsignacionRecursoTareaDTO(new AsignacionRecursoTarea(_recursoEjemplo, _tareaEjemplo, 2));
+            _controller.ActualizarEstadoDeTareasConRecurso(recursoId);
+            _serviceMock.Verify(s => s.ActualizarEstadoDeTareasConRecurso(recursoId), Times.Once);
+        }
 
-        _controller.CrearAsignacionRecursoTarea(dto);
+        [TestMethod]
+        public void RecursoEsExclusivo_ShouldReturnServiceValue()
+        {
+            _serviceMock.Setup(s => s.RecursoEsExclusivo(3)).Returns(true);
 
-        List<RecursoDTO> recursos = _controller.RecursosDeLaTarea(_tareaEjemplo.Id);
+            bool result = _controller.RecursoEsExclusivo(3);
+            Assert.IsTrue(result);
+            _serviceMock.Verify(s => s.RecursoEsExclusivo(3), Times.Once);
+        }
 
-        Assert.IsNotNull(recursos);
-        Assert.IsTrue(recursos.Any(r => r.Id == _recursoEjemplo.Id));
-    }
+        [TestMethod]
+        public void VerificarRecursosDeTareaDisponibles_ShouldReturnServiceValue()
+        {
+            _serviceMock.Setup(s => s.VerificarRecursosDeTareaDisponibles(10)).Returns(false);
 
-    [TestMethod]
-    public void RecursoEsExclusivo_DevuelveCorrecto()
-    {
-        bool exclusivo = _controller.RecursoEsExclusivo(_recursoEjemplo.Id);
-        Assert.IsTrue(exclusivo);
-    }
+            bool result = _controller.VerificarRecursosDeTareaDisponibles(10);
+            Assert.IsFalse(result);
+            _serviceMock.Verify(s => s.VerificarRecursosDeTareaDisponibles(10), Times.Once);
+        }
 
-    [TestMethod]
-    public void VerificarRecursosDeTareaDisponibles_DevuelveTrueInicialmente()
-    {
-        bool disponible = _controller.VerificarRecursosDeTareaDisponibles(_tareaEjemplo.Id);
-        Assert.IsTrue(disponible);
-    }
-    
-    [TestMethod]
-    public void GetById_RetornaAsignacionCorrecta()
-    {
-        RecursoDTO recursoDTO = Convertidor.ARecursoDTO(_recursoEjemplo);
-        TareaDTO tareaDTO = Convertidor.ATareaDTO(_tareaEjemplo);
-        AsignacionRecursoTareaDTO dto = Convertidor.AAsignacionRecursoTareaDTO(new AsignacionRecursoTarea(_recursoEjemplo, _tareaEjemplo, 2));
+        [TestMethod]
+        public void GetAsignacionesDeTarea_ShouldReturnServiceList()
+        {
+            List<AsignacionRecursoTareaDTO> asigns = new List<AsignacionRecursoTareaDTO>
+            {
+                new AsignacionRecursoTareaDTO { Id = 1, Cantidad = 2, Recurso = _recursoDto, Tarea = _tareaDto }
+            };
+            _serviceMock
+                .Setup(s => s.GetAsignacionesDeTarea(_tareaDto.Id))
+                .Returns(asigns);
 
-        AsignacionRecursoTareaDTO asignacionCreada = _controller.CrearAsignacionRecursoTarea(dto);
-        AsignacionRecursoTareaDTO asignacionObtenida = _controller.GetById(asignacionCreada.Id);
+            List<AsignacionRecursoTareaDTO> resultado = _controller.GetAsignacionesDeTarea(_tareaDto.Id);
 
-        Assert.IsNotNull(asignacionObtenida);
-        Assert.AreEqual(asignacionCreada.Id, asignacionObtenida.Id);
-        Assert.AreEqual(asignacionCreada.Recurso.Id, asignacionObtenida.Recurso.Id);
-        Assert.AreEqual(asignacionCreada.Tarea.Id, asignacionObtenida.Tarea.Id);
-        Assert.AreEqual(asignacionCreada.Cantidad, asignacionObtenida.Cantidad);
-    }
-    
-    [TestMethod]
-    public void EliminarRecursosDeTarea_EliminaTodosLosRecursosDeUnaTarea()
-    {
-        AsignacionRecursoTareaDTO dto = Convertidor.AAsignacionRecursoTareaDTO(new AsignacionRecursoTarea(_recursoEjemplo, _tareaEjemplo, 2));
-        _controller.CrearAsignacionRecursoTarea(dto);
-
-        _controller.EliminarRecursosDeTarea(_tareaEjemplo.Id);
-
-        List<RecursoDTO> recursos = _controller.RecursosDeLaTarea(_tareaEjemplo.Id);
-        Assert.IsFalse(recursos.Any());
-    }
-
-    [TestMethod]
-    public void ActualizarEstadoDeTareasConRecurso_NoLanzaExcepcion()
-    {
-        _controller.ActualizarEstadoDeTareasConRecurso(_recursoEjemplo.Id);
-        Assert.IsTrue(true);
-    }
-
-    [TestMethod]
-    public void GetAsignacionesDeTarea_DevuelveListaVacia_CuandoTareaNoTieneAsignaciones()
-    {
-        List<AsignacionRecursoTareaDTO> resultado = _controller.GetAsignacionesDeTarea(_tareaEjemplo.Id);
-
-        Assert.IsNotNull(resultado);
-        Assert.AreEqual(0, resultado.Count);
-    }
-
-    [TestMethod]
-    public void GetAsignacionesDeTarea_DevuelveUnaAsignacion_CuandoTareaTieneUnaAsignacion()
-    {
-        AsignacionRecursoTareaDTO dto = Convertidor.AAsignacionRecursoTareaDTO(
-            new AsignacionRecursoTarea(_recursoEjemplo, _tareaEjemplo, 3)
-        );
-        AsignacionRecursoTareaDTO asignacionCreada = _controller.CrearAsignacionRecursoTarea(dto);
-
-        List<AsignacionRecursoTareaDTO> resultado = _controller.GetAsignacionesDeTarea(_tareaEjemplo.Id);
-
-        Assert.IsNotNull(resultado);
-        Assert.AreEqual(1, resultado.Count);
-        Assert.AreEqual(asignacionCreada.Id, resultado[0].Id);
-        Assert.AreEqual(_recursoEjemplo.Id, resultado[0].Recurso.Id);
-        Assert.AreEqual(_tareaEjemplo.Id, resultado[0].Tarea.Id);
-        Assert.AreEqual(3, resultado[0].Cantidad);
-    }
-
-    [TestMethod]
-    public void GetAsignacionesDeTarea_DevuelveMultiplesAsignaciones_CuandoTareaTieneVariasAsignaciones()
-    {
-        Recurso recurso2 = new Recurso("Recurso2", "tipo2", "descripcion2", false, 5);
-        _repoRecursos.Add(recurso2);
-
-        AsignacionRecursoTareaDTO dto1 = Convertidor.AAsignacionRecursoTareaDTO(
-            new AsignacionRecursoTarea(_recursoEjemplo, _tareaEjemplo, 2)
-        );
-        AsignacionRecursoTareaDTO dto2 = Convertidor.AAsignacionRecursoTareaDTO(
-            new AsignacionRecursoTarea(recurso2, _tareaEjemplo, 4)
-        );
-
-        _controller.CrearAsignacionRecursoTarea(dto1);
-        _controller.CrearAsignacionRecursoTarea(dto2);
-
-        List<AsignacionRecursoTareaDTO> resultado = _controller.GetAsignacionesDeTarea(_tareaEjemplo.Id);
-
-        Assert.IsNotNull(resultado);
-        Assert.AreEqual(2, resultado.Count);
-        Assert.IsTrue(resultado.Any(a => a.Recurso.Id == _recursoEjemplo.Id && a.Cantidad == 2));
-        Assert.IsTrue(resultado.Any(a => a.Recurso.Id == recurso2.Id && a.Cantidad == 4));
-    }
-
-    [TestMethod]
-    public void GetAsignacionesDeTarea_NoDevuelveAsignacionesDeOtrasTareas()
-    {
-        Tarea tarea2 = new Tarea("Tarea2", "desc2", DateTime.Now, VALID_TIMESPAN, false);
-        _repoTareas.Add(tarea2);
-
-        AsignacionRecursoTareaDTO dtoTarea1 = Convertidor.AAsignacionRecursoTareaDTO(
-            new AsignacionRecursoTarea(_recursoEjemplo, _tareaEjemplo, 2)
-        );
-        AsignacionRecursoTareaDTO dtoTarea2 = Convertidor.AAsignacionRecursoTareaDTO(
-            new AsignacionRecursoTarea(_recursoEjemplo, tarea2, 3)
-        );
-
-        _controller.CrearAsignacionRecursoTarea(dtoTarea1);
-        _controller.CrearAsignacionRecursoTarea(dtoTarea2);
-
-        List<AsignacionRecursoTareaDTO> resultado = _controller.GetAsignacionesDeTarea(_tareaEjemplo.Id);
-
-        Assert.IsNotNull(resultado);
-        Assert.AreEqual(1, resultado.Count);
-        Assert.AreEqual(_tareaEjemplo.Id, resultado[0].Tarea.Id);
-        Assert.AreEqual(2, resultado[0].Cantidad);
+            Assert.AreEqual(1, resultado.Count);
+            Assert.AreEqual(asigns, resultado);
+            _serviceMock.Verify(s => s.GetAsignacionesDeTarea(_tareaDto.Id), Times.Once);
+        }
     }
 }

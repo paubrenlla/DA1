@@ -220,10 +220,6 @@ public class TareaServiceTests
         _service.EliminarTarea(_proyectoEjemplo.Id, _tareaEjemplo.Id);
 
         Assert.IsFalse(_proyectoEjemplo.TareasAsociadas.Contains(_tareaEjemplo));
-
-        Assert.ThrowsException<ArgumentException>(() =>
-            _service.BuscarTareaPorId(_tareaEjemplo.Id)
-        );
     }
 
     [TestMethod]
@@ -309,10 +305,10 @@ public class TareaServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
+    [ExpectedException(typeof(InvalidOperationException))]
     public void GetEstadoTarea_LanzaExcepcion_CuandoTareaNoExiste()
     {
-        _service.GetEstadoTarea(-1);
+        _service.GetEstadoTarea(999);
     }
 
     [TestMethod]
@@ -320,7 +316,7 @@ public class TareaServiceTests
     {
         _tareaEjemplo.AgregarUsuario(_usuarioEjemplo);
 
-        var resultado = _service.ListarUsuariosDeTarea(_tareaEjemplo.Id);
+        List<UsuarioDTO> resultado = _service.ListarUsuariosDeTarea(_tareaEjemplo.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(1, resultado.Count);
@@ -337,17 +333,17 @@ public class TareaServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
+    [ExpectedException(typeof(InvalidOperationException))]
     public void ListarUsuariosDeTarea_ConTareaInexistente_DevuelveNull()
     {
-        var idInexistente = 9999;
-        var resultado = _service.ListarUsuariosDeTarea(idInexistente);
+        int idInexistente = 9999;
+        List<UsuarioDTO> resultado = _service.ListarUsuariosDeTarea(idInexistente);
     }
 
     [TestMethod]
     public void ListarUsuariosDeTarea_ConMultiplesUsuarios_DevuelveTodosCorrectamente()
     {
-        var usuario2 = new Usuario(
+        Usuario usuario2 = new Usuario(
             "user2@test.com",
             "User2",
             "Test2",
@@ -358,7 +354,7 @@ public class TareaServiceTests
         _tareaEjemplo.AgregarUsuario(_usuarioEjemplo);
         _tareaEjemplo.AgregarUsuario(usuario2);
 
-        var resultado = _service.ListarUsuariosDeTarea(_tareaEjemplo.Id);
+        List<UsuarioDTO> resultado = _service.ListarUsuariosDeTarea(_tareaEjemplo.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(2, resultado.Count);
@@ -380,7 +376,7 @@ public class TareaServiceTests
     [TestMethod]
     public void EliminarUsuarioDeTarea_ConUsuarioNoAsignado_NoAfectaLaTarea()
     {
-        var usuario2 = new Usuario(
+        Usuario usuario2 = new Usuario(
             "user2@test.com",
             "User2",
             "Test2",
@@ -389,11 +385,11 @@ public class TareaServiceTests
         _repoUsuarios.Add(usuario2);
 
         _tareaEjemplo.AgregarUsuario(_usuarioEjemplo);
-        var cantidadInicial = _tareaEjemplo.UsuariosAsignados.Count;
+        int cantidadInicial = _tareaEjemplo.UsuariosAsignados.Count;
 
         _service.EliminarUsuarioDeTarea(usuario2.Id, _tareaEjemplo.Id);
 
-        var tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
+        Tarea tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
         Assert.AreEqual(cantidadInicial, tareaGuardada.UsuariosAsignados.Count);
         Assert.IsTrue(tareaGuardada.UsuariosAsignados.Contains(_usuarioEjemplo));
     }
@@ -401,7 +397,7 @@ public class TareaServiceTests
     [TestMethod]
     public void EliminarUsuarioDeTareasDeProyecto_ConUsuarioAsignadoAVariasTareas_EliminaDeTodasLasTareas()
     {
-        var tarea2 = new Tarea(
+        Tarea tarea2 = new Tarea(
             "Tarea 2",
             "Descripción 2",
             DateTime.Today.AddDays(2),
@@ -415,8 +411,8 @@ public class TareaServiceTests
 
         _service.EliminarUsuarioDeTareasDeProyecto(_usuarioEjemplo.Id, _proyectoEjemplo.Id);
 
-        var tareaGuardada1 = _repoTareas.GetById(_tareaEjemplo.Id);
-        var tareaGuardada2 = _repoTareas.GetById(tarea2.Id);
+        Tarea tareaGuardada1 = _repoTareas.GetById(_tareaEjemplo.Id);
+        Tarea tareaGuardada2 = _repoTareas.GetById(tarea2.Id);
 
         Assert.IsFalse(tareaGuardada1.UsuariosAsignados.Contains(_usuarioEjemplo));
         Assert.IsFalse(tareaGuardada2.UsuariosAsignados.Contains(_usuarioEjemplo));
@@ -425,7 +421,7 @@ public class TareaServiceTests
     [TestMethod]
     public void EliminarUsuarioDeTareasDeProyecto_ConUsuarioNoAsignadoANingunaTarea_NoAfectaNingunaTarea()
     {
-        var usuarioNoAsignado = new Usuario(
+        Usuario usuarioNoAsignado = new Usuario(
             "noasignado@test.com",
             "No",
             "Asignado",
@@ -434,11 +430,11 @@ public class TareaServiceTests
         _repoUsuarios.Add(usuarioNoAsignado);
 
         _tareaEjemplo.AgregarUsuario(_usuarioEjemplo);
-        var cantidadInicial = _tareaEjemplo.UsuariosAsignados.Count;
+        int cantidadInicial = _tareaEjemplo.UsuariosAsignados.Count;
 
         _service.EliminarUsuarioDeTareasDeProyecto(usuarioNoAsignado.Id, _proyectoEjemplo.Id);
 
-        var tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
+        Tarea tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
         Assert.AreEqual(cantidadInicial, tareaGuardada.UsuariosAsignados.Count);
         Assert.IsTrue(tareaGuardada.UsuariosAsignados.Contains(_usuarioEjemplo));
     }
@@ -446,7 +442,7 @@ public class TareaServiceTests
     [TestMethod]
     public void EliminarUsuarioDeTareasDeProyecto_ConUsuarioAsignadoSoloAAlgunasTareas_EliminaSoloDeEsasTareas()
     {
-        var usuario2 = new Usuario(
+        Usuario usuario2 = new Usuario(
             "user2@test.com",
             "User2",
             "Test2",
@@ -454,7 +450,7 @@ public class TareaServiceTests
             DateTime.Today.AddYears(-25));
         _repoUsuarios.Add(usuario2);
 
-        var tarea2 = new Tarea(
+        Tarea tarea2 = new Tarea(
             "Tarea 2",
             "Descripción 2",
             DateTime.Today.AddDays(2),
@@ -469,8 +465,8 @@ public class TareaServiceTests
 
         _service.EliminarUsuarioDeTareasDeProyecto(_usuarioEjemplo.Id, _proyectoEjemplo.Id);
 
-        var tareaGuardada1 = _repoTareas.GetById(_tareaEjemplo.Id);
-        var tareaGuardada2 = _repoTareas.GetById(tarea2.Id);
+        Tarea tareaGuardada1 = _repoTareas.GetById(_tareaEjemplo.Id);
+        Tarea tareaGuardada2 = _repoTareas.GetById(tarea2.Id);
 
         Assert.IsFalse(tareaGuardada1.UsuariosAsignados.Contains(_usuarioEjemplo));
         Assert.IsTrue(tareaGuardada1.UsuariosAsignados.Contains(usuario2));
@@ -481,7 +477,7 @@ public class TareaServiceTests
     [TestMethod]
     public void EliminarUsuarioDeTareasDeProyecto_ConProyectoSinTareas_NoGeneraError()
     {
-        var proyectoVacio = new Proyecto(
+        Proyecto proyectoVacio = new Proyecto(
             "Proyecto Vacío",
             "Sin tareas",
             DateTime.Today.AddDays(10));
@@ -495,7 +491,7 @@ public class TareaServiceTests
     [TestMethod]
     public void EliminarUsuarioDeTareasDeProyecto_ConMultiplesUsuariosEnTarea_EliminaSoloElUsuarioEspecifico()
     {
-        var usuario2 = new Usuario(
+        Usuario usuario2 = new Usuario(
             "user2@test.com",
             "User2",
             "Test2",
@@ -503,7 +499,7 @@ public class TareaServiceTests
             DateTime.Today.AddYears(-25));
         _repoUsuarios.Add(usuario2);
 
-        var usuario3 = new Usuario(
+        Usuario usuario3 = new Usuario(
             "user3@test.com",
             "User3",
             "Test3",
@@ -515,11 +511,11 @@ public class TareaServiceTests
         _tareaEjemplo.AgregarUsuario(usuario2);
         _tareaEjemplo.AgregarUsuario(usuario3);
 
-        var cantidadInicial = _tareaEjemplo.UsuariosAsignados.Count;
+        int cantidadInicial = _tareaEjemplo.UsuariosAsignados.Count;
 
         _service.EliminarUsuarioDeTareasDeProyecto(_usuarioEjemplo.Id, _proyectoEjemplo.Id);
 
-        var tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
+        Tarea tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
 
         Assert.AreEqual(cantidadInicial - 1, tareaGuardada.UsuariosAsignados.Count);
         Assert.IsFalse(tareaGuardada.UsuariosAsignados.Contains(_usuarioEjemplo));

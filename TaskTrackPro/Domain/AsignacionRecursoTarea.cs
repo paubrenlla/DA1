@@ -7,6 +7,8 @@ public class AsignacionRecursoTarea
     public Tarea Tarea { get; set; }
     public int CantidadNecesaria { get; set; }
     public int Id { get; }
+    
+    public AsignacionRecursoTarea() { }
 
     public AsignacionRecursoTarea(Recurso recurso, Tarea tarea, int cantidadNecesaria)
     {
