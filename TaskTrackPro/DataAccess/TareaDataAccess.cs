@@ -34,7 +34,9 @@ public class TareaDataAccess : IDataAccessTarea
 
     public Tarea? GetById(int Id)
     {
-        Tarea tarea = _context.Tareas.Find(Id);
+        Tarea tarea = _context.Tareas
+            .Include(t => t.UsuariosAsignados)
+            .First(t => t.Id == Id);
         if(tarea is null)
             throw new ArgumentException("No se encontro la asigancion de proyecto");
         return tarea;

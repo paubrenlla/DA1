@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20250611211224_JoinUsuarioTarea")]
+    partial class JoinUsuarioTarea
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,17 +220,17 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("TareaUsuario", b =>
                 {
-                    b.Property<int>("TareasAsignadasId")
+                    b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UsuariosAsignadosId")
+                    b.Property<int>("TareaId")
                         .HasColumnType("int");
 
-                    b.HasKey("TareasAsignadasId", "UsuariosAsignadosId");
+                    b.HasKey("UsuarioId", "TareaId");
 
-                    b.HasIndex("UsuariosAsignadosId");
+                    b.HasIndex("TareaId");
 
-                    b.ToTable("UsuarioTarea", (string)null);
+                    b.ToTable("TareaUsuario", (string)null);
                 });
 
             modelBuilder.Entity("Domain.AsignacionProyecto", b =>
@@ -300,13 +303,13 @@ namespace DataAccess.Migrations
                 {
                     b.HasOne("Domain.Tarea", null)
                         .WithMany()
-                        .HasForeignKey("TareasAsignadasId")
+                        .HasForeignKey("TareaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Usuario", null)
                         .WithMany()
-                        .HasForeignKey("UsuariosAsignadosId")
+                        .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

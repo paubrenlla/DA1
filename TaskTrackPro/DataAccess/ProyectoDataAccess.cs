@@ -29,7 +29,9 @@ public class ProyectoDataAccess :IDataAccessProyecto
     
     public Proyecto GetById(int id)
     {
-       Proyecto proyecto = _context.Proyectos.FirstOrDefault(p => p.Id == id);
+       Proyecto proyecto = _context.Proyectos
+           .Include(p => p.TareasAsociadas)
+           .FirstOrDefault(p => p.Id == id);
        if (proyecto is null)
            throw new ArgumentException(nameof(id), "El proyecto no existe.");
        return proyecto;

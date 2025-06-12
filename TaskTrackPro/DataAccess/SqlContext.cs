@@ -63,7 +63,10 @@ public class SqlContext : DbContext
                     .HasColumnName("EstadoFecha")
                     .IsRequired(false);
             });
-
+            
+            b.HasMany(t => t.UsuariosAsignados)
+                .WithMany(u => u.TareasAsignadas)
+                .UsingEntity(j => j.ToTable("UsuarioTarea"));
         });
     }
 }
