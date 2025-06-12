@@ -24,7 +24,6 @@ public class AsignacionRecursoTarea
         Recurso = recurso;
         Tarea = tarea;
         CantidadNecesaria = cantidadNecesaria;
-        Id = _contadorId++;
     }
 
     public void Modificar(int cantidadNueva)
