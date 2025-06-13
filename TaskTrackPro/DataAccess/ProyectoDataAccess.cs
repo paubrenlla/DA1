@@ -1,39 +1,50 @@
 ﻿using Domain;
 using IDataAcces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess;
 
 public class ProyectoDataAccess :IDataAccessProyecto
 {
-    private List<Proyecto> _listaProyectos;
+    private readonly SqlContext _context;
     
-    public ProyectoDataAccess()
+    public ProyectoDataAccess(SqlContext context)
     {
-        _listaProyectos = new List<Proyecto>();
+        _context = context;
     }
     public void Add(Proyecto proyecto)
     {
-        if (_listaProyectos.Contains(proyecto))
-            throw new ArgumentException("El proyecto ya existe");
-        _listaProyectos.Add(proyecto);
+        if (_context.Proyectos.Any(p => p.Id == proyecto.Id))
+            throw new ArgumentException("El Proyecto ya existe en el sistema.");
+
+        _context.Proyectos.Add(proyecto);
+        _context.SaveChanges();
     }
     
     public void Remove(Proyecto proyecto)
     {
-       _listaProyectos.Remove(proyecto);
+       _context.Remove(proyecto);
+       _context.SaveChanges();
     }
     
     public Proyecto GetById(int id)
     {
-        Proyecto proyecto = _listaProyectos.FirstOrDefault(p => p.Id == id);
-        if (proyecto == null)
-            throw new ArgumentException("No existe el proyecto");
-        return proyecto;
+       Proyecto proyecto = _context.Proyectos
+           .Include(p => p.TareasAsociadas)
+           .FirstOrDefault(p => p.Id == id);
+       if (proyecto is null)
+           throw new ArgumentException(nameof(id), "El proyecto no existe.");
+       return proyecto;
     }
 
     public List<Proyecto> GetAll()
     {
-        return _listaProyectos;
+        return _context.Proyectos.AsNoTracking().ToList();
     }
-    
+
+    public void Update(Proyecto proyecto)
+    {
+        _context.Update(proyecto);
+        _context.SaveChanges();
+    }
 }

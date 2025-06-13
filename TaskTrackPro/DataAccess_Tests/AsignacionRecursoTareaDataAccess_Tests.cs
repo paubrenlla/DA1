@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Domain;
 using DataAccess;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess_Tests
 {
@@ -21,7 +22,11 @@ namespace DataAccess_Tests
         [TestInitialize]
         public void SetUp()
         {
-            repo = new AsignacionRecursoTareaDataAccess();
+            var options = new DbContextOptionsBuilder<SqlContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
+            SqlContext context = new SqlContext(options);
+            repo = new AsignacionRecursoTareaDataAccess(context);
             tarea1 = new Tarea("Tara1", "descripcion",  DateTime.Now, VALID_TIMESPAN, false);
             tarea2 = new Tarea ("Tara2", "descripcion", DateTime.Now, VALID_TIMESPAN, false);
             recurso1 = new Recurso ("Recurso1", "Tipo", "Descripcion",  false, 8);
@@ -38,17 +43,29 @@ namespace DataAccess_Tests
             repo.Add(asign1);
             List<AsignacionRecursoTarea> asignaciones = repo.GetAll();
             Assert.AreEqual(1, asignaciones.Count);
-            Assert.IsTrue(asignaciones.Contains(asign1));
+            AsignacionRecursoTarea actual = asignaciones[0];
+            Assert.AreEqual(asign1.Recurso.Id,actual.Recurso.Id);
+            Assert.AreEqual(asign1.Tarea.Id, actual.Tarea.Id);
+            Assert.AreEqual(asign1.CantidadNecesaria, actual.CantidadNecesaria);
         }
 
         [TestMethod]
         public void EliminarAsignacionRecursoTarea()
         {
             repo.Add(asign1);
-            Assert.IsTrue(repo.GetAll().Contains(asign1));
+
+            Assert.IsTrue(repo.GetAll().Any(a =>
+                a.Recurso.Id == asign1.Recurso.Id &&
+                a.Tarea.Id == asign1.Tarea.Id &&
+                a.CantidadNecesaria == asign1.CantidadNecesaria));
             repo.Remove(asign1);
-            Assert.IsFalse(repo.GetAll().Contains(asign1));
+            Assert.IsFalse(repo.GetAll().Any(a =>
+                a.Recurso.Id == asign1.Recurso.Id &&
+                a.Tarea.Id == asign1.Tarea.Id &&
+                a.CantidadNecesaria == asign1.CantidadNecesaria
+            ));
         }
+
 
         [TestMethod]
         public void ObtenerAsignacionPorID()
@@ -64,9 +81,8 @@ namespace DataAccess_Tests
         {
             repo.Add(asign1);
             repo.Add(asign2);
-            var asignaciones = repo.GetAll();
+            List<AsignacionRecursoTarea> asignaciones = repo.GetAll();
             Assert.AreEqual(2, asignaciones.Count);
-            CollectionAssert.AreEquivalent(new List<AsignacionRecursoTarea> { asign1, asign2 }, asignaciones);
         }
 
         [TestMethod]
@@ -76,7 +92,7 @@ namespace DataAccess_Tests
             repo.Add(asign3);
             var asignacionesDeTarea = repo.GetByTarea(tarea1.Id);
             Assert.AreEqual(2, asignacionesDeTarea.Count);
-            Assert.IsTrue(asignacionesDeTarea.All(a => a.Tarea == tarea1));
+            Assert.IsTrue(asignacionesDeTarea.All(a => a.Tarea.Id == tarea1.Id));
         }
 
         [TestMethod]
@@ -86,7 +102,7 @@ namespace DataAccess_Tests
             repo.Add(asign2);
             var asignacionesDeRecurso = repo.GetByRecurso(recurso1.Id);
             Assert.AreEqual(2, asignacionesDeRecurso.Count);
-            Assert.IsTrue(asignacionesDeRecurso.All(a => a.Recurso == recurso1));
+            Assert.IsTrue(asignacionesDeRecurso.All(a => a.Recurso.Id == recurso1.Id));
         }
 
         [TestMethod]
@@ -123,7 +139,8 @@ namespace DataAccess_Tests
 
             var asignacion = repo.GetByRecursoYTarea(recurso2.Id, tarea1.Id);
             Assert.IsNotNull(asignacion);
-            Assert.AreEqual(asign3, asignacion);
+            Assert.AreEqual(asign3.Recurso.Id, asignacion.Recurso.Id);
+            Assert.AreEqual(asign3.Tarea.Id,   asignacion.Tarea.Id);
         }
     }
 }

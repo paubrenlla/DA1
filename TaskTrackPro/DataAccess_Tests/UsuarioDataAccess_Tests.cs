@@ -1,128 +1,176 @@
 using Domain;
 using DataAccess;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Linq;
 
-namespace DataAccess_Tests;
-
-[TestClass]
-public class DataAccessUsuarioTest
+namespace DataAccess_Tests
 {
-    private UsuarioDataAccess usuarioRepo;
-
-    [TestInitialize]
-    public void SetUp()
+    [TestClass]
+    public class DataAccessUsuarioTest
     {
-        usuarioRepo = new UsuarioDataAccess();
-    }
+        private SqlContext _context;
+        private UsuarioDataAccess _usuarioRepo;
 
-    [TestMethod]
-    public void AgregarUsarioComun()
-    {
-        Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        usuarioRepo.Add(user);
+        [TestInitialize]
+        public void SetUp()
+        {
+            var options = new DbContextOptionsBuilder<SqlContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
 
-        Assert.AreEqual(1, usuarioRepo.GetAll().Count);
+            _context = new SqlContext(options);
+            _usuarioRepo = new UsuarioDataAccess(_context);
+        }
 
-        Usuario user2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!",
-            new DateTime(2000, 01, 01));
+        [TestMethod]
+        public void AgregarUsuarioComun()
+        {
+            var user1 = new Usuario(
+                email: "user1@example.com",
+                nombre: "Nombre1",
+                apellido: "Apellido1",
+                pwd: Usuario.EncriptarPassword("Contraseña1!!"),
+                fechaNacimiento: new DateTime(1990, 1, 1)
+            );
+            _usuarioRepo.Add(user1);
 
-        usuarioRepo.Add(user2);
-        Assert.AreEqual(2, usuarioRepo.GetAll().Count);
-        Assert.AreSame(user2, usuarioRepo.GetAll()[1]);
-    }
+            Assert.AreEqual(1, _usuarioRepo.GetAll().Count);
 
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void AgregarUsarioQueYaExisteEnElSistema()
-    {
-        Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        usuarioRepo.Add(user);
+            var user2 = new Usuario(
+                email: "user2@example.com",
+                nombre: "Nombre2",
+                apellido: "Apellido2",
+                pwd: Usuario.EncriptarPassword("Contraseña1!!"),
+                fechaNacimiento: new DateTime(1991, 2, 2)
+            );
+            _usuarioRepo.Add(user2);
 
-        Usuario user2 = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!",
-            new DateTime(2000, 01, 01));
+            var all = _usuarioRepo.GetAll();
+            Assert.AreEqual(2, all.Count);
+            Assert.AreEqual(user2.Email, all.Last().Email);
+        }
 
-        usuarioRepo.Add(user2);
-    }
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void AgregarUsuarioQueYaExiste()
+        {
+            var user = new Usuario(
+                email: "dup@example.com",
+                nombre: "Dup",
+                apellido: "User",
+                pwd: Usuario.EncriptarPassword("Contraseña1!!"),
+                fechaNacimiento: new DateTime(1992, 3, 3)
+            );
+            _usuarioRepo.Add(user);
 
-    [TestMethod]
-    public void EliminarUsuario()
-    {
-        Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        usuarioRepo.Add(user);
+            var duplicate = new Usuario(
+                email: "dup@example.com",
+                nombre: "Dup",
+                apellido: "User",
+                pwd: Usuario.EncriptarPassword("Contraseña1!!"),
+                fechaNacimiento: new DateTime(1992, 3, 3)
+            );
+            _usuarioRepo.Add(duplicate);
+        }
 
-        Usuario user2 = new Usuario("example2@email.com", "Nombre", "Apellido", "EsValida1!",
-            new DateTime(2000, 01, 01));
+        [TestMethod]
+        public void EliminarUsuario()
+        {
+            var user = new Usuario(
+                email: "toremove@example.com",
+                nombre: "To",
+                apellido: "Remove",
+                pwd: Usuario.EncriptarPassword("Contraseña1!!"),
+                fechaNacimiento: new DateTime(1993, 4, 4)
+            );
+            _usuarioRepo.Add(user);
+            Assert.AreEqual(1, _usuarioRepo.GetAll().Count);
 
-        usuarioRepo.Add(user2);
-        Assert.AreEqual(2, usuarioRepo.GetAll().Count);
-        Assert.AreSame(user2, usuarioRepo.GetAll()[1]);
+            _usuarioRepo.Remove(user);
+            Assert.AreEqual(0, _usuarioRepo.GetAll().Count);
+        }
 
-        usuarioRepo.Remove(user2);
-        Assert.AreEqual(1, usuarioRepo.GetAll().Count);
-        Assert.IsFalse(usuarioRepo.GetAll().Contains(user2));
-    }
-    
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void EliminarUsuarioQueEsAdmin()
-    {
-        Usuario user = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        usuarioRepo.Add(user);
-        user.EsAdminSistema = true;
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void EliminarUsuarioAdminLanzaError()
+        {
+            var user = new Usuario(
+                email: "admin@example.com",
+                nombre: "Admin",
+                apellido: "User",
+                pwd: Usuario.EncriptarPassword("Contraseña1!!"),
+                fechaNacimiento: new DateTime(1980, 5, 5)
+            )
+            {
+                EsAdminSistema = true
+            };
+            _usuarioRepo.Add(user);
 
-        usuarioRepo.Remove(user);
-    }
+            _usuarioRepo.Remove(user);
+        }
 
-    [TestMethod]
-    public void BuscarUsuarioPorIdDevuelveUsuarioCorrecto()
-    {
-        Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", "123AAaa!!", new DateTime(2000, 1, 1));
-        Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", "456AAaa!!", new DateTime(1999, 2, 2));
-        usuarioRepo.Add(u1);
-        usuarioRepo.Add(u2);
+        [TestMethod]
+        public void GetByIdDevuelveUsuarioCorrecto()
+        {
+            var u1 = new Usuario("a@a.com", "Ana", "Alvarez", Usuario.EncriptarPassword("Contraseña1!!"), new DateTime(2000, 1, 1));
+            var u2 = new Usuario("b@b.com", "Beto", "Barrios", Usuario.EncriptarPassword("Contraseña1!!"), new DateTime(1999, 2, 2));
+            _usuarioRepo.Add(u1);
+            _usuarioRepo.Add(u2);
 
-        Usuario resultado = usuarioRepo.GetById(u2.Id);
+            var result = _usuarioRepo.GetById(u2.Id);
 
-        Assert.IsNotNull(resultado);
-        Assert.AreEqual(u2.Email, resultado.Email);
-    }
-    
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void BuscarUsuarioPorIdDevuelveNullSiNoExiste()
-    {
-        Usuario resultado = usuarioRepo.GetById(999);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(u2.Email, result.Email);
+        }
 
-        Assert.IsNull(resultado);
-    }
-    
-    [TestMethod]
-    public void BuscarUsuarioPorCorreoYContraseña()
-    {
-        string email2="b@b.com";
-        string contraseña2= "456AAaa!!";
-        Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", "123AAaa!!", new DateTime(2000, 1, 1));
-        Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", "456AAaa!!", new DateTime(1999, 2, 2));
-        usuarioRepo.Add(u1);
-        usuarioRepo.Add(u2);
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetByIdNoExistenteLanzaError()
+        {
+            _usuarioRepo.GetById(999);
+        }
 
-        Usuario resultado = usuarioRepo.buscarUsuarioPorCorreoYContraseña(email2,Usuario.EncriptarPassword(contraseña2));
+        [TestMethod]
+        public void BuscarUsuarioPorCorreoYContraseñaDevuelveUsuario()
+        {
+            var u1 = new Usuario("a@a.com", "Ana", "Alvarez", Usuario.EncriptarPassword("Contraseña1!!"), new DateTime(2000, 1, 1));
+            var u2 = new Usuario("b@b.com", "Beto", "Barrios", Usuario.EncriptarPassword("Contraseña1!!"), new DateTime(1999, 2, 2));
+            _usuarioRepo.Add(u1);
+            _usuarioRepo.Add(u2);
 
-        Assert.IsNotNull(resultado);
-        Assert.AreEqual(u2.Email, resultado.Email);
-    }
-    
-    [TestMethod]
-    public void BuscarUsuarioPorCorreo()
-    {
-        string email2="b@b.com";
-        Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", "123AAaa!!", new DateTime(2000, 1, 1));
-        Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", "456AAaa!!", new DateTime(1999, 2, 2));
-        usuarioRepo.Add(u1);
-        usuarioRepo.Add(u2);
+            var result = _usuarioRepo.buscarUsuarioPorCorreoYContraseña(u2.Email, u2.Pwd);
 
-        Usuario resultado = usuarioRepo.BuscarUsuarioPorCorreo(email2);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(u2.Email, result.Email);
+        }
 
-        Assert.IsNotNull(resultado);
-        Assert.AreEqual(u2.Email, resultado.Email);
+        [TestMethod]
+        public void BuscarUsuarioPorCorreoDevuelveUsuario()
+        {
+            var u1 = new Usuario("a@a.com", "Ana", "Alvarez", Usuario.EncriptarPassword("Contraseña1!!"), new DateTime(2000, 1, 1));
+            var u2 = new Usuario("b@b.com", "Beto", "Barrios", Usuario.EncriptarPassword("Contraseña1!!"), new DateTime(1999, 2, 2));
+            _usuarioRepo.Add(u1);
+            _usuarioRepo.Add(u2);
+
+            var result = _usuarioRepo.BuscarUsuarioPorCorreo(u2.Email);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(u2.Email, result.Email);
+        }
+        
+        [TestMethod]
+        public void ModificarUsuarioActualizaCorrectamente()
+        {
+            Usuario user = new Usuario("email@x.com", "Nombre", "Apellido", "Contraseña1!", new DateTime(1990, 1, 1));
+            _usuarioRepo.Add(user);
+
+            user.Modificar("nuevo@x.com", "NuevoNombre", "NuevoApellido", "Contraseña1!", new DateTime(1991, 2, 2));
+            _usuarioRepo.Update(user);
+
+            Usuario modificado = _usuarioRepo.GetById(user.Id);
+            Assert.AreEqual("nuevo@x.com", modificado.Email);
+        }
     }
 }

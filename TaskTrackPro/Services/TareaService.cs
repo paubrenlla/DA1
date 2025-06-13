@@ -93,6 +93,7 @@ namespace Services
             Tarea tarea = _tareaRepo.GetById(tareaId);
             Usuario usuario = _usuarioRepo.GetById(usuarioId);
             tarea.AgregarUsuario(usuario);
+            _tareaRepo.Update(tarea);
         }
 
         public bool TieneSucesoras(TareaDTO tareaDto)

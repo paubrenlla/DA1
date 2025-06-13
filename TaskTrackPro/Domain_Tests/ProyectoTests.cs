@@ -69,25 +69,6 @@ public class ProyectoTests
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
     }
-
-    [TestMethod]
-    public void ProyectosConsecutivosConIDCorrecta()
-    {
-        string nombre = "Proyecto A";
-        string descripcion = "este proyecto deberia tener ID 1";
-        DateTime fechaInicio = DateTime.Today;
-        
-        Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
-        
-        Assert.AreEqual(1, proyecto.Id);
-        
-        nombre = "Proyecto B";
-        descripcion = "este proyecto deberia tener ID 2";
-        
-        Proyecto proyecto2 = new Proyecto(nombre, descripcion, fechaInicio);
-        
-        Assert.AreEqual(2,proyecto2.Id);
-    }
     
     [TestMethod]
     public void AgregarTareaAlProyecto()
@@ -452,22 +433,6 @@ public class ProyectoTests
         
         Assert.AreEqual(descNueva, proyecto.Descripcion);
         Assert.AreEqual(fechaNueva, proyecto.FechaInicio);
-    }
-    
-    [TestMethod]
-    public void BuscarTareaPorId_TareaExiste_ReturnsTarea()
-    {
-        Proyecto proyecto = new Proyecto("Proyecto de prueba", "Descripción del proyecto", DateTime.Now);
-        Tarea tarea1 = new Tarea("Tarea 1", "descripcion", DateTime.Now,VALID_TIMESPAN, false);
-        Tarea tarea2 = new Tarea("Tarea 2", "descripcion", DateTime.Now,VALID_TIMESPAN, false);
-
-        proyecto.agregarTarea(tarea1);
-        proyecto.agregarTarea(tarea2);
-
-        Tarea resultado = proyecto.BuscarTareaPorId(1);
-
-        Assert.IsNotNull(resultado);
-        Assert.AreEqual(tarea1, resultado);
     }
 
     [TestMethod]

@@ -104,23 +104,6 @@ public class RecursoTests
     }
     
     [TestMethod]
-    public void RecursosConsecutivosConIDCorrecta()
-    {
-        string nombre = "Auto";
-        string tipo = "Vehiculo";
-        string descripcion = "Auto de la empresa";
-        Recurso recurso = new Recurso(nombre, tipo, descripcion, false, 1);
-        Assert.AreEqual(1, recurso.Id);
-        
-        string nombre2 = "Auto2";
-        string tipo2 = "Vehiculo";
-        string descripcion2 = "Segundo auto de la empresa";
-        Recurso recurso2 = new Recurso(nombre2, tipo2, descripcion2, false, 2);
-        
-        Assert.AreEqual(2,recurso2.Id);
-    }
-    
-    [TestMethod]
     public void EstaDisponible_DevuelveTrueSiSePuedeCompartir()
     {
         Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", true, 10);

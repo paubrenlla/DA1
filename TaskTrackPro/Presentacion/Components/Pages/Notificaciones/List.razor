@@ -1,17 +1,21 @@
-﻿@*
-@page "/notificaciones"
-@using Domain
+﻿@page "/notificaciones"
+@using Controllers
+@using DTOs
 @using UserInterface.Data
-@inject NavigationManager NavigationManager
-@inject SessionLogic SessionLogic
-@inject DB BaseDeDatos
 
+@inject NotificacionController NotificacionesController
+@inject SessionLogic SessionLogic
+@inject NavigationManager NavigationManager
 
 <h3 class="text-xl font-bold mb-4">Notificaciones no leídas</h3>
 
-@if (notificacionesNoLeidas is null)
+@if (!sesionVerificada)
 {
-    <p>Cargando notificaciones...</p>
+    <p>Cargando notificaciones…</p>
+}
+else if (notificacionesNoLeidas is null)
+{
+    <p>Cargando notificaciones…</p>
 }
 else if (!notificacionesNoLeidas.Any())
 {
@@ -20,55 +24,60 @@ else if (!notificacionesNoLeidas.Any())
 else
 {
     <ul class="space-y-4">
-        @foreach (var notificacion in notificacionesNoLeidas)
+        @foreach (var n in notificacionesNoLeidas)
         {
-            <li class="p-4 rounded-xl shadow bg-white">
-                <div class="flex justify-between items-center">
-                    <span>@notificacion.Mensaje</span>
-                    <button class="btn btn-secondary"
-                            @onclick="() => MarcarComoLeida(notificacion)">
-                        Marcar como leído
-                    </button>
-                </div>
+            <li class="p-4 rounded-xl shadow bg-white flex justify-between items-center">
+                <span>@n.Mensaje</span>
+                <button class="btn btn-secondary btn-sm"
+                        @onclick="() => MarcarComoLeida(n.Id)">
+                    Marcar como leído
+                </button>
             </li>
         }
     </ul>
 }
 
-
 @code {
-    private bool yaVerifiqueSesion = false;
-    private List<Notificacion>? notificaciones;
-    private List<Notificacion>? notificacionesNoLeidas;
-    Usuario usuarioLogueado;
+    private bool sesionVerificada;
+    private UsuarioDTO? usuarioLogueado;
+    private List<NotificacionDTO>? notificacionesNoLeidas;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && !yaVerifiqueSesion)
+        if (!sesionVerificada && firstRender)
         {
-            var isUserActive = await SessionLogic.isUserActive();
-            if (!isUserActive)
+            var activo = await SessionLogic.IsUserActive();
+            if (!activo)
             {
-                NavigationManager.NavigateTo("/Login");
+                NavigationManager.NavigateTo("/login");
+                return;
             }
-            else
-            {
-                usuarioLogueado = await SessionLogic.GetCurrentUser();
-                notificacionesNoLeidas = BaseDeDatos.NotificacionesNoLeidas(usuarioLogueado);
-                StateHasChanged(); 
-            }
-        }
-    }
-    
 
-    private void MarcarComoLeida(Notificacion notificacion)
-    {
-        if (usuarioLogueado != null && !notificacion.VistaPorUsuarios.Contains(usuarioLogueado))
-        {
-            notificacion.MarcarComoVista(usuarioLogueado);
-            notificacionesNoLeidas = BaseDeDatos.NotificacionesNoLeidas(usuarioLogueado);
+            usuarioLogueado = await SessionLogic.GetCurrentUser();
+            if (usuarioLogueado is null)
+            {
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+
+            await CargarNotificaciones();
+
+            sesionVerificada = true;
             StateHasChanged();
         }
     }
+
+    private async Task CargarNotificaciones()
+    {
+        notificacionesNoLeidas = await Task.Run(() =>
+            NotificacionesController.NotificacionesNoLeidas(usuarioLogueado)
+        );
+    }
+
+    private async Task MarcarComoLeida(int notificacionId){
+        NotificacionesController.MarcarLeida(notificacionId, usuarioLogueado.Id);
+
+        await CargarNotificaciones();
+        StateHasChanged();
+    }
 }
-*@

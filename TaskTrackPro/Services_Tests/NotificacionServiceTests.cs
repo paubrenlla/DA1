@@ -24,7 +24,7 @@ namespace Services_Tests
         {
             _mockNotificacionRepo = new Mock<IDataAccessNotificacion>();
             _mockUsuarioRepo = new Mock<IDataAccessUsuario>();
-            _service = new NotificacionService(_mockNotificacionRepo.Object);
+            _service = new NotificacionService(_mockNotificacionRepo.Object, _mockUsuarioRepo.Object);
 
             _notificacion1 = new Notificacion("Mensaje 1");
             _notificacion2 = new Notificacion("Mensaje 2");
@@ -113,7 +113,7 @@ namespace Services_Tests
             var notificacionesNoLeidas = new List<Notificacion> { _notificacion1 };
             _mockNotificacionRepo.Setup(r => r.NotificacionesNoLeidas(_usuario)).Returns(notificacionesNoLeidas);
 
-            _service = new NotificacionService(_mockNotificacionRepo.Object) { _UsuarioRepo = _mockUsuarioRepo.Object };
+            _service = new NotificacionService(_mockNotificacionRepo.Object, _mockUsuarioRepo.Object);
 
             var resultado = _service.NotificacionesNoLeidas(usuarioDto);
 
@@ -121,6 +121,52 @@ namespace Services_Tests
             Assert.AreEqual(_notificacion1.Id, resultado[0].Id);
             _mockUsuarioRepo.Verify(r => r.GetById(1), Times.Once);
             _mockNotificacionRepo.Verify(r => r.NotificacionesNoLeidas(_usuario), Times.Once);
+        }
+        
+        [TestMethod]
+        public void MarcarLeida_SiYaEstaMarcada_NoVuelveAPersistir()
+        {
+            int nid = _notificacion1.Id;
+            int uid = _usuario.Id;
+            _notificacion1.VistaPorUsuarios.Add(_usuario);
+
+            _mockNotificacionRepo
+                .Setup(r => r.GetById(nid))
+                .Returns(_notificacion1);
+            _mockUsuarioRepo
+                .Setup(r => r.GetById(uid))
+                .Returns(_usuario);
+            _service._usuarioRepo = _mockUsuarioRepo.Object;
+            _service.MarcarLeida(nid, uid);
+
+            Assert.AreEqual(1, _notificacion1.VistaPorUsuarios.Count(u => u.Id == uid));
+            _mockNotificacionRepo.Verify(r => r.Update(It.IsAny<Notificacion>()), Times.Never);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void MarcarLeida_SiNotificacionNoExiste_LanzaArgumentException()
+        {
+            _mockNotificacionRepo
+                .Setup(r => r.GetById(It.IsAny<int>()))
+                .Returns((Notificacion)null);
+
+            _service.MarcarLeida(999, _usuario.Id);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void MarcarLeida_SiUsuarioNoExiste_LanzaArgumentException()
+        {
+            int nid = _notificacion1.Id;
+            _mockNotificacionRepo
+                .Setup(r => r.GetById(nid))
+                .Returns(_notificacion1);
+            _mockUsuarioRepo
+                .Setup(r => r.GetById(It.IsAny<int>()))
+                .Returns((Usuario)null);
+
+            _service.MarcarLeida(nid, 999);
         }
     }
 }

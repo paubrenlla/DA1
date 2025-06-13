@@ -22,6 +22,9 @@ public class Usuario
     private string _apellido;
     private string _pwd;
     private DateTime _fechaNacimiento;
+    public ICollection<Tarea> TareasAsignadas { get; set; } = new List<Tarea>();
+    public ICollection<Notificacion> NotificacionesRecibidas { get; set; } = new List<Notificacion>();
+    public ICollection<Notificacion> NotificacionesVistas { get; set; } = new List<Notificacion>();
     public bool EsAdminSistema { get; set; }
 
     public Usuario(string email, string nombre, string apellido, string pwd, DateTime fechaNacimiento)
@@ -32,7 +35,6 @@ public class Usuario
         Pwd = pwd;
         FechaNacimiento = fechaNacimiento;
         EsAdminSistema = false;
-        Id = _contadorId++;
     }
 
     public Usuario(int dtoId, string dtoEmail, string dtoNombre, string dtoApellido, string dtoContraseña, DateTime dtoFechaNacimiento)

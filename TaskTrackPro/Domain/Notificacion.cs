@@ -25,12 +25,16 @@ public class Notificacion
         get => _vistaPorUsuarios;
         set => _vistaPorUsuarios=value;
     }
+
+    public Notificacion()
+    {
+        
+    }
     public Notificacion(string mensaje)
     {
         Mensaje = mensaje;
         UsuariosNotificados = new List<Usuario>();
         VistaPorUsuarios = new List<Usuario>();
-        Id = _contadorId++;
     }
 
     public void AgregarUsuario(Usuario usuario)

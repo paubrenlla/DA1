@@ -16,7 +16,6 @@ namespace Services_Tests
         private Usuario _usuario1;
         private Usuario _usuario2;
         private UsuarioDTO _dto1;
-        private UsuarioDTO _dto2;
         private UsuarioConContraseñaDTO _dtoConPwd;
 
         [TestInitialize]
@@ -51,7 +50,7 @@ namespace Services_Tests
                 FechaNacimiento = new DateTime(1990, 1, 1),
             };
 
-            _dto2 = new UsuarioDTO
+            _dto1 = new UsuarioDTO
             {
                 Id = 2,
                 Nombre = "Nombre2",
@@ -103,7 +102,7 @@ namespace Services_Tests
         {
             _mockUsuarioRepo.Setup(r => r.GetById(2)).Returns(_usuario2);
 
-            _service.Delete(_dto2);
+            _service.Delete(_dto1);
         }
 
         [TestMethod]

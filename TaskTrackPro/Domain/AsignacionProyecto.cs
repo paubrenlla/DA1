@@ -14,11 +14,11 @@ public class AsignacionProyecto
     public Usuario Usuario { get => _usuario; set => _usuario = value; }
     public Rol Rol { get => _rol; set => _rol = value; }
 
+    public AsignacionProyecto() { } //Lo usamos solo para la conexion a la DB
     public AsignacionProyecto(Proyecto proyecto, Usuario usuario, Rol rol)
     {
         Proyecto = proyecto;
         Usuario = usuario;
         Rol = rol;
-        Id = _contadorId++;
     }
 }

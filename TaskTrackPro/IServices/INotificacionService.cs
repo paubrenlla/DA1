@@ -9,6 +9,8 @@ public interface INotificacionService
     NotificacionDTO? GetById(int id);
     List<NotificacionDTO?> GetAll();
     List<NotificacionDTO?> NotificacionesNoLeidas(UsuarioDTO usuario);
+    
+    public void MarcarLeida(int notificacionId, int usuarioId);
 }
 
 

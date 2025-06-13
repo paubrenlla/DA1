@@ -31,7 +31,6 @@ public class Tarea
         FechaInicio = fechaInicio;
         Duracion = duracion;
         EsCritica = esCritica;
-        Id = _contadorId++;
     }
     public int Id
     {

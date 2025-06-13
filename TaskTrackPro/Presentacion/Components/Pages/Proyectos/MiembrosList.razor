@@ -11,9 +11,7 @@
 @inject SessionLogic SessionLogic
 @inject NavigationManager NavigationManager
 
-<h1>
-    Miembros
-</h1>
+<h1>Miembros</h1>
 
 @if (!string.IsNullOrEmpty(mensajeError))
 {
@@ -24,33 +22,29 @@
 {
     <div class="d-flex mb-3">
         <select @bind="usuarioSeleccionadoId" class="form-select me-2" style="max-width: 300px;">
-            @foreach (UsuarioDTO usuario in usuariosDisponibles)
+            @foreach (var u in usuariosDisponibles)
             {
-                <option value="@usuario.Id">@usuario.Nombre @usuario.Apellido (@usuario.Email)</option>
+                <option value="@u.Id">@u.Nombre @u.Apellido (@u.Email)</option>
             }
         </select>
         <button class="btn btn-primary" @onclick="AgregarMiembro">Agregar</button>
     </div>
 }
-else
+else if (_loaded) 
 {
     <p><em>No hay usuarios disponibles para agregar.</em></p>
 }
 
-@if (listaDeMiembros is not null)
+@if (_loaded)
 {
     <table class="table">
         <thead>
-        <tr>
-            <th>Email</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Fecha de Nacimiento</th>
-            <th>Acciones</th>
-        </tr>
+            <tr>
+                <th>Email</th><th>Nombre</th><th>Apellido</th><th>Fecha de Nacimiento</th><th>Acciones</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (UsuarioDTO usuario in listaDeMiembros)
+        @foreach (var usuario in listaDeMiembros!)
         {
             <tr>
                 <td>@usuario.Email</td>
@@ -59,7 +53,7 @@ else
                 <td>@usuario.FechaNacimiento.ToShortDateString()</td>
                 <td>
                     <a class="btn btn-success btn-sm" href="/proyectos/@id/miembros/@usuario.Id/editar">Editar</a>
-                    <button class="btn btn-danger btn-sm"@onclick="@(() => EliminarMiembro(usuario))">
+                    <button class="btn btn-danger btn-sm" @onclick="() => EliminarMiembro(usuario)">
                         Eliminar
                     </button>
                 </td>
@@ -74,107 +68,75 @@ else
 }
 
 @code {
-    [Parameter]
-    public int id { get; set; }
-    
+    [Parameter] public int id { get; set; }
+
     private List<UsuarioDTO>? listaDeMiembros;
-    private bool yaVerifiqueSesion = false;
-    
     private List<UsuarioDTO>? usuariosDisponibles;
     private int usuarioSeleccionadoId;
-    private ProyectoDTO? proyecto;
     private string mensajeError = string.Empty;
-    
+
+    private bool _loaded = false;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && !yaVerifiqueSesion)
+        if (firstRender)
         {
-            bool isUserActive = await SessionLogic.IsUserActive();
-            if (!isUserActive)
+            var isActive = await SessionLogic.IsUserActive();
+            if (!isActive)
             {
-                NavigationManager.NavigateTo($"/proyectos/{id}/miembros");
+                NavigationManager.NavigateTo("/login");
+                return;
             }
-            else
-            {
-                listaDeMiembros = Proyectos.GetMiembrosDeProyecto(id);
-                StateHasChanged(); 
-            }
-        }
-    }
-    protected override async Task OnInitializedAsync()
-    {
-        bool isUserActive = await SessionLogic.IsUserActive();
-        if (!isUserActive)
-        {
-            NavigationManager.NavigateTo("/login");
-            return;
-        }
+            listaDeMiembros = Proyectos.GetMiembrosDeProyecto(id);
+            ActualizarUsuariosDisponibles();
 
-        proyecto = Proyectos.BuscarProyectoPorId(id);
-        listaDeMiembros = Proyectos.GetMiembrosDeProyecto(id);
-
-        ActualizarUsuariosDisponibles();
+            _loaded = true;
+            StateHasChanged();
+        }
     }
 
     private void ActualizarUsuariosDisponibles()
     {
-        List<UsuarioDTO> miembrosActuales = Proyectos.GetMiembrosDeProyecto(id);
-        UsuarioDTO admin = Proyectos.GetAdminDeProyecto(id);
-        
+        var miembros = Proyectos.GetMiembrosDeProyecto(id);
+        var admin   = Proyectos.GetAdminDeProyecto(id);
+
         usuariosDisponibles = Usuarios.GetAll()
-            .Where(u => !miembrosActuales.Any(m => m.Id == u.Id) && admin.Id != u.Id)
+            .Where(u => u.Id != admin.Id
+                     && !miembros.Any(m => m.Id == u.Id))
             .ToList();
 
-        if (usuariosDisponibles != null && usuariosDisponibles.Any())
-        {
+        if (usuariosDisponibles.Any())
             usuarioSeleccionadoId = usuariosDisponibles.First().Id;
-        }
-        else
-        {
-            usuarioSeleccionadoId = -1;
-        }
     }
 
     private void AgregarMiembro()
     {
         mensajeError = string.Empty;
-        
-        UsuarioDTO usuario = Usuarios.GetById(usuarioSeleccionadoId);
-        if (usuario != null && proyecto != null)
-        {
-            try
-            {
-                Proyectos.AgregarMiembroProyecto(usuario.Id, id);
-                listaDeMiembros = Proyectos.GetMiembrosDeProyecto(id);
-                ActualizarUsuariosDisponibles();
-                StateHasChanged();
-            }
-            catch (Exception ex)
-            {
-                mensajeError = ex.Message;
-            }
-        }
-    }
-    
-    void EliminarMiembro(UsuarioDTO miembro)
-    {
         try
         {
-            ProyectoDTO proyecto = Proyectos.BuscarProyectoPorId(id);
-            Proyectos.EliminarMiembro(miembro.Id, id);
-            Tareas.EliminarAUsuarioDeTareasDeProyecto(miembro.Id, id);
-            CargarMiembros();
+            Proyectos.AgregarMiembroProyecto(usuarioSeleccionadoId, id);
+            listaDeMiembros = Proyectos.GetMiembrosDeProyecto(id);
             ActualizarUsuariosDisponibles();
-            StateHasChanged();
         }
         catch (Exception ex)
         {
             mensajeError = ex.Message;
         }
     }
-    
-    void CargarMiembros()
+
+    private void EliminarMiembro(UsuarioDTO miembro)
     {
-        listaDeMiembros = Proyectos.GetMiembrosDeProyecto(id);
+        mensajeError = string.Empty;
+        try
+        {
+            Proyectos.EliminarMiembro(miembro.Id, id);
+            Tareas.EliminarAUsuarioDeTareasDeProyecto(miembro.Id, id);
+            listaDeMiembros = Proyectos.GetMiembrosDeProyecto(id);
+            ActualizarUsuariosDisponibles();
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
     }
 }

@@ -4,6 +4,7 @@ using Domain;
 using Domain.Observers;
 using IDataAcces;
 using DTOs;
+using Microsoft.EntityFrameworkCore;
 
 [TestClass]
 public class RecursoServiceTests
@@ -21,8 +22,12 @@ public class RecursoServiceTests
     [TestInitialize]
     public void SetUp()
     {
-        _repoRecursos = new RecursoDataAccess();
-        _repoAsignaciones = new AsignacionRecursoTareaDataAccess();
+        var options = new DbContextOptionsBuilder<SqlContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+        var context = new SqlContext(options);
+        _repoRecursos = new RecursoDataAccess(context);
+        _repoAsignaciones = new AsignacionRecursoTareaDataAccess(context);
 
         _service = new RecursoService(_repoRecursos, _repoAsignaciones);
 
@@ -38,17 +43,19 @@ public class RecursoServiceTests
     [TestMethod]
     public void Crear_NuevoRecurso_SeCreaCorrectamente()
     {
-        RecursoDTO recursoNuevo = Convertidor.ARecursoDTO(_recurso1);
+        Recurso _recursoNuevo = new Recurso("Recurso", "Tipo", "Desc", false, 10);
+
+        RecursoDTO recursoNuevo = Convertidor.ARecursoDTO(_recursoNuevo);
 
         RecursoDTO resultado = _service.Add(recursoNuevo);
 
         Assert.IsNotNull(resultado);
-        Assert.AreEqual(_recurso1.Nombre, resultado.Nombre);
+        Assert.AreEqual(_recursoNuevo.Nombre, resultado.Nombre);
 
         Recurso recursoEnRepo = _repoRecursos.GetById(resultado.Id);
         
         Assert.IsNotNull(recursoEnRepo);
-        Assert.AreEqual(_recurso1.Nombre, recursoEnRepo.Nombre);
+        Assert.AreEqual(_recursoNuevo.Nombre, recursoEnRepo.Nombre);
     }
 
     [TestMethod]

@@ -1,45 +1,57 @@
 ﻿using Domain;
 using Domain.Enums;
 using IDataAcces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess
 {
     public class AsignacionProyectoDataAccess : IDataAccessAsignacionProyecto
     {
-        private List<AsignacionProyecto> _asignaciones;
-        
-        public AsignacionProyectoDataAccess()
+        private readonly SqlContext _context;        
+        public AsignacionProyectoDataAccess(SqlContext context)
         {
-            _asignaciones = new List<AsignacionProyecto>();
+            _context = context;
         }
         public void Add(AsignacionProyecto asignacionProyecto)
         {
-            _asignaciones.Add(asignacionProyecto);
+            _context.AsignacionesProyecto.Add(asignacionProyecto);
+            _context.SaveChanges();
         }
 
         public void Remove(AsignacionProyecto asignacionProyecto)
         {
-            _asignaciones.Remove(asignacionProyecto);
+            _context.AsignacionesProyecto.Remove(asignacionProyecto);
+            _context.SaveChanges();
         }
         public AsignacionProyecto? GetById(int Id)
         {
-            return _asignaciones.FirstOrDefault(a => a.Id == Id);
+            AsignacionProyecto asign = _context.AsignacionesProyecto
+                .Include(x => x.Usuario)
+                .Include(x => x.Proyecto)
+                .FirstOrDefault(x => x.Id == Id);
+            if (asign is null)
+                throw new ArgumentException("No existe la asignación");
+            return asign;
         }
 
         public List<AsignacionProyecto> GetAll()
         {
-            return _asignaciones.ToList();
+           return _context.AsignacionesProyecto
+               .Include(x=>x.Usuario)
+               .Include(x=>x.Proyecto)
+               .AsNoTracking()
+               .ToList();
         }
         public List<AsignacionProyecto> AsignacionesDelUsuario(int usuarioId)
         {
-            return _asignaciones
+            return _context.AsignacionesProyecto
                 .Where(a => a.Usuario.Id == usuarioId)
                 .ToList();
         }
         
         public List<AsignacionProyecto> UsuariosDelProyecto(int proyectoId)
         {
-            return _asignaciones
+            return _context.AsignacionesProyecto
                 .Where(a => a.Proyecto.Id == proyectoId)
                 .ToList();
         }
@@ -47,25 +59,32 @@ namespace DataAccess
 
         public bool UsuarioEsAsignadoAProyecto(int usuarioId, int proyectoId)
         {
-            return _asignaciones.Exists(a => a.Usuario.Id == usuarioId && a.Proyecto.Id == proyectoId);
+            return _context.AsignacionesProyecto.Count(a => a.Usuario.Id == usuarioId && a.Proyecto.Id == proyectoId) == 1;
         }
 
         public bool UsuarioEsAdminDelProyecto(int usuarioId, int proyectoId)
         {
-            return _asignaciones.Exists(a => a.Usuario.Id == usuarioId 
-                                             && a.Proyecto.Id == proyectoId 
-                                             && a.Rol.Equals(Rol.Administrador));
+            return _context.AsignacionesProyecto.Count(a => a.Usuario.Id == usuarioId 
+                                                            && a.Proyecto.Id == proyectoId 
+                                                            && a.Rol.Equals(Rol.Administrador)) == 1;
         }
 
         public AsignacionProyecto GetAdminProyecto(int proyectoId)
         {
-            return _asignaciones.FirstOrDefault(a => a.Proyecto.Id == proyectoId && a.Rol.Equals(Rol.Administrador));
+            return _context.AsignacionesProyecto
+                .Include(a => a.Usuario)
+                .Include(a => a.Proyecto)
+                .FirstOrDefault(a => a.Proyecto.Id == proyectoId && a.Rol == Rol.Administrador);
         }
 
-        public List<Usuario>? GetMiembrosDeProyecto(int id)
+        public List<Usuario> GetMiembrosDeProyecto(int id)
         {
-            List<AsignacionProyecto> asignacionProyectos = _asignaciones.Where(a => a.Proyecto.Id == id).ToList();
-            return asignacionProyectos.Select(p => p.Usuario).ToList();
+            return _context.AsignacionesProyecto
+                .Where(a => a.Proyecto.Id == id)
+                .Include(a => a.Usuario)
+                .Select(a => a.Usuario)
+                .ToList();
         }
+
     }
 }

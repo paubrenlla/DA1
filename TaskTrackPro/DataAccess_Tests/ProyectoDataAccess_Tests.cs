@@ -1,17 +1,23 @@
 ﻿using Domain;
 using DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess_Tests;
 
 [TestClass]
 public class ProyectoDataAccess_Tests
 {
+    private SqlContext _context;
     private ProyectoDataAccess proyectoRepo;
 
     [TestInitialize]
     public void SetUp()
     {
-        proyectoRepo = new ProyectoDataAccess();
+        var options = new DbContextOptionsBuilder<SqlContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+        _context = new SqlContext(options);
+        proyectoRepo = new ProyectoDataAccess(_context);
     }
     
     [TestMethod]
@@ -26,7 +32,7 @@ public class ProyectoDataAccess_Tests
         
         proyectoRepo.Add(proyecto);
         Assert.AreEqual(1, proyectoRepo.GetAll().Count);
-        Assert.AreSame(proyecto, proyectoRepo.GetAll()[0]);
+        Assert.AreEqual(proyecto.Id, proyectoRepo.GetAll()[0].Id);
     }
     
     [TestMethod]
@@ -58,7 +64,7 @@ public class ProyectoDataAccess_Tests
         proyectoRepo.Add(proyecto);
         
         Assert.AreEqual(1, proyectoRepo.GetAll().Count);
-        Assert.AreSame(proyecto, proyectoRepo.GetAll()[0]);
+        Assert.AreEqual(proyecto.Id, proyectoRepo.GetAll()[0].Id);
         
         proyectoRepo.Remove(proyecto);
         Assert.AreEqual(0, proyectoRepo.GetAll().Count);

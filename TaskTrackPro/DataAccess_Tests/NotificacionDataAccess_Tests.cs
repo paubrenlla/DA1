@@ -1,17 +1,24 @@
 ﻿using Domain;
 using DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess_Tests;
 
 [TestClass]
 public class NotificacionDataAccess_Tests
 {
+    private SqlContext _context;
     private NotificacionDataAccess notificacionRepo;
     
     [TestInitialize]
     public void SetUp()
     {
-        notificacionRepo = new NotificacionDataAccess();
+        var options = new DbContextOptionsBuilder<SqlContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+
+        _context = new SqlContext(options);
+        notificacionRepo = new NotificacionDataAccess(_context);
     }
     
     [TestMethod]
@@ -22,7 +29,7 @@ public class NotificacionDataAccess_Tests
         notificacionRepo.Add(notificacion);
         
         Assert.IsTrue(notificacionRepo.GetAll().Count()!=0);
-        Assert.IsTrue(notificacionRepo.GetAll().Contains(notificacion));
+        Assert.IsTrue(notificacionRepo.GetAll()[0].Id==notificacion.Id);
     }
 
     [TestMethod]
@@ -52,7 +59,7 @@ public class NotificacionDataAccess_Tests
 
         Notificacion resultado= notificacionRepo.GetById(notificacion.Id);
         
-        Assert.AreEqual(resultado, notificacion);
+        Assert.AreEqual(resultado.Id, notificacion.Id);
     }
     
     [TestMethod]
@@ -61,12 +68,14 @@ public class NotificacionDataAccess_Tests
         Notificacion notificacion = new Notificacion("Notificación de prueba");
         Notificacion notificacion2 = new Notificacion("Notificación de prueba");
         Usuario usuario1 = new Usuario("correo@gmail.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 1, 1));
-
+        _context.Usuarios.Add(usuario1);
+        _context.SaveChanges();
         notificacionRepo.Add(notificacion);
         notificacionRepo.Add(notificacion2);
         notificacion.AgregarUsuario(usuario1);
         notificacion2.AgregarUsuario(usuario1);
         notificacion.MarcarComoVista(usuario1);
+        _context.SaveChanges();
         
         List<Notificacion> noLeidas = notificacionRepo.NotificacionesNoLeidas(usuario1);
         

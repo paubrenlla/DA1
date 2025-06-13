@@ -3,6 +3,7 @@ using Domain;
 using Domain.Enums;
 using DTOs;
 using IDataAcces;
+using Microsoft.EntityFrameworkCore;
 using Services;
 
 namespace Services_Tests
@@ -24,9 +25,13 @@ namespace Services_Tests
         [TestInitialize]
         public void SetUp()
         {
-            _repoRecursos = new RecursoDataAccess();
-            _repoTareas = new TareaDataAccess();
-            _repoAsignaciones = new AsignacionRecursoTareaDataAccess();
+            var options = new DbContextOptionsBuilder<SqlContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+            var context = new SqlContext(options);
+            _repoRecursos = new RecursoDataAccess(context);
+            _repoTareas = new TareaDataAccess(context);
+            _repoAsignaciones = new AsignacionRecursoTareaDataAccess(context);
             _service = new AsignacionRecursoTareaService(_repoRecursos, _repoTareas, _repoAsignaciones);
 
             _recurso1 = new Recurso("Recurso1", "Tipo1", "Desc1", false, 10);
@@ -205,26 +210,30 @@ namespace Services_Tests
         public void ActualizarEstadoDeTareasConRecurso_CambiaElEstadoDeLasTareas()
         {
             Recurso recurso = new Recurso("Recurso", "Tipo", "Descripción", false, 1);
+            _repoRecursos.Add(recurso);
+
             Tarea tarea1 = new Tarea("Tarea 1", "Desc", DateTime.Now, VALID_TIMESPAN, false);
             Tarea tarea2 = new Tarea("Tarea 2", "Desc", DateTime.Now, VALID_TIMESPAN, false);
-
-            _repoRecursos.Add(recurso);
             _repoTareas.Add(tarea1);
             _repoTareas.Add(tarea2);
-            
-            AsignacionRecursoTarea asignacion1 = new AsignacionRecursoTarea(recurso, tarea1, 1);
-            AsignacionRecursoTarea asignacion2 = new AsignacionRecursoTarea(recurso, tarea2, 2);
-            
-            _repoAsignaciones.Add(asignacion1);
-            _repoAsignaciones.Add(asignacion2);
+
+            AsignacionRecursoTarea asign1 = new AsignacionRecursoTarea(recurso, tarea1, 1);
+            AsignacionRecursoTarea asign2 = new AsignacionRecursoTarea(recurso, tarea2, 1);
+            _repoAsignaciones.Add(asign1);
+            _repoAsignaciones.Add(asign2);
 
             recurso.ConsumirRecurso(1);
-            
+
             _service.ActualizarEstadoDeTareasConRecurso(recurso.Id);
 
-            Assert.AreNotEqual(TipoEstadoTarea.Pendiente, tarea1.EstadoActual.Valor);
-            Assert.AreNotEqual(TipoEstadoTarea.Pendiente, tarea2.EstadoActual.Valor);
+            Tarea tarea1Actualizada = _repoTareas.GetById(tarea1.Id);
+            Tarea tarea2Actualizada = _repoTareas.GetById(tarea2.Id);
+
+            Assert.AreNotEqual(TipoEstadoTarea.Pendiente, tarea1Actualizada.EstadoActual.Valor);
+
+            Assert.AreNotEqual(TipoEstadoTarea.Pendiente, tarea2Actualizada.EstadoActual.Valor);
         }
+
         
         [TestMethod]
         public void GetAsignacionesDeTarea_DevuelveListaVacia_CuandoTareaNoTieneAsignaciones()
