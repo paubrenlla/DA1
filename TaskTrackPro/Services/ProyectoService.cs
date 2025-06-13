@@ -91,7 +91,8 @@ namespace Services
         private void EliminarAdminAnterior(int proyectoId)
         {
             AsignacionProyecto antiguoAdmin = _asignacionRepo.GetAdminProyecto(proyectoId);
-            _asignacionRepo.Remove(antiguoAdmin);
+            if(antiguoAdmin is not null)
+                _asignacionRepo.Remove(antiguoAdmin);
         }
         public void AsignarAdminDeProyecto(int usuarioId, int proyectoId)
         {
