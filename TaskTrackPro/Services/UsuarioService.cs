@@ -74,6 +74,7 @@ public class UsuarioService : IUsuarioService
         if (usuarioAdmin.EsAdminSistema)
             throw new ArgumentException("El usuario ya es administrador del sistema");
         usuarioAdmin.EsAdminSistema = true;
+        _usuarioRepo.Update(usuarioAdmin);
     }
 
     
