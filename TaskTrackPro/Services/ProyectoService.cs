@@ -56,6 +56,7 @@ namespace Services
         {
             var proyecto = _proyectoRepo.GetById(dto.Id);
             proyecto.Modificar(dto.Descripcion, dto.FechaInicio);
+            _proyectoRepo.Update(proyecto);
         }
 
         public bool UsuarioEsAdminDeAlgunProyecto(int usuarioId)

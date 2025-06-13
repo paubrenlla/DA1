@@ -209,7 +209,7 @@ namespace Services_Tests
             Assert.AreEqual(1, asignaciones.Count());
             AsignacionProyecto asignacion = asignaciones.First();
             Assert.AreEqual(_usuario1.Id, asignacion.Usuario.Id);
-            Assert.AreEqual(Rol.Administrador, asignacion.Rol); // según tu implementación actual
+            Assert.AreEqual(Rol.Miembro, asignacion.Rol);
         }
 
         [TestMethod]
