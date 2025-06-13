@@ -24,7 +24,7 @@ namespace Services_Tests
         {
             _mockNotificacionRepo = new Mock<IDataAccessNotificacion>();
             _mockUsuarioRepo = new Mock<IDataAccessUsuario>();
-            _service = new NotificacionService(_mockNotificacionRepo.Object);
+            _service = new NotificacionService(_mockNotificacionRepo.Object, _mockUsuarioRepo.Object);
 
             _notificacion1 = new Notificacion("Mensaje 1");
             _notificacion2 = new Notificacion("Mensaje 2");
@@ -113,7 +113,7 @@ namespace Services_Tests
             var notificacionesNoLeidas = new List<Notificacion> { _notificacion1 };
             _mockNotificacionRepo.Setup(r => r.NotificacionesNoLeidas(_usuario)).Returns(notificacionesNoLeidas);
 
-            _service = new NotificacionService(_mockNotificacionRepo.Object) { _usuarioRepo = _mockUsuarioRepo.Object };
+            _service = new NotificacionService(_mockNotificacionRepo.Object, _mockUsuarioRepo.Object);
 
             var resultado = _service.NotificacionesNoLeidas(usuarioDto);
 
@@ -155,7 +155,7 @@ namespace Services_Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void MarcarLeida_SiUsuarioNoExiste_LanzaArgumentException()
         {
             int nid = _notificacion1.Id;

@@ -92,6 +92,7 @@ public class SqlContext : DbContext
         
         modelBuilder.Entity<Notificacion>(b =>
         {
+            b.ToTable("Notificaciones");
             b.HasKey(n => n.Id);
             b.Property(n => n.Mensaje).IsRequired();
 

@@ -37,12 +37,14 @@ builder.Services.AddScoped<IProyectoService, ProyectoService>();
 builder.Services.AddScoped<ITareaService, TareaService>();
 builder.Services.AddScoped<IRecursoService, RecursoService>();
 builder.Services.AddScoped<IAsignacionRecursoTareaService, AsignacionRecursoTareaService>();
+builder.Services.AddScoped<INotificacionService, NotificacionService>();
 
 builder.Services.AddScoped<UsuarioController>();
 builder.Services.AddScoped<ProyectoController>();
 builder.Services.AddScoped<TareaController>();
 builder.Services.AddScoped<RecursoController>();
 builder.Services.AddScoped<AsignacionRecursoTareaControllers>();
+builder.Services.AddScoped<NotificacionController>();
 
 builder.Services.AddScoped<SessionLogic>();
 

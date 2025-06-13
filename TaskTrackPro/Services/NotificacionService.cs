@@ -9,9 +9,10 @@ public class NotificacionService : INotificacionService
     private readonly IDataAccessNotificacion _notificacionRepo;
     public IDataAccessUsuario _usuarioRepo;
     
-    public NotificacionService(IDataAccessNotificacion notificacionRepo)
+    public NotificacionService(IDataAccessNotificacion notificacionRepo, IDataAccessUsuario usuarioRepo)
     {
         _notificacionRepo = notificacionRepo;
+        _usuarioRepo = usuarioRepo;
     }
     
     public void Add(NotificacionDTO dto)

@@ -25,6 +25,11 @@ public class Notificacion
         get => _vistaPorUsuarios;
         set => _vistaPorUsuarios=value;
     }
+
+    public Notificacion()
+    {
+        
+    }
     public Notificacion(string mensaje)
     {
         Mensaje = mensaje;
