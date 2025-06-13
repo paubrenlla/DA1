@@ -9,7 +9,6 @@ namespace DataAccess
         {
             var optionsBuilder = new DbContextOptionsBuilder<SqlContext>();
 
-            // ¡Aquí apuntas a tu TaskTrackProDB!
             optionsBuilder.UseSqlServer(
                 "Server=localhost,1433;Database=TaskTrackProDB;User Id=sa;Password=Contraseña123;TrustServerCertificate=true");
 
