@@ -30,7 +30,6 @@ public class Notificacion
         Mensaje = mensaje;
         UsuariosNotificados = new List<Usuario>();
         VistaPorUsuarios = new List<Usuario>();
-        Id = _contadorId++;
     }
 
     public void AgregarUsuario(Usuario usuario)

@@ -209,16 +209,16 @@ namespace Services_Tests
         [TestMethod]
         public void ActualizarEstadoDeTareasConRecurso_CambiaElEstadoDeLasTareas()
         {
-            var recurso = new Recurso("Recurso", "Tipo", "Descripción", false, 1);
+            Recurso recurso = new Recurso("Recurso", "Tipo", "Descripción", false, 1);
             _repoRecursos.Add(recurso);
 
-            var tarea1 = new Tarea("Tarea 1", "Desc", DateTime.Now, VALID_TIMESPAN, false);
-            var tarea2 = new Tarea("Tarea 2", "Desc", DateTime.Now, VALID_TIMESPAN, false);
+            Tarea tarea1 = new Tarea("Tarea 1", "Desc", DateTime.Now, VALID_TIMESPAN, false);
+            Tarea tarea2 = new Tarea("Tarea 2", "Desc", DateTime.Now, VALID_TIMESPAN, false);
             _repoTareas.Add(tarea1);
             _repoTareas.Add(tarea2);
 
-            var asign1 = new AsignacionRecursoTarea(recurso, tarea1, 1);
-            var asign2 = new AsignacionRecursoTarea(recurso, tarea2, 1);
+            AsignacionRecursoTarea asign1 = new AsignacionRecursoTarea(recurso, tarea1, 1);
+            AsignacionRecursoTarea asign2 = new AsignacionRecursoTarea(recurso, tarea2, 1);
             _repoAsignaciones.Add(asign1);
             _repoAsignaciones.Add(asign2);
 
@@ -226,8 +226,8 @@ namespace Services_Tests
 
             _service.ActualizarEstadoDeTareasConRecurso(recurso.Id);
 
-            var tarea1Actualizada = _repoTareas.GetById(tarea1.Id);
-            var tarea2Actualizada = _repoTareas.GetById(tarea2.Id);
+            Tarea tarea1Actualizada = _repoTareas.GetById(tarea1.Id);
+            Tarea tarea2Actualizada = _repoTareas.GetById(tarea2.Id);
 
             Assert.AreNotEqual(TipoEstadoTarea.Pendiente, tarea1Actualizada.EstadoActual.Valor);
 

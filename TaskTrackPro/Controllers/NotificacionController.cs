@@ -37,10 +37,8 @@ public class NotificacionController
         return _service.NotificacionesNoLeidas(usuario);
     }
     
-    
-    
-    
-    
-    
-    
+    public void MarcarLeida(int notificacionId, int usuarioId)
+    {
+        _service.MarcarLeida(notificacionId, usuarioId);
+    }
 }

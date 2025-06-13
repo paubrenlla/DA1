@@ -23,17 +23,6 @@ public class NotificacionTests
   }
   
   [TestMethod]
-  public void NotificacionesConIdCorrectas()
-  {
-      string mensaje = "Esta es una notifcación de prueba";
-      Notificacion notificacion = new Notificacion(mensaje);
-      Notificacion notificacion1 = new Notificacion(mensaje);
-      
-      Assert.AreEqual(1,notificacion.Id);
-      Assert.AreEqual(2,notificacion1.Id);
-  }
-  
-  [TestMethod]
   public void AgregeUsuariosANotificacion()
   {
       string mensaje = "Esta es una notifcación de prueba";

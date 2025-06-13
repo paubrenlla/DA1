@@ -13,6 +13,7 @@ public class SqlContext : DbContext
     public DbSet<AsignacionProyecto> AsignacionesProyecto { get; set; }
     public DbSet<Proyecto> Proyectos { get; set; }
     
+    public DbSet<Notificacion> Notificaciones { get; set; }
     public DbSet<AsignacionRecursoTarea> AsignacionesRecursoTarea { get; set; }
     public SqlContext(DbContextOptions<SqlContext> options) : base(options)
     {
@@ -87,6 +88,20 @@ public class SqlContext : DbContext
 
             b.Property(a => a.CantidadNecesaria)
                 .IsRequired();
+        });
+        
+        modelBuilder.Entity<Notificacion>(b =>
+        {
+            b.HasKey(n => n.Id);
+            b.Property(n => n.Mensaje).IsRequired();
+
+            b.HasMany(n => n.UsuariosNotificados)
+                .WithMany(u => u.NotificacionesRecibidas)
+                .UsingEntity(j => j.ToTable("NotificacionUsuarios"));
+            
+            b.HasMany(n => n.VistaPorUsuarios)
+                .WithMany(u => u.NotificacionesVistas)
+                .UsingEntity(j => j.ToTable("NotificacionVistas"));
         });
     }
 }

@@ -1,43 +1,63 @@
-﻿using Domain;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using DataAccess;
+using Domain;
 using IDataAcces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess;
 
 public class NotificacionDataAccess : IDataAccessNotificacion
 {
-    private List<Notificacion> _listaNotificaciones;
+    private readonly SqlContext _context;
 
-    public NotificacionDataAccess()
+    public NotificacionDataAccess(SqlContext context)
     {
-        _listaNotificaciones = new List<Notificacion>();
+        _context = context;
     }
 
-    
     public void Add(Notificacion notificacion)
     {
-        _listaNotificaciones.Add(notificacion);
+        _context.Notificaciones.Add(notificacion);
+        _context.SaveChanges();
     }
 
     public void Remove(Notificacion notificacion)
     {
-        _listaNotificaciones.Remove(notificacion);
+        _context.Notificaciones.Remove(notificacion);
+        _context.SaveChanges();
     }
 
     public Notificacion? GetById(int id)
     {
-        return _listaNotificaciones.FirstOrDefault(n => n.Id == id);
+        return _context.Notificaciones
+            .Include(n => n.UsuariosNotificados)
+            .Include(n => n.VistaPorUsuarios)
+            .FirstOrDefault(n => n.Id == id);
     }
 
     public List<Notificacion> GetAll()
     {
-        return _listaNotificaciones;
+        return _context.Notificaciones
+            .Include(n => n.UsuariosNotificados)
+            .Include(n => n.VistaPorUsuarios)
+            .ToList();
     }
 
     public List<Notificacion> NotificacionesNoLeidas(Usuario usuario)
     {
-        return _listaNotificaciones
-            .Where(n => n.UsuariosNotificados.Contains(usuario) &&
-                        !n.VistaPorUsuarios.Contains(usuario))
-            .ToList(); 
+        return _context.Notificaciones
+            .Include(n => n.UsuariosNotificados)
+            .Include(n => n.VistaPorUsuarios)
+            .Where(n =>
+                n.UsuariosNotificados.Any(u => u.Id == usuario.Id) &&
+                !n.VistaPorUsuarios.Any(u => u.Id == usuario.Id))
+            .ToList();
+    }
+    
+    public void Update(Notificacion n)
+    {
+        _context.SaveChanges();
     }
 }

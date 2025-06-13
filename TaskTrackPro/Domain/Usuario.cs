@@ -23,6 +23,8 @@ public class Usuario
     private string _pwd;
     private DateTime _fechaNacimiento;
     public ICollection<Tarea> TareasAsignadas { get; set; } = new List<Tarea>();
+    public ICollection<Notificacion> NotificacionesRecibidas { get; set; } = new List<Notificacion>();
+    public ICollection<Notificacion> NotificacionesVistas { get; set; } = new List<Notificacion>();
     public bool EsAdminSistema { get; set; }
 
     public Usuario(string email, string nombre, string apellido, string pwd, DateTime fechaNacimiento)
