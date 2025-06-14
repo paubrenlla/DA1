@@ -74,12 +74,14 @@ namespace Services
         {
             Tarea tarea = _tareaRepo.GetById(tareaId);
             tarea.MarcarTareaComoEjecutandose();
+            _tareaRepo.Update(tarea);
         }
 
         public void MarcarComoCompletada(int tareaId)
         {
             Tarea tarea = _tareaRepo.GetById(tareaId);
             tarea.MarcarTareaComoCompletada();
+            _tareaRepo.Update(tarea);
         }
 
         public void AgregarDependencia(int tareaId, int dependenciaId)
