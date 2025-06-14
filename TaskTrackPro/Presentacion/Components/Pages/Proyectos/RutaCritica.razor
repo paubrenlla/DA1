@@ -13,12 +13,12 @@
 {
     <div class="alert alert-danger">@mensajeError</div>
 }
-else if (proyectoDto != null)
+else if (proyectoConRutaCalculada != null)
 {
-    @if (proyectoDto.FinEstimado != null)
+    @if (proyectoConRutaCalculada.FinEstimado != null)
     {
         <h2 class="text-primary">
-            Fin estimado: @proyectoDto.FinEstimado
+            Fin estimado: @proyectoConRutaCalculada.FinEstimado
         </h2>
 
         <h3 class="mt-4 text-danger">Tareas Críticas</h3>
@@ -86,7 +86,7 @@ else if (proyectoDto != null)
                     @for (int d = 0; d < diasTotales; d++)
                     {
                         var día = inicioProyecto.AddDays(d);
-                        bool enRango = día >= t.EarlyStart && día <= t.EarlyFinish;
+                        bool enRango = día.Date.AddDays(1) > t.EarlyStart && día.Date <= t.EarlyFinish;
                         string celdaClass = enRango
                             ? (t.EsCritica ? "bg-danger text-white" : "bg-primary text-white")
                             : "";
@@ -112,6 +112,7 @@ else
     [Parameter] public int idProyecto { get; set; }
 
     private ProyectoDTO? proyectoDto;
+    private ProyectoDTO proyectoConRutaCalculada;
     private List<TareaDTO> tareasCriticas = new();
     private List<TareaDTO> tareasNoCriticas = new();
     private List<TareaDTO> tareasDelDiagrama = new();
@@ -138,8 +139,8 @@ else
 
                 tareasCriticas = ProyectoController.ObtenerRutaCritica(idProyecto);
                 tareasNoCriticas = ProyectoController.TareasNoCriticas(idProyecto);
-                tareasDelDiagrama = ProyectoController.TareasOrdenadasPorInicio(idProyecto);
-                ProyectoDTO proyectoConRutaCalculada = ProyectoController.BuscarProyectoPorId(idProyecto);
+                tareasDelDiagrama = ProyectoController.TareasOrdenadasPorInicio(idProyecto); 
+                proyectoConRutaCalculada = ProyectoController.BuscarProyectoPorId(idProyecto);
                 DateTime fin = proyectoConRutaCalculada!.FinEstimado!.Value.Date;
                 DateTime inicio = proyectoConRutaCalculada.FechaInicio.Date;
 
