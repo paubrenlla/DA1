@@ -34,5 +34,7 @@ namespace Services
         bool PuedeCambiarDeEstado(int tareaSeleccionadaId);
         List<TareaDTO>? ObtenerTareasParaAgregarDependencia(int tareaSeleccionadaId, int proyectoId);
         bool PuedeAgregarDependencias(int tareaSeleccionadaId);
+        bool PuedeEliminarTarea(TareaDTO tarea);
+        void ActualizarEstadoTarea(TipoEstadoTarea estado, TareaDTO tareaSeleccionada);
     }
 }        

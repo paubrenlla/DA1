@@ -229,5 +229,22 @@ namespace Services
             // Solo puede agregar dependencias si está en Pendiente o Bloqueada
             return estado == TipoEstadoTarea.Pendiente || estado == TipoEstadoTarea.Bloqueada;
         }
+
+        public bool PuedeEliminarTarea(TareaDTO tarea)
+        {
+            return !TieneDependencias(tarea) && !TieneSucesoras(tarea);
+        }
+
+        public void ActualizarEstadoTarea(TipoEstadoTarea estado, TareaDTO tareaSeleccionada)
+        {
+            if (estado == TipoEstadoTarea.Pendiente)
+            {
+                MarcarComoEjecutandose(tareaSeleccionada.Id);
+            }
+            else if (estado == TipoEstadoTarea.Ejecutandose)
+            {
+                MarcarComoCompletada(tareaSeleccionada.Id);
+            }
+        }
     }
 }
