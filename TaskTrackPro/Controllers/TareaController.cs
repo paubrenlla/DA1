@@ -124,5 +124,15 @@ namespace Controllers
         {
             return _service.TieneDependencias(tarea);
         }
+
+        public bool PuedeEliminarTarea(TareaDTO tarea)
+        {
+            return _service.PuedeEliminarTarea(tarea);
+        }
+
+        public void ActualizarEstadoTarea(TipoEstadoTarea estado, TareaDTO tareaSeleccionada)
+        {
+            _service.ActualizarEstadoTarea(estado, tareaSeleccionada);
+        }
     }
 }
