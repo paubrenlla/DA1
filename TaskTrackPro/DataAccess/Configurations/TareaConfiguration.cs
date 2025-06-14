@@ -10,9 +10,11 @@ namespace DataAccess.Configurations
         public void Configure(EntityTypeBuilder<Tarea> b)
         {
             b.ToTable("Tareas");
+            
+            b.Property(t => t.Id)
+                .ValueGeneratedOnAdd();
             b.HasKey(t => t.Id);
 
-            // Mapea el Owned Type EstadoActual
             b.OwnsOne(t => t.EstadoActual, estado =>
             {
                 estado.Property(e => e.Valor)

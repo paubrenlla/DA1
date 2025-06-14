@@ -571,10 +571,10 @@ public class TareaServiceTests
         var tarea2 = new Tarea("Dependencia 1", "Desc 1", DateTime.Today.AddHours(1), TimeSpan.FromHours(2), false);
         var tarea3 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today.AddHours(2), TimeSpan.FromHours(3), false);
         
-        _proyectoEjemplo.TareasAsociadas.Add(tarea2);
-        _proyectoEjemplo.TareasAsociadas.Add(tarea3);
         _repoTareas.Add(tarea2);
         _repoTareas.Add(tarea3);
+        _proyectoEjemplo.TareasAsociadas.Add(tarea2);
+        _proyectoEjemplo.TareasAsociadas.Add(tarea3);
 
         _tareaEjemplo.AgregarDependencia(tarea2);
         _tareaEjemplo.AgregarDependencia(tarea3);
@@ -615,11 +615,10 @@ public class TareaServiceTests
     {
         var tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddHours(1), TimeSpan.FromHours(3), false);
         var tarea3 = new Tarea("Tarea 3", "Desc 3", DateTime.Today.AddHours(2), TimeSpan.FromHours(2), false);
-        
-        _proyectoEjemplo.TareasAsociadas.Add(tarea2);
-        _proyectoEjemplo.TareasAsociadas.Add(tarea3);
         _repoTareas.Add(tarea2);
         _repoTareas.Add(tarea3);
+        _proyectoEjemplo.TareasAsociadas.Add(tarea2);
+        _proyectoEjemplo.TareasAsociadas.Add(tarea3);
 
         _tareaEjemplo.AgregarDependencia(tarea2);
         var cantidadInicial = _tareaEjemplo.TareasDependencia.Count;
@@ -659,10 +658,10 @@ public class TareaServiceTests
         var tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddDays(1), TimeSpan.FromHours(2), false);
         var tarea3 = new Tarea("Tarea 3", "Desc 3", DateTime.Today.AddDays(2), TimeSpan.FromHours(1), false);
         
-        _proyectoEjemplo.TareasAsociadas.Add(tarea2);
-        _proyectoEjemplo.TareasAsociadas.Add(tarea3);
         _repoTareas.Add(tarea2);
         _repoTareas.Add(tarea3);
+        _proyectoEjemplo.TareasAsociadas.Add(tarea2);
+        _proyectoEjemplo.TareasAsociadas.Add(tarea3);
 
         _tareaEjemplo.AgregarUsuario(_usuarioEjemplo);
         tarea2.AgregarUsuario(_usuarioEjemplo);
@@ -746,10 +745,10 @@ public class TareaServiceTests
         var tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddDays(1), TimeSpan.FromHours(2), false);
         var tarea3 = new Tarea("Tarea 3", "Desc 3", DateTime.Today.AddDays(2), TimeSpan.FromHours(1), false);
         
-        _proyectoEjemplo.TareasAsociadas.Add(tarea2);
-        _proyectoEjemplo.TareasAsociadas.Add(tarea3);
         _repoTareas.Add(tarea2);
         _repoTareas.Add(tarea3);
+        _proyectoEjemplo.TareasAsociadas.Add(tarea2);
+        _proyectoEjemplo.TareasAsociadas.Add(tarea3);
 
         var resultado = _service.ObtenerTareasParaAgregarDependencia(_tareaEjemplo.Id, _proyectoEjemplo.Id);
 
@@ -766,10 +765,10 @@ public class TareaServiceTests
         var tarea2 = new Tarea("Sucesora", "Desc 2", DateTime.Today.AddDays(1), TimeSpan.FromHours(2), false);
         var tarea3 = new Tarea("Disponible", "Desc 3", DateTime.Today.AddDays(2), TimeSpan.FromHours(1), false);
         
-        _proyectoEjemplo.TareasAsociadas.Add(tarea2);
-        _proyectoEjemplo.TareasAsociadas.Add(tarea3);
         _repoTareas.Add(tarea2);
         _repoTareas.Add(tarea3);
+        _proyectoEjemplo.TareasAsociadas.Add(tarea2);
+        _proyectoEjemplo.TareasAsociadas.Add(tarea3);
 
         tarea2.AgregarDependencia(_tareaEjemplo);
 
