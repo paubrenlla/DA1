@@ -1,5 +1,7 @@
 @page "/proyectos/{proyectoId:int}/tareas"
 @using Controllers
+@using Domain
+@using Domain.Enums
 @using DTOs
 @using UserInterface.Data
 @inject TareaController TareaController
@@ -43,26 +45,116 @@
                         <a class="btn btn-success btn-sm" href="/proyectos/@proyectoId/tareas/@tarea.Id/editar">Editar</a>
                         <a class="btn btn-info btn-sm" href="/proyectos/@proyectoId/tareas/@tarea.Id/miembros">Miembros</a>
                         <a class="btn btn-warning btn-sm" href="/proyectos/@proyectoId/tareas/@tarea.Id/recursos">Recursos</a>
-                        <button class="btn btn-danger btn-sm" @onclick="() => EliminarTarea(tarea.Id)" 
-                                disabled="@TareaController.TieneSucesoras(tarea)">
+                        <button class="btn btn-primary btn-sm"
+                                @onclick="() => AbrirModalDependencias(tarea)"
+                                disabled="@(!TareaController.PuedeAgregarDependencias(tarea.Id))">
+                            Dependencias
+                        </button>
+                        <button class="btn btn-danger btn-sm"
+                                @onclick="() => EliminarTarea(tarea.Id)"
+                                disabled="@(!TareaController.PuedeEliminarTarea(tarea))">
                             Eliminar
                         </button>
                     }
-                    else
-                    {
-                        <button class="btn btn-primary btn-sm"
-                                @onclick="() => AbrirModalEstado(tarea.Id)"
-                                disabled="@(!PuedeCambiarEstado(tarea.Estado))">
-                            Editar estado
-                        </button>
-                    }
+                    <button class="btn btn-primary btn-sm"
+                            @onclick="() => AbrirModalEstado(tarea.Id)"
+                            disabled="@(!TareaController.PuedeCambiarDeEstado(tarea.Id))">
+                        Editar estado
+                    </button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+@if (mostrarModalEstado)
+{
+    <div class="modal show d-block" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modificar estado de: @tareaSeleccionada.Titulo</h5>
+                    <button type="button" class="btn-close" @onclick="CerrarModalEstado"></button>
+                </div>
+                <div class="modal-body">
+                    <InputRadioGroup @bind-Value="nuevoEstado">
+                        @if (nuevoEstado == TipoEstadoTarea.Pendiente)
+                        {
+                            <text> Pasar a ejecuccion </text>
+                        }
+                        @if (nuevoEstado == TipoEstadoTarea.Ejecutandose)
+                        {
+                            <text> Marcar tarea como completada </text>
+                        }
+                    </InputRadioGroup>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CerrarModalEstado">Cancelar</button>
+                    <button class="btn btn-primary" @onclick="GuardarEstado">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
 
-@* Modales omitproyectoIdos para brevedad; se llamarían a TareaController para actualizar estado o agregar dependencias *@
+@if (mostrarModalDependencias)
+{
+    <div class="modal show d-block" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Dependencias de la tarea: @tareaSeleccionada?.Titulo</h5>
+                    <button type="button" class="btn-close" @onclick="CerrarModalDependencias"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Tareas de las que depende:</h6>
+                    @if (dependenciasActuales?.Any() == true)
+                    {
+                        <ul class="list-group mb-3">
+                            @foreach (TareaDTO dep in dependenciasActuales)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    @dep.Titulo
+                                    <button class="btn btn-sm btn-outline-danger"
+                                            @onclick="() => EliminarDependencia(dep.Id)">
+                                        Eliminar
+                                    </button>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">Esta tarea no depende de ninguna otra.</div>
+                    }
+
+                    <h6>Agregar nueva dependencia</h6>
+                    @if (tareasDisponiblesParaAgregar?.Any() == true)
+                    {
+                        <div class="input-group mb-3">
+                            <select class="form-select" @bind="tareaDependenciaSeleccionadaId">
+                                <option value="">-- Seleccionar tarea --</option>
+                                @foreach (TareaDTO tarea in tareasDisponiblesParaAgregar)
+                                {
+                                    <option value="@tarea.Id">@tarea.Titulo</option>
+                                }
+                            </select>
+                            <button class="btn btn-outline-primary" @onclick="AgregarDependencia">Agregar</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-secondary">No hay tareas disponibles para agregar como dependencia.</div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CerrarModalDependencias">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
 
 @code {
     [Parameter] public int proyectoId { get; set; }
@@ -72,6 +164,16 @@
     private bool esAdminSistema = false;
     private bool esAdminProyecto = false;
     private UsuarioDTO? usuarioDto;
+    
+    private TareaDTO? tareaSeleccionada;
+    
+    private bool mostrarModalDependencias = false;
+    private List<TareaDTO>? tareasDisponiblesParaAgregar = new List<TareaDTO>();
+    private List<TareaDTO>? dependenciasActuales = new List<TareaDTO>();
+    private int? tareaDependenciaSeleccionadaId = null;
+    
+    private bool mostrarModalEstado = false;
+    private TipoEstadoTarea nuevoEstado;
 
     protected override async Task OnInitializedAsync()
     {
@@ -116,7 +218,8 @@
         try
         {
             TareaController.EliminarTarea(proyectoId, tareaId);
-            tareasDto = TareaController.ListarTareasPorProyecto(proyectoId);
+            CargarTareas();
+            ActualizarEstadoBotones();
         }
         catch (Exception ex)
         {
@@ -126,13 +229,141 @@
 
     private void AbrirModalEstado(int tareaId)
     {
-        // Por simplicidad, mostrar modal de estado y luego:
-        // TareaController.MarcarComoEjecutandose(tareaId) o
-        // TareaController.MarcarComoCompletada(tareaId)
+        try
+        {
+            tareaSeleccionada = tareasDto.FirstOrDefault(t => t.Id == tareaId);
+            if (tareaSeleccionada != null)
+            {
+                nuevoEstado = TareaController.GetEstadoTarea(tareaId);
+                mostrarModalEstado = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
     }
 
-    private bool PuedeCambiarEstado(string estado)
+    private void CerrarModalEstado()
     {
-        return estado == "Pendiente" || estado == "Ejecutándose";
+        mostrarModalEstado = false;
+        tareaSeleccionada = null;
+    }
+
+    private void GuardarEstado()
+    {
+        mensajeError = string.Empty;
+        try
+        {
+            if (tareaSeleccionada != null)
+            {
+                TareaController.ActualizarEstadoTarea(nuevoEstado, tareaSeleccionada);
+
+                CargarTareas();
+                ActualizarEstadoBotones();
+                CerrarModalEstado();
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+    
+    private void CargarTareas()
+    {
+        try
+        {
+            List<TareaDTO> todas = TareaController.ListarTareasPorProyecto(proyectoId);
+        
+            if (esAdminSistema || esAdminProyecto)
+            {
+                tareasDto = todas;
+            }
+            else
+            {
+                tareasDto = todas.Where(t => TareaController.UsuarioPerteneceALaTarea(usuarioDto.Id, t.Id)).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+    
+    private void AbrirModalDependencias(TareaDTO tarea)
+    {
+        try
+        {
+            tareaSeleccionada = tarea;
+
+            dependenciasActuales = TareaController.ObtenerDependenciasDeTarea(tarea.Id);
+            tareasDisponiblesParaAgregar = TareaController.ObtenerTareasParaAgregarDependencia(tareaSeleccionada.Id, proyectoId);
+            
+            mostrarModalDependencias = true;
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+    
+    private void AgregarDependencia()
+    {
+        mensajeError = String.Empty;
+        try
+        {
+            if (tareaSeleccionada != null && tareaDependenciaSeleccionadaId.HasValue)
+            {
+                TareaController.AgregarDependencia(tareaSeleccionada.Id, tareaDependenciaSeleccionadaId.Value);
+        
+                dependenciasActuales = TareaController.ObtenerDependenciasDeTarea(tareaSeleccionada.Id);
+                tareasDisponiblesParaAgregar = TareaController.ObtenerTareasParaAgregarDependencia(tareaSeleccionada.Id, proyectoId);
+        
+                tareaDependenciaSeleccionadaId = null;
+                CargarTareas();
+                ActualizarEstadoBotones();
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+
+    private void EliminarDependencia(int dependenciaId)
+    {
+        mensajeError = String.Empty;
+        try
+        {
+            if (tareaSeleccionada != null)
+            {
+                TareaController.EliminarDependencia(tareaSeleccionada.Id, dependenciaId);
+            
+                dependenciasActuales = TareaController.ObtenerDependenciasDeTarea(tareaSeleccionada.Id);
+                tareasDisponiblesParaAgregar = TareaController.ObtenerTareasParaAgregarDependencia(tareaSeleccionada.Id, proyectoId);
+            
+                CargarTareas();
+                ActualizarEstadoBotones();
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+    
+    private void CerrarModalDependencias()
+    {
+        mostrarModalDependencias = false;
+        tareaSeleccionada = null;
+        dependenciasActuales = null;
+        tareasDisponiblesParaAgregar = null;
+        tareaDependenciaSeleccionadaId = null; 
+    }
+
+    private void ActualizarEstadoBotones()
+    {
+        StateHasChanged();
     }
 }

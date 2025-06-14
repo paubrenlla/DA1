@@ -2,6 +2,7 @@
 using Services;
 using System.Collections.Generic;
 using Domain.Enums;
+using IDataAcces;
 
 namespace Controllers
 {
@@ -87,6 +88,51 @@ namespace Controllers
         public void EliminarAUsuarioDeTareasDeProyecto(int miembroId, int proyectoId)
         {
             _service.EliminarUsuarioDeTareasDeProyecto(miembroId, proyectoId);
+        }
+
+        public List<TareaDTO>? ObtenerDependenciasDeTarea(int tareaId)
+        {
+            return _service.ObtenerDependenciasDeTarea(tareaId);
+        }
+
+        public void EliminarDependencia(int tareaId, int dependenciaId)
+        {
+            _service.EliminarDependencia(tareaId, dependenciaId);
+        }
+
+        public List<TareaDTO> ListarTareasDelUsuario(int usuarioId, int proyectoId)
+        {
+            return _service.ListarTareasDelUsuario(usuarioId, proyectoId);
+        }
+
+        public bool PuedeCambiarDeEstado(int tareaSeleccionadaId)
+        {
+            return _service.PuedeCambiarDeEstado(tareaSeleccionadaId);
+        }
+
+        public List<TareaDTO>? ObtenerTareasParaAgregarDependencia(int tareaSeleccionadaId, int proyectoId)
+        {
+            return _service.ObtenerTareasParaAgregarDependencia(tareaSeleccionadaId, proyectoId);
+        }
+
+        public bool PuedeAgregarDependencias(int tareaSeleccionadaId)
+        {
+            return _service.PuedeAgregarDependencias(tareaSeleccionadaId);
+        }
+
+        public bool TieneDependencias(TareaDTO tarea)
+        {
+            return _service.TieneDependencias(tarea);
+        }
+
+        public bool PuedeEliminarTarea(TareaDTO tarea)
+        {
+            return _service.PuedeEliminarTarea(tarea);
+        }
+
+        public void ActualizarEstadoTarea(TipoEstadoTarea estado, TareaDTO tareaSeleccionada)
+        {
+            _service.ActualizarEstadoTarea(estado, tareaSeleccionada);
         }
     }
 }

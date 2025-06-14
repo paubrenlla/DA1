@@ -28,5 +28,13 @@ namespace Services
         List<UsuarioDTO>? ListarUsuariosDeTarea(int tareaId);
         void EliminarUsuarioDeTarea(int miembroId, int idTarea);
         void EliminarUsuarioDeTareasDeProyecto(int miembroId, int proyectoId);
+        List<TareaDTO>? ObtenerDependenciasDeTarea(int tareaId);
+        void EliminarDependencia(int tareaId, int dependenciaId);
+        List<TareaDTO> ListarTareasDelUsuario(int usuarioId, int proyectoId);
+        bool PuedeCambiarDeEstado(int tareaSeleccionadaId);
+        List<TareaDTO>? ObtenerTareasParaAgregarDependencia(int tareaSeleccionadaId, int proyectoId);
+        bool PuedeAgregarDependencias(int tareaSeleccionadaId);
+        bool PuedeEliminarTarea(TareaDTO tarea);
+        void ActualizarEstadoTarea(TipoEstadoTarea estado, TareaDTO tareaSeleccionada);
     }
 }        

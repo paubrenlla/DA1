@@ -2,6 +2,7 @@
 using Domain;
 using Domain.Enums;
 using IDataAcces;
+using Services.Observers;
 
 namespace Services
 {
@@ -157,6 +158,93 @@ namespace Services
                          .Where(t => t.UsuariosAsignados.Any(u => u.Id == miembroId)))
             {
                 tarea.UsuariosAsignados.Remove(usuario);
+            }
+        }
+
+        public List<TareaDTO>? ObtenerDependenciasDeTarea(int tareaId)
+        {
+            Tarea tarea = _tareaRepo.GetById(tareaId);
+            if (tarea?.TareasDependencia == null || !tarea.TareasDependencia.Any())
+                return new List<TareaDTO>();
+
+            return tarea.TareasDependencia.Select(Convertidor.ATareaDTO).ToList();
+        }
+
+        public void EliminarDependencia(int tareaId, int dependenciaId)
+        {
+            Tarea tarea = _tareaRepo.GetById(tareaId);
+            Tarea dependencia = _tareaRepo.GetById(dependenciaId);
+            
+            if (tarea.TareasDependencia.Contains(dependencia))
+            {
+                tarea.TareasDependencia.Remove(dependencia);
+                dependencia.TareasSucesoras.Remove(tarea);
+
+                tarea.ActualizarEstado();
+            }
+        }
+
+        public List<TareaDTO> ListarTareasDelUsuario(int usuarioId, int proyectoId)
+        {
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
+
+            List<TareaDTO> tareasDelUsuario = proyecto.TareasAsociadas
+                .Where(t => t.UsuariosAsignados.Any(u => u.Id == usuarioId))
+                .Select(Convertidor.ATareaDTO)
+                .ToList();
+
+            return tareasDelUsuario;
+        }
+
+        public bool PuedeCambiarDeEstado(int tareaSeleccionadaId)
+        {
+            Tarea tarea = _tareaRepo.GetById(tareaSeleccionadaId);
+            TipoEstadoTarea estado = tarea.EstadoActual.Valor;
+            
+            return estado == TipoEstadoTarea.Pendiente || estado == TipoEstadoTarea.Ejecutandose;
+        }
+
+        public List<TareaDTO>? ObtenerTareasParaAgregarDependencia(int tareaSeleccionadaId, int proyectoId)
+        {
+            Tarea tareaActual = _tareaRepo.GetById(tareaSeleccionadaId);
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
+
+            if (proyecto == null)
+                return new List<TareaDTO>();
+
+            List<TareaDTO> tareasDisponibles = proyecto.TareasAsociadas
+                .Where(t => t.Id != tareaSeleccionadaId && 
+                            !tareaActual.TareasDependencia.Contains(t) &&
+                            !tareaActual.TareasSucesoras.Contains(t))
+                .Select(Convertidor.ATareaDTO)
+                .ToList();
+
+            return tareasDisponibles;
+        }
+
+        public bool PuedeAgregarDependencias(int tareaSeleccionadaId)
+        {
+            Tarea tarea = _tareaRepo.GetById(tareaSeleccionadaId);
+            TipoEstadoTarea estado = tarea.EstadoActual.Valor;
+            
+            // Solo puede agregar dependencias si está en Pendiente o Bloqueada
+            return estado == TipoEstadoTarea.Pendiente || estado == TipoEstadoTarea.Bloqueada;
+        }
+
+        public bool PuedeEliminarTarea(TareaDTO tarea)
+        {
+            return !TieneDependencias(tarea) && !TieneSucesoras(tarea);
+        }
+
+        public void ActualizarEstadoTarea(TipoEstadoTarea estado, TareaDTO tareaSeleccionada)
+        {
+            if (estado == TipoEstadoTarea.Pendiente)
+            {
+                MarcarComoEjecutandose(tareaSeleccionada.Id);
+            }
+            else if (estado == TipoEstadoTarea.Ejecutandose)
+            {
+                MarcarComoCompletada(tareaSeleccionada.Id);
             }
         }
     }
