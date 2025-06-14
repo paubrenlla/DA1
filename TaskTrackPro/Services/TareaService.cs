@@ -87,6 +87,8 @@ namespace Services
             Tarea tarea = _tareaRepo.GetById(tareaId);
             Tarea dependencia = _tareaRepo.GetById(dependenciaId);
             tarea.AgregarDependencia(dependencia);
+            _tareaRepo.Update(tarea);
+            _tareaRepo.Update(dependencia);
         }
 
         public void AgregarUsuario(int tareaId, int usuarioId)

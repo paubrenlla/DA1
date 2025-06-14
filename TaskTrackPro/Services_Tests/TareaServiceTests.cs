@@ -310,7 +310,7 @@ public class TareaServiceTests
         _service.MarcarComoEjecutandose(_tareaEjemplo.Id);
         _service.MarcarComoCompletada(_tareaEjemplo.Id);
 
-        var estado = _service.GetEstadoTarea(_tareaEjemplo.Id);
+        TipoEstadoTarea estado = _service.GetEstadoTarea(_tareaEjemplo.Id);
         Assert.AreEqual(TipoEstadoTarea.Efectuada, estado);
     }
 
@@ -337,7 +337,7 @@ public class TareaServiceTests
     [TestMethod]
     public void ListarUsuariosDeTarea_ConTareaExistenteSinUsuarios_DevuelveListaVacia()
     {
-        var resultado = _service.ListarUsuariosDeTarea(_tareaEjemplo.Id);
+        List<UsuarioDTO> resultado = _service.ListarUsuariosDeTarea(_tareaEjemplo.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(0, resultado.Count);
@@ -537,7 +537,7 @@ public class TareaServiceTests
     [TestMethod]
     public void ObtenerDependenciasDeTarea_ConTareaSinDependencias_DevuelveListaVacia()
     {
-        var resultado = _service.ObtenerDependenciasDeTarea(_tareaEjemplo.Id);
+        List<TareaDTO> resultado = _service.ObtenerDependenciasDeTarea(_tareaEjemplo.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(0, resultado.Count);
@@ -546,7 +546,7 @@ public class TareaServiceTests
     [TestMethod]
     public void ObtenerDependenciasDeTarea_ConTareaConDependencias_DevuelveListaConDependencias()
     {
-        var tarea2 = new Tarea(
+        Tarea tarea2 = new Tarea(
             "Tarea Dependencia",
             "Descripción dependencia",
             DateTime.Today.AddHours(1),
@@ -557,7 +557,7 @@ public class TareaServiceTests
 
         _tareaEjemplo.AgregarDependencia(tarea2);
 
-        var resultado = _service.ObtenerDependenciasDeTarea(_tareaEjemplo.Id);
+        List<TareaDTO> resultado = _service.ObtenerDependenciasDeTarea(_tareaEjemplo.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(1, resultado.Count);
@@ -568,8 +568,8 @@ public class TareaServiceTests
     [TestMethod]
     public void ObtenerDependenciasDeTarea_ConMultiplesDependencias_DevuelveTodasLasDependencias()
     {
-        var tarea2 = new Tarea("Dependencia 1", "Desc 1", DateTime.Today.AddHours(1), TimeSpan.FromHours(2), false);
-        var tarea3 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today.AddHours(2), TimeSpan.FromHours(3), false);
+        Tarea tarea2 = new Tarea("Dependencia 1", "Desc 1", DateTime.Today.AddHours(1), TimeSpan.FromHours(2), false);
+        Tarea tarea3 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today.AddHours(2), TimeSpan.FromHours(3), false);
         
         _repoTareas.Add(tarea2);
         _repoTareas.Add(tarea3);
@@ -579,7 +579,7 @@ public class TareaServiceTests
         _tareaEjemplo.AgregarDependencia(tarea2);
         _tareaEjemplo.AgregarDependencia(tarea3);
 
-        var resultado = _service.ObtenerDependenciasDeTarea(_tareaEjemplo.Id);
+        List<TareaDTO> resultado = _service.ObtenerDependenciasDeTarea(_tareaEjemplo.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(2, resultado.Count);
@@ -590,7 +590,7 @@ public class TareaServiceTests
     [TestMethod]
     public void EliminarDependencia_ConDependenciaExistente_EliminaCorrectamente()
     {
-        var tarea2 = new Tarea(
+        Tarea tarea2 = new Tarea(
             "Tarea Dependencia",
             "Descripción dependencia",
             DateTime.Today.AddHours(1),
@@ -603,8 +603,8 @@ public class TareaServiceTests
 
         _service.EliminarDependencia(_tareaEjemplo.Id, tarea2.Id);
 
-        var tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
-        var dependenciaGuardada = _repoTareas.GetById(tarea2.Id);
+        Tarea tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
+        Tarea dependenciaGuardada = _repoTareas.GetById(tarea2.Id);
 
         Assert.IsFalse(tareaGuardada.TareasDependencia.Contains(dependenciaGuardada));
         Assert.IsFalse(dependenciaGuardada.TareasSucesoras.Contains(tareaGuardada));
@@ -613,19 +613,19 @@ public class TareaServiceTests
     [TestMethod]
     public void EliminarDependencia_ConDependenciaNoExistente_NoAfectaLaTarea()
     {
-        var tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddHours(1), TimeSpan.FromHours(3), false);
-        var tarea3 = new Tarea("Tarea 3", "Desc 3", DateTime.Today.AddHours(2), TimeSpan.FromHours(2), false);
+        Tarea tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddHours(1), TimeSpan.FromHours(3), false);
+        Tarea tarea3 = new Tarea("Tarea 3", "Desc 3", DateTime.Today.AddHours(2), TimeSpan.FromHours(2), false);
         _repoTareas.Add(tarea2);
         _repoTareas.Add(tarea3);
         _proyectoEjemplo.TareasAsociadas.Add(tarea2);
         _proyectoEjemplo.TareasAsociadas.Add(tarea3);
 
         _tareaEjemplo.AgregarDependencia(tarea2);
-        var cantidadInicial = _tareaEjemplo.TareasDependencia.Count;
+        int cantidadInicial = _tareaEjemplo.TareasDependencia.Count;
 
         _service.EliminarDependencia(_tareaEjemplo.Id, tarea3.Id);
 
-        var tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
+        Tarea tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
         Assert.AreEqual(cantidadInicial, tareaGuardada.TareasDependencia.Count);
         Assert.IsTrue(tareaGuardada.TareasDependencia.Contains(tarea2));
     }
@@ -633,7 +633,7 @@ public class TareaServiceTests
     [TestMethod]
     public void ListarTareasDelUsuario_ConUsuarioSinTareasAsignadas_DevuelveListaVacia()
     {
-        var resultado = _service.ListarTareasDelUsuario(_usuarioEjemplo.Id, _proyectoEjemplo.Id);
+        List<TareaDTO> resultado = _service.ListarTareasDelUsuario(_usuarioEjemplo.Id, _proyectoEjemplo.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(0, resultado.Count);
@@ -644,7 +644,7 @@ public class TareaServiceTests
     {
         _tareaEjemplo.AgregarUsuario(_usuarioEjemplo);
 
-        var resultado = _service.ListarTareasDelUsuario(_usuarioEjemplo.Id, _proyectoEjemplo.Id);
+        List<TareaDTO> resultado = _service.ListarTareasDelUsuario(_usuarioEjemplo.Id, _proyectoEjemplo.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(1, resultado.Count);
@@ -655,8 +655,8 @@ public class TareaServiceTests
     [TestMethod]
     public void ListarTareasDelUsuario_ConMultiplesTareasAsignadas_DevuelveTodasLasTareasDelUsuario()
     {
-        var tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddDays(1), TimeSpan.FromHours(2), false);
-        var tarea3 = new Tarea("Tarea 3", "Desc 3", DateTime.Today.AddDays(2), TimeSpan.FromHours(1), false);
+        Tarea tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddDays(1), TimeSpan.FromHours(2), false);
+        Tarea tarea3 = new Tarea("Tarea 3", "Desc 3", DateTime.Today.AddDays(2), TimeSpan.FromHours(1), false);
         
         _repoTareas.Add(tarea2);
         _repoTareas.Add(tarea3);
@@ -666,7 +666,7 @@ public class TareaServiceTests
         _tareaEjemplo.AgregarUsuario(_usuarioEjemplo);
         tarea2.AgregarUsuario(_usuarioEjemplo);
 
-        var resultado = _service.ListarTareasDelUsuario(_usuarioEjemplo.Id, _proyectoEjemplo.Id);
+        List<TareaDTO> resultado = _service.ListarTareasDelUsuario(_usuarioEjemplo.Id, _proyectoEjemplo.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(2, resultado.Count);
@@ -678,7 +678,7 @@ public class TareaServiceTests
     [TestMethod]
     public void ListarTareasDelUsuario_ConUsuarioAsignadoSoloAAlgunasTareas_DevuelveSoloEsasTareas()
     {
-        var usuario2 = new Usuario(
+        Usuario usuario2 = new Usuario(
             "user2@test.com",
             "User2",
             "Test2",
@@ -686,7 +686,7 @@ public class TareaServiceTests
             DateTime.Today.AddYears(-25));
         _repoUsuarios.Add(usuario2);
 
-        var tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddDays(1), TimeSpan.FromHours(2), false);
+        Tarea tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddDays(1), TimeSpan.FromHours(2), false);
         _proyectoEjemplo.TareasAsociadas.Add(tarea2);
         _repoTareas.Add(tarea2);
 
@@ -694,7 +694,7 @@ public class TareaServiceTests
         _tareaEjemplo.AgregarUsuario(usuario2);
         tarea2.AgregarUsuario(usuario2);
 
-        var resultado = _service.ListarTareasDelUsuario(_usuarioEjemplo.Id, _proyectoEjemplo.Id);
+        List<TareaDTO> resultado = _service.ListarTareasDelUsuario(_usuarioEjemplo.Id, _proyectoEjemplo.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(1, resultado.Count);
@@ -704,7 +704,7 @@ public class TareaServiceTests
     [TestMethod]
     public void PuedeCambiarDeEstado_ConTareaEnEstadoPendiente_DevuelveTrue()
     {
-        var resultado = _service.PuedeCambiarDeEstado(_tareaEjemplo.Id);
+        bool resultado = _service.PuedeCambiarDeEstado(_tareaEjemplo.Id);
 
         Assert.IsTrue(resultado);
     }
@@ -714,7 +714,7 @@ public class TareaServiceTests
     {
         _service.MarcarComoEjecutandose(_tareaEjemplo.Id);
 
-        var resultado = _service.PuedeCambiarDeEstado(_tareaEjemplo.Id);
+        bool resultado = _service.PuedeCambiarDeEstado(_tareaEjemplo.Id);
 
         Assert.IsTrue(resultado);
     }
@@ -725,7 +725,7 @@ public class TareaServiceTests
         _service.MarcarComoEjecutandose(_tareaEjemplo.Id);
         _service.MarcarComoCompletada(_tareaEjemplo.Id);
 
-        var resultado = _service.PuedeCambiarDeEstado(_tareaEjemplo.Id);
+        bool resultado = _service.PuedeCambiarDeEstado(_tareaEjemplo.Id);
 
         Assert.IsFalse(resultado);
     }
@@ -733,7 +733,7 @@ public class TareaServiceTests
     [TestMethod]
     public void ObtenerTareasParaAgregarDependencia_ConProyectoSinOtrasTareas_DevuelveListaVacia()
     {
-        var resultado = _service.ObtenerTareasParaAgregarDependencia(_tareaEjemplo.Id, _proyectoEjemplo.Id);
+        List<TareaDTO> resultado = _service.ObtenerTareasParaAgregarDependencia(_tareaEjemplo.Id, _proyectoEjemplo.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(0, resultado.Count);
@@ -742,15 +742,15 @@ public class TareaServiceTests
     [TestMethod]
     public void ObtenerTareasParaAgregarDependencia_ConOtrasTareasDisponibles_DevuelveTareasDisponibles()
     {
-        var tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddDays(1), TimeSpan.FromHours(2), false);
-        var tarea3 = new Tarea("Tarea 3", "Desc 3", DateTime.Today.AddDays(2), TimeSpan.FromHours(1), false);
+        Tarea tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddDays(1), TimeSpan.FromHours(2), false);
+        Tarea tarea3 = new Tarea("Tarea 3", "Desc 3", DateTime.Today.AddDays(2), TimeSpan.FromHours(1), false);
         
         _repoTareas.Add(tarea2);
         _repoTareas.Add(tarea3);
         _proyectoEjemplo.TareasAsociadas.Add(tarea2);
         _proyectoEjemplo.TareasAsociadas.Add(tarea3);
 
-        var resultado = _service.ObtenerTareasParaAgregarDependencia(_tareaEjemplo.Id, _proyectoEjemplo.Id);
+        List<TareaDTO> resultado = _service.ObtenerTareasParaAgregarDependencia(_tareaEjemplo.Id, _proyectoEjemplo.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(2, resultado.Count);
@@ -762,8 +762,8 @@ public class TareaServiceTests
     [TestMethod]
     public void ObtenerTareasParaAgregarDependencia_ExcluyeSucesoras_DevuelveSoloTareasDisponibles()
     {
-        var tarea2 = new Tarea("Sucesora", "Desc 2", DateTime.Today.AddDays(1), TimeSpan.FromHours(2), false);
-        var tarea3 = new Tarea("Disponible", "Desc 3", DateTime.Today.AddDays(2), TimeSpan.FromHours(1), false);
+        Tarea tarea2 = new Tarea("Sucesora", "Desc 2", DateTime.Today.AddDays(1), TimeSpan.FromHours(2), false);
+        Tarea tarea3 = new Tarea("Disponible", "Desc 3", DateTime.Today.AddDays(2), TimeSpan.FromHours(1), false);
         
         _repoTareas.Add(tarea2);
         _repoTareas.Add(tarea3);
@@ -772,7 +772,7 @@ public class TareaServiceTests
 
         tarea2.AgregarDependencia(_tareaEjemplo);
 
-        var resultado = _service.ObtenerTareasParaAgregarDependencia(_tareaEjemplo.Id, _proyectoEjemplo.Id);
+        List<TareaDTO> resultado = _service.ObtenerTareasParaAgregarDependencia(_tareaEjemplo.Id, _proyectoEjemplo.Id);
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual(1, resultado.Count);
@@ -783,7 +783,7 @@ public class TareaServiceTests
     [TestMethod]
     public void PuedeAgregarDependencias_ConTareaEnEstadoPendiente_DevuelveTrue()
     {
-        var resultado = _service.PuedeAgregarDependencias(_tareaEjemplo.Id);
+        bool resultado = _service.PuedeAgregarDependencias(_tareaEjemplo.Id);
 
         Assert.IsTrue(resultado);
     }
@@ -793,7 +793,7 @@ public class TareaServiceTests
     {
         _service.MarcarComoEjecutandose(_tareaEjemplo.Id);
 
-        var resultado = _service.PuedeAgregarDependencias(_tareaEjemplo.Id);
+        bool resultado = _service.PuedeAgregarDependencias(_tareaEjemplo.Id);
 
         Assert.IsFalse(resultado);
     }
@@ -804,7 +804,7 @@ public class TareaServiceTests
         _service.MarcarComoEjecutandose(_tareaEjemplo.Id);
         _service.MarcarComoCompletada(_tareaEjemplo.Id);
 
-        var resultado = _service.PuedeAgregarDependencias(_tareaEjemplo.Id);
+        bool resultado = _service.PuedeAgregarDependencias(_tareaEjemplo.Id);
 
         Assert.IsFalse(resultado);
     }
