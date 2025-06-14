@@ -56,6 +56,7 @@ namespace Services
         {
             var proyecto = _proyectoRepo.GetById(dto.Id);
             proyecto.Modificar(dto.Descripcion, dto.FechaInicio);
+            _proyectoRepo.Update(proyecto);
         }
 
         public bool UsuarioEsAdminDeAlgunProyecto(int usuarioId)
@@ -90,7 +91,8 @@ namespace Services
         private void EliminarAdminAnterior(int proyectoId)
         {
             AsignacionProyecto antiguoAdmin = _asignacionRepo.GetAdminProyecto(proyectoId);
-            _asignacionRepo.Remove(antiguoAdmin);
+            if(antiguoAdmin is not null)
+                _asignacionRepo.Remove(antiguoAdmin);
         }
         public void AsignarAdminDeProyecto(int usuarioId, int proyectoId)
         {
@@ -118,7 +120,7 @@ namespace Services
             if (_asignacionRepo.GetMiembrosDeProyecto(proyectoId).Contains(usuario))
                 throw new ArgumentException("El usuario ya se encuentra asignado al proyecto.");
             Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
-            AsignacionProyecto asignacion = new AsignacionProyecto(proyecto, usuario, Rol.Administrador); 
+            AsignacionProyecto asignacion = new AsignacionProyecto(proyecto, usuario, Rol.Miembro); 
             _asignacionRepo.Add(asignacion);
         }
 

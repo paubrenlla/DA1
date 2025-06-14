@@ -45,6 +45,8 @@ namespace DataAccess
         public List<AsignacionProyecto> AsignacionesDelUsuario(int usuarioId)
         {
             return _context.AsignacionesProyecto
+                .Include(a => a.Proyecto)
+                .Include(a => a.Usuario)
                 .Where(a => a.Usuario.Id == usuarioId)
                 .ToList();
         }
@@ -52,6 +54,8 @@ namespace DataAccess
         public List<AsignacionProyecto> UsuariosDelProyecto(int proyectoId)
         {
             return _context.AsignacionesProyecto
+                .Include(a => a.Proyecto)
+                .Include(a => a.Usuario)
                 .Where(a => a.Proyecto.Id == proyectoId)
                 .ToList();
         }

@@ -18,7 +18,6 @@ public class SqlContext : DbContext
     public DbSet<AsignacionRecursoTarea> AsignacionesRecursoTarea { get; set; }
     public SqlContext(DbContextOptions<SqlContext> options) : base(options)
     {
-        if(!Database.IsInMemory()) this.Database.Migrate();
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

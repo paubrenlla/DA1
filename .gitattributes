@@ -1,0 +1,3 @@
+﻿# Asegurar LF para archivos YAML
+*.yml text eol=lf
+*.yaml text eol=lf

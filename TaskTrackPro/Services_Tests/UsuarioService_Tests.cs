@@ -215,6 +215,9 @@ namespace Services_Tests
             };
 
             _mockUsuarioRepo.Setup(r => r.GetById(_usuario1.Id)).Returns(_usuario1);
+            _mockUsuarioRepo
+                .Setup(r => r.BuscarUsuarioPorCorreo(dtoModificado.Email))
+                .Returns((Usuario)null);
 
             _service.ModificarUsuario(dtoModificado);
 
@@ -222,15 +225,16 @@ namespace Services_Tests
             Assert.AreEqual(dtoModificado.Nombre, _usuario1.Nombre);
             Assert.AreEqual(dtoModificado.Apellido, _usuario1.Apellido);
             Assert.AreEqual(dtoModificado.FechaNacimiento, _usuario1.FechaNacimiento);
+            _mockUsuarioRepo.Verify(r => r.BuscarUsuarioPorCorreo(dtoModificado.Email), Times.Once);
             _mockUsuarioRepo.Verify(r => r.GetById(_usuario1.Id), Times.Once);
-        }
+            _mockUsuarioRepo.Verify(r => r.Update(It.Is<Usuario>(u => u.Id == _usuario1.Id)), Times.Once);        }
 
         [TestMethod]
         public void ResetearContraseñaDevuelvePwdEncriptada()
         {
             _mockUsuarioRepo.Setup(r => r.GetById(1)).Returns(_usuario1);
 
-            string encriptada = _service.ResetearContraseña(1);
+            string encriptada = Usuario.EncriptarPassword(_service.ResetearContraseña(1));
 
             Assert.IsNotNull(encriptada);
             Assert.AreEqual(_usuario1.Pwd, encriptada);
@@ -303,6 +307,44 @@ namespace Services_Tests
 
             _mockUsuarioRepo.Verify(r => r.GetAll(), Times.Once);
         }
+        
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void CrearUsuario_LanzaExcepcionCuandoEmailDuplicado()
+        {
+            var dto = new UsuarioConContraseñaDTO {
+                Email = "existe@test.com",
+                Nombre = "X", Apellido = "Y",
+                FechaNacimiento = DateTime.Today,
+                Contraseña = "Pwd1!"
+            };
+            _mockUsuarioRepo
+                .Setup(r => r.BuscarUsuarioPorCorreo(dto.Email))
+                .Returns(new Usuario(dto.Email, "A", "B", dto.Contraseña, dto.FechaNacimiento));
+
+            _service.CrearUsuario(dto);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ModificarUsuario_LanzaExcepcionCuandoEmailDuplicado()
+        {
+            var existing = new Usuario("dup@test.com", "A", "B", "Pwd!", DateTime.Today) { Id = 5 };
+            var dto = new UsuarioConContraseñaDTO {
+                Id = 7,
+                Email = existing.Email,
+                Nombre = "Nuevo", Apellido = "User",
+                FechaNacimiento = DateTime.Today,
+                Contraseña = "Pwd2!"
+            };
+
+            _mockUsuarioRepo
+                .Setup(r => r.BuscarUsuarioPorCorreo(dto.Email))
+                .Returns(existing);
+
+            _service.ModificarUsuario(dto);
+        }
+
 
     }
 }
