@@ -30,6 +30,8 @@ public class UsuarioService : IUsuarioService
 
     public void CrearUsuario(UsuarioConContraseñaDTO dto)
     {
+        if(ExisteUsuarioConCorreo(dto.Email))
+            throw new ArgumentException("Usuario con ese correo ya existe");
         Usuario nuevo = new Usuario(dto.Email, dto.Nombre, dto.Apellido,dto.Contraseña, dto.FechaNacimiento);
         _usuarioRepo.Add(nuevo);
     }
@@ -86,24 +88,31 @@ public class UsuarioService : IUsuarioService
 
     public void ModificarUsuario(UsuarioConContraseñaDTO dto)
     {
+        if(ExisteUsuarioConCorreo(dto.Email))
+            throw new ArgumentException("Usuario con ese correo ya existe");
         Usuario user = _usuarioRepo.GetById(dto.Id);
         user.Modificar(dto.Email, dto.Nombre, dto.Apellido, dto.Contraseña, dto.FechaNacimiento);
         
         _usuarioRepo.Update(user);
     }
 
+    private bool ExisteUsuarioConCorreo(string dtoEmail)
+    {
+        return _usuarioRepo.BuscarUsuarioPorCorreo(dtoEmail) != null;
+    }
+
     public string ResetearContraseña(int usuarioId)
     {
         Usuario user = _usuarioRepo.GetById(usuarioId);
         user.ResetearContraseña();
-        return user.Pwd;
+        return Usuario.DesencriptarPassword(user.Pwd);
     }
 
     public string GenerarContraseñaAleatoria(int usuarioId)
     {
         Usuario user = _usuarioRepo.GetById(usuarioId);
         user.GenerarContraseñaAleatoria();
-        return user.Pwd;
+        return Usuario.DesencriptarPassword(user.Pwd);
     }
 
     public string DesencriptarContraseña(int usuarioId)
