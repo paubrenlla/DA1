@@ -62,5 +62,23 @@ namespace Services_Tests.Observers_Tests
                     )),
                 Times.Once);
         }
+        
+        [TestMethod]
+        public void TareaAgregada_LlamaAddConNotificacionCorrecta()
+        {
+            string esperadoMensaje =
+                $"Se ha agregado la tarea '{_tarea.Titulo}' al proyecto '{_proyecto.Nombre}'.\n"+
+                $"Esto puede cambiar la fecha de fin del proyecto!!!";
+           
+            _observer.TareaAgregada(_proyecto, _tarea);
+
+            _mockNotifRepo.Verify(repo => repo.Add(
+                    It.Is<Notificacion>(n =>
+                        n.Mensaje == esperadoMensaje
+                        && n.UsuariosNotificados.Contains(_adminUsuario)
+                    )),
+                Times.Once);
+        }
+
     }
 }

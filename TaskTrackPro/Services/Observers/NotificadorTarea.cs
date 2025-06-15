@@ -20,7 +20,20 @@ namespace Services.Observers
             Usuario admin = _repoAsignacionProyecto.GetAdminProyecto(proyecto.Id).Usuario;
             var mensaje = $"La tarea '{tareaEliminada.Titulo}' fue eliminada del proyecto '{proyecto.Nombre}'.\n" +
                           $"Esto puede cambiar la fecha de fin del proyecto!!!";
-            var notificacion = new Notificacion(mensaje);
+            Notificacion notificacion = new Notificacion(mensaje);
+            notificacion.AgregarUsuario(admin);
+            _repoNotificaciones.Add(notificacion);
+        }
+        
+        public void TareaAgregada(Proyecto proyecto, Tarea tareaAgregada)
+        {
+            Usuario admin = _repoAsignacionProyecto
+                .GetAdminProyecto(proyecto.Id)
+                .Usuario;
+            string mensaje = 
+                $"Se ha agregado la tarea '{tareaAgregada.Titulo}' al proyecto '{proyecto.Nombre}'.\n"+
+            $"Esto puede cambiar la fecha de fin del proyecto!!!";
+            Notificacion notificacion = new Notificacion(mensaje);
             notificacion.AgregarUsuario(admin);
             _repoNotificaciones.Add(notificacion);
         }

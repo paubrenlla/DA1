@@ -61,6 +61,10 @@ namespace Services
 
             _tareaRepo.Add(nuevaTarea);
             proyecto.CalcularRutaCritica();
+            foreach (var obs in _observers)
+            {
+                obs.TareaAgregada(proyecto, nuevaTarea);
+            }
 
             return Convertidor.ATareaDTO(nuevaTarea);
         }
