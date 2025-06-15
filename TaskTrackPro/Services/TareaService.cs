@@ -1,6 +1,7 @@
 ﻿using DTOs;
 using Domain;
 using Domain.Enums;
+using Domain.Observers;
 using IDataAcces;
 using Services.Observers;
 
@@ -11,15 +12,19 @@ namespace Services
         private readonly IDataAccessTarea _tareaRepo;
         private readonly IDataAccessProyecto _proyectoRepo;
         private readonly IDataAccessUsuario _usuarioRepo;
+        private readonly IEnumerable<ITareaObserver> _observers;
+        private readonly NotificadorTarea _notificador;
 
         public TareaService(
             IDataAccessTarea tareaRepo,
             IDataAccessProyecto proyectoRepo,
-            IDataAccessUsuario usuarioRepo)
+            IDataAccessUsuario usuarioRepo,
+            IEnumerable<ITareaObserver> observers)
         {
             _tareaRepo = tareaRepo;
             _proyectoRepo = proyectoRepo;
             _usuarioRepo = usuarioRepo;
+            _observers = observers;
         }
 
         public TareaDTO BuscarTareaPorId(int id)
@@ -56,6 +61,10 @@ namespace Services
 
             _tareaRepo.Add(nuevaTarea);
             proyecto.CalcularRutaCritica();
+            foreach (var obs in _observers)
+            {
+                obs.TareaAgregada(proyecto, nuevaTarea);
+            }
 
             return Convertidor.ATareaDTO(nuevaTarea);
         }
@@ -84,13 +93,18 @@ namespace Services
             _tareaRepo.Update(tarea);
         }
 
-        public void AgregarDependencia(int tareaId, int dependenciaId)
+        public void AgregarDependencia(int tareaId, int dependenciaId, int proyectoId)
         {
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
             Tarea tarea = _tareaRepo.GetById(tareaId);
             Tarea dependencia = _tareaRepo.GetById(dependenciaId);
             tarea.AgregarDependencia(dependencia);
             _tareaRepo.Update(tarea);
             _tareaRepo.Update(dependencia);
+            foreach (var obs in _observers)
+            {
+                obs.ModificacionDependencias(proyecto, tarea);
+            }
         }
 
         public void AgregarUsuario(int tareaId, int usuarioId)
@@ -131,6 +145,12 @@ namespace Services
             Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
             proyecto.TareasAsociadas.Remove(tarea);
             _tareaRepo.Remove(tarea);
+            proyecto.CalcularRutaCritica();
+            _proyectoRepo.Update(proyecto);
+            foreach (var obs in _observers)
+            {
+                obs.TareaEliminada(proyecto, tarea);
+            }
         }
 
         public TipoEstadoTarea GetEstadoTarea(int tareaId)
@@ -174,17 +194,22 @@ namespace Services
             return tarea.TareasDependencia.Select(Convertidor.ATareaDTO).ToList();
         }
 
-        public void EliminarDependencia(int tareaId, int dependenciaId)
+        public void EliminarDependencia(int tareaId, int dependenciaId, int proyectoId)
         {
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
             Tarea tarea = _tareaRepo.GetById(tareaId);
             Tarea dependencia = _tareaRepo.GetById(dependenciaId);
             
             if (tarea.TareasDependencia.Contains(dependencia))
             {
-                tarea.TareasDependencia.Remove(dependencia);
-                dependencia.TareasSucesoras.Remove(tarea);
+                tarea.EliminarDependencia(dependencia);
+                dependencia.EliminarSucesora(tarea);
 
                 tarea.ActualizarEstado();
+            }
+            foreach (var obs in _observers)
+            {
+                obs.ModificacionDependencias(proyecto, tarea);
             }
         }
 

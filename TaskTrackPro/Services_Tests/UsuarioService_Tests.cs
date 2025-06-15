@@ -1,4 +1,5 @@
 using Domain;
+using Domain.Observers;
 using DTOs;
 using IDataAcces;
 using Moq;
@@ -12,7 +13,7 @@ namespace Services_Tests
         private UsuarioService _service;
         private Mock<IDataAccessUsuario> _mockUsuarioRepo;
         private Mock<IProyectoService> _mockProyectoService;
-
+        private List<IUsuarioObserver> _observers;
         private Usuario _usuario1;
         private Usuario _usuario2;
         private UsuarioDTO _dto1;
@@ -23,9 +24,9 @@ namespace Services_Tests
         {
             _mockUsuarioRepo = new Mock<IDataAccessUsuario>();
             _mockProyectoService = new Mock<IProyectoService>();
-
+            _observers = new List<IUsuarioObserver>();
             _service = new UsuarioService(
-                _mockUsuarioRepo.Object, _mockProyectoService.Object);
+                _mockUsuarioRepo.Object, _mockProyectoService.Object, _observers);
 
             _usuario1 = new Usuario(
                 "u1@test.com",

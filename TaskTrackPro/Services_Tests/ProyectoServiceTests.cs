@@ -1,6 +1,7 @@
 ﻿using DataAccess;
 using Domain;
 using Domain.Enums;
+using Domain.Observers;
 using DTOs;
 using IDataAcces;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ namespace Services_Tests
         private IDataAccessProyecto _repoProyectos;
         private IDataAccessUsuario _repoUsuarios;
         private IDataAccessAsignacionProyecto _repoAsignaciones;
+
         private IDataAccessTarea _repoTareas;
 
         private Usuario _usuario1;

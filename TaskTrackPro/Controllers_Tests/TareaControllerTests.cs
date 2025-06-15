@@ -126,9 +126,9 @@ namespace Controllers_Tests
         [TestMethod]
         public void AgregarDependenciaLlamaService()
         {
-            _controller.AgregarDependencia(2, 8);
+            _controller.AgregarDependencia(2, 8, 1);
 
-            _mockService.Verify(s => s.AgregarDependencia(2, 8), Times.Once);
+            _mockService.Verify(s => s.AgregarDependencia(2, 8, 1), Times.Once);
         }
 
         [TestMethod]
@@ -357,9 +357,9 @@ namespace Controllers_Tests
             int tareaId = 10;
             int dependenciaId = 15;
 
-            _controller.EliminarDependencia(tareaId, dependenciaId);
+            _controller.EliminarDependencia(tareaId, dependenciaId, 1);
 
-            _mockService.Verify(s => s.EliminarDependencia(tareaId, dependenciaId), Times.Once);
+            _mockService.Verify(s => s.EliminarDependencia(tareaId, dependenciaId, 1), Times.Once);
         }
 
         [TestMethod]

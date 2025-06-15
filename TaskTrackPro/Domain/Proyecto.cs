@@ -86,9 +86,6 @@ public class Proyecto
             tareaDependencia.TareasSucesoras.Remove(tarea);
             tareaDependencia.ActualizarEstado();
         }
-        Notificacion notificacion = new Notificacion("Se eliminado la tarea " + tarea.Titulo + " del proyecto " + Nombre + ".");
-       // notificacion.AgregarUsuarios(tarea.UsuariosAsignados);
-       // notificacion.AgregarUsuario(Admin);
        if(TareasAsociadas.Count >0)
             CalcularRutaCritica();
     }
@@ -213,6 +210,8 @@ public class Proyecto
     }
     public List<Tarea> CalcularRutaCritica()
     {
+        if (TareasAsociadas.Count == 0)
+            return new List<Tarea>();
         CalcularTiemposTempranos();
         CalcularTiemposTardios();
 

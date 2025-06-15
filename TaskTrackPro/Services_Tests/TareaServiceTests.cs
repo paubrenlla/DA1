@@ -2,6 +2,7 @@
 using Domain;
 using Domain.Enums;
 using DataAccess;
+using Domain.Observers;
 using IDataAcces;
 using Microsoft.EntityFrameworkCore;
 using Services;
@@ -14,6 +15,7 @@ public class TareaServiceTests
     private IDataAccessTarea _repoTareas;
     private IDataAccessProyecto _repoProyectos;
     private IDataAccessUsuario _repoUsuarios;
+    private List<ITareaObserver> _observers;
     private TareaService _service;
 
     private Proyecto _proyectoEjemplo;
@@ -24,38 +26,35 @@ public class TareaServiceTests
     public void SetUp()
     {
         var options = new DbContextOptionsBuilder<SqlContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
-        SqlContext context = new SqlContext(options);
-        _repoTareas = new TareaDataAccess(context);
-        _repoProyectos = new ProyectoDataAccess(context);
-        _repoUsuarios = new UsuarioDataAccess(context);
+        var context        = new SqlContext(options);
+        _repoTareas        = new TareaDataAccess(context);
+        _repoProyectos     = new ProyectoDataAccess(context);
+        _repoUsuarios      = new UsuarioDataAccess(context);
 
-        _service = new TareaService(_repoTareas, _repoProyectos, _repoUsuarios);
+        _observers = new List<ITareaObserver>();
 
-        _proyectoEjemplo = new Proyecto(
-            "Proyecto Test",
-            "Descripción Test",
-            DateTime.Today.AddDays(1));
+        _service = new TareaService(
+            _repoTareas,
+            _repoProyectos,
+            _repoUsuarios,
+            _observers);
+
+        _proyectoEjemplo = new Proyecto("Proyecto Test", "Descripción Test", DateTime.Today.AddDays(1));
         _repoProyectos.Add(_proyectoEjemplo);
 
         _usuarioEjemplo = new Usuario(
-            "user@test.com",
-            "User",
-            "Test",
-            "Password1!",
-            DateTime.Today.AddYears(-20));
+            "user@test.com", "User", "Test", "Password1!", DateTime.Today.AddYears(-20));
         _repoUsuarios.Add(_usuarioEjemplo);
 
         _tareaEjemplo = new Tarea(
-            "Tarea Test",
-            "Descripción Tarea",
-            DateTime.Today.AddHours(9),
-            TimeSpan.FromHours(4),
-            false);
+            "Tarea Test", "Descripción Tarea", DateTime.Today.AddHours(9),
+            TimeSpan.FromHours(4), false);
         _proyectoEjemplo.TareasAsociadas.Add(_tareaEjemplo);
         _repoTareas.Add(_tareaEjemplo);
     }
+
 
     [TestMethod]
     public void BuscarTareaPorIdDevuelveDTO()
@@ -158,7 +157,7 @@ public class TareaServiceTests
         _proyectoEjemplo.TareasAsociadas.Add(tarea2);
         _repoTareas.Add(tarea2);
 
-        _service.AgregarDependencia(_tareaEjemplo.Id, tarea2.Id);
+        _service.AgregarDependencia(_tareaEjemplo.Id, tarea2.Id, _proyectoEjemplo.Id);
 
         Tarea tareaOriginal = _repoTareas.GetById(_tareaEjemplo.Id);
         Tarea tareaDependencia = _repoTareas.GetById(tarea2.Id);
@@ -188,6 +187,7 @@ public class TareaServiceTests
     [TestMethod]
     public void TieneSucesorasDevuelveTrueCuandoHaySucesoras()
     {
+        Proyecto proyecto = _proyectoEjemplo;
         Tarea tarea2 = new Tarea(
             "Tarea 2",
             "Desc 2",
@@ -197,7 +197,7 @@ public class TareaServiceTests
         _proyectoEjemplo.TareasAsociadas.Add(tarea2);
         _repoTareas.Add(tarea2);
 
-        _service.AgregarDependencia(_tareaEjemplo.Id, tarea2.Id);
+        _service.AgregarDependencia(_tareaEjemplo.Id, tarea2.Id,_proyectoEjemplo.Id);
 
         TareaDTO dtoConSucesoras = Convertidor.ATareaDTO(tarea2);
 
@@ -601,7 +601,7 @@ public class TareaServiceTests
 
         _tareaEjemplo.AgregarDependencia(tarea2);
 
-        _service.EliminarDependencia(_tareaEjemplo.Id, tarea2.Id);
+        _service.EliminarDependencia(_tareaEjemplo.Id, tarea2.Id, _proyectoEjemplo.Id);
 
         Tarea tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
         Tarea dependenciaGuardada = _repoTareas.GetById(tarea2.Id);
@@ -623,7 +623,7 @@ public class TareaServiceTests
         _tareaEjemplo.AgregarDependencia(tarea2);
         int cantidadInicial = _tareaEjemplo.TareasDependencia.Count;
 
-        _service.EliminarDependencia(_tareaEjemplo.Id, tarea3.Id);
+        _service.EliminarDependencia(_tareaEjemplo.Id, tarea3.Id, _proyectoEjemplo.Id);
 
         Tarea tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
         Assert.AreEqual(cantidadInicial, tareaGuardada.TareasDependencia.Count);

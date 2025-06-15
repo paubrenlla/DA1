@@ -17,7 +17,7 @@ namespace Services
         
         void MarcarComoCompletada(int tareaId);
         
-        void AgregarDependencia(int tareaId, int dependenciaId);
+        void AgregarDependencia(int tareaId, int dependenciaId, int proyectoId);
         
         void AgregarUsuario(int tareaId, int usuarioId);
         bool TieneSucesoras(TareaDTO tarea);
@@ -29,7 +29,7 @@ namespace Services
         void EliminarUsuarioDeTarea(int miembroId, int idTarea);
         void EliminarUsuarioDeTareasDeProyecto(int miembroId, int proyectoId);
         List<TareaDTO>? ObtenerDependenciasDeTarea(int tareaId);
-        void EliminarDependencia(int tareaId, int dependenciaId);
+        void EliminarDependencia(int tareaId, int dependenciaId, int proyectoId);
         List<TareaDTO> ListarTareasDelUsuario(int usuarioId, int proyectoId);
         bool PuedeCambiarDeEstado(int tareaSeleccionadaId);
         List<TareaDTO>? ObtenerTareasParaAgregarDependencia(int tareaSeleccionadaId, int proyectoId);
