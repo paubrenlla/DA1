@@ -132,17 +132,17 @@ public class Usuario
     public static void ValidarContraseña(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            throw new ArgumentNullException(nameof(value), "La pwd es requerida");
+            throw new ArgumentNullException("La contraseña es requerida");
         if (value.Length < 8)
-            throw new ArgumentException(nameof(value), "La pwd debe tener al menos 8 caracteres");
+            throw new ArgumentException( "La contraseña debe tener al menos 8 caracteres");
         if (!Regex.IsMatch(value, @"^(?=.*[a-z])"))
-            throw new ArgumentException("La pwd debe tener al menos una letra minuscula");
+            throw new ArgumentException("La contraseña debe tener al menos una letra minuscula");
         if (!Regex.IsMatch(value, @"^(?=.*[A-Z])"))
-            throw new ArgumentException("La pwd debe tener al menos una letra mayúscula");
+            throw new ArgumentException("La contraseña debe tener al menos una letra mayúscula");
         if (!Regex.IsMatch(value, @"^(?=.*\d)"))
-            throw new ArgumentException("La pwd debe tener al menos un número");
+            throw new ArgumentException("La contraseña debe tener al menos un número");
         if (!Regex.IsMatch(value, @"^(?=.*[\W_])"))
-            throw new ArgumentException("La pwd debe tener al menos un caractér especial");
+            throw new ArgumentException("La contraseña debe tener al menos un caractér especial");
     }
     
     public static void ValidarEmail(string value)

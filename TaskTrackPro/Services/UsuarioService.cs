@@ -1,5 +1,6 @@
 using DTOs;
 using Domain;
+using Domain.Observers;
 using IDataAcces;
 
 namespace Services;
@@ -8,13 +9,19 @@ public class UsuarioService : IUsuarioService
 {
     private readonly IDataAccessUsuario _usuarioRepo;
     private readonly IProyectoService _serviceProyecto;
-    
-    public UsuarioService(IDataAccessUsuario usuarioRepo, IProyectoService serviceProyecto)
-    {
-        _usuarioRepo       = usuarioRepo;
-        _serviceProyecto   = serviceProyecto;
-    }
 
+    private readonly List<IUsuarioObserver> _observers;
+    
+    public UsuarioService(IDataAccessUsuario usuarioRepo, IProyectoService serviceProyecto, IEnumerable<IUsuarioObserver> initialObservers)
+    {
+        _usuarioRepo     = usuarioRepo;
+        _serviceProyecto = serviceProyecto;
+        _observers = new List<IUsuarioObserver>(initialObservers);
+    }
+    public void Subscribe(IUsuarioObserver observer)
+    {
+        _observers.Add(observer);  
+    } 
 
     public UsuarioDTO GetById(int id)
     {
@@ -88,12 +95,17 @@ public class UsuarioService : IUsuarioService
 
     public void ModificarUsuario(UsuarioConContraseñaDTO dto)
     {
-        if(ExisteUsuarioConCorreo(dto.Email))
-            throw new ArgumentException("Usuario con ese correo ya existe");
         Usuario user = _usuarioRepo.GetById(dto.Id);
+        if(ExisteUsuarioConCorreo(dto.Email) && dto.Email != user.Email)
+            throw new ArgumentException("Usuario con ese correo ya existe");
+        if (Usuario.DesencriptarPassword(user.Pwd) != dto.Contraseña)
+        {
+            foreach (var obs in _observers)
+                obs.CambioContraseña(user, dto.Contraseña);
+        }
         user.Modificar(dto.Email, dto.Nombre, dto.Apellido, dto.Contraseña, dto.FechaNacimiento);
-        
         _usuarioRepo.Update(user);
+        
     }
 
     private bool ExisteUsuarioConCorreo(string dtoEmail)
