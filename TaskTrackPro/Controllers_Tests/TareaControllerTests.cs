@@ -528,5 +528,69 @@ namespace Controllers_Tests
             Assert.IsFalse(resultado);
             _mockService.Verify(s => s.TieneDependencias(_dto2), Times.Once);
         }
+        
+        [TestMethod]
+        public void PuedeEliminarTarea_RetornaTrue_CuandoServiceDevuelveTrue()
+        {
+            _mockService.Setup(s => s.PuedeEliminarTarea(_dto1))
+                .Returns(true);
+
+            bool resultado = _controller.PuedeEliminarTarea(_dto1);
+
+            Assert.IsTrue(resultado);
+            _mockService.Verify(s => s.PuedeEliminarTarea(_dto1), Times.Once);
+        }
+
+        [TestMethod]
+        public void PuedeEliminarTarea_RetornaFalse_CuandoServiceDevuelveFalse()
+        {
+            _mockService.Setup(s => s.PuedeEliminarTarea(_dto2))
+                .Returns(false);
+
+            bool resultado = _controller.PuedeEliminarTarea(_dto2);
+
+            Assert.IsFalse(resultado);
+            _mockService.Verify(s => s.PuedeEliminarTarea(_dto2), Times.Once);
+        }
+
+        [TestMethod]
+        public void ActualizarEstadoTarea_ConEstadoPendiente_LlamaService()
+        {
+            TipoEstadoTarea estado = TipoEstadoTarea.Pendiente;
+
+            _controller.ActualizarEstadoTarea(estado, _dto1);
+
+            _mockService.Verify(s => s.ActualizarEstadoTarea(estado, _dto1), Times.Once);
+        }
+
+        [TestMethod]
+        public void ActualizarEstadoTarea_ConEstadoEjecutandose_LlamaService()
+        {
+            TipoEstadoTarea estado = TipoEstadoTarea.Ejecutandose;
+
+            _controller.ActualizarEstadoTarea(estado, _dto2);
+
+            _mockService.Verify(s => s.ActualizarEstadoTarea(estado, _dto2), Times.Once);
+        }
+
+        [TestMethod]
+        public void ActualizarEstadoTarea_ConEstadoEfectuada_LlamaService()
+        {
+            TipoEstadoTarea estado = TipoEstadoTarea.Efectuada;
+
+            _controller.ActualizarEstadoTarea(estado, _dto1);
+
+            _mockService.Verify(s => s.ActualizarEstadoTarea(estado, _dto1), Times.Once);
+        }
+
+        [TestMethod]
+        public void ActualizarEstadoTarea_ConEstadoBloqueada_LlamaService()
+        {
+            TipoEstadoTarea estado = TipoEstadoTarea.Bloqueada;
+
+            _controller.ActualizarEstadoTarea(estado, _dto2);
+
+            _mockService.Verify(s => s.ActualizarEstadoTarea(estado, _dto2), Times.Once);
+        }
     }
 }
