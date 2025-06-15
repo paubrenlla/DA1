@@ -15,9 +15,19 @@ namespace Services.Observers
 
         public void CambioContraseña(Usuario usuario, string contraseña)
         {
-            var notificacion = new Notificacion(
+            Notificacion notificacion = new Notificacion(
                 mensaje: $"Tu nueva contraseña es: {contraseña}."
             );
+            notificacion.UsuariosNotificados.Add(usuario);
+
+            _notificacionRepo.Add(notificacion);
+        }
+
+        public void ConvertidoEnAdmin(Usuario usuario)
+        {
+            Notificacion notificacion = new Notificacion(
+                mensaje: $"Felicidades, ahora eres Admin del sistema!\n" +
+                         $"Recuerda, un gran poder conlleva una gran responsabilidad.");
             notificacion.UsuariosNotificados.Add(usuario);
 
             _notificacionRepo.Add(notificacion);

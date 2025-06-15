@@ -84,6 +84,8 @@ public class UsuarioService : IUsuarioService
             throw new ArgumentException("El usuario ya es administrador del sistema");
         usuarioAdmin.EsAdminSistema = true;
         _usuarioRepo.Update(usuarioAdmin);
+        foreach (var obs in _observers)
+            obs.ConvertidoEnAdmin(usuarioAdmin);
     }
 
     
