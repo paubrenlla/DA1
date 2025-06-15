@@ -22,8 +22,19 @@ public class ActualizadorEstadoTareas : IRecursoObserver
         foreach (var asignacion in asignaciones)
         {
             Tarea tarea = asignacion.Tarea;
-            tarea.ActualizarEstado();
+            
+            tarea.ActualizarEstado(VerificarRecursosDisponibles(tarea.Id));
             _tareasRepo.Update(tarea);
         }
+    }
+
+    private bool VerificarRecursosDisponibles(int tareaId)
+    {
+        List<AsignacionRecursoTarea> asignacionesDeTarea = _asignacionRepo.GetByTarea(tareaId);
+        foreach (AsignacionRecursoTarea asignacion in asignacionesDeTarea)
+        {
+            if (!asignacion.Recurso.EstaDisponible(asignacion.CantidadNecesaria)) return false;
+        }
+        return true;
     }
 }

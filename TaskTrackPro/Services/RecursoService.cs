@@ -9,14 +9,16 @@ public class RecursoService : IRecursoService
 {
     private readonly IDataAccessRecurso _recursoRepo;
     private readonly IDataAccessAsignacionRecursoTarea _asignacionRepo;
-    private readonly List<IRecursoObserver> _observadores = new List<IRecursoObserver>();
+    private readonly List<IRecursoObserver> _observadores;
     
     public RecursoService(
         IDataAccessRecurso recursoRepo,
-        IDataAccessAsignacionRecursoTarea asignacionRepo)
+        IDataAccessAsignacionRecursoTarea asignacionRepo,
+        IEnumerable<IRecursoObserver> observadores) // ← Agregar esto
     {
         _recursoRepo = recursoRepo;
         _asignacionRepo = asignacionRepo;
+        _observadores = observadores.ToList(); // ← Cambiar esto
     }
     
     public RecursoDTO GetById(int idRecurso)
