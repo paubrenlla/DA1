@@ -1,6 +1,7 @@
 ﻿using DTOs;
 using Domain;
 using Domain.Enums;
+using Domain.Observers;
 using IDataAcces;
 using Services.Observers;
 
@@ -11,15 +12,19 @@ namespace Services
         private readonly IDataAccessTarea _tareaRepo;
         private readonly IDataAccessProyecto _proyectoRepo;
         private readonly IDataAccessUsuario _usuarioRepo;
+        private readonly IEnumerable<ITareaObserver> _observers;
+        private readonly NotificadorTarea _notificador;
 
         public TareaService(
             IDataAccessTarea tareaRepo,
             IDataAccessProyecto proyectoRepo,
-            IDataAccessUsuario usuarioRepo)
+            IDataAccessUsuario usuarioRepo,
+            IEnumerable<ITareaObserver> observers)
         {
             _tareaRepo = tareaRepo;
             _proyectoRepo = proyectoRepo;
             _usuarioRepo = usuarioRepo;
+            _observers = observers;
         }
 
         public TareaDTO BuscarTareaPorId(int id)
@@ -131,6 +136,12 @@ namespace Services
             Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
             proyecto.TareasAsociadas.Remove(tarea);
             _tareaRepo.Remove(tarea);
+            proyecto.CalcularRutaCritica();
+            _proyectoRepo.Update(proyecto);
+            foreach (var obs in _observers)
+            {
+                obs.TareaEliminada(proyecto, tarea);
+            }
         }
 
         public TipoEstadoTarea GetEstadoTarea(int tareaId)
@@ -181,8 +192,8 @@ namespace Services
             
             if (tarea.TareasDependencia.Contains(dependencia))
             {
-                tarea.TareasDependencia.Remove(dependencia);
-                dependencia.TareasSucesoras.Remove(tarea);
+                tarea.EliminarDependencia(dependencia);
+                dependencia.EliminarSucesora(tarea);
 
                 tarea.ActualizarEstado();
             }

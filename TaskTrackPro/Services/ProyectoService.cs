@@ -1,6 +1,7 @@
 ﻿using DTOs;
 using Domain;
 using Domain.Enums;
+using Domain.Observers;
 using IDataAcces;
 
 namespace Services
@@ -137,6 +138,8 @@ namespace Services
         {
             Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
             List<Tarea> criticas = proyecto.CalcularRutaCritica();
+            if(criticas.Count == 0)
+                throw new Exception("Este proyecto no tiene tareas");
             return criticas.Select(Convertidor.ATareaDTO).ToList();
         }
 

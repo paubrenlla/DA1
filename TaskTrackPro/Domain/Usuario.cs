@@ -36,17 +36,6 @@ public class Usuario
         FechaNacimiento = fechaNacimiento;
         EsAdminSistema = false;
     }
-
-    public Usuario(int dtoId, string dtoEmail, string dtoNombre, string dtoApellido, string dtoContraseña, DateTime dtoFechaNacimiento)
-    {
-        Id = dtoId;
-        Email = dtoEmail;
-        Nombre = dtoNombre;
-        Apellido = dtoApellido;
-        FechaNacimiento = dtoFechaNacimiento;
-        _pwd = dtoContraseña;
-    }
-
     public string Email
     {
         get => _email;

@@ -40,6 +40,7 @@ builder.Services.AddScoped<IAsignacionRecursoTareaService, AsignacionRecursoTare
 builder.Services.AddScoped<INotificacionService, NotificacionService>();
 
 builder.Services.AddScoped<IUsuarioObserver, NotificadorUsuario>();
+builder.Services.AddScoped<ITareaObserver, NotificadorTarea>();
 
 builder.Services.AddScoped<UsuarioController>();
 builder.Services.AddScoped<ProyectoController>();
