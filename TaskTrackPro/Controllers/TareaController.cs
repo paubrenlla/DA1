@@ -45,9 +45,9 @@ namespace Controllers
             _service.MarcarComoCompletada(tareaId);
         }
 
-        public void AgregarDependencia(int tareaId, int dependenciaId)
+        public void AgregarDependencia(int tareaId, int dependenciaId, int proyectoId)
         {
-            _service.AgregarDependencia(tareaId, dependenciaId);
+            _service.AgregarDependencia(tareaId, dependenciaId, proyectoId);
         }
 
         public void AgregarUsuario(int tareaId, int usuarioId)
@@ -95,9 +95,9 @@ namespace Controllers
             return _service.ObtenerDependenciasDeTarea(tareaId);
         }
 
-        public void EliminarDependencia(int tareaId, int dependenciaId)
+        public void EliminarDependencia(int tareaId, int dependenciaId, int proyectoId)
         {
-            _service.EliminarDependencia(tareaId, dependenciaId);
+            _service.EliminarDependencia(tareaId, dependenciaId, proyectoId);
         }
 
         public List<TareaDTO> ListarTareasDelUsuario(int usuarioId, int proyectoId)

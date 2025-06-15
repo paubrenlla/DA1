@@ -157,7 +157,7 @@ public class TareaServiceTests
         _proyectoEjemplo.TareasAsociadas.Add(tarea2);
         _repoTareas.Add(tarea2);
 
-        _service.AgregarDependencia(_tareaEjemplo.Id, tarea2.Id);
+        _service.AgregarDependencia(_tareaEjemplo.Id, tarea2.Id, _proyectoEjemplo.Id);
 
         Tarea tareaOriginal = _repoTareas.GetById(_tareaEjemplo.Id);
         Tarea tareaDependencia = _repoTareas.GetById(tarea2.Id);
@@ -187,6 +187,7 @@ public class TareaServiceTests
     [TestMethod]
     public void TieneSucesorasDevuelveTrueCuandoHaySucesoras()
     {
+        Proyecto proyecto = _proyectoEjemplo;
         Tarea tarea2 = new Tarea(
             "Tarea 2",
             "Desc 2",
@@ -196,7 +197,7 @@ public class TareaServiceTests
         _proyectoEjemplo.TareasAsociadas.Add(tarea2);
         _repoTareas.Add(tarea2);
 
-        _service.AgregarDependencia(_tareaEjemplo.Id, tarea2.Id);
+        _service.AgregarDependencia(_tareaEjemplo.Id, tarea2.Id,_proyectoEjemplo.Id);
 
         TareaDTO dtoConSucesoras = Convertidor.ATareaDTO(tarea2);
 
@@ -600,7 +601,7 @@ public class TareaServiceTests
 
         _tareaEjemplo.AgregarDependencia(tarea2);
 
-        _service.EliminarDependencia(_tareaEjemplo.Id, tarea2.Id);
+        _service.EliminarDependencia(_tareaEjemplo.Id, tarea2.Id, _proyectoEjemplo.Id);
 
         Tarea tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
         Tarea dependenciaGuardada = _repoTareas.GetById(tarea2.Id);
@@ -622,7 +623,7 @@ public class TareaServiceTests
         _tareaEjemplo.AgregarDependencia(tarea2);
         int cantidadInicial = _tareaEjemplo.TareasDependencia.Count;
 
-        _service.EliminarDependencia(_tareaEjemplo.Id, tarea3.Id);
+        _service.EliminarDependencia(_tareaEjemplo.Id, tarea3.Id, _proyectoEjemplo.Id);
 
         Tarea tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
         Assert.AreEqual(cantidadInicial, tareaGuardada.TareasDependencia.Count);

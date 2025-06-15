@@ -93,13 +93,18 @@ namespace Services
             _tareaRepo.Update(tarea);
         }
 
-        public void AgregarDependencia(int tareaId, int dependenciaId)
+        public void AgregarDependencia(int tareaId, int dependenciaId, int proyectoId)
         {
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
             Tarea tarea = _tareaRepo.GetById(tareaId);
             Tarea dependencia = _tareaRepo.GetById(dependenciaId);
             tarea.AgregarDependencia(dependencia);
             _tareaRepo.Update(tarea);
             _tareaRepo.Update(dependencia);
+            foreach (var obs in _observers)
+            {
+                obs.ModificacionDependencias(proyecto, tarea);
+            }
         }
 
         public void AgregarUsuario(int tareaId, int usuarioId)
@@ -189,8 +194,9 @@ namespace Services
             return tarea.TareasDependencia.Select(Convertidor.ATareaDTO).ToList();
         }
 
-        public void EliminarDependencia(int tareaId, int dependenciaId)
+        public void EliminarDependencia(int tareaId, int dependenciaId, int proyectoId)
         {
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
             Tarea tarea = _tareaRepo.GetById(tareaId);
             Tarea dependencia = _tareaRepo.GetById(dependenciaId);
             
@@ -200,6 +206,10 @@ namespace Services
                 dependencia.EliminarSucesora(tarea);
 
                 tarea.ActualizarEstado();
+            }
+            foreach (var obs in _observers)
+            {
+                obs.ModificacionDependencias(proyecto, tarea);
             }
         }
 

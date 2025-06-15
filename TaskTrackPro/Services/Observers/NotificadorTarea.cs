@@ -37,5 +37,18 @@ namespace Services.Observers
             notificacion.AgregarUsuario(admin);
             _repoNotificaciones.Add(notificacion);
         }
+
+        public void ModificacionDependencias(Proyecto proyecto, Tarea tareaModificacion)
+        {
+            Usuario admin = _repoAsignacionProyecto
+                .GetAdminProyecto(proyecto.Id)
+                .Usuario;
+            string mensaje = 
+                $"Se ha modificado una dependencia en la tarea '{tareaModificacion.Titulo}' en el proyecto '{proyecto.Nombre}'.\n"+
+                $"Es muy probable que la fecha de fin del proyecto haya cambiado!!!";
+            Notificacion notificacion = new Notificacion(mensaje);
+            notificacion.AgregarUsuario(admin);
+            _repoNotificaciones.Add(notificacion);
+        }
     }
 }
