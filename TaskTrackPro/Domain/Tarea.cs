@@ -193,5 +193,15 @@ public class Tarea
         FechaInicio = fechaInicio;
         Duracion = duracion;
     }
+
+    public void EliminarDependencia(Tarea tarea)
+    {
+        TareasDependencia.Remove(tarea);
+    }
+
+    public void EliminarSucesora(Tarea tarea)
+    {
+        TareasSucesoras.Remove(tarea);
+    }
 }
 

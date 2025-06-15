@@ -315,7 +315,7 @@
         {
             if (tareaSeleccionada != null && tareaDependenciaSeleccionadaId.HasValue)
             {
-                TareaController.AgregarDependencia(tareaSeleccionada.Id, tareaDependenciaSeleccionadaId.Value);
+                TareaController.AgregarDependencia(tareaSeleccionada.Id, tareaDependenciaSeleccionadaId.Value, proyectoId);
         
                 dependenciasActuales = TareaController.ObtenerDependenciasDeTarea(tareaSeleccionada.Id);
                 tareasDisponiblesParaAgregar = TareaController.ObtenerTareasParaAgregarDependencia(tareaSeleccionada.Id, proyectoId);
@@ -338,7 +338,7 @@
         {
             if (tareaSeleccionada != null)
             {
-                TareaController.EliminarDependencia(tareaSeleccionada.Id, dependenciaId);
+                TareaController.EliminarDependencia(tareaSeleccionada.Id, dependenciaId, proyectoId);
             
                 dependenciasActuales = TareaController.ObtenerDependenciasDeTarea(tareaSeleccionada.Id);
                 tareasDisponiblesParaAgregar = TareaController.ObtenerTareasParaAgregarDependencia(tareaSeleccionada.Id, proyectoId);
