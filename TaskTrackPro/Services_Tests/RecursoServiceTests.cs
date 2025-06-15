@@ -12,6 +12,7 @@ public class RecursoServiceTests
     private RecursoService _service;
     private IDataAccessRecurso _repoRecursos;
     private IDataAccessAsignacionRecursoTarea _repoAsignaciones;
+    private List<IRecursoObserver> _observadores;
 
     private Recurso _recurso1;
     private Recurso _recurso2;
@@ -28,8 +29,9 @@ public class RecursoServiceTests
         var context = new SqlContext(options);
         _repoRecursos = new RecursoDataAccess(context);
         _repoAsignaciones = new AsignacionRecursoTareaDataAccess(context);
+        _observadores = new List<IRecursoObserver>();
 
-        _service = new RecursoService(_repoRecursos, _repoAsignaciones);
+        _service = new RecursoService(_repoRecursos, _repoAsignaciones, _observadores);
 
         _recurso1 = new Recurso("Recurso1", "Tipo1", "Desc1", false, 10);
         _recurso2 = new Recurso("Recurso2", "Tipo2", "Desc2", false, 5);
