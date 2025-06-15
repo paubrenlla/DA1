@@ -68,6 +68,8 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
         asignacion.CantidadNecesaria += dto.Cantidad;
         
         asignacion.Tarea.ActualizarEstado(VerificarRecursosDeTareaDisponibles(asignacion.Tarea.Id));
+        _tareaRepo.Update(asignacion.Tarea);
+        _asignacionRepo.Update(asignacion);
         
         return Convertidor.AAsignacionRecursoTareaDTO(asignacion);
     }
@@ -80,6 +82,7 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
         _asignacionRepo.Remove(asignacionRecursoTarea);
         
         tarea.ActualizarEstado(VerificarRecursosDeTareaDisponibles(tarea.Id));
+        _tareaRepo.Update(tarea);
     }
 
     public void ModificarAsignacion(AsignacionRecursoTareaDTO dto)
@@ -87,8 +90,10 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
         AsignacionRecursoTarea asignacionRecursoTarea = _asignacionRepo.GetById(dto.Id);
         
         asignacionRecursoTarea.Modificar(dto.Cantidad);
+        _asignacionRepo.Update(asignacionRecursoTarea);
         
         asignacionRecursoTarea.Tarea.ActualizarEstado(VerificarRecursosDeTareaDisponibles(asignacionRecursoTarea.Tarea.Id));
+        _tareaRepo.Update(asignacionRecursoTarea.Tarea);
     }
 
     public List<RecursoDTO> RecursosDeLaTarea(int tareaId)
@@ -111,6 +116,7 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
             _asignacionRepo.Remove(asignacion);
         }
         tarea.ActualizarEstado(VerificarRecursosDeTareaDisponibles(tarea.Id));
+        _tareaRepo.Update(tarea);
     }
 
     public void ActualizarEstadoDeTareasConRecurso(int recursoID)
@@ -119,6 +125,7 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
         foreach (Tarea tarea in tareas)
         { 
             tarea.ActualizarEstado(VerificarRecursosDeTareaDisponibles(tarea.Id));
+            _tareaRepo.Update(tarea);
         }
     }
 

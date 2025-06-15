@@ -7,10 +7,12 @@ namespace Services.Observers;
 public class ActualizadorEstadoTareas : IRecursoObserver
 {
     private readonly IDataAccessAsignacionRecursoTarea _asignacionRepo;
+    private readonly IDataAccessTarea _tareasRepo;
 
-    public ActualizadorEstadoTareas(IDataAccessAsignacionRecursoTarea asignacionRepo)
+    public ActualizadorEstadoTareas(IDataAccessAsignacionRecursoTarea asignacionRepo, IDataAccessTarea tareasRepo)
     {
         _asignacionRepo = asignacionRepo;
+        _tareasRepo = tareasRepo;
     }
 
     public void ActualizarTareasDeRecurso(Recurso recurso)
@@ -21,6 +23,7 @@ public class ActualizadorEstadoTareas : IRecursoObserver
         {
             Tarea tarea = asignacion.Tarea;
             tarea.ActualizarEstado();
+            _tareasRepo.Update(tarea);
         }
     }
 }
