@@ -19,4 +19,5 @@ public interface IDataAccessAsignacionRecursoTarea: IDataAccessGeneric<Asignacio
     public int CantidadDelRecurso(AsignacionRecursoTarea asignacionRecursoTarea);
     
     public AsignacionRecursoTarea? GetByRecursoYTarea(int idRecurso, int idTarea);
+    void Update(AsignacionRecursoTarea asignacion);
 }

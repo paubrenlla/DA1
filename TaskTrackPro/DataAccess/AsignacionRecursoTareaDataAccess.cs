@@ -78,5 +78,11 @@ namespace DataAccess
                 .Include(a => a.Tarea)
                 .FirstOrDefault(a => a.Recurso.Id == recursoId && a.Tarea.Id == tareaId);
         }
+
+        public void Update(AsignacionRecursoTarea asignacion)
+        {
+            _context.Update(asignacion);
+            _context.SaveChanges();
+        }
     }
 }

@@ -12,6 +12,10 @@ namespace Services
         private readonly IDataAccessTarea _tareaRepo;
         private readonly IDataAccessProyecto _proyectoRepo;
         private readonly IDataAccessUsuario _usuarioRepo;
+        
+        private readonly IAsignacionRecursoTareaService _asignacionService;
+        private readonly IRecursoService _recursoService;
+        
         private readonly IEnumerable<ITareaObserver> _observers;
         private readonly NotificadorTarea _notificador;
 
@@ -19,11 +23,17 @@ namespace Services
             IDataAccessTarea tareaRepo,
             IDataAccessProyecto proyectoRepo,
             IDataAccessUsuario usuarioRepo,
+
+            IAsignacionRecursoTareaService asignacionService,
+            IRecursoService recursoService)
+
             IEnumerable<ITareaObserver> observers)
         {
             _tareaRepo = tareaRepo;
             _proyectoRepo = proyectoRepo;
             _usuarioRepo = usuarioRepo;
+            _asignacionService = asignacionService;
+            _recursoService = recursoService;
             _observers = observers;
         }
 
@@ -61,6 +71,8 @@ namespace Services
 
             _tareaRepo.Add(nuevaTarea);
             proyecto.CalcularRutaCritica();
+            _tareaRepo.Update(nuevaTarea);
+            
             foreach (var obs in _observers)
             {
                 obs.TareaAgregada(proyecto, nuevaTarea);
@@ -77,11 +89,24 @@ namespace Services
                 dto.Descripcion,
                 dto.FechaInicio,
                 dto.Duracion);
+            _tareaRepo.Update(tarea);
         }
 
         public void MarcarComoEjecutandose(int tareaId)
         {
             Tarea tarea = _tareaRepo.GetById(tareaId);
+            if (_asignacionService.VerificarRecursosDeTareaDisponibles(tareaId) && tarea.VerificarDependenciasCompletadas())
+            {
+                tarea.MarcarTareaComoEjecutandose();
+                _tareaRepo.Update(tarea);
+                
+                List<AsignacionRecursoTareaDTO> recursosDeLaTarea = _asignacionService.GetAsignacionesDeTarea(tareaId);
+
+                foreach (AsignacionRecursoTareaDTO asignacion in recursosDeLaTarea)
+                {
+                    _recursoService.ConsumirRecurso(asignacion.Recurso.Id, asignacion.Cantidad);
+                }
+            }
             tarea.MarcarTareaComoEjecutandose();
             _tareaRepo.Update(tarea);
         }
@@ -91,6 +116,14 @@ namespace Services
             Tarea tarea = _tareaRepo.GetById(tareaId);
             tarea.MarcarTareaComoCompletada();
             _tareaRepo.Update(tarea);
+            
+            List<AsignacionRecursoTareaDTO> recursosDeLaTarea = _asignacionService.GetAsignacionesDeTarea(tareaId);
+            _asignacionService.GetAsignacionesDeTarea(tareaId);
+
+            foreach (AsignacionRecursoTareaDTO asignacion in recursosDeLaTarea)
+            {
+                _recursoService.LiberarRecurso(asignacion.Recurso.Id, asignacion.Cantidad);
+            }
         }
 
         public void AgregarDependencia(int tareaId, int dependenciaId, int proyectoId)
@@ -99,6 +132,7 @@ namespace Services
             Tarea tarea = _tareaRepo.GetById(tareaId);
             Tarea dependencia = _tareaRepo.GetById(dependenciaId);
             tarea.AgregarDependencia(dependencia);
+            
             _tareaRepo.Update(tarea);
             _tareaRepo.Update(dependencia);
             foreach (var obs in _observers)
@@ -171,6 +205,7 @@ namespace Services
             Usuario usuario = _usuarioRepo.GetById(miembroId);
     
             tarea.UsuariosAsignados.Remove(usuario);
+            _tareaRepo.Update(tarea);
         }
 
         public void EliminarUsuarioDeTareasDeProyecto(int miembroId, int proyectoId)
@@ -182,6 +217,7 @@ namespace Services
                          .Where(t => t.UsuariosAsignados.Any(u => u.Id == miembroId)))
             {
                 tarea.UsuariosAsignados.Remove(usuario);
+                _tareaRepo.Update(tarea);
             }
         }
 
@@ -207,6 +243,10 @@ namespace Services
 
                 tarea.ActualizarEstado();
             }
+            
+            _tareaRepo.Update(tarea);
+            _tareaRepo.Update(dependencia);
+            
             foreach (var obs in _observers)
             {
                 obs.ModificacionDependencias(proyecto, tarea);
@@ -275,6 +315,8 @@ namespace Services
             {
                 MarcarComoCompletada(tareaSeleccionada.Id);
             }
+            Tarea tarea = _tareaRepo.GetById(tareaSeleccionada.Id);
+            _tareaRepo.Update(tarea);
         }
     }
 }

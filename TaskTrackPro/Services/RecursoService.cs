@@ -9,14 +9,16 @@ public class RecursoService : IRecursoService
 {
     private readonly IDataAccessRecurso _recursoRepo;
     private readonly IDataAccessAsignacionRecursoTarea _asignacionRepo;
-    private readonly List<IRecursoObserver> _observadores = new List<IRecursoObserver>();
+    private readonly List<IRecursoObserver> _observadores;
     
     public RecursoService(
         IDataAccessRecurso recursoRepo,
-        IDataAccessAsignacionRecursoTarea asignacionRepo)
+        IDataAccessAsignacionRecursoTarea asignacionRepo,
+        IEnumerable<IRecursoObserver> observadores) // ← Agregar esto
     {
         _recursoRepo = recursoRepo;
         _asignacionRepo = asignacionRepo;
+        _observadores = observadores.ToList(); // ← Cambiar esto
     }
     
     public RecursoDTO GetById(int idRecurso)
@@ -53,7 +55,9 @@ public class RecursoService : IRecursoService
     {
         Recurso recurso = _recursoRepo.GetById(dto.Id);
         recurso.Modificar(dto.Nombre, dto.Tipo, dto.Descripcion, dto.CantidadDelRecurso, dto.SePuedeCompartir);
+        
         _recursoRepo.Update(recurso);
+        
         NotificarObservadores(recurso);
     }
 
@@ -67,13 +71,17 @@ public class RecursoService : IRecursoService
     {
         Recurso recurso = _recursoRepo.GetById(idRecurso);
         recurso.ConsumirRecurso(cantidad);
+        
         NotificarObservadores(recurso);
+        _recursoRepo.Update(recurso);
     }
 
     public void LiberarRecurso(int idRecurso, int cantidad)
     {
         Recurso recurso = _recursoRepo.GetById(idRecurso);
         recurso.LiberarRecurso(cantidad);
+        
+        _recursoRepo.Update(recurso);
         
         NotificarObservadores(recurso);
     }

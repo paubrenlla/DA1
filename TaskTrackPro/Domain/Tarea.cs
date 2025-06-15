@@ -14,7 +14,6 @@ public class Tarea
     private Estado _estadoActual = new Estado(TipoEstadoTarea.Pendiente);
     private List<Tarea> _tareasDependencia = new List<Tarea>();
     private List<Tarea> _tareasSucesoras = new List<Tarea>();
-    //private List<AsignacionRecursoTarea> _recursosNecesarios =  new List<AsignacionRecursoTarea>();
     private List<Usuario> _usuariosAsignados  = new List<Usuario>();
 
     private TimeSpan _holgura;
@@ -96,14 +95,13 @@ public class Tarea
         get => _usuariosAsignados;
     }
     
-    //public List<AsignacionRecursoTarea> RecursosNecesarios => _recursosNecesarios!;
     public List<Tarea> TareasDependencia => _tareasDependencia!;
     public List<Tarea> TareasSucesoras => _tareasSucesoras!;
     
     private void ModificarEstado(TipoEstadoTarea nuevoEstado, DateTime fecha)
     {   
-            EstadoActual.Valor = nuevoEstado;
-            EstadoActual.Fecha = fecha;
+        EstadoActual.Valor = nuevoEstado;
+        EstadoActual.Fecha = fecha;
     }
     
     public void AgregarDependencia(Tarea tarea)
@@ -127,9 +125,6 @@ public class Tarea
         if (VerificarDependenciasCompletadas() /* && VerificarRecursosDisponibles() */)
         {
             ModificarEstado(TipoEstadoTarea.Pendiente, DateTime.Now);
-            //Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha pasado a pendiente.");
-            //notificacion.AgregarUsuarios(UsuariosAsignados);
-            //notificacion.AgregarUsuario(Proyecto.Admin);
             return;
         }
         ModificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Now);
@@ -150,62 +145,7 @@ public class Tarea
         ModificarEstado(TipoEstadoTarea.Bloqueada, DateTime.Now);
     }
     
-    // public void AgregarRecurso(Recurso recurso, int cantidadNecesaria)
-    // {
-    //     if (cantidadNecesaria <= 0)
-    //     {
-    //         throw new ArgumentOutOfRangeException(nameof(cantidadNecesaria));    
-    //     }
-    //     
-    //     foreach (AsignacionRecursoTarea recursoNecesario in RecursosNecesarios)
-    //     {
-    //         if (recursoNecesario.Recurso == recurso)
-    //         {
-    //             recursoNecesario.CantidadNecesaria += cantidadNecesaria;
-    //             ActualizarEstado();
-    //             return;
-    //         }
-    //     }
-    //     _recursosNecesarios.Add(new AsignacionRecursoTarea(recurso, this, cantidadNecesaria));
-    //     //recurso.AgregarRecursoATarea(this);
-    //     ActualizarEstado();
-    // }
-
-    // public void EliminarRecurso(AsignacionRecursoTarea asignacionRecurso)
-    // {
-    //     RecursosNecesarios.Remove(asignacionRecurso);
-    //     ActualizarEstado();
-    // }
-
-    // public bool VerificarRecursosDisponibles()
-    // {
-    //     foreach (AsignacionRecursoTarea recursoNecesario in RecursosNecesarios)
-    //     {
-    //         if (!recursoNecesario.Recurso.EstaDisponible(recursoNecesario.CantidadNecesaria))
-    //         {
-    //             return false;
-    //         }
-    //     }
-    //     return true;
-    // }
-
-    // public void ConsumirRecursos()
-    // {
-    //     foreach (AsignacionRecursoTarea recursoNecesario in RecursosNecesarios)
-    //     {
-    //         recursoNecesario.Recurso.ConsumirRecurso(recursoNecesario.CantidadNecesaria);
-    //     }
-    // }
-
-    // public void LiberarRecursos()
-    // {
-    //     foreach (AsignacionRecursoTarea recursoNecesario in RecursosNecesarios)
-    //     {
-    //         recursoNecesario.Recurso.LiberarRecurso(recursoNecesario.CantidadNecesaria);
-    //     }
-    // }
-    
-    private bool VerificarDependenciasCompletadas()
+    public bool VerificarDependenciasCompletadas()
     {
         foreach (Tarea tarea in TareasDependencia)
         {
@@ -218,32 +158,14 @@ public class Tarea
     public void MarcarTareaComoCompletada()
     {
         ModificarEstado(TipoEstadoTarea.Efectuada, DateTime.Now);
-        //LiberarRecursos();
-        if (DateTime.Now > LateFinish)
-        {
-            Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha pasado a sido completada con demora.");
-            //notificacion.AgregarUsuarios(UsuariosAsignados);
-            //notificacion.AgregarUsuario(Proyecto.Admin);
-        }
-        else
-        {
-            Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha sido completada en fecha.");
-            //notificacion.AgregarUsuarios(UsuariosAsignados);
-            //notificacion.AgregarUsuario(Proyecto.Admin);
-        }
-
         ReevaluarTareasPosteriores();
     }
 
     public void MarcarTareaComoEjecutandose()
     {
-        if (VerificarDependenciasCompletadas() /* && VerificarRecursosDisponibles() */)
+        if (VerificarDependenciasCompletadas())
         {
             ModificarEstado(TipoEstadoTarea.Ejecutandose, DateTime.Now);
-            //ConsumirRecursos();
-            Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha pasado a ejecución.");
-            //notificacion.AgregarUsuarios(UsuariosAsignados);
-           // notificacion.AgregarUsuario(Proyecto.Admin);
         }
     }
 
@@ -261,10 +183,6 @@ public class Tarea
             throw new ArgumentNullException(nameof(usuario));
         Notificacion notificacion = new Notificacion("El usuario " + Titulo + " ha sido agregado a la tarea " + Titulo);
         notificacion.AgregarUsuarios(UsuariosAsignados);
-        // if (Proyecto.Admin != null)
-        // {
-        //     notificacion.AgregarUsuario(Proyecto.Admin);
-        // }
         _usuariosAsignados.Add(usuario);
     }
 
@@ -274,10 +192,6 @@ public class Tarea
         Descripcion = descripcion;
         FechaInicio = fechaInicio;
         Duracion = duracion;
-        
-        // Notificacion notificacion = new Notificacion("La tarea " + Titulo + " ha sido modificada.");
-        // notificacion.AgregarUsuarios(UsuariosAsignados);
-        // notificacion.AgregarUsuario(Proyecto.Admin);
     }
 
     public void EliminarDependencia(Tarea tarea)
