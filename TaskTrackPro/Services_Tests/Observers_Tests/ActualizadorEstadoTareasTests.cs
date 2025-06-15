@@ -25,10 +25,11 @@ public class ActualizadorEstadoTareasTests
             new AsignacionRecursoTarea(recurso, tarea2, 1)
         };
 
+        Mock<IDataAccessTarea> mockTareaRepo = new Mock<IDataAccessTarea>();
         Mock<IDataAccessAsignacionRecursoTarea> mockAsignacionRepo = new Mock<IDataAccessAsignacionRecursoTarea>();
         mockAsignacionRepo.Setup(r => r.GetByRecurso(recurso.Id)).Returns(asignaciones);
 
-        ActualizadorEstadoTareas actualizador = new ActualizadorEstadoTareas(mockAsignacionRepo.Object);
+        ActualizadorEstadoTareas actualizador = new ActualizadorEstadoTareas(mockAsignacionRepo.Object, mockTareaRepo.Object);
 
         actualizador.ActualizarTareasDeRecurso(recurso);
 
