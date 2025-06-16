@@ -109,7 +109,7 @@ namespace Controllers
 
         public bool UsuarioEsLiderDeProyecto(int usuarioId, int proyectoId)
         {
-            return _service.UsuarioEsAdminEnProyecto(usuarioId, proyectoId);
+            return _service.UsuarioEsLiderDeProyecto(usuarioId, proyectoId);
         }
     }
 }
