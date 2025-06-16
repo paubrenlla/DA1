@@ -11,15 +11,18 @@ namespace Services
         private readonly IDataAccessProyecto _proyectoRepo;
         private readonly IDataAccessUsuario _usuarioRepo;
         private readonly IDataAccessAsignacionProyecto _asignacionRepo;
+        private readonly IDataAccessAsignacionRecursoTarea _asignacionRecursoTareaRepo;
 
         public ProyectoService(
             IDataAccessProyecto proyectoRepo,
             IDataAccessUsuario usuarioRepo,
-            IDataAccessAsignacionProyecto asignacionRepo)
+            IDataAccessAsignacionProyecto asignacionRepo,
+            IDataAccessAsignacionRecursoTarea asignacionRecursoTarea)
         {
             _proyectoRepo = proyectoRepo;
             _usuarioRepo = usuarioRepo;
             _asignacionRepo = asignacionRepo;
+            _asignacionRecursoTareaRepo = asignacionRecursoTarea;
         }
 
         public ProyectoDTO GetById(int id)
