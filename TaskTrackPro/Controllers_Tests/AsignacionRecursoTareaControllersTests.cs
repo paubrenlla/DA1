@@ -1,12 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Controllers;
 using DTOs;
-using Domain;
-using Domain.Enums;
-using IDataAcces;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Services;
 
@@ -109,7 +102,7 @@ namespace Controllers_Tests
                 .Setup(s => s.RecursosDeLaTarea(99))
                 .Returns(recursos);
 
-            var resultado = _controller.RecursosDeLaTarea(99);
+            List<RecursoDTO> resultado = _controller.RecursosDeLaTarea(99);
             CollectionAssert.AreEqual(recursos, resultado);
             _serviceMock.Verify(s => s.RecursosDeLaTarea(99), Times.Once);
         }
@@ -171,5 +164,47 @@ namespace Controllers_Tests
             Assert.AreEqual(asigns, resultado);
             _serviceMock.Verify(s => s.GetAsignacionesDeTarea(_tareaDto.Id), Times.Once);
         }
+        
+        [TestMethod]
+        public void ObtenerAsignacionesRecursoEnFecha_WithFecha_ShouldReturnServiceList()
+        {
+            int recursoId = 42;
+            DateTime fecha = new DateTime(2025, 6, 16);
+            List<AsignacionRecursoTareaDTO> esperado = new List<AsignacionRecursoTareaDTO>
+            {
+                new AsignacionRecursoTareaDTO { Id = 10, Recurso = _recursoDto, Cantidad = 4 },
+                new AsignacionRecursoTareaDTO { Id = 11, Recurso = _recursoDto, Cantidad = 1 }
+            };
+
+            _serviceMock
+                .Setup(s => s.ObtenerAsignacionesRecursoEnFecha(recursoId, fecha))
+                .Returns(esperado);
+
+            List<AsignacionRecursoTareaDTO> resultado = _controller.ObtenerAsignacionesRecursoEnFecha(recursoId, fecha);
+
+            Assert.AreSame(esperado, resultado);
+            _serviceMock.Verify(s => s.ObtenerAsignacionesRecursoEnFecha(recursoId, fecha), Times.Once);
+        }
+
+        [TestMethod]
+        public void ObtenerAsignacionesRecursoEnFecha_WithNullFecha_ShouldReturnServiceList()
+        {
+            int recursoId = 42;
+            DateTime? fecha = null;
+            List<AsignacionRecursoTareaDTO> esperado = new List<AsignacionRecursoTareaDTO>
+            {
+                new AsignacionRecursoTareaDTO { Id = 12, Recurso = _recursoDto, Cantidad = 2 }
+            };
+
+            _serviceMock
+                .Setup(s => s.ObtenerAsignacionesRecursoEnFecha(recursoId, fecha))
+                .Returns(esperado);
+
+            List<AsignacionRecursoTareaDTO> resultado = _controller.ObtenerAsignacionesRecursoEnFecha(recursoId, fecha);
+
+            Assert.AreSame(esperado, resultado);
+            _serviceMock.Verify(s => s.ObtenerAsignacionesRecursoEnFecha(recursoId, fecha), Times.Once);
+        }
+
     }
 }
