@@ -1,8 +1,6 @@
 ﻿using DTOs;
 using Services;
-using System.Collections.Generic;
 using Domain.Enums;
-using IDataAcces;
 
 namespace Controllers
 {
