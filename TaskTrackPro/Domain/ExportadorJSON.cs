@@ -24,7 +24,7 @@ public class ExportadorJSON : Exportador
                         FechaInicio = t.FechaInicio.ToString("dd/MM/yyyy"),
                         Duracion = t.Duracion,
                         EsCritica = t.EsCritica ? "S" : "N",
-                        Recursos = ListaDeAsignacionRecursos
+                        Recursos = ListaDeAsignacionRecursos?
                             .Where(a => a.Tarea.Id == t.Id)  
                             .Select(a => new
                             {
