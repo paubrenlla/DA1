@@ -11,7 +11,7 @@ namespace Services
         
         TareaDTO CrearTarea(int proyectoId, TareaDTO dto);
         
-        void ModificarTarea(int tareaId, TareaDTO dto);
+        void ModificarTarea(int tareaId, TareaDTO dto, int proyectoId);
         
         void MarcarComoEjecutandose(int tareaId);
         

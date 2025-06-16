@@ -102,9 +102,9 @@ namespace Controllers_Tests
                 Duracion = TimeSpan.FromHours(5)
             };
 
-            _controller.ModificarTarea(7, dto);
+            _controller.ModificarTarea(7, dto, 1);
 
-            _mockService.Verify(s => s.ModificarTarea(7, dto), Times.Once);
+            _mockService.Verify(s => s.ModificarTarea(7, dto, 1), Times.Once);
         }
 
         [TestMethod]

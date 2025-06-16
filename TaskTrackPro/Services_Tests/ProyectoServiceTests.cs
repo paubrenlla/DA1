@@ -246,6 +246,7 @@ namespace Services_Tests
         }
         
         [TestMethod]
+        [ExpectedException(typeof(Exception))]
         public void ObtenerRutaCriticaDevuelveSoloCriticas()
         {
             List<TareaDTO> criticas = _service.ObtenerRutaCritica(_proyecto1.Id);

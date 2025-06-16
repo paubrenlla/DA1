@@ -10,7 +10,8 @@ public class ProyectoTests
 {
     private static Recurso recurso = new Recurso("Recurso", "Tipo", "Descripcion", true, 5);
     private static readonly TimeSpan VALID_TIMESPAN = new TimeSpan(6, 5, 0, 0);
-    
+    private static  IEnumerable<AsignacionRecursoTarea> _asignacionRecursoTareas;
+       
     [TestInitialize]
     public void Setup()
     {
@@ -20,6 +21,7 @@ public class ProyectoTests
         typeof(Tarea)
             .GetField("_contadorId", BindingFlags.Static | BindingFlags.NonPublic)
             ?.SetValue(null, 1);
+       _asignacionRecursoTareas  = Enumerable.Empty<AsignacionRecursoTarea>();
     }
     
     [TestMethod]
@@ -274,7 +276,7 @@ public class ProyectoTests
 
         proyecto.agregarTarea(tarea);
 
-        proyecto.CalcularTiemposTempranos();
+        proyecto.CalcularTiemposTempranos(_asignacionRecursoTareas);
 
         Assert.AreEqual(hoy, tarea.EarlyStart);
         Assert.AreEqual(hoy.AddDays(3), tarea.EarlyFinish);
@@ -294,7 +296,7 @@ public class ProyectoTests
 
         t2.AgregarDependencia(t1);
 
-        proyecto.CalcularTiemposTempranos();
+        proyecto.CalcularTiemposTempranos(_asignacionRecursoTareas);
 
         Assert.AreEqual(hoy, t1.EarlyStart);
         Assert.AreEqual(hoy.AddDays(3), t1.EarlyFinish);
@@ -321,7 +323,7 @@ public class ProyectoTests
         t2.AgregarDependencia(t1);
         t3.AgregarDependencia(t2);
 
-        proyecto.CalcularTiemposTempranos();
+        proyecto.CalcularTiemposTempranos(_asignacionRecursoTareas);
         proyecto.CalcularTiemposTardios();
 
         Assert.AreEqual(t1.EarlyStart, t1.LateStart);
@@ -351,7 +353,7 @@ public class ProyectoTests
         t4.AgregarDependencia(t2);
         t4.AgregarDependencia(t3);
 
-        List<Tarea> rutaCritica = proyecto.CalcularRutaCritica();
+        List<Tarea> rutaCritica = proyecto.CalcularRutaCritica(_asignacionRecursoTareas);
 
         Assert.AreEqual(4, rutaCritica.Count);
         Assert.AreEqual(TimeSpan.Zero, t1.Holgura);
@@ -472,7 +474,7 @@ public class ProyectoTests
         t4.AgregarDependencia(t2);
         t4.AgregarDependencia(t3);
 
-        List<Tarea> rutaCritica = proyecto.CalcularRutaCritica();
+        List<Tarea> rutaCritica = proyecto.CalcularRutaCritica(_asignacionRecursoTareas);
         proyecto.CalcularFinEstimado();
         Assert.AreEqual(DateTime.Today.AddDays(1).AddHours(6), proyecto.FinEstimado);
     }
@@ -497,7 +499,7 @@ public class ProyectoTests
         t2.AgregarDependencia(t1);
         t3.AgregarDependencia(t1);
 
-        proyecto.CalcularRutaCritica();
+        proyecto.CalcularRutaCritica(_asignacionRecursoTareas);
         List<Tarea> noCriticas = proyecto.TareasNoCriticas();
         Assert.AreEqual(noCriticas.Count,1);
         Assert.IsTrue(noCriticas.Contains(t4));
@@ -523,7 +525,7 @@ public class ProyectoTests
         t2.AgregarDependencia(t1);
         t3.AgregarDependencia(t1);
 
-        proyecto.CalcularRutaCritica();
+        proyecto.CalcularRutaCritica(_asignacionRecursoTareas);
         proyecto.CalcularFinEstimado();
         DateTime inicioVerdadero = proyecto.InicioVerdadero();
         
@@ -551,7 +553,7 @@ public class ProyectoTests
         t2.AgregarDependencia(t1);
         t3.AgregarDependencia(t1);
 
-        proyecto.CalcularRutaCritica();
+        proyecto.CalcularRutaCritica(_asignacionRecursoTareas);
         proyecto.CalcularFinEstimado();
         int diasTotales = proyecto.CalcularDiasTotales();
         
@@ -579,7 +581,7 @@ public class ProyectoTests
         t2.AgregarDependencia(t1);
         t4.AgregarDependencia(t3);
 
-        proyecto.CalcularRutaCritica();
+        proyecto.CalcularRutaCritica(_asignacionRecursoTareas);
         List<Tarea> tareasOrdenadas = proyecto.TareasAsociadasPorInicio();
 
         Assert.AreEqual(t1, tareasOrdenadas[0]);
@@ -617,35 +619,6 @@ public class ProyectoTests
 
     }
     
-    /*[TestMethod]
-    public void EliminarMiembro_DeberiaEliminarUsuarioDelProyectoYDeTareasAsignadas()
-    {
-        Proyecto proyecto = new Proyecto("Proyecto", "descripcion", DateTime.Now);
-        Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-        Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Now, TimeSpan.FromDays(1), false);
-
-        proyecto.agregarTarea(tarea);
-        proyecto.Miembros.Add(usuario);
-        tarea.UsuariosAsignados.Add(usuario);
-
-        proyecto.eliminarMiembro(usuario);
-
-        Assert.IsFalse(proyecto.Miembros.Contains(usuario));
-        Assert.IsFalse(tarea.UsuariosAsignados.Contains(usuario));
-    }*/
-
-    /*[TestMethod]
-    public void EliminarMiembro_DeberiaEliminarUsuarioSoloDelProyecto_SiNoEstaAsignadoATareas()
-    {
-        Proyecto proyecto = new Proyecto("Proyecto", "descripcion", DateTime.Now);
-        Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
-
-        proyecto.Miembros.Add(usuario);
-
-        proyecto.eliminarMiembro(usuario);
-
-        Assert.IsFalse(proyecto.Miembros.Contains(usuario));
-    }*/
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]

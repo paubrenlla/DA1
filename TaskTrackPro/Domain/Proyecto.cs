@@ -72,7 +72,6 @@ public class Proyecto
             }
         }
         TareasAsociadas.Add(tarea);
-        CalcularRutaCritica();
     }
     
     public void eliminarTarea(Tarea tarea)
@@ -86,8 +85,6 @@ public class Proyecto
             tareaDependencia.TareasSucesoras.Remove(tarea);
             tareaDependencia.ActualizarEstado();
         }
-       if(TareasAsociadas.Count >0)
-            CalcularRutaCritica();
     }
 
     public void agregarMiembro(AsignacionProyecto asignacion)
@@ -117,7 +114,7 @@ public class Proyecto
 
     public List<Tarea> TareasSinDependencia()
     {
-        var tareas = new List<Tarea>(TareasAsociadas.Where(t => t.TareasDependencia.Count == 0));
+        List<Tarea> tareas = new List<Tarea>(TareasAsociadas.Where(t => t.TareasDependencia.Count == 0));
         return tareas;
     }
     private bool TodasLasDependenciasFueronProcesadas(Tarea tareaQueLeSigue)
@@ -131,46 +128,100 @@ public class Proyecto
 
     }
 
-    public void CalcularTiemposTempranos()
-    {
-        foreach (Tarea tarea in TareasAsociadas)
+   public void CalcularTiemposTempranos(IEnumerable<AsignacionRecursoTarea> asignaciones)
         {
-            tarea.EarlyStart = DateTime.MinValue;
-            tarea.EarlyFinish = DateTime.MinValue;
-        }
-
-        Queue<Tarea> pendientes = new Queue<Tarea>(TareasSinDependencia());
-
-        while (pendientes.Count > 0)
-        {
-            Tarea tarea = pendientes.Dequeue();
-
-            if (tarea.TareasDependencia.Count == 0)
+            foreach (Tarea tarea in TareasAsociadas)
             {
-                tarea.EarlyStart = tarea.FechaInicio;
-            }
-            else
-            {
-                DateTime maxFinish = DateTime.MinValue;
-                foreach (Tarea pre in tarea.TareasDependencia)
+                if (!tarea.EstaCompleta())
                 {
-                    if (pre.EarlyFinish > maxFinish)
-                        maxFinish = pre.EarlyFinish;
+                    tarea.EarlyStart  = DateTime.MinValue;
+                    tarea.EarlyFinish = DateTime.MinValue;
                 }
-                tarea.EarlyStart = maxFinish;
             }
+            var pendientes = new Queue<Tarea>(TareasSinDependencia());
 
-            tarea.EarlyFinish = tarea.EarlyStart + tarea.Duracion;
-
-            foreach (Tarea tareaQueLeSigue in tarea.TareasSucesoras)
+            while (pendientes.Count > 0)
             {
-                    if (TodasLasDependenciasFueronProcesadas(tareaQueLeSigue))
+                var tarea = pendientes.Dequeue();
+
+                if (tarea.EstaCompleta())
+                {
+                    tarea.EarlyFinish = tarea.EarlyStart + tarea.Duracion;
+                }
+                else
+                {
+                    DateTime nuevoStart;
+                    if(!tarea.TareasDependencia.Any())
                     {
-                        pendientes.Enqueue(tareaQueLeSigue);
+                        nuevoStart = tarea.FechaInicio;
                     }
+                    else
+                    { 
+                        nuevoStart = tarea.TareasDependencia.Max(d=>d.EarlyFinish);
+                    }
+
+                    if (tarea.EstaBloqueada() && tarea.RecursosForzados)
+                    {
+                        nuevoStart = ObtenerProximoInicioConRecursos(tarea, asignaciones, nuevoStart);
+                    }
+
+                    tarea.EarlyStart  = nuevoStart;
+                    tarea.EarlyFinish = nuevoStart + tarea.Duracion;
+                }
+
+                foreach (var suc in tarea.TareasSucesoras)
+                {
+                    if (TodasLasDependenciasFueronProcesadas(suc))
+                        pendientes.Enqueue(suc);
+                }
             }
         }
-    }
+
+    
+        private DateTime ObtenerProximoInicioConRecursos(
+            Tarea tarea,
+            IEnumerable<AsignacionRecursoTarea> todasAsignaciones,
+            DateTime desde)
+        {
+            DateTime posible = desde;
+            var asigns = todasAsignaciones.Where(a => a.Tarea == tarea);
+
+            foreach (var asign in asigns)
+            {
+                var recurso = asign.Recurso;
+                int capacidad = recurso.CantidadDelRecurso;
+                int usoInicial = recurso.CantidadEnUso;
+
+                bool necesitaReajuste;
+                do
+                {
+                    // Tareas que solapan en 'posible'
+                    List<AsignacionRecursoTarea> solapantes = todasAsignaciones
+                        .Where(a =>
+                            a.Recurso == recurso
+                            && a.Tarea.EarlyStart <= posible
+                            && a.Tarea.EarlyFinish > posible)
+                        .ToList();
+
+                    int usoConcurrente = solapantes.Sum(a => a.CantidadNecesaria);
+                    int usoTotal = usoInicial + usoConcurrente + asign.CantidadNecesaria;
+
+                    if (usoTotal <= capacidad)
+                    {
+                        necesitaReajuste = false;
+                    }
+                    else
+                    {
+                        posible = solapantes.Min(a => a.Tarea.EarlyFinish);
+                        necesitaReajuste = true;
+                    }
+                }
+                while (necesitaReajuste);
+            }
+
+            return posible;
+        }
+
     public void CalcularTiemposTardios()
     {
         DateTime finProyecto = TareasAsociadas.Max(t => t.EarlyFinish);
@@ -208,21 +259,26 @@ public class Proyecto
             }
         }
     }
-    public List<Tarea> CalcularRutaCritica()
+    public List<Tarea> CalcularRutaCritica(IEnumerable<AsignacionRecursoTarea> asignaciones)
     {
-        if (TareasAsociadas.Count == 0)
+        if (!TareasAsociadas.Any())
             return new List<Tarea>();
-        CalcularTiemposTempranos();
+
+        CalcularTiemposTempranos(asignaciones);
+
         CalcularTiemposTardios();
 
-        foreach (Tarea tarea in TareasAsociadas)
+        foreach (var tarea in TareasAsociadas)
         {
-            tarea.Holgura = tarea.LateStart - tarea.EarlyStart;
+            tarea.Holgura   = tarea.LateStart - tarea.EarlyStart;
             tarea.EsCritica = tarea.Holgura == TimeSpan.Zero;
         }
 
         CalcularFinEstimado();
-        return TareasAsociadas.Where(t => t.Holgura == TimeSpan.Zero).ToList();
+
+        return TareasAsociadas
+            .Where(t => t.EsCritica)
+            .ToList();
     }
 
     public void AsignarUsuarioATarea(Usuario usuario, Tarea tarea)

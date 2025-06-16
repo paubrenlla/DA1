@@ -28,9 +28,9 @@ namespace Controllers
             return _service.CrearTarea(proyectoId, dto);
         }
 
-        public void ModificarTarea(int tareaId, TareaDTO dto)
+        public void ModificarTarea(int tareaId, TareaDTO dto, int proyectoId)
         {
-            _service.ModificarTarea(tareaId, dto);
+            _service.ModificarTarea(tareaId, dto, proyectoId);
         }
 
         public void MarcarComoEjecutandose(int tareaId)

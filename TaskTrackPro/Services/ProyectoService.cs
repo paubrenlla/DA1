@@ -137,7 +137,7 @@ namespace Services
         public List<TareaDTO> ObtenerRutaCritica(int proyectoId)
         {
             Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
-            List<Tarea> criticas = proyecto.CalcularRutaCritica();
+            List<Tarea> criticas = proyecto.CalcularRutaCritica(_asignacionRecursoTareaRepo.GetAll());
             if(criticas.Count == 0)
                 throw new Exception("Este proyecto no tiene tareas");
             return criticas.Select(Convertidor.ATareaDTO).ToList();

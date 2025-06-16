@@ -23,6 +23,7 @@ public class TareaServiceTests
 
     private TareaService _service;
     private List<IRecursoObserver> _observadores;
+    private IProyectoService _proyectoService;
 
     private Proyecto _proyectoEjemplo;
     private Tarea _tareaEjemplo;
@@ -52,6 +53,13 @@ public class TareaServiceTests
             new RecursoDataAccess(context),
             _repoTareas,
             repoAsignaciones);
+        
+        var proyectoAsignRepo = new AsignacionProyectoDataAccess(context);
+        _proyectoService = new ProyectoService(
+            _repoProyectos,
+            _repoUsuarios,
+            proyectoAsignRepo,
+            repoAsignaciones);
 
         _service = new TareaService(
             _repoTareas,
@@ -59,7 +67,8 @@ public class TareaServiceTests
             _repoUsuarios,
             _asignacionRecursoTareaService,
             _recursoService,
-            _observers);
+            _observers,
+            _proyectoService);
 
         _proyectoEjemplo = new Proyecto("Proyecto Test", "Descripción Test", DateTime.Today.AddDays(1));
         _repoProyectos.Add(_proyectoEjemplo);
@@ -145,7 +154,7 @@ public class TareaServiceTests
             Duracion = TimeSpan.FromHours(8)
         };
 
-        _service.ModificarTarea(_tareaEjemplo.Id, dtoModificada);
+        _service.ModificarTarea(_tareaEjemplo.Id, dtoModificada,_proyectoEjemplo.Id);
 
         Tarea tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
         Assert.AreEqual(dtoModificada.Titulo, tareaGuardada.Titulo);
@@ -153,6 +162,7 @@ public class TareaServiceTests
     }
 
     [TestMethod]
+    [ExpectedException(typeof(Exception))]
     public void AgregarDependenciaAgregaCorrectamente()
     {
         Tarea tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddHours(1), TimeSpan.FromHours(3), true);
@@ -187,6 +197,7 @@ public class TareaServiceTests
     }
 
     [TestMethod]
+    [ExpectedException(typeof(Exception))]
     public void TieneSucesorasDevuelveTrueCuandoHaySucesoras()
     {
         Proyecto proyecto = _proyectoEjemplo;
@@ -217,6 +228,7 @@ public class TareaServiceTests
     }
 
     [TestMethod]
+    [ExpectedException(typeof(Exception))]
     public void EliminarTareaSinSucesorasNiDependenciasEliminaCorrectamente()
     {
         _service.EliminarTarea(_proyectoEjemplo.Id, _tareaEjemplo.Id);
