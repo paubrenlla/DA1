@@ -43,7 +43,7 @@ public class ProyectoDataAccess :IDataAccessProyecto
 
     public List<Proyecto> GetAll()
     {
-        return _context.Proyectos.AsNoTracking().ToList();
+        return _context.Proyectos.Include(p=> p.TareasAsociadas).ToList();
     }
 
     public void Update(Proyecto proyecto)
@@ -125,7 +125,7 @@ public class ProyectoDataAccess :IDataAccessProyecto
             csvContent.AppendLine("Proyecto,FechaInicio,Tarea,FechaInicioTarea,Duracion,EsCritica");
         
             // Datos de cada proyecto y sus tareas
-            foreach (var proyecto in _context.Proyectos.OrderBy(p => p.FechaInicio))
+            foreach (var proyecto in _context.Proyectos.Include(p=>p.TareasAsociadas).OrderBy(p => p.FechaInicio))
             {
                 string proyectoNombre = EscapeCsvValue(proyecto.Nombre);
                 string proyectoFecha = proyecto.FechaInicio.ToString("dd/MM/yyyy");
