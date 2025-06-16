@@ -23,10 +23,8 @@ namespace Services
             IDataAccessTarea tareaRepo,
             IDataAccessProyecto proyectoRepo,
             IDataAccessUsuario usuarioRepo,
-
             IAsignacionRecursoTareaService asignacionService,
-            IRecursoService recursoService)
-
+            IRecursoService recursoService,
             IEnumerable<ITareaObserver> observers)
         {
             _tareaRepo = tareaRepo;
@@ -36,7 +34,6 @@ namespace Services
             _recursoService = recursoService;
             _observers = observers;
         }
-
         public TareaDTO BuscarTareaPorId(int id)
         {
             Tarea tarea = _tareaRepo.GetById(id);

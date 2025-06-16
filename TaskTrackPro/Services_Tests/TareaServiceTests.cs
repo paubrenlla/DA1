@@ -35,30 +35,30 @@ public class TareaServiceTests
         var options = new DbContextOptionsBuilder<SqlContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
-        SqlContext context = new SqlContext(options);
-    
+        var context = new SqlContext(options);
+
         _repoTareas = new TareaDataAccess(context);
         _repoProyectos = new ProyectoDataAccess(context);
         _repoUsuarios = new UsuarioDataAccess(context);
-        _observadores = new List<IRecursoObserver>();
-        
-        var repoAsignaciones = new AsignacionRecursoTareaDataAccess(context);
-        _recursoService = new RecursoService(new RecursoDataAccess(context), repoAsignaciones, _observadores);
-    
-        _asignacionRecursoTareaService = new AsignacionRecursoTareaService(new RecursoDataAccess(context), _repoTareas,  repoAsignaciones);
-    
-        _service = new TareaService(_repoTareas, _repoProyectos, _repoUsuarios, _asignacionRecursoTareaService,  _recursoService);
-        var context        = new SqlContext(options);
-        _repoTareas        = new TareaDataAccess(context);
-        _repoProyectos     = new ProyectoDataAccess(context);
-        _repoUsuarios      = new UsuarioDataAccess(context);
-
         _observers = new List<ITareaObserver>();
+
+        var repoAsignaciones = new AsignacionRecursoTareaDataAccess(context);
+        _recursoService = new RecursoService(
+            new RecursoDataAccess(context),
+            repoAsignaciones,
+            new List<IRecursoObserver>());
+
+        _asignacionRecursoTareaService = new AsignacionRecursoTareaService(
+            new RecursoDataAccess(context),
+            _repoTareas,
+            repoAsignaciones);
 
         _service = new TareaService(
             _repoTareas,
             _repoProyectos,
             _repoUsuarios,
+            _asignacionRecursoTareaService,
+            _recursoService,
             _observers);
 
         _proyectoEjemplo = new Proyecto("Proyecto Test", "Descripción Test", DateTime.Today.AddDays(1));
@@ -69,11 +69,7 @@ public class TareaServiceTests
         _repoUsuarios.Add(_usuarioEjemplo);
 
         _recursoEjemplo = new Recurso(
-            "Recurso Test",
-            "Descripción Recurso",
-            "desc",
-            false,
-            100);
+            "Recurso Test", "Tipo", "Desc", false, 100);
         _recursoService.Add(Convertidor.ARecursoDTO(_recursoEjemplo));
 
         _tareaEjemplo = new Tarea(
@@ -82,7 +78,6 @@ public class TareaServiceTests
         _proyectoEjemplo.TareasAsociadas.Add(_tareaEjemplo);
         _repoTareas.Add(_tareaEjemplo);
     }
-
 
     [TestMethod]
     public void BuscarTareaPorIdDevuelveDTO()
