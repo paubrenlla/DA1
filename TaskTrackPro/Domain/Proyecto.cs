@@ -57,7 +57,7 @@ public class Proyecto
         AsignacionesDelProyecto = new List<AsignacionProyecto>();
     }
 
-    public void agregarTarea(Tarea tarea)
+    public void AgregarTarea(Tarea tarea)
     {
         if (TareasAsociadas.Contains(tarea))
         {
@@ -74,7 +74,7 @@ public class Proyecto
         TareasAsociadas.Add(tarea);
     }
     
-    public void eliminarTarea(Tarea tarea)
+    public void EliminarTarea(Tarea tarea)
     {
         if (!TareasAsociadas.Contains(tarea))
             throw new ArgumentException("No existe la tarea en este proyecto");
@@ -96,7 +96,7 @@ public class Proyecto
        // notificacion.AgregarUsuario(user);
     }
     
-    public void eliminarMiembro(AsignacionProyecto asignacion)
+    public void EliminarMiembro(AsignacionProyecto asignacion)
     {
         if (!AsignacionesDelProyecto.Contains(asignacion))
             throw new ArgumentException("Este usuario no es integrante del proyecto.");
@@ -104,7 +104,7 @@ public class Proyecto
         AsignacionesDelProyecto.Remove(asignacion);
     }
     
-    public void eliminarMiembroTarea(Usuario user, Tarea tarea)
+    public void EliminarMiembroTarea(Usuario user, Tarea tarea)
     {
         if (!BuscarTareaPorId(tarea.Id).UsuariosAsignados.Contains(user))
             throw new ArgumentException("Este usuario no es integrante de la tarea.");

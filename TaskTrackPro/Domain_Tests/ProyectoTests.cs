@@ -83,7 +83,7 @@ public class ProyectoTests
 
         var tarea = new Tarea("Tarea de prueba", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
         
-        proyecto.agregarTarea(tarea);
+        proyecto.AgregarTarea(tarea);
         
         Assert.AreEqual(1, proyecto.TareasAsociadas.Count);
         Assert.AreSame(tarea, proyecto.TareasAsociadas[0]);
@@ -101,8 +101,8 @@ public class ProyectoTests
 
         var tarea = new Tarea("Tarea de prueba", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
         
-        proyecto.agregarTarea(tarea);
-        proyecto.agregarTarea(tarea);
+        proyecto.AgregarTarea(tarea);
+        proyecto.AgregarTarea(tarea);
     }
     
     [TestMethod]
@@ -113,8 +113,8 @@ public class ProyectoTests
         Tarea tarea2 = new Tarea("Tarea 2", "Descripcion",DateTime.Now.AddDays(1), VALID_TIMESPAN, false);
 
         
-        proyecto.agregarTarea(tarea1);
-        proyecto.agregarTarea(tarea2);
+        proyecto.AgregarTarea(tarea1);
+        proyecto.AgregarTarea(tarea2);
     }
 
     [TestMethod]
@@ -125,9 +125,9 @@ public class ProyectoTests
         Tarea tarea1 = new Tarea("Tarea Duplicada", "descripcion 1", DateTime.Now.AddDays(1), VALID_TIMESPAN, false);
         Tarea tarea2 = new Tarea("Tarea Duplicada", "descripcion 2" ,DateTime.Now.AddDays(2), VALID_TIMESPAN, false);
 
-        proyecto.agregarTarea(tarea1);
+        proyecto.AgregarTarea(tarea1);
 
-        proyecto.agregarTarea(tarea2);
+        proyecto.AgregarTarea(tarea2);
     }
     
     [TestMethod]
@@ -145,14 +145,14 @@ public class ProyectoTests
         var tarea4 = new Tarea("Oootra tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
         
         
-        proyecto.agregarTarea(tarea);
-        proyecto.agregarTarea(tarea2);
-        proyecto.agregarTarea(tarea3);
-        proyecto.agregarTarea(tarea4);
+        proyecto.AgregarTarea(tarea);
+        proyecto.AgregarTarea(tarea2);
+        proyecto.AgregarTarea(tarea3);
+        proyecto.AgregarTarea(tarea4);
         tarea.AgregarDependencia(tarea2);
         Assert.AreEqual(4, proyecto.TareasAsociadas.Count);
 
-        proyecto.eliminarTarea(tarea);
+        proyecto.EliminarTarea(tarea);
 
         Assert.AreEqual(3, proyecto.TareasAsociadas.Count);
         Assert.IsFalse(proyecto.TareasAsociadas.Contains(tarea));
@@ -170,7 +170,7 @@ public class ProyectoTests
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
         var tarea = new Tarea("Tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
         
-        proyecto.eliminarTarea(tarea);
+        proyecto.EliminarTarea(tarea);
     }
     
     [TestMethod]
@@ -224,7 +224,7 @@ public class ProyectoTests
         Assert.AreEqual(1, proyecto.AsignacionesDelProyecto.Count);
         Assert.AreSame(user, proyecto.AsignacionesDelProyecto[0].Usuario);
         
-        proyecto.eliminarMiembro(asignacionProyecto);
+        proyecto.EliminarMiembro(asignacionProyecto);
         Assert.AreEqual(0, proyecto.AsignacionesDelProyecto.Count);
         Assert.IsFalse(proyecto.AsignacionesDelProyecto.Contains(asignacionProyecto));
     }
@@ -241,7 +241,7 @@ public class ProyectoTests
         Usuario user = new Usuario("gandalf@gmail.com", "Gandalf", "El Gris", "ganadlfsape123", DateTime.Today);
         AsignacionProyecto asignacionProyecto = new AsignacionProyecto(proyecto, user, Rol.Miembro);
         
-        proyecto.eliminarMiembro(asignacionProyecto);
+        proyecto.EliminarMiembro(asignacionProyecto);
     }
 
     [TestMethod]
@@ -256,8 +256,8 @@ public class ProyectoTests
         var tarea = new Tarea("Tarea ", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
         var tareaDependencia = new Tarea("Dependencia", "Desc", DateTime.Today, VALID_TIMESPAN, false);
         
-        proyecto.agregarTarea(tarea);
-        proyecto.agregarTarea(tareaDependencia);
+        proyecto.AgregarTarea(tarea);
+        proyecto.AgregarTarea(tareaDependencia);
         
         tarea.AgregarDependencia(tareaDependencia);
 
@@ -274,7 +274,7 @@ public class ProyectoTests
 
         var tarea = new Tarea("T1", "Desc", hoy, TimeSpan.FromDays(3), false);
 
-        proyecto.agregarTarea(tarea);
+        proyecto.AgregarTarea(tarea);
 
         proyecto.CalcularTiemposTempranos(_asignacionRecursoTareas);
 
@@ -291,8 +291,8 @@ public class ProyectoTests
         var t1 = new Tarea("T1", "Desc", hoy, TimeSpan.FromDays(3), false);
         var t2 = new Tarea("T2", "Desc", hoy, TimeSpan.FromDays(2), false);
 
-        proyecto.agregarTarea(t1);
-        proyecto.agregarTarea(t2);
+        proyecto.AgregarTarea(t1);
+        proyecto.AgregarTarea(t2);
 
         t2.AgregarDependencia(t1);
 
@@ -316,9 +316,9 @@ public class ProyectoTests
         var t3 = new Tarea("T3", "desc", inicio.AddHours(6), duracion, false);
 
         var proyecto = new Proyecto("Proyecto", "desc", inicio);
-        proyecto.agregarTarea(t1);
-        proyecto.agregarTarea(t2);
-        proyecto.agregarTarea(t3);
+        proyecto.AgregarTarea(t1);
+        proyecto.AgregarTarea(t2);
+        proyecto.AgregarTarea(t3);
         
         t2.AgregarDependencia(t1);
         t3.AgregarDependencia(t2);
@@ -343,10 +343,10 @@ public class ProyectoTests
         Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
         
         Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
-        proyecto.agregarTarea(t1);
-        proyecto.agregarTarea(t2);
-        proyecto.agregarTarea(t3);
-        proyecto.agregarTarea(t4);
+        proyecto.AgregarTarea(t1);
+        proyecto.AgregarTarea(t2);
+        proyecto.AgregarTarea(t3);
+        proyecto.AgregarTarea(t4);
 
         t2.AgregarDependencia(t1);
         t3.AgregarDependencia(t1);
@@ -380,7 +380,7 @@ public class ProyectoTests
         AsignacionProyecto asignacionProyecto = new AsignacionProyecto(proyecto, usuario, Rol.Miembro);
 
         proyecto.agregarMiembro(asignacionProyecto);
-        proyecto.agregarTarea(tarea);
+        proyecto.AgregarTarea(tarea);
         proyecto.AsignarUsuarioATarea(usuario, tarea);
         CollectionAssert.Contains(tarea.UsuariosAsignados.ToList(), usuario);
         
@@ -393,7 +393,7 @@ public class ProyectoTests
         var usuario = new Usuario("test@test.com", "Test", "Usuario", "Contr*aseña123", DateTime.Now);
         var tarea = new Tarea("Tarea Test", "Descripción", DateTime.Now, TimeSpan.FromHours(5), false);
     
-        proyecto.agregarTarea(tarea);
+        proyecto.AgregarTarea(tarea);
 
         Assert.ThrowsException<ArgumentException>(() => proyecto.AsignarUsuarioATarea(usuario, tarea));
     }
@@ -407,7 +407,7 @@ public class ProyectoTests
         AsignacionProyecto asignacionProyecto = new AsignacionProyecto(proyecto, usuario, Rol.Miembro);
 
         proyecto.agregarMiembro(asignacionProyecto);
-        proyecto.agregarTarea(tarea);
+        proyecto.AgregarTarea(tarea);
         proyecto.AsignarUsuarioATarea(usuario, tarea);
 
         Assert.ThrowsException<ArgumentException>(() => proyecto.AsignarUsuarioATarea(usuario, tarea));
@@ -444,8 +444,8 @@ public class ProyectoTests
         Tarea tarea1 = new Tarea("Tarea 1", "descripcion", DateTime.Now,VALID_TIMESPAN, false);
         Tarea tarea2 = new Tarea("Tarea 2", "descripcion", DateTime.Now,VALID_TIMESPAN, false);
 
-        proyecto.agregarTarea(tarea1);
-        proyecto.agregarTarea(tarea2);
+        proyecto.AgregarTarea(tarea1);
+        proyecto.AgregarTarea(tarea2);
         
         Tarea resultado = proyecto.BuscarTareaPorId(8);
 
@@ -464,10 +464,10 @@ public class ProyectoTests
         Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
 
         Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
-        proyecto.agregarTarea(t1);
-        proyecto.agregarTarea(t2);
-        proyecto.agregarTarea(t3);
-        proyecto.agregarTarea(t4);
+        proyecto.AgregarTarea(t1);
+        proyecto.AgregarTarea(t2);
+        proyecto.AgregarTarea(t3);
+        proyecto.AgregarTarea(t4);
 
         t2.AgregarDependencia(t1);
         t3.AgregarDependencia(t1);
@@ -491,10 +491,10 @@ public class ProyectoTests
         Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
         
         Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
-        proyecto.agregarTarea(t1);
-        proyecto.agregarTarea(t2);
-        proyecto.agregarTarea(t3);
-        proyecto.agregarTarea(t4);
+        proyecto.AgregarTarea(t1);
+        proyecto.AgregarTarea(t2);
+        proyecto.AgregarTarea(t3);
+        proyecto.AgregarTarea(t4);
 
         t2.AgregarDependencia(t1);
         t3.AgregarDependencia(t1);
@@ -517,10 +517,10 @@ public class ProyectoTests
         Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
 
         Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
-        proyecto.agregarTarea(t1);
-        proyecto.agregarTarea(t2);
-        proyecto.agregarTarea(t3);
-        proyecto.agregarTarea(t4);
+        proyecto.AgregarTarea(t1);
+        proyecto.AgregarTarea(t2);
+        proyecto.AgregarTarea(t3);
+        proyecto.AgregarTarea(t4);
 
         t2.AgregarDependencia(t1);
         t3.AgregarDependencia(t1);
@@ -545,10 +545,10 @@ public class ProyectoTests
         Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
 
         Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
-        proyecto.agregarTarea(t1);
-        proyecto.agregarTarea(t2);
-        proyecto.agregarTarea(t3);
-        proyecto.agregarTarea(t4);
+        proyecto.AgregarTarea(t1);
+        proyecto.AgregarTarea(t2);
+        proyecto.AgregarTarea(t3);
+        proyecto.AgregarTarea(t4);
 
         t2.AgregarDependencia(t1);
         t3.AgregarDependencia(t1);
@@ -573,10 +573,10 @@ public class ProyectoTests
         Tarea t4 = new Tarea("T4", "desc", inicio.AddHours(2), duracion, false);
 
         Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
-        proyecto.agregarTarea(t1);
-        proyecto.agregarTarea(t2);
-        proyecto.agregarTarea(t3);
-        proyecto.agregarTarea(t4);
+        proyecto.AgregarTarea(t1);
+        proyecto.AgregarTarea(t2);
+        proyecto.AgregarTarea(t3);
+        proyecto.AgregarTarea(t4);
 
         t2.AgregarDependencia(t1);
         t4.AgregarDependencia(t3);
@@ -602,10 +602,10 @@ public class ProyectoTests
         Tarea t4 = new Tarea("T4", "desc", inicio, duracion, false);
 
         Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
-        proyecto.agregarTarea(t1);
-        proyecto.agregarTarea(t2);
-        proyecto.agregarTarea(t3);
-        proyecto.agregarTarea(t4);
+        proyecto.AgregarTarea(t1);
+        proyecto.AgregarTarea(t2);
+        proyecto.AgregarTarea(t3);
+        proyecto.AgregarTarea(t4);
 
         Usuario usuario = new Usuario("test@test.com", "Test", "Usuario", "Contra*seña123", DateTime.Now);
         t1.AgregarUsuario(usuario);
@@ -628,7 +628,7 @@ public class ProyectoTests
         Usuario usuario = new Usuario("example@email.com", "Nombre", "Apellido", "EsValida1!", new DateTime(2000, 01, 01));
         AsignacionProyecto asignacionProyecto = new AsignacionProyecto(proyecto, usuario, Rol.Miembro);
 
-        proyecto.eliminarMiembro(asignacionProyecto);
+        proyecto.EliminarMiembro(asignacionProyecto);
     }
 
     [TestMethod]
@@ -639,14 +639,95 @@ public class ProyectoTests
         Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Now, TimeSpan.FromDays(1), false);
         AsignacionProyecto asignacionProyecto = new AsignacionProyecto(proyecto, usuario, Rol.Miembro);
         
-        proyecto.agregarTarea(tarea);
+        proyecto.AgregarTarea(tarea);
         tarea.UsuariosAsignados.Add(usuario);
 
-        proyecto.eliminarMiembroTarea(usuario,tarea);
+        proyecto.EliminarMiembroTarea(usuario,tarea);
         
         Assert.IsTrue(tarea.UsuariosAsignados.Count == 0);
         Assert.IsFalse(tarea.UsuariosAsignados.Contains(usuario));
     }
+    
+    [TestMethod]
+    public void CalcularRutaCritica_ConsideraDisponibilidadEntreProyectos()
+    {
+        var hoy = DateTime.Today;
+        var auto = new Recurso("Auto", "Vehiculo", "Coche", sePuedeCompartir: false, cantidadDelRecurso: 1);
+
+        var t1 = new Tarea("T1", "Desc1", hoy, TimeSpan.FromDays(2), esCritica: false);
+        var t2 = new Tarea("T2", "Desc2", hoy, TimeSpan.FromDays(2), esCritica: false);
+
+        var proyecto1 = new Proyecto("P1", "Desc1", hoy);
+        var proyecto2 = new Proyecto("P2", "Desc2", hoy);
+
+        proyecto1.AgregarTarea(t1);
+        proyecto2.AgregarTarea(t2);
+
+        var a1 = new AsignacionRecursoTarea(auto, t1, 1);
+        var a2 = new AsignacionRecursoTarea(auto, t2, 1);
+        var allAsign = new[] { a1, a2 };
+
+        proyecto1.CalcularTiemposTempranos(allAsign);
+        proyecto1.CalcularTiemposTardios();
+
+        t2.RecursosForzados = true;
+        t2.EstadoActual.Valor = TipoEstadoTarea.Bloqueada;
+
+        proyecto2.CalcularTiemposTempranos(allAsign);
+
+        Assert.AreEqual(hoy.AddDays(2), t2.EarlyStart);
+        Assert.AreEqual(hoy.AddDays(4), t2.EarlyFinish);
+    }
+    
+    [TestMethod]
+    public void CalcularRutaCritica_ConDependenciasEfectuadasYRecursoCompartido()
+    {
+        var hoy = DateTime.Today;
+        var auto = new Recurso("Auto", "Vehiculo", "Coche", sePuedeCompartir: false, cantidadDelRecurso: 1);
+
+        var pre1 = new Tarea("Pre1", "Pre1Desc", hoy, TimeSpan.FromDays(1), esCritica: false);
+        var pre2 = new Tarea("Pre2", "Pre2Desc", hoy, TimeSpan.FromDays(1), esCritica: false);
+        pre1.EstadoActual.Valor = TipoEstadoTarea.Efectuada;
+        pre2.EstadoActual.Valor = TipoEstadoTarea.Efectuada;
+
+        var t1 = new Tarea("T1", "Desc1", hoy.AddDays(1), TimeSpan.FromDays(2), esCritica: false);
+        var t2 = new Tarea("T2", "Desc2", hoy.AddDays(1), TimeSpan.FromDays(2), esCritica: false);
+
+        pre1.EarlyStart = hoy;
+        pre1.EarlyFinish = hoy.AddDays(1);
+
+        pre2.EarlyStart = hoy;
+        pre2.EarlyFinish = hoy.AddDays(1);
+        
+        t1.AgregarDependencia(pre1);
+        t2.AgregarDependencia(pre2);
+
+        var proyecto1 = new Proyecto("P1", "Desc1", hoy);
+        var proyecto2 = new Proyecto("P2", "Desc2", hoy);
+
+        proyecto1.AgregarTarea(pre1);
+        proyecto1.AgregarTarea(t1);
+
+        proyecto2.AgregarTarea(pre2);
+        proyecto2.AgregarTarea(t2);
+
+        var a1 = new AsignacionRecursoTarea(auto, t1, 1);
+        var a2 = new AsignacionRecursoTarea(auto, t2, 1);
+        var allAsign = new[] { a1, a2 };
+
+        proyecto1.CalcularTiemposTempranos(allAsign);
+        proyecto1.CalcularTiemposTardios();
+
+        t2.RecursosForzados = true;
+        t2.EstadoActual.Valor = TipoEstadoTarea.Bloqueada;
+
+        proyecto2.CalcularTiemposTempranos(allAsign);
+
+        Assert.AreEqual(hoy.AddDays(3), t2.EarlyStart);
+        Assert.AreEqual(hoy.AddDays(5), t2.EarlyFinish);
+    }
+
+
 }
 
 

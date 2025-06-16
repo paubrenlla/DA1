@@ -123,8 +123,8 @@ namespace Domain_Tests
                 false
             );
 
-            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
-            PROYECTO_VALIDO.agregarTarea(tareaDependiente);
+            PROYECTO_VALIDO.AgregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.AgregarTarea(tareaDependiente);
             
             tareaPrincipal.AgregarDependencia(tareaDependiente);;
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaPrincipal.EstadoActual.Valor);
@@ -135,7 +135,7 @@ namespace Domain_Tests
         public void NuevaTarea_TieneListaDeDependenciasVacia()
         {
             Tarea tarea = new Tarea("Tarea Principal", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
-            PROYECTO_VALIDO.agregarTarea(tarea);
+            PROYECTO_VALIDO.AgregarTarea(tarea);
             Assert.IsNotNull(tarea.TareasDependencia);
             Assert.AreEqual(0, tarea.TareasDependencia.Count);
         }
@@ -147,8 +147,8 @@ namespace Domain_Tests
                 false);
             Tarea tareaDependencia = new Tarea("Tarea Dependiente", "Descripción dependencia", DateTime.Today,
                 VALID_TIMESPAN, false);
-            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
-            PROYECTO_VALIDO.agregarTarea(tareaDependencia);
+            PROYECTO_VALIDO.AgregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.AgregarTarea(tareaDependencia);
 
             tareaPrincipal.AgregarDependencia(tareaDependencia);
 
@@ -163,9 +163,9 @@ namespace Domain_Tests
             Tarea tareaDependencia1 = new Tarea("Dependencia 1", "Desc 1", DateTime.Today, VALID_TIMESPAN, false);
             Tarea tareaDependencia2 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
 
-            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
-            PROYECTO_VALIDO.agregarTarea(tareaDependencia1);
-            PROYECTO_VALIDO.agregarTarea(tareaDependencia2);
+            PROYECTO_VALIDO.AgregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.AgregarTarea(tareaDependencia1);
+            PROYECTO_VALIDO.AgregarTarea(tareaDependencia2);
             
             tareaPrincipal.AgregarDependencia(tareaDependencia1);
             tareaPrincipal.AgregarDependencia(tareaDependencia2);
@@ -188,10 +188,10 @@ namespace Domain_Tests
             Tarea tareaDependencia2 = new Tarea("Dependencia 2", "Desc 2", DateTime.Today, VALID_TIMESPAN, false);
             Tarea tareaDependencia3 = new Tarea("Dependencia 3", "Desc 3", DateTime.Today, VALID_TIMESPAN, false);
             
-            proyecto.agregarTarea(tareaPrincipal);
-            proyecto.agregarTarea(tareaDependencia1);
-            proyecto.agregarTarea(tareaDependencia2);
-            proyecto.agregarTarea(tareaDependencia3);
+            proyecto.AgregarTarea(tareaPrincipal);
+            proyecto.AgregarTarea(tareaDependencia1);
+            proyecto.AgregarTarea(tareaDependencia2);
+            proyecto.AgregarTarea(tareaDependencia3);
             
             tareaDependencia1.MarcarTareaComoCompletada();
 
@@ -222,8 +222,8 @@ namespace Domain_Tests
             Tarea tarea1 = new Tarea("Tarea 1", "Desc", inicio, duracion, false);
             Tarea tarea2 = new Tarea("Tarea 2", "Desc", inicio.AddHours(3), duracion, false);
 
-            PROYECTO_VALIDO.agregarTarea(tarea1);
-            PROYECTO_VALIDO.agregarTarea(tarea2);
+            PROYECTO_VALIDO.AgregarTarea(tarea1);
+            PROYECTO_VALIDO.AgregarTarea(tarea2);
             
             tarea2.AgregarDependencia(tarea1);
 
@@ -236,7 +236,7 @@ namespace Domain_Tests
         {
             Tarea tarea = new Tarea("Tarea sin sucesoras", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
 
-            PROYECTO_VALIDO.agregarTarea(tarea);
+            PROYECTO_VALIDO.AgregarTarea(tarea);
             
             // tarea.AgregarRecurso(RECURSO_VALIDO, 2);
             // tarea.ConsumirRecursos();
@@ -256,8 +256,8 @@ namespace Domain_Tests
             Tarea tareaSucesora = new Tarea("Tarea sucesora", "Descripción sucesora", DateTime.Today, VALID_TIMESPAN,
                 false);
 
-            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
-            PROYECTO_VALIDO.agregarTarea(tareaSucesora);
+            PROYECTO_VALIDO.AgregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.AgregarTarea(tareaSucesora);
             
             tareaSucesora.AgregarDependencia(tareaPrincipal);
             Assert.AreEqual(TipoEstadoTarea.Bloqueada, tareaSucesora.EstadoActual.Valor);
@@ -274,8 +274,8 @@ namespace Domain_Tests
             Tarea tareaPrincipal = new Tarea("Tarea principal", "Descripción principal", DateTime.Today, TimeSpan.FromHours(2), false);
             Tarea tareaSucesora = new Tarea("Tarea sucesora", "Descripción sucesora", DateTime.Today, TimeSpan.FromHours(2), false);
     
-            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
-            PROYECTO_VALIDO.agregarTarea(tareaSucesora);
+            PROYECTO_VALIDO.AgregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.AgregarTarea(tareaSucesora);
             
             // tareaPrincipal.AgregarRecurso(RECURSO_VALIDO, 3);
             // tareaPrincipal.ConsumirRecursos();
@@ -298,7 +298,7 @@ namespace Domain_Tests
         // {
         //     Tarea tarea = new Tarea("Tarea Test", "Descripción Test", DateTime.Today, TimeSpan.FromHours(2), false);
         //     
-        //     PROYECTO_VALIDO.agregarTarea(tarea);
+        //     PROYECTO_VALIDO.AgregarTarea(tarea);
         //     
         //     tarea.AgregarRecurso(RECURSO_VALIDO, 2);
         //
@@ -312,7 +312,7 @@ namespace Domain_Tests
         // {
         //     Tarea tarea = new Tarea("Tarea Test", "Descripción Test", DateTime.Today, TimeSpan.FromHours(2), false);
         //
-        //     PROYECTO_VALIDO.agregarTarea(tarea);
+        //     PROYECTO_VALIDO.AgregarTarea(tarea);
         //     
         //     tarea.AgregarRecurso(RECURSO_VALIDO, 2);
         //     tarea.AgregarRecurso(RECURSO_VALIDO, 3);
@@ -335,7 +335,7 @@ namespace Domain_Tests
         // {
         //     Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
         //     
-        //     PROYECTO_VALIDO.agregarTarea(tarea);
+        //     PROYECTO_VALIDO.AgregarTarea(tarea);
         //     
         //     Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 5);
         //     Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 2);
@@ -354,7 +354,7 @@ namespace Domain_Tests
         // {
         //     Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
         //     
-        //     PROYECTO_VALIDO.agregarTarea(tarea);
+        //     PROYECTO_VALIDO.AgregarTarea(tarea);
         //     
         //     Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 2);
         //     Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 1);
@@ -378,7 +378,7 @@ namespace Domain_Tests
         // {
         //     Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
         //
-        //     PROYECTO_VALIDO.agregarTarea(tarea);
+        //     PROYECTO_VALIDO.AgregarTarea(tarea);
         //     
         //     tarea.AgregarRecurso(RECURSO_VALIDO, 3); // Disponible exactamente la misma cantidad requerida
         //
@@ -400,7 +400,7 @@ namespace Domain_Tests
         // {
         //     Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
         //     
-        //     PROYECTO_VALIDO.agregarTarea(tarea);
+        //     PROYECTO_VALIDO.AgregarTarea(tarea);
         //     
         //     Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 5);
         //     Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 3);
@@ -419,7 +419,7 @@ namespace Domain_Tests
         {
             Tarea tarea = new Tarea("Test", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
 
-            PROYECTO_VALIDO.agregarTarea(tarea);
+            PROYECTO_VALIDO.AgregarTarea(tarea);
             
             Recurso recurso1 = new Recurso("Computadora", "tipo", "descripcion", false, 5);
             Recurso recurso2 = new Recurso("Proyector", "tipo", "descripcion", false, 3);
@@ -449,8 +449,8 @@ namespace Domain_Tests
         //     Tarea tarea = new Tarea("Tarea Ejecutada", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
         //     Tarea tareaDependencia = new Tarea("Dependencia", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
         //     
-        //     PROYECTO_VALIDO.agregarTarea(tarea);
-        //     PROYECTO_VALIDO.agregarTarea(tareaDependencia);
+        //     PROYECTO_VALIDO.AgregarTarea(tarea);
+        //     PROYECTO_VALIDO.AgregarTarea(tareaDependencia);
         //     
         //     Recurso recurso = new Recurso("Servidor", "tipo", "descripcion", false, 5);
         //
@@ -470,8 +470,8 @@ namespace Domain_Tests
             Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
             Tarea tareaDependencia = new Tarea("Dependencia", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
             
-            PROYECTO_VALIDO.agregarTarea(tarea);
-            PROYECTO_VALIDO.agregarTarea(tareaDependencia);
+            PROYECTO_VALIDO.AgregarTarea(tarea);
+            PROYECTO_VALIDO.AgregarTarea(tareaDependencia);
             
             Recurso recurso = new Recurso("Laptop", "tipo", "descripcion", false, 5);
 
@@ -489,7 +489,7 @@ namespace Domain_Tests
         // {
         //     Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
         //     
-        //     PROYECTO_VALIDO.agregarTarea(tarea);
+        //     PROYECTO_VALIDO.AgregarTarea(tarea);
         //
         //     Recurso recurso = new Recurso("Laptop", "tipo", "descripcion", false, 2);
         //
@@ -506,7 +506,7 @@ namespace Domain_Tests
         {
             Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Today, TimeSpan.FromHours(2), false);
 
-            PROYECTO_VALIDO.agregarTarea(tarea);
+            PROYECTO_VALIDO.AgregarTarea(tarea);
 
             tarea.MarcarTareaComoEjecutandose();
 
@@ -519,8 +519,8 @@ namespace Domain_Tests
             Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción", DateTime.Today, TimeSpan.FromHours(2), false);
             Tarea tareaSucesora = new Tarea("Tarea Sucesora", "Descripción sucesora", DateTime.Today, TimeSpan.FromHours(2), false);
 
-            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
-            PROYECTO_VALIDO.agregarTarea(tareaSucesora);
+            PROYECTO_VALIDO.AgregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.AgregarTarea(tareaSucesora);
             
             tareaSucesora.AgregarDependencia(tareaPrincipal); 
 
@@ -535,8 +535,8 @@ namespace Domain_Tests
             Tarea tareaPrincipal = new Tarea("Tarea Principal", "Descripción", DateTime.Today, TimeSpan.FromHours(2), false);
             Tarea tareaSucesora = new Tarea("Tarea Sucesora", "Descripción sucesora", DateTime.Today, TimeSpan.FromHours(2), false);
 
-            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
-            PROYECTO_VALIDO.agregarTarea(tareaSucesora);
+            PROYECTO_VALIDO.AgregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.AgregarTarea(tareaSucesora);
             
             tareaSucesora.AgregarDependencia(tareaPrincipal);
             
@@ -551,9 +551,9 @@ namespace Domain_Tests
             Tarea tareaDependencia = new Tarea("Dependencia Intermedia", "Descripción dependencia", DateTime.Today, TimeSpan.FromHours(2), false);
             Tarea tareaSucesora = new Tarea("Tarea Sucesora", "Descripción sucesora", DateTime.Today, TimeSpan.FromHours(2), false);
 
-            PROYECTO_VALIDO.agregarTarea(tareaPrincipal);
-            PROYECTO_VALIDO.agregarTarea(tareaSucesora);
-            PROYECTO_VALIDO.agregarTarea(tareaDependencia);
+            PROYECTO_VALIDO.AgregarTarea(tareaPrincipal);
+            PROYECTO_VALIDO.AgregarTarea(tareaSucesora);
+            PROYECTO_VALIDO.AgregarTarea(tareaDependencia);
 
             tareaSucesora.AgregarDependencia(tareaPrincipal);
             tareaPrincipal.AgregarDependencia(tareaDependencia);
@@ -571,9 +571,9 @@ namespace Domain_Tests
             Tarea tarea2 = new Tarea("Tarea 2", "Segunda etapa", DateTime.Now, TimeSpan.FromHours(2), false);
             Tarea tarea3 = new Tarea("Tarea 3", "Final del flujo", DateTime.Now, TimeSpan.FromHours(2), false);
 
-            PROYECTO_VALIDO.agregarTarea(tarea1);
-            PROYECTO_VALIDO.agregarTarea(tarea2);
-            PROYECTO_VALIDO.agregarTarea(tarea3);
+            PROYECTO_VALIDO.AgregarTarea(tarea1);
+            PROYECTO_VALIDO.AgregarTarea(tarea2);
+            PROYECTO_VALIDO.AgregarTarea(tarea3);
             
             tarea2.AgregarDependencia(tarea1);
             tarea3.AgregarDependencia(tarea2);
@@ -596,7 +596,7 @@ namespace Domain_Tests
         {
             Tarea tarea = new Tarea("Título original", "Desc", VALID_DATETIME, VALID_TIMESPAN, false);
             
-            PROYECTO_VALIDO.agregarTarea(tarea);
+            PROYECTO_VALIDO.AgregarTarea(tarea);
             
             string nuevoTitulo = "Título nuevo";
 
@@ -610,7 +610,7 @@ namespace Domain_Tests
         {
             Tarea tarea = new Tarea("Título", "Descripción original", VALID_DATETIME, VALID_TIMESPAN, false);
             
-            PROYECTO_VALIDO.agregarTarea(tarea);
+            PROYECTO_VALIDO.AgregarTarea(tarea);
 
             string nuevaDescripcion = "Descripción nueva";
 
@@ -625,7 +625,7 @@ namespace Domain_Tests
             DateTime nuevaFecha = VALID_DATETIME.AddDays(5);
             Tarea tarea = new Tarea("Título", "Descripción", VALID_DATETIME, VALID_TIMESPAN, false);
 
-            PROYECTO_VALIDO.agregarTarea(tarea);
+            PROYECTO_VALIDO.AgregarTarea(tarea);
             
             tarea.Modificar(tarea.Titulo, tarea.Descripcion, nuevaFecha, tarea.Duracion);
 
@@ -638,7 +638,7 @@ namespace Domain_Tests
             TimeSpan nuevaDuracion = TimeSpan.FromHours(12);
             Tarea tarea = new Tarea("Título", "Descripción", VALID_DATETIME, VALID_TIMESPAN, false);
 
-            PROYECTO_VALIDO.agregarTarea(tarea);
+            PROYECTO_VALIDO.AgregarTarea(tarea);
             
             tarea.Modificar(tarea.Titulo, tarea.Descripcion, tarea.FechaInicio, nuevaDuracion);
 
@@ -655,7 +655,7 @@ namespace Domain_Tests
 
             Tarea tarea = new Tarea("Original", "Original", VALID_DATETIME, VALID_TIMESPAN, false);
 
-            PROYECTO_VALIDO.agregarTarea(tarea);
+            PROYECTO_VALIDO.AgregarTarea(tarea);
             
             tarea.Modificar(nuevoTitulo, nuevaDescripcion, nuevaFecha, nuevaDuracion);
 
