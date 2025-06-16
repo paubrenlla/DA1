@@ -314,13 +314,13 @@ namespace Controllers_Tests
             int proyectoId = 88;
 
             _mockService
-                .Setup(s => s.UsuarioEsAdminEnProyecto(usuarioId, proyectoId))
+                .Setup(s => s.UsuarioEsLiderDeProyecto(usuarioId, proyectoId))
                 .Returns(true);
 
             bool resultado = _controller.UsuarioEsLiderDeProyecto(usuarioId, proyectoId);
 
             Assert.IsTrue(resultado);
-            _mockService.Verify(s => s.UsuarioEsAdminEnProyecto(usuarioId, proyectoId), Times.Once);
+            _mockService.Verify(s => s.UsuarioEsLiderDeProyecto(usuarioId, proyectoId), Times.Once);
         }
     }
 }
