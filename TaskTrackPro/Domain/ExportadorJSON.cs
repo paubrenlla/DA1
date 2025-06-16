@@ -6,7 +6,6 @@ public class ExportadorJSON : Exportador
 {
     public override string Exportar(List<Proyecto> ListaDeProyectos, List<AsignacionRecursoTarea> ListaDeAsignacionRecursos)
     {
-        // Procesar y transformar los datos
         var proyectosFiltrados = ListaDeProyectos
             .OrderBy(p => p.FechaInicio)
             .Select(p => new
