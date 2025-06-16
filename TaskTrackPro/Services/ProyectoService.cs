@@ -30,9 +30,11 @@ namespace Services
 
         public List<ProyectoDTO> GetAll()
         {
+            Console.WriteLine(_proyectoRepo.GetAll().ToString());
             return _proyectoRepo.GetAll()
                 .Select(Convertidor.AProyectoDTO)
                 .ToList();
+            
         }
 
         public ProyectoDTO CrearProyecto(ProyectoDTO dto)
@@ -155,6 +157,18 @@ namespace Services
             Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
             List<Tarea> ordenadas = proyecto.TareasAsociadasPorInicio();
             return ordenadas.Select(Convertidor.ATareaDTO).ToList();
+        }
+
+        public string ExportarJSON()
+        {
+            return _proyectoRepo.ExportarJSON();
+            
+        }
+        
+        public string ExportarCSV()
+        {
+            return _proyectoRepo.ExportarCSV();
+            
         }
     }
 }
