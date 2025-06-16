@@ -4,8 +4,9 @@ namespace Domain;
 
 public class ExportadorJSON : Exportador
 {
-    public override string Exportar(List<Proyecto> ListaDeProyectos)
+    public override string Exportar(List<Proyecto> ListaDeProyectos, List<AsignacionRecursoTarea> ListaDeAsignacionRecursos)
     {
+        // Procesar y transformar los datos
         var proyectosFiltrados = ListaDeProyectos
             .OrderBy(p => p.FechaInicio)
             .Select(p => new
@@ -22,7 +23,16 @@ public class ExportadorJSON : Exportador
                         Titulo = t.Titulo,
                         FechaInicio = t.FechaInicio.ToString("dd/MM/yyyy"),
                         Duracion = t.Duracion,
-                        EsCritica = t.EsCritica ? "S" : "N"
+                        EsCritica = t.EsCritica ? "S" : "N",
+                        Recursos = ListaDeAsignacionRecursos
+                            .Where(a => a.Tarea.Id == t.Id)  
+                            .Select(a => new
+                            {
+                                NombreRecurso = a.Recurso.Nombre,
+                                TipoRecurso = a.Recurso.Tipo,
+                                CantidadNecesaria = a.CantidadNecesaria
+                            })
+                            .ToList()
                     })
             }).ToList();
 

@@ -5,9 +5,9 @@ namespace Domain;
 // Clase que exporta en formato CSV
 public class ExportadorCSV : Exportador
 {
-    public override string Exportar(List<Proyecto> ListaDeProyectos)
+    public override string Exportar(List<Proyecto> ListaDeProyectos, List<AsignacionRecursoTarea> ListaDeAsignacionRecursos)
     {
-                try
+        try
         {
             var csvContent = new StringBuilder();
         

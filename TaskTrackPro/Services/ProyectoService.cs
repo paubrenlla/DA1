@@ -165,7 +165,7 @@ namespace Services
         public string Exportar(string valor)
         {
             Exportador exportador = ExportadorFactory.Crear(valor);
-            return exportador.Exportar(_proyectoRepo.GetAll());
+            return exportador.Exportar(_proyectoRepo.GetAll(),_asignacionRecursoTareaRepo.GetAll());
         }
     }
 }
