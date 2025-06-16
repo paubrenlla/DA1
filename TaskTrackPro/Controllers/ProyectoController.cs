@@ -97,15 +97,9 @@ namespace Controllers
             return _service.TareasOrdenadasPorInicio(proyectoId);
         }
 
-        public string ExportarJSON()
+        public string Exportar(string dato)
         {
-            return _service.ExportarJSON();
-            
-        }
-        
-        public string ExportarCSV()
-        {
-            return _service.ExportarCSV();
+            return _service.Exportar(dato);
             
         }
         

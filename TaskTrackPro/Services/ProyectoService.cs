@@ -159,16 +159,10 @@ namespace Services
             return ordenadas.Select(Convertidor.ATareaDTO).ToList();
         }
 
-        public string ExportarJSON()
+        public string Exportar(string valor)
         {
-            return _proyectoRepo.ExportarJSON();
-            
-        }
-        
-        public string ExportarCSV()
-        {
-            return _proyectoRepo.ExportarCSV();
-            
+            Exportador exportador = ExportadorFactory.Crear(valor);
+            return exportador.Exportar(_proyectoRepo.GetAll());
         }
     }
 }

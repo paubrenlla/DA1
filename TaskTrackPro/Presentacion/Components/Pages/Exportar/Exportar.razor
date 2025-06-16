@@ -20,7 +20,7 @@
     private async Task DescargarJSON()
     {
         // 1. Generar el JSON y guardarlo (o obtenerlo como string)
-        string rutaArchivoJSON = ProyectosController.ExportarJSON();
+        string rutaArchivoJSON = ProyectosController.Exportar("json");
 
         if (!string.IsNullOrEmpty(rutaArchivoJSON))
         {
@@ -41,7 +41,7 @@
     
     private async Task DescargarCSV()
     {
-        string rutaArchivoCSV = ProyectosController.ExportarCSV();
+        string rutaArchivoCSV = ProyectosController.Exportar("csv");
 
         if (!string.IsNullOrEmpty(rutaArchivoCSV))
         {
