@@ -31,5 +31,8 @@ namespace Services
         List<TareaDTO> ObtenerRutaCritica(int proyectoId);
         List<TareaDTO> TareasNoCriticas(int proyectoId);
         List<TareaDTO> TareasOrdenadasPorInicio(int proyectoId);
+        void AsignarLiderDeProyecto(int usuarioId, int proyectoId);
+        bool UsuarioEsLiderDeProyecto(int usuarioId, int proyectoId);
+        UsuarioDTO GetLiderDeProyecto(int id);
     }
 }
