@@ -162,7 +162,6 @@ public class TareaServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(Exception))]
     public void AgregarDependenciaAgregaCorrectamente()
     {
         Tarea tarea2 = new Tarea("Tarea 2", "Desc 2", DateTime.Today.AddHours(1), TimeSpan.FromHours(3), true);
@@ -197,7 +196,6 @@ public class TareaServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(Exception))]
     public void TieneSucesorasDevuelveTrueCuandoHaySucesoras()
     {
         Proyecto proyecto = _proyectoEjemplo;
