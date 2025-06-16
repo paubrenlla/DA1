@@ -1,6 +1,5 @@
 using Domain;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
+
 
 namespace Domain_Tests
 {
@@ -79,7 +78,6 @@ namespace Domain_Tests
             StringAssert.Contains(contenido, "Recurso Test"); 
             StringAssert.Contains(contenido, "2"); 
 
-            // Cleanup
             File.Delete(rutaArchivo);
         }
     }
