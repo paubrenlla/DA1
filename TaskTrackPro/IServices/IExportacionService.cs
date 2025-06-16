@@ -1,6 +1,6 @@
 namespace Services;
 
-public interface IExportacion
+public interface IExportacionService
 {
     String ExportarJSON();
 }

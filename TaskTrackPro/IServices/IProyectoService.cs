@@ -31,5 +31,8 @@ namespace Services
         List<TareaDTO> ObtenerRutaCritica(int proyectoId);
         List<TareaDTO> TareasNoCriticas(int proyectoId);
         List<TareaDTO> TareasOrdenadasPorInicio(int proyectoId);
+        String ExportarJSON();
+        String ExportarCSV();
+        
     }
 }
