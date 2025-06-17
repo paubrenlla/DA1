@@ -50,11 +50,11 @@ public class NotificacionService : INotificacionService
     
     public void MarcarLeida(int notificacionId, int usuarioId)
     {
-        var notificacion = _notificacionRepo.GetById(notificacionId);
+        Notificacion notificacion = _notificacionRepo.GetById(notificacionId);
         if(notificacion is null)
             throw new ArgumentException("Notificación no encontrada", nameof(notificacionId));
 
-        var usuario = _usuarioRepo.GetById(usuarioId);
+        Usuario usuario = _usuarioRepo.GetById(usuarioId);
         if(usuario is null)
             throw new ArgumentException("Usuario no encontrado", nameof(usuarioId));
 
