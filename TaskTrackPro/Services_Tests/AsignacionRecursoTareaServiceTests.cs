@@ -291,5 +291,76 @@ namespace Services_Tests
             Assert.AreEqual(_tarea1.Titulo, resultado[0].Tarea.Titulo);
         }
 
+        [TestMethod]
+        public void ObtenerAsignacionesRecursoEnFecha_DevuelveAsignacionesEnFechaExacta()
+        {
+            DateTime inicio = new DateTime(2025, 6, 15);
+            DateTime fin = inicio.AddDays(2);
+
+            Tarea tarea = new Tarea("Tarea", "desc", inicio, TimeSpan.FromDays(2), false);
+            tarea.EarlyFinish = fin;
+
+            _repoTareas.Add(tarea);
+
+            AsignacionRecursoTarea asignacion = new AsignacionRecursoTarea(_recurso1, tarea, 2);
+            _repoAsignaciones.Add(asignacion);
+
+            var resultado = _service.ObtenerAsignacionesRecursoEnFecha(_recurso1.Id, inicio.AddDays(1)); // 16 de junio
+
+            Assert.AreEqual(1, resultado.Count);
+        }
+
+        [TestMethod]
+        public void ObtenerAsignacionesRecursoEnFecha_DevuelveVaciaSiFechaFueraDeRango()
+        {
+            DateTime fechaTarea = new DateTime(2025, 6, 10);
+            TimeSpan duracion = new TimeSpan(2, 0, 0, 0); // Tarea del 10 al 12
+
+            Tarea tarea = new Tarea("Tarea fuera de rango", "Desc", fechaTarea, duracion, false);
+            _repoTareas.Add(tarea);
+
+            AsignacionRecursoTarea asignacion = new AsignacionRecursoTarea(_recurso1, tarea, 1);
+            _repoAsignaciones.Add(asignacion);
+
+            DateTime fechaConsulta = new DateTime(2025, 6, 15); // Fuera del rango
+            List<AsignacionRecursoTareaDTO> resultado = _service.ObtenerAsignacionesRecursoEnFecha(_recurso1.Id, fechaConsulta);
+
+            Assert.AreEqual(0, resultado.Count);
+        }
+
+        [TestMethod]
+        public void ObtenerAsignacionesRecursoEnFecha_DevuelveTodasSiNoSeFiltraPorFecha()
+        {
+            Tarea tarea1 = new Tarea("Tarea 1", "Desc", DateTime.Today, VALID_TIMESPAN, false);
+            Tarea tarea2 = new Tarea("Tarea 2", "Desc", DateTime.Today.AddDays(5), VALID_TIMESPAN, false);
+            _repoTareas.Add(tarea1);
+            _repoTareas.Add(tarea2);
+
+            AsignacionRecursoTarea asign1 = new AsignacionRecursoTarea(_recurso1, tarea1, 2);
+            AsignacionRecursoTarea asign2 = new AsignacionRecursoTarea(_recurso1, tarea2, 3);
+            _repoAsignaciones.Add(asign1);
+            _repoAsignaciones.Add(asign2);
+
+            List<AsignacionRecursoTareaDTO> resultado = _service.ObtenerAsignacionesRecursoEnFecha(_recurso1.Id, null);
+
+            Assert.AreEqual(2, resultado.Count);
+            Assert.IsTrue(resultado.Any(a => a.Id == asign1.Id));
+            Assert.IsTrue(resultado.Any(a => a.Id == asign2.Id));
+        }
+
+        [TestMethod]
+        public void ObtenerAsignacionesRecursoEnFecha_NoDevuelveAsignacionesDeOtroRecurso()
+        {
+            Tarea tarea = new Tarea("Tarea", "Desc", DateTime.Today, VALID_TIMESPAN, false);
+            _repoTareas.Add(tarea);
+
+            AsignacionRecursoTarea asignacion = new AsignacionRecursoTarea(_recurso2, tarea, 1);
+            _repoAsignaciones.Add(asignacion);
+
+            List<AsignacionRecursoTareaDTO> resultado = _service.ObtenerAsignacionesRecursoEnFecha(_recurso1.Id, DateTime.Today);
+
+            Assert.AreEqual(0, resultado.Count);
+        }
+
     }
 }
