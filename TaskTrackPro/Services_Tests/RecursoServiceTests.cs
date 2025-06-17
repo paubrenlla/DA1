@@ -97,7 +97,7 @@ public class RecursoServiceTests
     [TestMethod]
     public void ModificarRecurso_SeModifica()
     {
-        var dtoModificado = new RecursoDTO
+        RecursoDTO dtoModificado = new RecursoDTO
         {
             Id = _recurso1.Id,
             Nombre = "Modificado",
@@ -109,7 +109,7 @@ public class RecursoServiceTests
 
         _service.ModificarRecurso(dtoModificado);
 
-        var recursoModificado = _repoRecursos.GetById(_recurso1.Id);
+        Recurso recursoModificado = _repoRecursos.GetById(_recurso1.Id);
 
         Assert.AreEqual("Modificado", recursoModificado.Nombre);
     }
