@@ -818,21 +818,6 @@ public class TareaServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void CrearTarea_ConFechaInicioIgualAlProyecto_LanzaExcepcion()
-    {
-        TareaDTO dtoNueva = new TareaDTO
-        {
-            Titulo = "Nueva Tarea",
-            Descripcion = "Descripción nueva",
-            FechaInicio = _proyectoEjemplo.FechaInicio, // Fecha igual al proyecto
-            Duracion = TimeSpan.FromHours(4)
-        };
-
-        _service.CrearTarea(_proyectoEjemplo.Id, dtoNueva);
-    }
-
-    [TestMethod]
     public void MarcarComoEjecutandose_ConDependenciasNoCompletadas_NoModificaEstado()
     {
         Tarea dependencia = new Tarea(

@@ -65,6 +65,7 @@ else
     private UsuarioDTO? usuarioDto;
     private bool esAdminSistema = false;
     private bool esAdminProyecto = false;
+    private bool esLiderProyecto = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -88,7 +89,8 @@ else
 
             esAdminSistema  = UsuarioController.EsAdmin(usuarioDto.Id);
             esAdminProyecto = ProyectoController.UsuarioEsAdminEnProyecto(usuarioDto.Id, idProyecto);
-            if (!esAdminSistema && !esAdminProyecto)
+            esLiderProyecto = ProyectoController.UsuarioEsLiderDeProyecto(usuarioDto.Id, idProyecto);
+            if (!esAdminSistema && !esAdminProyecto && !esLiderProyecto)
             {
                 NavigationManager.NavigateTo($"/proyectos/{idProyecto}/tareas");
                 return;

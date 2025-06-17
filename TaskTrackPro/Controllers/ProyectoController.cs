@@ -116,5 +116,15 @@ namespace Controllers
         {
             return _service.UsuarioEsLiderDeProyecto(usuarioId, proyectoId);
         }
+
+        public bool UsuarioEsLiderOAdminDeAlgunProyecto(int usuarioId)
+        {
+            return _service.UsuarioEsLiderOAdminDeAlgunProyecto(usuarioId);
+        }
+
+        public bool UsuarioEsLiderDeAlgunProyecto(int usuarioLogeadoId)
+        {
+            return _service.UsuarioEsLiderDeAlgunProyecto(usuarioLogeadoId);
+        }
     }
 }

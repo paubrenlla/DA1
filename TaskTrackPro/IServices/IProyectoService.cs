@@ -16,7 +16,8 @@ namespace Services
         void ModificarProyecto(ProyectoDTO dto);
         
         bool UsuarioEsAdminDeAlgunProyecto(int usuarioId);
-        
+        bool UsuarioEsLiderDeAlgunProyecto(int usuarioId);
+        bool UsuarioEsLiderOAdminDeAlgunProyecto(int usuarioId);
         List<ProyectoDTO> ProyectosDelUsuario(int usuarioId);
         
         void EliminarAsignacionesDeUsuario(int usuarioId);

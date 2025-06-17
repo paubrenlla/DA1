@@ -322,5 +322,65 @@ namespace Controllers_Tests
             Assert.IsTrue(resultado);
             _mockService.Verify(s => s.UsuarioEsLiderDeProyecto(usuarioId, proyectoId), Times.Once);
         }
+        
+        [TestMethod]
+        public void UsuarioEsLiderOAdminDeAlgunProyecto_DevuelveLoQueDevuelveService()
+        {
+            int usuarioId = 15;
+    
+            _mockService
+                .Setup(s => s.UsuarioEsLiderOAdminDeAlgunProyecto(usuarioId))
+                .Returns(true);
+
+            bool resultado = _controller.UsuarioEsLiderOAdminDeAlgunProyecto(usuarioId);
+
+            Assert.IsTrue(resultado);
+            _mockService.Verify(s => s.UsuarioEsLiderOAdminDeAlgunProyecto(usuarioId), Times.Once);
+        }
+
+        [TestMethod]
+        public void UsuarioEsLiderOAdminDeAlgunProyecto_DevuelveFalse_CuandoServiceDevuelveFalse()
+        {
+            int usuarioId = 20;
+    
+            _mockService
+                .Setup(s => s.UsuarioEsLiderOAdminDeAlgunProyecto(usuarioId))
+                .Returns(false);
+
+            bool resultado = _controller.UsuarioEsLiderOAdminDeAlgunProyecto(usuarioId);
+
+            Assert.IsFalse(resultado);
+            _mockService.Verify(s => s.UsuarioEsLiderOAdminDeAlgunProyecto(usuarioId), Times.Once);
+        }
+        
+        [TestMethod]
+        public void UsuarioEsLiderDeAlgunProyecto_DevuelveLoQueDevuelveService()
+        {
+            int usuarioLogeadoId = 25;
+    
+            _mockService
+                .Setup(s => s.UsuarioEsLiderDeAlgunProyecto(usuarioLogeadoId))
+                .Returns(true);
+
+            bool resultado = _controller.UsuarioEsLiderDeAlgunProyecto(usuarioLogeadoId);
+
+            Assert.IsTrue(resultado);
+            _mockService.Verify(s => s.UsuarioEsLiderDeAlgunProyecto(usuarioLogeadoId), Times.Once);
+        }
+
+        [TestMethod]
+        public void UsuarioEsLiderDeAlgunProyecto_DevuelveFalse_CuandoServiceDevuelveFalse()
+        {
+            int usuarioLogeadoId = 30;
+    
+            _mockService
+                .Setup(s => s.UsuarioEsLiderDeAlgunProyecto(usuarioLogeadoId))
+                .Returns(false);
+
+            bool resultado = _controller.UsuarioEsLiderDeAlgunProyecto(usuarioLogeadoId);
+
+            Assert.IsFalse(resultado);
+            _mockService.Verify(s => s.UsuarioEsLiderDeAlgunProyecto(usuarioLogeadoId), Times.Once);
+        }
     }
 }

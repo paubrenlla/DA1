@@ -71,6 +71,17 @@ namespace Services
             return asignaciones.Any(a=> a.Usuario.Id == usuarioId && a.Rol == Rol.Administrador);
         }
 
+        public bool UsuarioEsLiderDeAlgunProyecto(int usuarioId)
+        {
+            List<AsignacionProyecto> asignaciones = _asignacionRepo.GetAll();
+            return asignaciones.Any(a=> a.Usuario.Id == usuarioId && a.Rol == Rol.Lider);
+        }
+
+        public bool UsuarioEsLiderOAdminDeAlgunProyecto(int usuarioId)
+        {
+            return UsuarioEsAdminDeAlgunProyecto(usuarioId) || UsuarioEsLiderDeAlgunProyecto(usuarioId);
+        }
+
         public List<ProyectoDTO> ProyectosDelUsuario(int usuarioId)
         {
             return _asignacionRepo
