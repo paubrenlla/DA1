@@ -40,7 +40,7 @@
                 <td>@tarea.Duracion</td>
                 <td>@(tarea.EsCritica ? "Sí" : "No")</td>
                 <td>
-                    @if (esAdminSistema || esAdminProyecto)
+                    @if(esAdminSistema || esAdminProyecto)
                     {
                         <a class="btn btn-success btn-sm" href="/proyectos/@proyectoId/tareas/@tarea.Id/editar">Editar</a>
                         <a class="btn btn-info btn-sm" href="/proyectos/@proyectoId/tareas/@tarea.Id/miembros">Miembros</a>
@@ -55,6 +55,10 @@
                                 disabled="@(!TareaController.PuedeEliminarTarea(tarea))">
                             Eliminar
                         </button>
+                    }
+                    else if(esLiderProyecto)
+                    {
+                        <a class="btn btn-success btn-sm" href="/proyectos/@proyectoId/tareas/@tarea.Id/editar">Editar</a>
                     }
                     <button class="btn btn-primary btn-sm"
                             @onclick="() => AbrirModalEstado(tarea.Id)"
@@ -163,6 +167,7 @@
     private string mensajeError = string.Empty;
     private bool esAdminSistema = false;
     private bool esAdminProyecto = false;
+    private bool esLiderProyecto = false;
     private UsuarioDTO? usuarioDto;
     
     private TareaDTO? tareaSeleccionada;
@@ -195,10 +200,11 @@
 
             esAdminSistema = UsuarioController.EsAdmin(usuarioDto.Id);
             esAdminProyecto = ProyectoController.UsuarioEsAdminEnProyecto(usuarioDto.Id, proyectoId);
+            esLiderProyecto = ProyectoController.UsuarioEsLiderDeProyecto(usuarioDto.Id, proyectoId);
 
             List<TareaDTO> todas = TareaController.ListarTareasPorProyecto(proyectoId);
 
-            if (esAdminSistema || esAdminProyecto)
+            if (esAdminSistema || esAdminProyecto || esLiderProyecto)
             {
                 tareasDto = todas;
             }
@@ -276,7 +282,7 @@
         {
             List<TareaDTO> todas = TareaController.ListarTareasPorProyecto(proyectoId);
         
-            if (esAdminSistema || esAdminProyecto)
+            if (esAdminSistema || esAdminProyecto || esLiderProyecto)
             {
                 tareasDto = todas;
             }
