@@ -72,7 +72,7 @@ namespace Services_Tests
         {
             _mockNotificacionRepo.Setup(r => r.GetById(1)).Returns(_notificacion1);
 
-            var resultado = _service.GetById(1);
+            NotificacionDTO resultado = _service.GetById(1);
 
             Assert.AreEqual(_notificacion1.Id, resultado.Id);
             Assert.AreEqual(_notificacion1.Mensaje, resultado.Mensaje);
@@ -84,7 +84,7 @@ namespace Services_Tests
         {
             _mockNotificacionRepo.Setup(r => r.GetById(99)).Returns((Notificacion)null);
 
-            var resultado = _service.GetById(99);
+            NotificacionDTO resultado = _service.GetById(99);
 
             Assert.IsNull(resultado);
             _mockNotificacionRepo.Verify(r => r.GetById(99), Times.Once);
@@ -93,10 +93,10 @@ namespace Services_Tests
         [TestMethod]
         public void GetAll_DevuelveTodasLasNotificaciones()
         {
-            var listaNotificaciones = new List<Notificacion> { _notificacion1, _notificacion2 };
+            List<Notificacion> listaNotificaciones = new List<Notificacion> { _notificacion1, _notificacion2 };
             _mockNotificacionRepo.Setup(r => r.GetAll()).Returns(listaNotificaciones);
 
-            var resultado = _service.GetAll();
+            List<NotificacionDTO> resultado = _service.GetAll();
 
             Assert.AreEqual(2, resultado.Count);
             Assert.IsTrue(resultado.Any(n => n.Mensaje == "Mensaje 1"));
@@ -107,15 +107,15 @@ namespace Services_Tests
         [TestMethod]
         public void NotificacionesNoLeidas_DevuelveSoloNoLeidasParaUsuario()
         {
-            var usuarioDto = new UsuarioDTO { Id = 1 };
+            UsuarioDTO usuarioDto = new UsuarioDTO { Id = 1 };
             _mockUsuarioRepo.Setup(r => r.GetById(1)).Returns(_usuario);
             
-            var notificacionesNoLeidas = new List<Notificacion> { _notificacion1 };
+            List<Notificacion> notificacionesNoLeidas = new List<Notificacion> { _notificacion1 };
             _mockNotificacionRepo.Setup(r => r.NotificacionesNoLeidas(_usuario)).Returns(notificacionesNoLeidas);
 
             _service = new NotificacionService(_mockNotificacionRepo.Object, _mockUsuarioRepo.Object);
 
-            var resultado = _service.NotificacionesNoLeidas(usuarioDto);
+            List<NotificacionDTO> resultado = _service.NotificacionesNoLeidas(usuarioDto);
 
             Assert.AreEqual(1, resultado.Count);
             Assert.AreEqual(_notificacion1.Id, resultado[0].Id);
