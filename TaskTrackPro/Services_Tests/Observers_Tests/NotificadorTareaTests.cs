@@ -95,5 +95,32 @@ namespace Services_Tests.Observers_Tests
                 Times.Once);
         }
 
+        [TestMethod]
+        public void SeForzaronRecursos_CreaNotificacionConMensajeYUsuarioAdmin()
+        {
+            _observer.SeForzaronRecursos(_proyecto, _tarea);
+
+            _mockNotifRepo.Verify(r => r.Add(
+                It.Is<Notificacion>(n =>
+                    n.Mensaje.Contains($"'{_tarea.Titulo}'") &&
+                    n.Mensaje.Contains($"'{_proyecto.Nombre}'") &&
+                    n.Mensaje.Contains("Se usarán los recursos ya asignados a la tarea") &&
+                    n.UsuariosNotificados.Contains(_adminUsuario)
+                )), Times.Once);
+        }
+        
+        [TestMethod]
+        public void TareaModificada_CreaNotificacionConMensajeYUsuarioAdmin()
+        {
+            _observer.TareaModificada(_proyecto, _tarea);
+
+            _mockNotifRepo.Verify(r => r.Add(
+                It.Is<Notificacion>(n =>
+                    n.Mensaje.Contains($"Se ha modificado la fecha de inicio en la tarea '{_tarea.Titulo}'") &&
+                    n.Mensaje.Contains($"en el proyecto '{_proyecto.Nombre}'") &&
+                    n.Mensaje.Contains("Esto puede afectar a la fecha de fin del proyecto") &&
+                    n.UsuariosNotificados.Contains(_adminUsuario)
+                )), Times.Once);
+        }
     }
 }

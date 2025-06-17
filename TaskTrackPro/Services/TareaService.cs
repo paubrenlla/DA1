@@ -94,7 +94,12 @@ namespace Services
             _tareaRepo.Update(tarea);
             if (fechaAnterior != tarea.FechaInicio || duracionAnterior != tarea.Duracion)
             {
+                Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
                 _proyectoService.ObtenerRutaCritica(proyectoId);
+                foreach (ITareaObserver obs in _observers)
+                {
+                    obs.TareaModificada(proyecto, tarea);
+                }
             }
         }
 
@@ -342,6 +347,10 @@ namespace Services
             _tareaRepo.Update(tarea);
             _proyectoService.ObtenerRutaCritica(proyectoId);
             _proyectoRepo.Update(proyecto);
+            foreach (ITareaObserver obs in _observers)
+            {
+                obs.SeForzaronRecursos(proyecto, tarea);
+            }
         }
     }
 }
