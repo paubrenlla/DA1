@@ -1,7 +1,6 @@
 ﻿using DTOs;
 using Domain;
 using Domain.Enums;
-using Domain.Observers;
 using IDataAcces;
 
 namespace Services
@@ -60,7 +59,7 @@ namespace Services
 
         public void ModificarProyecto(ProyectoDTO dto)
         {
-            var proyecto = _proyectoRepo.GetById(dto.Id);
+            Proyecto proyecto = _proyectoRepo.GetById(dto.Id);
             proyecto.Modificar(dto.Descripcion, dto.FechaInicio);
             _proyectoRepo.Update(proyecto);
         }
