@@ -65,7 +65,7 @@ public class UsuarioService : IUsuarioService
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(contraseña))
             throw new ArgumentException("Correo y contraseña son obligatorios");
         
-        Usuario? usuario = _usuarioRepo.buscarUsuarioPorCorreoYContraseña(email, Usuario.EncriptarPassword(contraseña));
+        Usuario? usuario = _usuarioRepo.buscarUsuarioPorCorreoYContraseña(email, EncriptadorContrasena.EncriptarPassword(contraseña));
         if (usuario == null)
             throw new ArgumentException("Credenciales inválidas");
         
@@ -95,7 +95,7 @@ public class UsuarioService : IUsuarioService
         Usuario user = _usuarioRepo.GetById(dto.Id);
         if(ExisteUsuarioConCorreo(dto.Email) && dto.Email != user.Email)
             throw new ArgumentException("Usuario con ese correo ya existe");
-        if (Usuario.DesencriptarPassword(user.Pwd) != dto.Contraseña)
+        if (EncriptadorContrasena.DesencriptarPassword(user.Pwd) != dto.Contraseña)
         {
             foreach (IUsuarioObserver obs in _observers)
                 obs.CambioContraseña(user, dto.Contraseña);
@@ -114,20 +114,20 @@ public class UsuarioService : IUsuarioService
     {
         Usuario user = _usuarioRepo.GetById(usuarioId);
         user.ResetearContraseña();
-        return Usuario.DesencriptarPassword(user.Pwd);
+        return EncriptadorContrasena.DesencriptarPassword(user.Pwd);
     }
 
     public string GenerarContraseñaAleatoria(int usuarioId)
     {
         Usuario user = _usuarioRepo.GetById(usuarioId);
         user.GenerarContraseñaAleatoria();
-        return Usuario.DesencriptarPassword(user.Pwd);
+        return EncriptadorContrasena.DesencriptarPassword(user.Pwd);
     }
 
     public string DesencriptarContraseña(int usuarioId)
     {
         Usuario user = _usuarioRepo.GetById(usuarioId);
-        return Usuario.DesencriptarPassword(user.Pwd);
+        return EncriptadorContrasena.DesencriptarPassword(user.Pwd);
     }
     
 }

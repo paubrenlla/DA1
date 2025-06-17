@@ -28,7 +28,7 @@ namespace DataAccess_Tests
                 email: "user1@example.com",
                 nombre: "Nombre1",
                 apellido: "Apellido1",
-                pwd: Usuario.EncriptarPassword("Contraseña1!!"),
+                pwd: EncriptadorContrasena.EncriptarPassword("Contraseña1!!"),
                 fechaNacimiento: new DateTime(1990, 1, 1)
             );
             _usuarioRepo.Add(user1);
@@ -39,7 +39,7 @@ namespace DataAccess_Tests
                 email: "user2@example.com",
                 nombre: "Nombre2",
                 apellido: "Apellido2",
-                pwd: Usuario.EncriptarPassword("Contraseña1!!"),
+                pwd: EncriptadorContrasena.EncriptarPassword("Contraseña1!!"),
                 fechaNacimiento: new DateTime(1991, 2, 2)
             );
             _usuarioRepo.Add(user2);
@@ -57,7 +57,7 @@ namespace DataAccess_Tests
                 email: "dup@example.com",
                 nombre: "Dup",
                 apellido: "User",
-                pwd: Usuario.EncriptarPassword("Contraseña1!!"),
+                pwd: EncriptadorContrasena.EncriptarPassword("Contraseña1!!"),
                 fechaNacimiento: new DateTime(1992, 3, 3)
             );
             _usuarioRepo.Add(user);
@@ -66,7 +66,7 @@ namespace DataAccess_Tests
                 email: "dup@example.com",
                 nombre: "Dup",
                 apellido: "User",
-                pwd: Usuario.EncriptarPassword("Contraseña1!!"),
+                pwd: EncriptadorContrasena.EncriptarPassword("Contraseña1!!"),
                 fechaNacimiento: new DateTime(1992, 3, 3)
             );
             _usuarioRepo.Add(duplicate);
@@ -79,7 +79,7 @@ namespace DataAccess_Tests
                 email: "toremove@example.com",
                 nombre: "To",
                 apellido: "Remove",
-                pwd: Usuario.EncriptarPassword("Contraseña1!!"),
+                pwd: EncriptadorContrasena.EncriptarPassword("Contraseña1!!"),
                 fechaNacimiento: new DateTime(1993, 4, 4)
             );
             _usuarioRepo.Add(user);
@@ -97,7 +97,7 @@ namespace DataAccess_Tests
                 email: "admin@example.com",
                 nombre: "Admin",
                 apellido: "User",
-                pwd: Usuario.EncriptarPassword("Contraseña1!!"),
+                pwd: EncriptadorContrasena.EncriptarPassword("Contraseña1!!"),
                 fechaNacimiento: new DateTime(1980, 5, 5)
             )
             {
@@ -111,8 +111,8 @@ namespace DataAccess_Tests
         [TestMethod]
         public void GetByIdDevuelveUsuarioCorrecto()
         {
-            Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", Usuario.EncriptarPassword("Contraseña1!!"), new DateTime(2000, 1, 1));
-            Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", Usuario.EncriptarPassword("Contraseña1!!"), new DateTime(1999, 2, 2));
+            Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", EncriptadorContrasena.EncriptarPassword("Contraseña1!!"), new DateTime(2000, 1, 1));
+            Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", EncriptadorContrasena.EncriptarPassword("Contraseña1!!"), new DateTime(1999, 2, 2));
             _usuarioRepo.Add(u1);
             _usuarioRepo.Add(u2);
 
@@ -132,8 +132,8 @@ namespace DataAccess_Tests
         [TestMethod]
         public void BuscarUsuarioPorCorreoYContraseñaDevuelveUsuario()
         {
-            Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", Usuario.EncriptarPassword("Contraseña1!!"), new DateTime(2000, 1, 1));
-            Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", Usuario.EncriptarPassword("Contraseña1!!"), new DateTime(1999, 2, 2));
+            Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", EncriptadorContrasena.EncriptarPassword("Contraseña1!!"), new DateTime(2000, 1, 1));
+            Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", EncriptadorContrasena.EncriptarPassword("Contraseña1!!"), new DateTime(1999, 2, 2));
             _usuarioRepo.Add(u1);
             _usuarioRepo.Add(u2);
 
@@ -146,8 +146,8 @@ namespace DataAccess_Tests
         [TestMethod]
         public void BuscarUsuarioPorCorreoDevuelveUsuario()
         {
-            Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", Usuario.EncriptarPassword("Contraseña1!!"), new DateTime(2000, 1, 1));
-            Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", Usuario.EncriptarPassword("Contraseña1!!"), new DateTime(1999, 2, 2));
+            Usuario u1 = new Usuario("a@a.com", "Ana", "Alvarez", EncriptadorContrasena.EncriptarPassword("Contraseña1!!"), new DateTime(2000, 1, 1));
+            Usuario u2 = new Usuario("b@b.com", "Beto", "Barrios", EncriptadorContrasena.EncriptarPassword("Contraseña1!!"), new DateTime(1999, 2, 2));
             _usuarioRepo.Add(u1);
             _usuarioRepo.Add(u2);
 

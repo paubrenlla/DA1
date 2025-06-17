@@ -77,7 +77,7 @@ public class Usuario
         set
         {
             ValidarContraseña(value);
-            _pwd = EncriptarPassword(value);
+            _pwd = EncriptadorContrasena.EncriptarPassword(value);
         }
     }
     
@@ -136,12 +136,6 @@ public class Usuario
         if (!Regex.IsMatch(value, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}$"))
             throw new ArgumentException("El email no tiene un formato válido.");
     }
-    
-    public static string EncriptarPassword(string passwordTextoPlano)
-    {
-        var passwordBytes = System.Text.Encoding.UTF8.GetBytes(passwordTextoPlano);
-        return System.Convert.ToBase64String(passwordBytes);
-    }
 
     public void Modificar(string email, string nombre, string apellido, string contraseña, DateTime fechaNacimiento)
     {
@@ -153,12 +147,6 @@ public class Usuario
 
         Notificacion notificacion = new Notificacion("Sus datos han sido actualizados.");
         notificacion.AgregarUsuario(this);
-    }
-    
-    public static string DesencriptarPassword(string contraseñaEncriptada)
-    {
-        byte[] contraseñaBytes = Convert.FromBase64String(contraseñaEncriptada);
-        return System.Text.Encoding.UTF8.GetString(contraseñaBytes);
     }
     
     public void AgregarAdmin()

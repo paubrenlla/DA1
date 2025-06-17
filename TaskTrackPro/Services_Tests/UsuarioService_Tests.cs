@@ -124,7 +124,7 @@ namespace Services_Tests
         {
             string email = "u1@test.com";
             string contraseña = "Contraseña1!";
-            string encriptada = Usuario.EncriptarPassword(contraseña);
+            string encriptada = EncriptadorContrasena.EncriptarPassword(contraseña);
 
             _mockUsuarioRepo
                 .Setup(r => r.buscarUsuarioPorCorreoYContraseña(email, encriptada))
@@ -149,7 +149,7 @@ namespace Services_Tests
         {
             string email = "u1@test.com";
             string contraseña = "incorrecta";
-            string encriptada = Usuario.EncriptarPassword(contraseña);
+            string encriptada = EncriptadorContrasena.EncriptarPassword(contraseña);
 
             _mockUsuarioRepo
                 .Setup(r => r.buscarUsuarioPorCorreoYContraseña(email, encriptada))
@@ -235,7 +235,7 @@ namespace Services_Tests
         {
             _mockUsuarioRepo.Setup(r => r.GetById(1)).Returns(_usuario1);
 
-            string encriptada = Usuario.EncriptarPassword(_service.ResetearContraseña(1));
+            string encriptada = EncriptadorContrasena.EncriptarPassword(_service.ResetearContraseña(1));
 
             Assert.IsNotNull(encriptada);
             Assert.AreEqual(_usuario1.Pwd, encriptada);
