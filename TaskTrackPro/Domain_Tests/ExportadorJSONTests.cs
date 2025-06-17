@@ -57,7 +57,7 @@ namespace Domain_Tests
     
             var proyectos = new List<Proyecto>();
             Proyecto nuevo = new Proyecto("test", "descripcion", DateTime.Today);
-            nuevo.agregarTarea(tarea1); 
+            nuevo.TareasAsociadas.Add(tarea1); 
             proyectos.Add(nuevo);
 
             var asignaciones = new List<AsignacionRecursoTarea>

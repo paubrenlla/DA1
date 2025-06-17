@@ -25,7 +25,7 @@ public class ExportadorCSVTests
 
         var proyectos = new List<Proyecto>();
         Proyecto nuevo = new Proyecto("test", "descripcion", DateTime.Today);
-        nuevo.agregarTarea(tarea1); // ¡Añade la tarea al proyecto!
+        nuevo.TareasAsociadas.Add(tarea1);
         proyectos.Add(nuevo);
 
         var asignaciones = new List<AsignacionRecursoTarea>
@@ -41,9 +41,9 @@ public class ExportadorCSVTests
         string rutaArchivo = exportador.Exportar(proyectos, asignaciones);
         string contenido = File.ReadAllText(rutaArchivo);
 
-        StringAssert.Contains(contenido, "Recurso Test"); // El nombre del recurso debe aparecer
-        StringAssert.Contains(contenido, "2"); // La cantidad asignada debe aparecer
-        StringAssert.Contains(contenido, "Leer artículo"); // El título de la tarea debe estar
+        StringAssert.Contains(contenido, "Recurso Test");
+        StringAssert.Contains(contenido, "2");
+        StringAssert.Contains(contenido, "Leer artículo");
 
         File.Delete(rutaArchivo);
     }
