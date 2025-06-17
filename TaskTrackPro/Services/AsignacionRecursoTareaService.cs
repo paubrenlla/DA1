@@ -9,15 +9,18 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
     private readonly IDataAccessRecurso _recursoRepo;
     private readonly IDataAccessTarea _tareaRepo;
     private readonly IDataAccessAsignacionRecursoTarea _asignacionRepo;
+    private readonly IDataAccessProyecto _proyectoRepo;
 
     public AsignacionRecursoTareaService(
         IDataAccessRecurso recursoRepo,
         IDataAccessTarea tareaRepo,
-        IDataAccessAsignacionRecursoTarea asignacionRepo)
+        IDataAccessAsignacionRecursoTarea asignacionRepo,
+        IDataAccessProyecto proyectoRepo)
     {
         _recursoRepo = recursoRepo;
         _tareaRepo = tareaRepo;
         _asignacionRepo = asignacionRepo;
+        _proyectoRepo = proyectoRepo;
     }
     
     public AsignacionRecursoTareaDTO GetById(int id)
@@ -131,9 +134,22 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
 
     public bool RecursoEsExclusivo(int recursoID)
     {
-        List<AsignacionRecursoTarea> tareasFiltradas = _asignacionRepo.GetByRecurso(recursoID);
-        return ! (tareasFiltradas.Count() > 1);
+        List<AsignacionRecursoTarea> asignaciones = _asignacionRepo.GetByRecurso(recursoID);
+
+        List<int> proyectoIds = asignaciones
+            .Select(a =>
+            {
+                Proyecto proyecto = _proyectoRepo
+                    .GetAll()
+                    .FirstOrDefault(p => p.TareasAsociadas.Any(t => t.Id == a.Tarea.Id));
+                return proyecto.Id;
+            })
+            .Distinct()
+            .ToList();
+
+        return proyectoIds.Count <= 1;
     }
+
 
     public bool VerificarRecursosDeTareaDisponibles(int TareaId)
     {
