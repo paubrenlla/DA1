@@ -102,19 +102,19 @@ INSERT INTO TaskTrackProDB.dbo.AsignacionesRecursoTarea (RecursoId,TareaId,Canti
 INSERT INTO TaskTrackProDB.dbo.NotificacionUsuarios (NotificacionesRecibidasId,UsuariosNotificadosId) VALUES
 	 (1,1),
 	 (2,1),
-	 (3,1),
-	 (4,2),
+	 (4,1),
+	 (3,2),
 	 (5,2),
 	 (6,2),
 	 (7,2),
 	 (8,2),
-	 (9,3),
-	 (10,3);
+	 (9,2),
+	 (10,2);
 INSERT INTO TaskTrackProDB.dbo.NotificacionUsuarios (NotificacionesRecibidasId,UsuariosNotificadosId) VALUES
 	 (11,3),
 	 (12,3),
-	 (13,5),
-	 (14,5),
+	 (13,3),
+	 (14,3),
 	 (15,5),
 	 (16,5),
 	 (17,5),
@@ -134,52 +134,33 @@ INSERT INTO TaskTrackProDB.dbo.NotificacionUsuarios (NotificacionesRecibidasId,U
 	 (30,5);
 INSERT INTO TaskTrackProDB.dbo.NotificacionUsuarios (NotificacionesRecibidasId,UsuariosNotificadosId) VALUES
 	 (31,5),
-	 (32,5),
-	 (33,5),
-	 (34,5);
-INSERT INTO TaskTrackProDB.dbo.NotificacionVistas (NotificacionesVistasId,VistaPorUsuariosId) VALUES
-	 (2,1),
-	 (4,2),
-	 (6,2),
-	 (8,2),
-	 (9,3),
-	 (10,3),
-	 (11,3),
-	 (12,3),
-	 (13,5),
-	 (14,5);
-INSERT INTO TaskTrackProDB.dbo.NotificacionVistas (NotificacionesVistasId,VistaPorUsuariosId) VALUES
-	 (15,5),
-	 (18,5),
-	 (19,5),
-	 (21,5),
-	 (24,5),
-	 (25,5),
-	 (29,5),
-	 (31,5),
-	 (33,5);
+	 (32,5);
 INSERT INTO TaskTrackProDB.dbo.Notificaciones (Mensaje) VALUES
 	 (N'Se ha agregado la tarea ''Tarea 1'' al proyecto ''Proyecto 1''.
 Esto puede cambiar la fecha de fin del proyecto!!!'),
 	 (N'Se ha agregado la tarea ''Tarea 2'' al proyecto ''Proyecto 1''.
 Esto puede cambiar la fecha de fin del proyecto!!!'),
-	 (N'Se ha modificado una dependencia en la tarea ''Tarea 1'' en el proyecto ''Proyecto 1''.
-Es muy probable que la fecha de fin del proyecto haya cambiado!!!'),
 	 (N'Se ha agregado la tarea ''Tarea 3'' al proyecto ''Proyecto 2''.
 Esto puede cambiar la fecha de fin del proyecto!!!'),
+	 (N'Se ha modificado una dependencia en la tarea ''Tarea 1'' en el proyecto ''Proyecto 1''.
+Es muy probable que la fecha de fin del proyecto haya cambiado!!!'),
 	 (N'Se ha agregado la tarea ''Tarea 4'' al proyecto ''Proyecto 2''.
 Esto puede cambiar la fecha de fin del proyecto!!!'),
 	 (N'Se ha agregado la tarea ''Tarea 5'' al proyecto ''Proyecto 2''.
 Esto puede cambiar la fecha de fin del proyecto!!!'),
 	 (N'Se ha modificado una dependencia en la tarea ''Tarea 4'' en el proyecto ''Proyecto 2''.
 Es muy probable que la fecha de fin del proyecto haya cambiado!!!'),
+	 (N'Se ha modificado una dependencia en la tarea ''Tarea 4'' en el proyecto ''Proyecto 2''.
+Es muy probable que la fecha de fin del proyecto haya cambiado!!!'),
 	 (N'Se ha modificado una dependencia en la tarea ''Tarea 5'' en el proyecto ''Proyecto 2''.
 Es muy probable que la fecha de fin del proyecto haya cambiado!!!'),
+	 (N'Se ha modificado una dependencia en la tarea ''Tarea 4'' en el proyecto ''Proyecto 2''.
+Es muy probable que la fecha de fin del proyecto haya cambiado!!!');
+INSERT INTO TaskTrackProDB.dbo.Notificaciones (Mensaje) VALUES
 	 (N'Se ha agregado la tarea ''Tarea 6'' al proyecto ''Proyecto 3''.
 Esto puede cambiar la fecha de fin del proyecto!!!'),
 	 (N'Se ha agregado la tarea ''Tarea 7'' al proyecto ''Proyecto 4''.
-Esto puede cambiar la fecha de fin del proyecto!!!');
-INSERT INTO TaskTrackProDB.dbo.Notificaciones (Mensaje) VALUES
+Esto puede cambiar la fecha de fin del proyecto!!!'),
 	 (N'Se ha agregado la tarea ''Tarea 8'' al proyecto ''Proyecto 4''.
 Esto puede cambiar la fecha de fin del proyecto!!!'),
 	 (N'Se ha agregado la tarea ''Tarea 9'' al proyecto ''Proyecto 5''.
@@ -190,17 +171,17 @@ Esto puede cambiar la fecha de fin del proyecto!!!'),
 Esto puede cambiar la fecha de fin del proyecto!!!'),
 	 (N'Se ha agregado la tarea ''Tarea 12'' al proyecto ''Proyecto 7''.
 Esto puede cambiar la fecha de fin del proyecto!!!'),
-	 (N'Se ha agregado la tarea ''Tarea 13'' al proyecto ''Proyecto 7''.
-Esto puede cambiar la fecha de fin del proyecto!!!'),
-	 (N'Se ha agregado la tarea ''Tarea 14'' al proyecto ''Proyecto 7''.
-Esto puede cambiar la fecha de fin del proyecto!!!'),
 	 (N'Se ha modificado una dependencia en la tarea ''Tarea 12'' en el proyecto ''Proyecto 7''.
 Es muy probable que la fecha de fin del proyecto haya cambiado!!!'),
+	 (N'Se ha agregado la tarea ''Tarea 13'' al proyecto ''Proyecto 7''.
+Esto puede cambiar la fecha de fin del proyecto!!!'),
 	 (N'Se ha modificado una dependencia en la tarea ''Tarea 13'' en el proyecto ''Proyecto 7''.
-Es muy probable que la fecha de fin del proyecto haya cambiado!!!'),
-	 (N'Se ha modificado una dependencia en la tarea ''Tarea 14'' en el proyecto ''Proyecto 7''.
 Es muy probable que la fecha de fin del proyecto haya cambiado!!!');
 INSERT INTO TaskTrackProDB.dbo.Notificaciones (Mensaje) VALUES
+	 (N'Se ha agregado la tarea ''Tarea 14'' al proyecto ''Proyecto 7''.
+Esto puede cambiar la fecha de fin del proyecto!!!'),
+	 (N'Se ha modificado una dependencia en la tarea ''Tarea 14'' en el proyecto ''Proyecto 7''.
+Es muy probable que la fecha de fin del proyecto haya cambiado!!!'),
 	 (N'Se ha agregado la tarea ''Tarea 15'' al proyecto ''Proyecto 8''.
 Esto puede cambiar la fecha de fin del proyecto!!!'),
 	 (N'Se ha agregado la tarea ''Tarea 16'' al proyecto ''Proyecto 8''.
@@ -213,34 +194,26 @@ Esto puede cambiar la fecha de fin del proyecto!!!'),
 Esto puede cambiar la fecha de fin del proyecto!!!'),
 	 (N'Se ha agregado la tarea ''Tarea 19'' al proyecto ''Proyecto 9''.
 Esto puede cambiar la fecha de fin del proyecto!!!'),
+	 (N'Se ha modificado una dependencia en la tarea ''Tarea 19'' en el proyecto ''Proyecto 9''.
+Es muy probable que la fecha de fin del proyecto haya cambiado!!!'),
 	 (N'Se ha agregado la tarea ''Tarea 20'' al proyecto ''Proyecto 9''.
-Esto puede cambiar la fecha de fin del proyecto!!!'),
-	 (N'Se ha modificado una dependencia en la tarea ''Tarea 17'' en el proyecto ''Proyecto 9''.
-Es muy probable que la fecha de fin del proyecto haya cambiado!!!'),
-	 (N'Se ha modificado una dependencia en la tarea ''Tarea 19'' en el proyecto ''Proyecto 9''.
-Es muy probable que la fecha de fin del proyecto haya cambiado!!!'),
-	 (N'Se ha modificado una dependencia en la tarea ''Tarea 19'' en el proyecto ''Proyecto 9''.
-Es muy probable que la fecha de fin del proyecto haya cambiado!!!');
+Esto puede cambiar la fecha de fin del proyecto!!!');
 INSERT INTO TaskTrackProDB.dbo.Notificaciones (Mensaje) VALUES
-	 (N'Se ha modificado una dependencia en la tarea ''Tarea 17'' en el proyecto ''Proyecto 9''.
-Es muy probable que la fecha de fin del proyecto haya cambiado!!!'),
 	 (N'Se ha modificado una dependencia en la tarea ''Tarea 20'' en el proyecto ''Proyecto 9''.
 Es muy probable que la fecha de fin del proyecto haya cambiado!!!'),
 	 (N'Se ha modificado una dependencia en la tarea ''Tarea 20'' en el proyecto ''Proyecto 9''.
-Es muy probable que la fecha de fin del proyecto haya cambiado!!!'),
-	 (N'Se ha modificado una dependencia en la tarea ''Tarea 19'' en el proyecto ''Proyecto 9''.
 Es muy probable que la fecha de fin del proyecto haya cambiado!!!');
 INSERT INTO TaskTrackProDB.dbo.Proyectos (FinEstimado,Nombre,Descripcion,FechaInicio) VALUES
-	 ('2025-06-20 08:00:00.0000000',N'Proyecto 1',N'Proyecto 1','2025-06-17 00:00:00.0000000'),
-	 ('2025-06-19 00:00:00.0000000',N'Proyecto 2',N'Proyecto 2','2025-06-17 00:00:00.0000000'),
-	 ('2025-06-17 06:00:00.0000000',N'Proyecto 3',N'Proyecto 3','2025-06-17 00:00:00.0000000'),
-	 ('2025-06-20 09:00:00.0000000',N'Proyecto 4',N'Proyecto 4','2025-06-17 00:00:00.0000000'),
-	 ('2025-06-20 07:00:00.0000000',N'Proyecto 5',N'Proyecto 5','2025-06-17 00:00:00.0000000'),
-	 ('2025-06-17 01:00:00.0000000',N'Proyecto 6',N'Proyecto 6','2025-06-17 00:00:00.0000000'),
-	 ('2025-06-23 09:00:00.0000000',N'Proyecto 7',N'Proyecto 7','2025-06-17 00:00:00.0000000'),
-	 ('2025-06-21 10:00:00.0000000',N'Proyecto 8',N'Proyecto 8','2025-06-17 00:00:00.0000000'),
-	 ('2025-06-20 14:00:00.0000000',N'Proyecto 9',N'Proyecto 9','2025-06-17 00:00:00.0000000'),
-	 (NULL,N'Proyecto 10',N'Proyecto 10','2025-06-17 00:00:00.0000000');
+	 ('2025-06-27 11:00:00.0000000',N'Proyecto 1',N'Proyecto 1','2025-06-26 00:00:00.0000000'),
+	 ('2025-06-28 16:00:00.0000000',N'Proyecto 2',N'Proyecto 2','2025-06-26 00:00:00.0000000'),
+	 ('2025-06-28 15:00:00.0000000',N'Proyecto 3',N'Proyecto 3','2025-06-25 00:00:00.0000000'),
+	 ('2025-06-28 03:00:00.0000000',N'Proyecto 4',N'Proyecto 4','2025-06-23 00:00:00.0000000'),
+	 ('2025-06-27 09:00:00.0000000',N'Proyecto 5',N'Proyecto 5','2025-06-27 00:00:00.0000000'),
+	 ('2025-06-27 07:00:00.0000000',N'Proyecto 6',N'Proyecto 6','2025-06-27 00:00:00.0000000'),
+	 ('2025-06-30 07:00:00.0000000',N'Proyecto 7',N'Proyecto 7','2025-06-26 00:00:00.0000000'),
+	 ('2025-06-27 22:00:00.0000000',N'Proyecto 8',N'Proyecto 8','2025-06-24 00:00:00.0000000'),
+	 ('2025-06-30 03:00:00.0000000',N'Proyecto 9',N'Proyecto 9','2025-06-25 00:00:00.0000000'),
+	 (NULL,N'Proyecto 10',N'Proyecto 10','2025-06-27 00:00:00.0000000');
 INSERT INTO TaskTrackProDB.dbo.Recursos (Nombre,Tipo,Descripcion,SePuedeCompartir,CantidadDelRecurso,CantidadEnUso) VALUES
 	 (N'Recurso 1 - 1T',N'Recurso',N'Recurso',1,1,0),
 	 (N'Recurso 2 - 2T',N'Recurso',N'Recurso',1,2,0),
@@ -263,27 +236,27 @@ INSERT INTO TaskTrackProDB.dbo.TareaTarea (TareasDependenciaId,TareasSucesorasId
 	 (18,20),
 	 (19,20);
 INSERT INTO TaskTrackProDB.dbo.Tareas (EarlyStart,LateStart,EarlyFinish,LateFinish,Titulo,Descripcion,FechaInicio,EsCritica,EstadoValor,EstadoFecha,ProyectoId,Holgura,Duracion,RecursosForzados) VALUES
-	 ('2025-06-20 00:00:00.0000000','2025-06-20 00:00:00.0000000','2025-06-20 08:00:00.0000000','2025-06-20 08:00:00.0000000',N'Tarea 1',N'Tarea 1','2025-06-17 00:00:00.0000000',1,1,'2025-06-17 16:51:14.1672812',1,0,288000000000,0),
-	 ('2025-06-17 00:00:00.0000000','2025-06-17 00:00:00.0000000','2025-06-20 00:00:00.0000000','2025-06-20 00:00:00.0000000',N'Tarea 2',N'Tarea 2','2025-06-17 00:00:00.0000000',1,0,'2025-06-17 16:50:43.1324608',1,0,2592000000000,0),
-	 ('2025-06-17 00:00:00.0000000','2025-06-17 00:00:00.0000000','2025-06-17 02:00:00.0000000','2025-06-17 02:00:00.0000000',N'Tarea 3',N'Tarea 3','2025-06-17 00:00:00.0000000',1,0,'2025-06-17 16:51:30.3301473',2,0,72000000000,0),
-	 ('2025-06-17 02:00:00.0000000','2025-06-17 02:00:00.0000000','2025-06-17 17:00:00.0000000','2025-06-17 17:00:00.0000000',N'Tarea 4',N'Tarea 4','2025-06-17 00:00:00.0000000',1,1,'2025-06-17 16:25:37.0110302',2,0,540000000000,0),
-	 ('2025-06-17 17:00:00.0000000','2025-06-17 17:00:00.0000000','2025-06-19 00:00:00.0000000','2025-06-19 00:00:00.0000000',N'Tarea 5',N'Tarea 5','2025-06-17 00:00:00.0000000',1,1,'2025-06-17 16:25:46.2760330',2,0,1116000000000,0),
-	 ('2025-06-17 00:00:00.0000000','2025-06-17 00:00:00.0000000','2025-06-17 06:00:00.0000000','2025-06-17 06:00:00.0000000',N'Tarea 6',N'Tarea 6','2025-06-17 00:00:00.0000000',1,0,'2025-06-17 17:04:02.6048137',3,0,216000000000,0),
-	 ('2025-06-17 00:00:00.0000000','2025-06-17 00:00:00.0000000','2025-06-20 09:00:00.0000000','2025-06-20 09:00:00.0000000',N'Tarea 7',N'Tarea 7','2025-06-17 00:00:00.0000000',1,0,'2025-06-17 17:00:51.8044882',4,0,2916000000000,0),
-	 ('2025-06-17 00:00:00.0000000','2025-06-19 06:00:00.0000000','2025-06-18 03:00:00.0000000','2025-06-20 09:00:00.0000000',N'Tarea 8',N'Tarea 8','2025-06-17 00:00:00.0000000',0,0,'2025-06-17 17:00:59.2411541',4,1944000000000,972000000000,0),
-	 ('2025-06-17 00:00:00.0000000','2025-06-17 00:00:00.0000000','2025-06-20 07:00:00.0000000','2025-06-20 07:00:00.0000000',N'Tarea 9',N'Tarea 9','2025-06-17 00:00:00.0000000',1,0,NULL,5,0,2844000000000,0),
-	 ('2025-06-17 00:00:00.0000000','2025-06-17 00:00:00.0000000','2025-06-17 01:00:00.0000000','2025-06-17 01:00:00.0000000',N'Tarea 10',N'Tarea 10','2025-06-17 00:00:00.0000000',1,0,'2025-06-17 17:02:46.2531013',6,0,36000000000,0);
+	 ('2025-06-26 06:00:00.0000000','2025-06-26 06:00:00.0000000','2025-06-27 11:00:00.0000000','2025-06-27 11:00:00.0000000',N'Tarea 1',N'Tarea 1','2025-06-27 00:00:00.0000000',1,1,'2025-06-17 18:56:38.0764904',1,0,1044000000000,0),
+	 ('2025-06-26 00:00:00.0000000','2025-06-26 00:00:00.0000000','2025-06-26 06:00:00.0000000','2025-06-26 06:00:00.0000000',N'Tarea 2',N'Tarea 2','2025-06-26 00:00:00.0000000',1,0,NULL,1,0,216000000000,0),
+	 ('2025-06-26 00:00:00.0000000','2025-06-26 00:00:00.0000000','2025-06-26 03:00:00.0000000','2025-06-26 03:00:00.0000000',N'Tarea 3',N'Tarea 3','2025-06-26 00:00:00.0000000',1,0,NULL,2,0,108000000000,0),
+	 ('2025-06-26 03:00:00.0000000','2025-06-26 03:00:00.0000000','2025-06-26 09:00:00.0000000','2025-06-26 09:00:00.0000000',N'Tarea 4',N'Tarea 4','2025-06-27 00:00:00.0000000',1,1,'2025-06-17 18:58:08.7959319',2,0,216000000000,0),
+	 ('2025-06-26 09:00:00.0000000','2025-06-26 09:00:00.0000000','2025-06-28 16:00:00.0000000','2025-06-28 16:00:00.0000000',N'Tarea 5',N'Tarea 5','2025-06-27 00:00:00.0000000',1,1,'2025-06-17 18:58:04.2573143',2,0,1980000000000,0),
+	 ('2025-06-25 00:00:00.0000000','2025-06-25 00:00:00.0000000','2025-06-28 15:00:00.0000000','2025-06-28 15:00:00.0000000',N'Tarea 6',N'Tarea 6','2025-06-25 00:00:00.0000000',1,0,NULL,3,0,3132000000000,0),
+	 ('2025-06-23 00:00:00.0000000','2025-06-23 00:00:00.0000000','2025-06-28 03:00:00.0000000','2025-06-28 03:00:00.0000000',N'Tarea 7',N'Tarea 7','2025-06-23 00:00:00.0000000',1,0,NULL,4,0,4428000000000,0),
+	 ('2025-06-25 00:00:00.0000000','2025-06-25 18:00:00.0000000','2025-06-27 09:00:00.0000000','2025-06-28 03:00:00.0000000',N'Tarea 8',N'Tarea 8','2025-06-25 00:00:00.0000000',0,0,NULL,4,648000000000,2052000000000,0),
+	 ('2025-06-27 00:00:00.0000000','2025-06-27 00:00:00.0000000','2025-06-27 09:00:00.0000000','2025-06-27 09:00:00.0000000',N'Tarea 9',N'Tarea 9','2025-06-27 00:00:00.0000000',1,0,NULL,5,0,324000000000,0),
+	 ('2025-06-27 00:00:00.0000000','2025-06-27 00:00:00.0000000','2025-06-27 07:00:00.0000000','2025-06-27 07:00:00.0000000',N'Tarea 10',N'Tarea 10','2025-06-27 00:00:00.0000000',1,0,NULL,6,0,252000000000,0);
 INSERT INTO TaskTrackProDB.dbo.Tareas (EarlyStart,LateStart,EarlyFinish,LateFinish,Titulo,Descripcion,FechaInicio,EsCritica,EstadoValor,EstadoFecha,ProyectoId,Holgura,Duracion,RecursosForzados) VALUES
-	 ('2025-06-17 00:00:00.0000000','2025-06-17 00:00:00.0000000','2025-06-20 04:00:00.0000000','2025-06-20 04:00:00.0000000',N'Tarea 11',N'Tarea 11','2025-06-17 00:00:00.0000000',1,0,'2025-06-17 16:52:22.2706607',7,0,2736000000000,0),
-	 ('2025-06-20 04:00:00.0000000','2025-06-20 04:00:00.0000000','2025-06-20 09:00:00.0000000','2025-06-20 09:00:00.0000000',N'Tarea 12',N'Tarea 12','2025-06-17 00:00:00.0000000',1,1,'2025-06-17 16:29:05.3946094',7,0,180000000000,0),
-	 ('2025-06-20 09:00:00.0000000','2025-06-21 08:00:00.0000000','2025-06-22 10:00:00.0000000','2025-06-23 09:00:00.0000000',N'Tarea 13',N'Tarea 13','2025-06-17 00:00:00.0000000',0,1,'2025-06-17 16:29:10.4537255',7,828000000000,1764000000000,0),
-	 ('2025-06-20 09:00:00.0000000','2025-06-20 09:00:00.0000000','2025-06-23 09:00:00.0000000','2025-06-23 09:00:00.0000000',N'Tarea 14',N'Tarea 14','2025-06-17 00:00:00.0000000',1,1,'2025-06-17 16:29:13.6764119',7,0,2592000000000,0),
-	 ('2025-06-17 00:00:00.0000000','2025-06-17 00:00:00.0000000','2025-06-21 08:00:00.0000000','2025-06-21 08:00:00.0000000',N'Tarea 15',N'Tarea 15','2025-06-17 00:00:00.0000000',1,0,'2025-06-17 16:54:08.8632829',8,0,3744000000000,0),
-	 ('2025-06-21 08:00:00.0000000','2025-06-21 08:00:00.0000000','2025-06-21 10:00:00.0000000','2025-06-21 10:00:00.0000000',N'Tarea 16',N'Tarea 16','2025-06-17 00:00:00.0000000',1,1,'2025-06-17 16:29:47.8877264',8,0,72000000000,0),
-	 ('2025-06-17 00:00:00.0000000','2025-06-17 00:00:00.0000000','2025-06-18 07:00:00.0000000','2025-06-18 07:00:00.0000000',N'Tarea 17',N'Tarea 17','2025-06-17 00:00:00.0000000',1,0,'2025-06-17 16:53:43.1382205',9,0,1116000000000,0),
-	 ('2025-06-17 00:00:00.0000000','2025-06-18 06:00:00.0000000','2025-06-17 05:00:00.0000000','2025-06-18 11:00:00.0000000',N'Tarea 18',N'Tarea 18','2025-06-17 00:00:00.0000000',0,0,NULL,9,1080000000000,180000000000,0),
-	 ('2025-06-18 07:00:00.0000000','2025-06-18 07:00:00.0000000','2025-06-18 11:00:00.0000000','2025-06-18 11:00:00.0000000',N'Tarea 19',N'Tarea 19','2025-06-17 00:00:00.0000000',1,1,'2025-06-17 16:32:03.0079604',9,0,144000000000,0),
-	 ('2025-06-18 11:00:00.0000000','2025-06-18 11:00:00.0000000','2025-06-20 14:00:00.0000000','2025-06-20 14:00:00.0000000',N'Tarea 20',N'Tarea 20','2025-06-17 00:00:00.0000000',1,1,'2025-06-17 16:31:51.8904848',9,0,1836000000000,0);
+	 ('2025-06-26 00:00:00.0000000','2025-06-26 00:00:00.0000000','2025-06-28 00:00:00.0000000','2025-06-28 00:00:00.0000000',N'Tarea 11',N'Tarea 11','2025-06-26 00:00:00.0000000',1,0,NULL,7,0,1728000000000,0),
+	 ('2025-06-28 00:00:00.0000000','2025-06-28 00:00:00.0000000','2025-06-29 06:00:00.0000000','2025-06-29 06:00:00.0000000',N'Tarea 12',N'Tarea 12','2025-06-26 00:00:00.0000000',1,1,'2025-06-17 19:00:55.2859753',7,0,1080000000000,0),
+	 ('2025-06-29 06:00:00.0000000','2025-06-29 22:00:00.0000000','2025-06-29 15:00:00.0000000','2025-06-30 07:00:00.0000000',N'Tarea 13',N'Tarea 13','2025-06-28 00:00:00.0000000',0,1,'2025-06-17 19:01:25.3060967',7,576000000000,324000000000,0),
+	 ('2025-06-29 06:00:00.0000000','2025-06-29 06:00:00.0000000','2025-06-30 07:00:00.0000000','2025-06-30 07:00:00.0000000',N'Tarea 14',N'Tarea 14','2025-06-28 00:00:00.0000000',1,1,'2025-06-17 19:01:53.4850979',7,0,900000000000,0),
+	 ('2025-06-26 00:00:00.0000000','2025-06-26 00:00:00.0000000','2025-06-26 05:00:00.0000000','2025-06-26 05:00:00.0000000',N'Tarea 15',N'Tarea 15','2025-06-26 00:00:00.0000000',1,0,NULL,8,0,180000000000,0),
+	 ('2025-06-26 05:00:00.0000000','2025-06-26 05:00:00.0000000','2025-06-27 22:00:00.0000000','2025-06-27 22:00:00.0000000',N'Tarea 16',N'Tarea 16','2025-06-27 00:00:00.0000000',1,1,'2025-06-17 19:03:01.2366906',8,0,1476000000000,0),
+	 ('2025-06-25 00:00:00.0000000','2025-06-25 06:00:00.0000000','2025-06-25 18:00:00.0000000','2025-06-26 00:00:00.0000000',N'Tarea 17',N'Tarea 17','2025-06-25 00:00:00.0000000',0,0,NULL,9,216000000000,648000000000,0),
+	 ('2025-06-25 00:00:00.0000000','2025-06-25 00:00:00.0000000','2025-06-26 03:00:00.0000000','2025-06-26 03:00:00.0000000',N'Tarea 18',N'Tarea 18','2025-06-25 00:00:00.0000000',1,0,NULL,9,0,972000000000,0),
+	 ('2025-06-25 18:00:00.0000000','2025-06-26 00:00:00.0000000','2025-06-25 21:00:00.0000000','2025-06-26 03:00:00.0000000',N'Tarea 19',N'Tarea 19','2025-06-25 00:00:00.0000000',0,1,'2025-06-17 19:04:15.6147038',9,216000000000,108000000000,0),
+	 ('2025-06-26 03:00:00.0000000','2025-06-26 03:00:00.0000000','2025-06-30 03:00:00.0000000','2025-06-30 03:00:00.0000000',N'Tarea 20',N'Tarea 20','2025-06-27 00:00:00.0000000',1,1,'2025-06-17 19:04:42.4142566',9,0,3456000000000,0);
 INSERT INTO TaskTrackProDB.dbo.UsuarioTarea (TareasAsignadasId,UsuariosAsignadosId) VALUES
 	 (1,1),
 	 (1,2),
