@@ -1,6 +1,5 @@
 using Domain;
 
-
 namespace Domain_Tests
 {
     [TestClass]
@@ -13,16 +12,14 @@ namespace Domain_Tests
             string nombre = "Proyecto A";
             string descripcion = "Este es un proyecto para test";
             DateTime fechaInicio = DateTime.Today;
-            var proyectos = new List<Proyecto>
+            List<Proyecto> proyectos = new List<Proyecto>
             {
                 new Proyecto(nombre, descripcion, fechaInicio)
             };
-            var asignaciones = new List<AsignacionRecursoTarea>();
-    
-    
+            List<AsignacionRecursoTarea> asignaciones = new List<AsignacionRecursoTarea>();
+            
             string rutaArchivo = exportador.Exportar(proyectos, asignaciones);
-    
-    
+            
             Assert.IsNotNull(rutaArchivo);
             Assert.IsTrue(File.Exists(rutaArchivo));
             Assert.IsTrue(rutaArchivo.EndsWith(".json"));
@@ -33,12 +30,10 @@ namespace Domain_Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void ExportarJSON_ProyectosNull_DebeFallar()
         {
-    
             var exportador = new ExportadorJSON();
             List<Proyecto> proyectos = null;
-            var asignaciones = new List<AsignacionRecursoTarea>();
-    
-    
+            List<AsignacionRecursoTarea> asignaciones = new List<AsignacionRecursoTarea>();
+            
             exportador.Exportar(proyectos, asignaciones);
         }
     
@@ -55,12 +50,12 @@ namespace Domain_Tests
             Tarea tarea1 = new Tarea(titulo, descripcion, fechaInicio, duracion, esCritica);
             Recurso recurso = new Recurso("Recurso Test", "tipo", "descripcion", true, 3);
     
-            var proyectos = new List<Proyecto>();
+            List<Proyecto> proyectos = new List<Proyecto>();
             Proyecto nuevo = new Proyecto("test", "descripcion", DateTime.Today);
             nuevo.agregarTarea(tarea1); 
             proyectos.Add(nuevo);
 
-            var asignaciones = new List<AsignacionRecursoTarea>
+            List<AsignacionRecursoTarea> asignaciones = new List<AsignacionRecursoTarea>
             {
                 new AsignacionRecursoTarea 
                 { 
@@ -69,11 +64,9 @@ namespace Domain_Tests
                     CantidadNecesaria = 2
                 }
             };
-
-
+            
             string rutaArchivo = exportador.Exportar(proyectos, asignaciones);
             string contenido = File.ReadAllText(rutaArchivo);
-
 
             StringAssert.Contains(contenido, "Recurso Test"); 
             StringAssert.Contains(contenido, "2"); 
