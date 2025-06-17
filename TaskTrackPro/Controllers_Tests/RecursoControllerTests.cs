@@ -241,15 +241,12 @@ public class RecursoControllerTests
     [TestMethod]
     public void EstaDisponible_ConCantidadCero_RetornaTrue()
     {
-        // Arrange
         int idRecurso = 1;
         int cantidad = 0;
         _mockService.Setup(s => s.EstaDisponible(idRecurso, cantidad)).Returns(true);
 
-        // Act
         bool resultado = _controller.EstaDisponible(idRecurso, cantidad);
 
-        // Assert
         Assert.IsTrue(resultado);
         _mockService.Verify(s => s.EstaDisponible(idRecurso, cantidad), Times.Once);
     }
