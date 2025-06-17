@@ -657,6 +657,8 @@ public class ProyectoTests
         var t1 = new Tarea("T1", "Desc1", hoy, TimeSpan.FromDays(2), esCritica: false);
         var t2 = new Tarea("T2", "Desc2", hoy, TimeSpan.FromDays(2), esCritica: false);
 
+        t1.Id = 1;
+        t2.Id = 2;
         var proyecto1 = new Proyecto("P1", "Desc1", hoy);
         var proyecto2 = new Proyecto("P2", "Desc2", hoy);
 
@@ -669,6 +671,9 @@ public class ProyectoTests
 
         proyecto1.CalcularTiemposTempranos(allAsign);
         proyecto1.CalcularTiemposTardios();
+
+        t1.EstadoActual.Valor = TipoEstadoTarea.Ejecutandose;
+        auto.CantidadEnUso = 1;
 
         t2.RecursosForzados = true;
         t2.EstadoActual.Valor = TipoEstadoTarea.Bloqueada;
@@ -689,10 +694,14 @@ public class ProyectoTests
         var pre2 = new Tarea("Pre2", "Pre2Desc", hoy, TimeSpan.FromDays(1), esCritica: false);
         pre1.EstadoActual.Valor = TipoEstadoTarea.Efectuada;
         pre2.EstadoActual.Valor = TipoEstadoTarea.Efectuada;
+        pre1.Id = 1;
+        pre2.Id = 2;
 
         var t1 = new Tarea("T1", "Desc1", hoy.AddDays(1), TimeSpan.FromDays(2), esCritica: false);
         var t2 = new Tarea("T2", "Desc2", hoy.AddDays(1), TimeSpan.FromDays(2), esCritica: false);
-
+        t1.Id = 3;
+        t2.Id = 4;
+        
         pre1.EarlyStart = hoy;
         pre1.EarlyFinish = hoy.AddDays(1);
 
@@ -717,6 +726,9 @@ public class ProyectoTests
 
         proyecto1.CalcularTiemposTempranos(allAsign);
         proyecto1.CalcularTiemposTardios();
+        
+        t1.EstadoActual.Valor = TipoEstadoTarea.Ejecutandose;
+        auto.CantidadEnUso = 1;
 
         t2.RecursosForzados = true;
         t2.EstadoActual.Valor = TipoEstadoTarea.Bloqueada;

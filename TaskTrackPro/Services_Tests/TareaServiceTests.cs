@@ -933,4 +933,50 @@ public class TareaServiceTests
 
         Assert.IsFalse(resultado);
     }
+    
+    [TestMethod]
+        public void PuedeForzarRecursosDevuelveTrueSiSePuedeForzar()
+        {
+            _tareaEjemplo.EstadoActual.Valor = TipoEstadoTarea.Bloqueada;
+    
+            _tareaEjemplo.RecursosForzados = false;
+            _repoTareas.Update(_tareaEjemplo);
+
+            TareaDTO dto = Convertidor.ATareaDTO(_tareaEjemplo);
+
+            bool result = _service.PuedeForzarRecursos(dto);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void PuedeForzarRecursosDevuelveFalseSiNoSePuedeForzar()
+        {
+            _tareaEjemplo.EstadoActual.Valor = TipoEstadoTarea.Pendiente;
+            _tareaEjemplo.RecursosForzados = false;
+            _repoTareas.Update(_tareaEjemplo);
+            TareaDTO dto = Convertidor.ATareaDTO(_tareaEjemplo);
+
+            Assert.IsFalse(_service.PuedeForzarRecursos(dto));
+
+            _tareaEjemplo.EstadoActual.Valor = TipoEstadoTarea.Bloqueada;
+            _tareaEjemplo.RecursosForzados = true;
+            _repoTareas.Update(_tareaEjemplo);
+            dto = Convertidor.ATareaDTO(_tareaEjemplo);
+
+            Assert.IsFalse(_service.PuedeForzarRecursos(dto));
+        }
+
+        [TestMethod]
+        public void ForzarRecursos_SetsFlag_UpdatesTask_AndRecalculatesRoute()
+        {
+            _tareaEjemplo.EstadoActual.Valor = TipoEstadoTarea.Bloqueada;
+            _tareaEjemplo.RecursosForzados = false;
+            _repoTareas.Update(_tareaEjemplo);
+            
+            _service.ForzarRecursos(_proyectoEjemplo.Id, _tareaEjemplo.Id);
+
+            var tareaAfter = _repoTareas.GetById(_tareaEjemplo.Id);
+            Assert.IsTrue(tareaAfter.RecursosForzados);
+        }
 }

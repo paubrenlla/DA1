@@ -143,6 +143,7 @@ namespace Services
             List<Tarea> criticas = proyecto.CalcularRutaCritica(_asignacionRecursoTareaRepo.GetAll());
             if(criticas.Count == 0)
                 throw new Exception("Este proyecto no tiene tareas");
+            _proyectoRepo.Update(proyecto);
             return criticas.Select(Convertidor.ATareaDTO).ToList();
         }
 

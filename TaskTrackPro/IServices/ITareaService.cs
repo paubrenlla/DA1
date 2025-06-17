@@ -36,5 +36,7 @@ namespace Services
         bool PuedeAgregarDependencias(int tareaSeleccionadaId);
         bool PuedeEliminarTarea(TareaDTO tarea);
         void ActualizarEstadoTarea(TipoEstadoTarea estado, TareaDTO tareaSeleccionada);
+        bool PuedeForzarRecursos(TareaDTO tarea);
+        void ForzarRecursos(int proyectoId, int tareaId);
     }
 }        

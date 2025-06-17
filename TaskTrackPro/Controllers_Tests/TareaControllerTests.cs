@@ -592,5 +592,27 @@ namespace Controllers_Tests
 
             _mockService.Verify(s => s.ActualizarEstadoTarea(estado, _dto2), Times.Once);
         }
+        
+        [TestMethod]
+        public void PuedeForzarRecursos_DelegatesToService()
+        {
+            _mockService.Setup(s => s.PuedeForzarRecursos(_dto1)).Returns(true);
+        
+            bool puede = _controller.PuedeForzarRecursos(_dto1);
+
+            Assert.IsTrue(puede);
+            _mockService.Verify(s => s.PuedeForzarRecursos(_dto1), Times.Once);
+        }
+
+        [TestMethod]
+        public void ForzarRecursos_DelegatesToService()
+        {
+            int proyectoId = 5;
+            int tareaId = 42;
+
+            _controller.ForzarRecursos(proyectoId, tareaId);
+
+            _mockService.Verify(s => s.ForzarRecursos(proyectoId, tareaId), Times.Once);
+        }
     }
 }

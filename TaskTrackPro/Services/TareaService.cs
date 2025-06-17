@@ -326,5 +326,21 @@ namespace Services
             Tarea tarea = _tareaRepo.GetById(tareaSeleccionada.Id);
             _tareaRepo.Update(tarea);
         }
+
+        public bool PuedeForzarRecursos(TareaDTO dto)
+        {
+            Tarea tarea = _tareaRepo.GetById(dto.Id);
+            return tarea.DependenciasEfectuadas() && !tarea.RecursosForzados && tarea.EstadoActual.Valor == TipoEstadoTarea.Bloqueada;
+        }
+
+        public void ForzarRecursos(int proyectoId, int tareaId)
+        {
+            Tarea tarea = _tareaRepo.GetById(tareaId);
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
+            tarea.RecursosForzados = true;
+            _tareaRepo.Update(tarea);
+            _proyectoService.ObtenerRutaCritica(proyectoId);
+            _proyectoRepo.Update(proyecto);
+        }
     }
 }

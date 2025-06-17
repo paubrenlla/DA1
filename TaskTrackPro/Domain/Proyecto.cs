@@ -132,7 +132,7 @@ public class Proyecto
         {
             foreach (Tarea tarea in TareasAsociadas)
             {
-                if (!tarea.EstaCompleta())
+                if (!tarea.EstaCompletaoEjecutandose())
                 {
                     tarea.EarlyStart  = DateTime.MinValue;
                     tarea.EarlyFinish = DateTime.MinValue;
@@ -144,7 +144,7 @@ public class Proyecto
             {
                 var tarea = pendientes.Dequeue();
 
-                if (tarea.EstaCompleta())
+                if (tarea.EstaCompletaoEjecutandose())
                 {
                     tarea.EarlyFinish = tarea.EarlyStart + tarea.Duracion;
                 }
@@ -184,7 +184,7 @@ public class Proyecto
             DateTime desde)
         {
             DateTime posible = desde;
-            var asigns = todasAsignaciones.Where(a => a.Tarea == tarea);
+            var asigns = todasAsignaciones.Where(a => a.Tarea.Id == tarea.Id);
 
             foreach (var asign in asigns)
             {
@@ -198,13 +198,17 @@ public class Proyecto
                     // Tareas que solapan en 'posible'
                     List<AsignacionRecursoTarea> solapantes = todasAsignaciones
                         .Where(a =>
-                            a.Recurso == recurso
-                            && a.Tarea.EarlyStart <= posible
+                            a.Recurso.Id == recurso.Id
+                            && a.Tarea.Id != tarea.Id
+                            && !a.Recurso.SePuedeCompartir
+                           // && a.Tarea.EarlyStart > DateTime.MinValue
+                         //   && a.Tarea.EarlyStart >= posible
+                            && a.Tarea.EstaEjecutandose()
                             && a.Tarea.EarlyFinish > posible)
                         .ToList();
 
                     int usoConcurrente = solapantes.Sum(a => a.CantidadNecesaria);
-                    int usoTotal = usoInicial + usoConcurrente + asign.CantidadNecesaria;
+                    int usoTotal = usoConcurrente + asign.CantidadNecesaria;
 
                     if (usoTotal <= capacidad)
                     {
@@ -228,16 +232,22 @@ public class Proyecto
 
         foreach (Tarea tarea in TareasAsociadas)
         {
-            tarea.LateStart = DateTime.MaxValue;
-            tarea.LateFinish = DateTime.MaxValue;
+            if (!tarea.EstaCompletaoEjecutandose())
+            {
+                tarea.LateStart = DateTime.MaxValue;
+                tarea.LateFinish = DateTime.MaxValue;
+            }
         }
 
         Queue<Tarea> pendientes = new Queue<Tarea>(TareasAsociadas.Where(t => t.TareasSucesoras.Count == 0));
     
         foreach (Tarea tarea in pendientes)
         {
-            tarea.LateFinish = finProyecto;
-            tarea.LateStart = tarea.LateFinish - tarea.Duracion;
+            if (!tarea.EstaCompletaoEjecutandose())
+            {
+                tarea.LateFinish = finProyecto;
+                tarea.LateStart = tarea.LateFinish - tarea.Duracion;
+            }
         }
 
         while (pendientes.Count > 0)
@@ -246,7 +256,7 @@ public class Proyecto
 
             foreach (Tarea predecesora in tarea.TareasDependencia)
             {
-                if (predecesora.LateFinish > tarea.LateStart)
+                if (predecesora.LateFinish > tarea.LateStart && !predecesora.EstaCompletaoEjecutandose())
                 {
                     predecesora.LateFinish = tarea.LateStart;
                     predecesora.LateStart = predecesora.LateFinish - predecesora.Duracion;
@@ -323,7 +333,7 @@ public class Proyecto
     
     public void CalcularFinEstimado()
     {
-        FinEstimado= TareasAsociadas.Max(t=>t.EarlyFinish);
+        FinEstimado = TareasAsociadas.Max(t=>t.EarlyFinish);
     }
 
     public List<Tarea> TareasNoCriticas()

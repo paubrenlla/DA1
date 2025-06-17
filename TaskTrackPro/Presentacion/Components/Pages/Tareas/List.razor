@@ -16,6 +16,13 @@
 {
     <div class="alert alert-danger">@mensajeError</div>
 }
+@if (tareasDto.Any(t => TareaController.PuedeForzarRecursos(t)))
+{
+<div class="alert alert-warning">
+    Una de tus tareas no puede comenzar debido a falta de recursos.<br />
+    Puedes modificar la fecha de la tarea, cambiar sus recursos o <strong>forzar los recursos</strong> de la tarea (esta será atrasada).
+</div>
+}
 
 <table class="table">
     <thead>
@@ -23,7 +30,7 @@
             <th>Título</th>
             <th>Descripción</th>
             <th>Estado</th>
-            <th>Fecha de inicio</th>
+            <th>Fecha de inicio más temprana</th>
             <th>Duración</th>
             <th>Es crítica</th>
             <th>Acciones</th>
@@ -36,7 +43,7 @@
                 <td>@tarea.Titulo</td>
                 <td>@tarea.Descripcion</td>
                 <td>@tarea.Estado</td>
-                <td>@tarea.FechaInicio</td>
+                <td>@tarea.EarlyStart</td>
                 <td>@tarea.Duracion</td>
                 <td>@(tarea.EsCritica ? "Sí" : "No")</td>
                 <td>
@@ -55,6 +62,13 @@
                                 disabled="@(!TareaController.PuedeEliminarTarea(tarea))">
                             Eliminar
                         </button>
+                    @if (TareaController.PuedeForzarRecursos(tarea))
+                    {
+                    <button class="btn btn-warning btn-sm"
+                            @onclick="() => ForzarRecursos(tarea.Id)">
+                        Forzar Recursos
+                    </button>
+                    }
                     }
                     <button class="btn btn-primary btn-sm"
                             @onclick="() => AbrirModalEstado(tarea.Id)"
@@ -365,5 +379,19 @@
     private void ActualizarEstadoBotones()
     {
         StateHasChanged();
+    }
+    
+    private void ForzarRecursos(int tareaId)
+    {
+        try
+        {
+            TareaController.ForzarRecursos(proyectoId, tareaId);
+
+            CargarTareas();
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
     }
 }

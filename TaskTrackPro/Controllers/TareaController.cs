@@ -132,5 +132,15 @@ namespace Controllers
         {
             _service.ActualizarEstadoTarea(estado, tareaSeleccionada);
         }
+
+        public bool PuedeForzarRecursos(TareaDTO tarea)
+        {
+            return _service.PuedeForzarRecursos(tarea);
+        }
+
+        public void ForzarRecursos(int proyectoId, int tareaId)
+        {
+            _service.ForzarRecursos(proyectoId, tareaId);
+        }
     }
 }

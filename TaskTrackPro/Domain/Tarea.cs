@@ -207,14 +207,24 @@ public class Tarea
         TareasSucesoras.Remove(tarea);
     }
 
-    public bool EstaCompleta()
+    public bool EstaCompletaoEjecutandose()
     {
-        return EstadoActual.Valor == TipoEstadoTarea.Efectuada;    
+        return EstadoActual.Valor == TipoEstadoTarea.Efectuada || EstadoActual.Valor == TipoEstadoTarea.Ejecutandose;    
     }
 
     public bool EstaBloqueada()
     {
         return EstadoActual.Valor == TipoEstadoTarea.Bloqueada;
+    }
+
+    public bool DependenciasEfectuadas()
+    {
+        return TareasDependencia.All(tarea => tarea.EstadoActual.Valor == TipoEstadoTarea.Efectuada);
+    }
+
+    public bool EstaEjecutandose()
+    {
+        return EstadoActual.Valor == TipoEstadoTarea.Ejecutandose;
     }
 }
 
