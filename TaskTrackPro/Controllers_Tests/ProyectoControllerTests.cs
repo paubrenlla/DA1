@@ -322,5 +322,35 @@ namespace Controllers_Tests
             Assert.IsTrue(resultado);
             _mockService.Verify(s => s.UsuarioEsLiderDeProyecto(usuarioId, proyectoId), Times.Once);
         }
+        
+        [TestMethod]
+        public void UsuarioEsLiderOAdminDeAlgunProyecto_DevuelveLoQueDevuelveService()
+        {
+            int usuarioId = 15;
+    
+            _mockService
+                .Setup(s => s.UsuarioEsLiderOAdminDeAlgunProyecto(usuarioId))
+                .Returns(true);
+
+            bool resultado = _controller.UsuarioEsLiderOAdminDeAlgunProyecto(usuarioId);
+
+            Assert.IsTrue(resultado);
+            _mockService.Verify(s => s.UsuarioEsLiderOAdminDeAlgunProyecto(usuarioId), Times.Once);
+        }
+
+        [TestMethod]
+        public void UsuarioEsLiderOAdminDeAlgunProyecto_DevuelveFalse_CuandoServiceDevuelveFalse()
+        {
+            int usuarioId = 20;
+    
+            _mockService
+                .Setup(s => s.UsuarioEsLiderOAdminDeAlgunProyecto(usuarioId))
+                .Returns(false);
+
+            bool resultado = _controller.UsuarioEsLiderOAdminDeAlgunProyecto(usuarioId);
+
+            Assert.IsFalse(resultado);
+            _mockService.Verify(s => s.UsuarioEsLiderOAdminDeAlgunProyecto(usuarioId), Times.Once);
+        }
     }
 }
