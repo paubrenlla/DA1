@@ -7,4 +7,8 @@ public interface ITareaObserver
     void TareaAgregada(Proyecto proyecto, Tarea tareaAgregada);
     
     void ModificacionDependencias(Proyecto proyecto, Tarea tareaModificacion);
+    
+    void TareaModificada(Proyecto proyecto, Tarea tareaModificada);
+    
+    void SeForzaronRecursos(Proyecto proyecto, Tarea tarea);
 }
