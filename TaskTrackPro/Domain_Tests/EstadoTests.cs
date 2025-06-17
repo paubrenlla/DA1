@@ -1,6 +1,5 @@
 using Domain;
 using Domain.Enums;
-using System;
 
 namespace Domain_Tests
 {
@@ -12,7 +11,7 @@ namespace Domain_Tests
         [TestMethod]
         public void Constructor_ValorEfectuada_SeAsignaFechaCorrecta()
         {
-            var estado = new Estado(TipoEstadoTarea.Efectuada);
+            Estado estado = new Estado(TipoEstadoTarea.Efectuada);
             Assert.AreEqual(TipoEstadoTarea.Efectuada, estado.Valor);
             Assert.IsNotNull(estado.Fecha);
         }
@@ -20,7 +19,7 @@ namespace Domain_Tests
         [TestMethod]
         public void Constructor_ValorPendiente_SeAsignaValorCorrectoYFechaNula()
         {
-            var estado = new Estado(TipoEstadoTarea.Pendiente);
+            Estado estado = new Estado(TipoEstadoTarea.Pendiente);
             Assert.AreEqual(TipoEstadoTarea.Pendiente, estado.Valor);
             Assert.IsNull(estado.Fecha);
         }
@@ -28,7 +27,7 @@ namespace Domain_Tests
         [TestMethod]
         public void MarcarComoEfectuada_SeCambiaValorYFecha()
         {
-            var estado = new Estado(TipoEstadoTarea.Pendiente);
+            Estado estado = new Estado(TipoEstadoTarea.Pendiente);
             DateTime fechaEsperada = new DateTime(2025, 5, 13);
             estado.MarcarComoEfectuada(fechaEsperada);
             Assert.AreEqual(TipoEstadoTarea.Efectuada, estado.Valor);
@@ -38,7 +37,7 @@ namespace Domain_Tests
         [TestMethod]
         public void ToString_ValorEfectuada_DevuelveCadenaCorrecta()
         {
-            var estado = new Estado(TipoEstadoTarea.Efectuada);
+            Estado estado = new Estado(TipoEstadoTarea.Efectuada);
             string resultado = estado.ToString();
             Assert.IsTrue(resultado.Contains("Estado: Efectuada"));
             Assert.IsTrue(resultado.Contains("Fecha"));
@@ -47,7 +46,7 @@ namespace Domain_Tests
         [TestMethod]
         public void ToString_ValorPendiente_DevuelveCadenaCorrecta()
         {
-            var estado = new Estado(TipoEstadoTarea.Pendiente);
+            Estado estado = new Estado(TipoEstadoTarea.Pendiente);
             string resultado = estado.ToString();
             Assert.AreEqual("Estado: Pendiente", resultado);
         }
