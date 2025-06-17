@@ -52,7 +52,7 @@ public class TareaServiceTests
         _asignacionRecursoTareaService = new AsignacionRecursoTareaService(
             new RecursoDataAccess(context),
             _repoTareas,
-            repoAsignaciones);
+            repoAsignaciones,_repoProyectos);
         
         var proyectoAsignRepo = new AsignacionProyectoDataAccess(context);
         _proyectoService = new ProyectoService(

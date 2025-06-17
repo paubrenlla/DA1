@@ -15,6 +15,7 @@ namespace Services_Tests
         private IDataAccessRecurso _repoRecursos;
         private IDataAccessTarea _repoTareas;
         private IDataAccessAsignacionRecursoTarea _repoAsignaciones;
+        private IDataAccessProyecto _repoProyectos;
         private Recurso _recurso1;
         private Recurso _recurso2;
         private Tarea _tarea1;
@@ -32,7 +33,8 @@ namespace Services_Tests
             _repoRecursos = new RecursoDataAccess(context);
             _repoTareas = new TareaDataAccess(context);
             _repoAsignaciones = new AsignacionRecursoTareaDataAccess(context);
-            _service = new AsignacionRecursoTareaService(_repoRecursos, _repoTareas, _repoAsignaciones);
+            _repoProyectos = new ProyectoDataAccess(context);
+            _service = new AsignacionRecursoTareaService(_repoRecursos, _repoTareas, _repoAsignaciones,_repoProyectos);
 
             _recurso1 = new Recurso("Recurso1", "Tipo1", "Desc1", false, 10);
             _recurso2 = new Recurso("Recurso2", "Tipo2", "Desc2", false, 5);
@@ -189,22 +191,38 @@ namespace Services_Tests
         }
 
         [TestMethod]
-        public void RecursoEsExclusivo_DevuelveFalseSiMasDeUnaTareaUsaElRecurso()
+        public void RecursoEsExclusivo_DevuelveFalseSiMasDeUnProyectoLoUsa()
         {
+            var proyecto = new Proyecto("Proyecto A", "Desc", DateTime.Today);
+            _repoProyectos.Add(proyecto);
+            var proyecto2 = new Proyecto("Proyecto A2", "Desc", DateTime.Today);
+            _repoProyectos.Add(proyecto2);
+            proyecto.AgregarTarea(_tarea1);
+            proyecto2.AgregarTarea(_tarea2);
+            _repoProyectos.Update(proyecto);
             _repoAsignaciones.Add(new AsignacionRecursoTarea(_recurso1, _tarea1, 2));
             _repoAsignaciones.Add(new AsignacionRecursoTarea(_recurso1, _tarea2, 3));
 
             bool resultado = _service.RecursoEsExclusivo(_recurso1.Id);
+
             Assert.IsFalse(resultado);
         }
-        
+
         [TestMethod]
         public void RecursoEsExclusivo_DevuelveTrueSiSoloUnaTareaLoUsa()
         {
+            var proyecto = new Proyecto("Proyecto B", "Desc", DateTime.Today);
+            _repoProyectos.Add(proyecto);
+            proyecto.AgregarTarea(_tarea1);
+            _repoProyectos.Update(proyecto);
+
             _repoAsignaciones.Add(new AsignacionRecursoTarea(_recurso1, _tarea1, 2));
 
-            Assert.IsTrue(_service.RecursoEsExclusivo(_recurso1.Id));
+            bool resultado = _service.RecursoEsExclusivo(_recurso1.Id);
+
+            Assert.IsTrue(resultado);
         }
+
         
         [TestMethod]
         public void ActualizarEstadoDeTareasConRecurso_CambiaElEstadoDeLasTareas()
