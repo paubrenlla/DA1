@@ -1,8 +1,13 @@
 @page "/exportar"
 @using System.IO
 @using Controllers
-@inject ProyectoController ProyectosController
+@using DTOs
+@using UserInterface.Data
+@inject ProyectoController Proyectos
+@inject UsuarioController Usuarios
 @inject IJSRuntime JS
+@inject SessionLogic SessionLogic
+@inject NavigationManager NavigationManager
 
 
     <div>
@@ -17,10 +22,34 @@
 
 
 @code {
+    private bool yaVerifiqueSesion = false;
+    UsuarioDTO usuarioLogeado;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var isUserActive = await SessionLogic.IsUserActive();
+        if (firstRender && !yaVerifiqueSesion)
+        {
+            if (!isUserActive)
+            {
+                NavigationManager.NavigateTo("/Login");
+            }
+            usuarioLogeado = await SessionLogic.GetCurrentUser();
+            if (!Proyectos.UsuarioEsLiderDeAlgunProyecto(usuarioLogeado.Id) || !Usuarios.EsAdmin(usuarioLogeado.Id))
+            {
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                StateHasChanged();
+            }
+        }
+    }
+    
     private async Task DescargarJSON()
     {
         // 1. Generar el JSON y guardarlo (o obtenerlo como string)
-        string rutaArchivoJSON = ProyectosController.Exportar("json");
+        string rutaArchivoJSON = Proyectos.Exportar("json");
 
         if (!string.IsNullOrEmpty(rutaArchivoJSON))
         {
@@ -41,7 +70,7 @@
     
     private async Task DescargarCSV()
     {
-        string rutaArchivoCSV = ProyectosController.Exportar("csv");
+        string rutaArchivoCSV = Proyectos.Exportar("csv");
 
         if (!string.IsNullOrEmpty(rutaArchivoCSV))
         {
