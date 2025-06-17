@@ -1,7 +1,5 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Domain;
 using DataAccess;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess_Tests
@@ -71,7 +69,7 @@ namespace DataAccess_Tests
         public void ObtenerAsignacionPorID()
         {
             repo.Add(asign1);
-            var asignacion = repo.GetById(asign1.Id);
+            AsignacionRecursoTarea asignacion = repo.GetById(asign1.Id);
             Assert.IsNotNull(asignacion);
             Assert.AreEqual(asign1, asignacion);
         }
@@ -90,7 +88,7 @@ namespace DataAccess_Tests
         {
             repo.Add(asign1);
             repo.Add(asign3);
-            var asignacionesDeTarea = repo.GetByTarea(tarea1.Id);
+            List<AsignacionRecursoTarea> asignacionesDeTarea = repo.GetByTarea(tarea1.Id);
             Assert.AreEqual(2, asignacionesDeTarea.Count);
             Assert.IsTrue(asignacionesDeTarea.All(a => a.Tarea.Id == tarea1.Id));
         }
@@ -100,7 +98,7 @@ namespace DataAccess_Tests
         {
             repo.Add(asign1);
             repo.Add(asign2);
-            var asignacionesDeRecurso = repo.GetByRecurso(recurso1.Id);
+            List<AsignacionRecursoTarea> asignacionesDeRecurso = repo.GetByRecurso(recurso1.Id);
             Assert.AreEqual(2, asignacionesDeRecurso.Count);
             Assert.IsTrue(asignacionesDeRecurso.All(a => a.Recurso.Id == recurso1.Id));
         }
@@ -109,7 +107,7 @@ namespace DataAccess_Tests
         public void ObtenerCantidadDeRecursoNecesaria()
         {
             repo.Add(asign1);
-            var cantidad = repo.CantidadDelRecurso(asign1);
+            int cantidad = repo.CantidadDelRecurso(asign1);
             Assert.AreEqual(5, cantidad);
         }
         
@@ -117,7 +115,7 @@ namespace DataAccess_Tests
         public void ObtenerAsignacionPorRecursoYTarea_DevuelveAsignacionCorrecta()
         {
             repo.Add(asign1);
-            var asignacion = repo.GetByRecursoYTarea(recurso1.Id, tarea1.Id);
+            AsignacionRecursoTarea asignacion = repo.GetByRecursoYTarea(recurso1.Id, tarea1.Id);
             Assert.IsNotNull(asignacion);
             Assert.AreEqual(asign1, asignacion);
         }
@@ -126,7 +124,7 @@ namespace DataAccess_Tests
         public void ObtenerAsignacionPorRecursoYTarea_NoEncuentraAsignacionYDevuelveNull()
         {
             repo.Add(asign1);
-            var asignacion = repo.GetByRecursoYTarea(recurso2.Id, tarea2.Id);
+            AsignacionRecursoTarea asignacion = repo.GetByRecursoYTarea(recurso2.Id, tarea2.Id);
             Assert.IsNull(asignacion);
         }
 
@@ -137,7 +135,7 @@ namespace DataAccess_Tests
             repo.Add(asign2);
             repo.Add(asign3);
 
-            var asignacion = repo.GetByRecursoYTarea(recurso2.Id, tarea1.Id);
+            AsignacionRecursoTarea asignacion = repo.GetByRecursoYTarea(recurso2.Id, tarea1.Id);
             Assert.IsNotNull(asignacion);
             Assert.AreEqual(asign3.Recurso.Id, asignacion.Recurso.Id);
             Assert.AreEqual(asign3.Tarea.Id,   asignacion.Tarea.Id);
