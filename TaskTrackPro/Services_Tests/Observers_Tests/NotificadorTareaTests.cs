@@ -2,8 +2,6 @@
 using IDataAcces;
 using Moq;
 using Services.Observers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 namespace Services_Tests.Observers_Tests
 {

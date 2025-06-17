@@ -2,7 +2,6 @@
 using IDataAcces;
 using Moq;
 using Services.Observers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Services_Tests.Observers_Tests
 {
@@ -21,7 +20,7 @@ namespace Services_Tests.Observers_Tests
         public void CambioContraseña_CreaNotificacionConMensajeCorrecto_Y_AsociaUsuario()
         {
             var mockNotificacionRepo = new Mock<IDataAccessNotificacion>();
-            var observer = new NotificadorUsuario(mockNotificacionRepo.Object);
+            NotificadorUsuario observer = new NotificadorUsuario(mockNotificacionRepo.Object);
 
             string nuevaPwd = "nuevaPwd456";
             string esperadoMensaje = $"Tu nueva contraseña es: {nuevaPwd}.";
@@ -42,7 +41,7 @@ namespace Services_Tests.Observers_Tests
         public void ConvertidoEnAdmin_CreaNotificacionConMensajeCorrecto_Y_AsociaUsuario()
         {
             var mockNotificacionRepo = new Mock<IDataAccessNotificacion>();
-            var observer = new NotificadorUsuario(mockNotificacionRepo.Object);
+            NotificadorUsuario observer = new NotificadorUsuario(mockNotificacionRepo.Object);
 
             string esperadoMensaje =
                 "Felicidades, ahora eres Admin del sistema!\n" +
