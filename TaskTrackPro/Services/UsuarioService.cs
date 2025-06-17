@@ -79,7 +79,7 @@ public class UsuarioService : IUsuarioService
             throw new ArgumentException("El usuario ya es administrador del sistema");
         usuarioAdmin.EsAdminSistema = true;
         _usuarioRepo.Update(usuarioAdmin);
-        foreach (var obs in _observers)
+        foreach (IUsuarioObserver obs in _observers)
             obs.ConvertidoEnAdmin(usuarioAdmin);
     }
 
@@ -97,7 +97,7 @@ public class UsuarioService : IUsuarioService
             throw new ArgumentException("Usuario con ese correo ya existe");
         if (Usuario.DesencriptarPassword(user.Pwd) != dto.Contraseña)
         {
-            foreach (var obs in _observers)
+            foreach (IUsuarioObserver obs in _observers)
                 obs.CambioContraseña(user, dto.Contraseña);
         }
         user.Modificar(dto.Email, dto.Nombre, dto.Apellido, dto.Contraseña, dto.FechaNacimiento);
