@@ -1,0 +1,65 @@
+@page "/exportar"
+@using System.IO
+@using Controllers
+@inject ProyectoController ProyectosController
+@inject IJSRuntime JS
+
+
+    <div>
+        <h1>
+            <button class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" @onclick="DescargarJSON">Exportar JSON</button>
+        </h1>
+
+        <h1>
+            <button class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" @onclick="DescargarCSV">Exportar CSV</button>
+        </h1>
+    </div>
+
+
+@code {
+    private async Task DescargarJSON()
+    {
+        // 1. Generar el JSON y guardarlo (o obtenerlo como string)
+        string rutaArchivoJSON = ProyectosController.Exportar("json");
+
+        if (!string.IsNullOrEmpty(rutaArchivoJSON))
+        {
+            byte[] fileBytes = await File.ReadAllBytesAsync(rutaArchivoJSON);
+            string fileName = Path.GetFileName(rutaArchivoJSON);
+            string base64String = Convert.ToBase64String(fileBytes);
+            await JS.InvokeVoidAsync("eval", 
+                $@"var link = document.createElement('a');
+               link.href = 'data:application/json;base64,{base64String}';
+               link.download = '{fileName}';
+               document.body.appendChild(link);
+               link.click();
+               document.body.removeChild(link);"
+            );
+        }
+    }
+    
+    
+    private async Task DescargarCSV()
+    {
+        string rutaArchivoCSV = ProyectosController.Exportar("csv");
+
+        if (!string.IsNullOrEmpty(rutaArchivoCSV))
+        {
+            byte[] fileBytes = await File.ReadAllBytesAsync(rutaArchivoCSV);
+            string fileName = Path.GetFileName(rutaArchivoCSV);
+            string base64String = Convert.ToBase64String(fileBytes);
+            await JS.InvokeVoidAsync("eval", 
+                $@"var link = document.createElement('a');
+               link.href = 'data:application/json;base64,{base64String}';
+               link.download = '{fileName}';
+               document.body.appendChild(link);
+               link.click();
+               document.body.removeChild(link);"
+            );
+        }
+    }
+    
+}
+
+
+

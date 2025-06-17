@@ -1,4 +1,6 @@
-﻿using Domain;
+﻿using System.Text;
+using System.Text.Json;
+using Domain;
 using IDataAcces;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,7 +43,7 @@ public class ProyectoDataAccess :IDataAccessProyecto
 
     public List<Proyecto> GetAll()
     {
-        return _context.Proyectos.AsNoTracking().ToList();
+        return _context.Proyectos.Include(p=> p.TareasAsociadas).ToList();
     }
 
     public void Update(Proyecto proyecto)
@@ -49,4 +51,6 @@ public class ProyectoDataAccess :IDataAccessProyecto
         _context.Update(proyecto);
         _context.SaveChanges();
     }
+    
+    
 }

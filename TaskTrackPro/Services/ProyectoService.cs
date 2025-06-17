@@ -11,15 +11,18 @@ namespace Services
         private readonly IDataAccessProyecto _proyectoRepo;
         private readonly IDataAccessUsuario _usuarioRepo;
         private readonly IDataAccessAsignacionProyecto _asignacionRepo;
+        private readonly IDataAccessAsignacionRecursoTarea _asignacionRecursoTareaRepo;
 
         public ProyectoService(
             IDataAccessProyecto proyectoRepo,
             IDataAccessUsuario usuarioRepo,
-            IDataAccessAsignacionProyecto asignacionRepo)
+            IDataAccessAsignacionProyecto asignacionRepo,
+            IDataAccessAsignacionRecursoTarea asignacionRecursoTarea)
         {
             _proyectoRepo = proyectoRepo;
             _usuarioRepo = usuarioRepo;
             _asignacionRepo = asignacionRepo;
+            _asignacionRecursoTareaRepo = asignacionRecursoTarea;
         }
 
         public ProyectoDTO GetById(int id)
@@ -30,9 +33,11 @@ namespace Services
 
         public List<ProyectoDTO> GetAll()
         {
+            Console.WriteLine(_proyectoRepo.GetAll().ToString());
             return _proyectoRepo.GetAll()
                 .Select(Convertidor.AProyectoDTO)
                 .ToList();
+            
         }
 
         public ProyectoDTO CrearProyecto(ProyectoDTO dto)
@@ -157,6 +162,12 @@ namespace Services
             return ordenadas.Select(Convertidor.ATareaDTO).ToList();
         }
 
+        public string Exportar(string valor)
+        {
+            Exportador exportador = ExportadorFactory.Crear(valor);
+            return exportador.Exportar(_proyectoRepo.GetAll(),_asignacionRecursoTareaRepo.GetAll());
+        }
+        
         public void AsignarLiderDeProyecto(int usuarioId, int proyectoId)
         {
             EliminarLiderAnterior(proyectoId);

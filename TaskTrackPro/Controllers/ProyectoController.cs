@@ -97,6 +97,11 @@ namespace Controllers
             return _service.TareasOrdenadasPorInicio(proyectoId);
         }
 
+        public string Exportar(string dato)
+        {
+            return _service.Exportar(dato);
+        }
+        
         public void AsignarLiderProyecto(int usuarioLiderId, int nuevoId)
         {
             _service.AsignarLiderDeProyecto(usuarioLiderId, nuevoId);
