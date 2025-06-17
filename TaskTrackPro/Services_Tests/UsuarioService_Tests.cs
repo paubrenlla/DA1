@@ -313,7 +313,7 @@ namespace Services_Tests
         [ExpectedException(typeof(ArgumentException))]
         public void CrearUsuario_LanzaExcepcionCuandoEmailDuplicado()
         {
-            var dto = new UsuarioConContraseñaDTO {
+            UsuarioConContraseñaDTO dto = new UsuarioConContraseñaDTO {
                 Email = "existe@test.com",
                 Nombre = "X", Apellido = "Y",
                 FechaNacimiento = DateTime.Today,
@@ -330,8 +330,8 @@ namespace Services_Tests
         [ExpectedException(typeof(ArgumentException))]
         public void ModificarUsuario_LanzaExcepcionCuandoEmailDuplicado()
         {
-            var existing = new Usuario("dup@test.com", "A", "B", "Pwd!", DateTime.Today) { Id = 5 };
-            var dto = new UsuarioConContraseñaDTO {
+            Usuario existing = new Usuario("dup@test.com", "A", "B", "Pwd!", DateTime.Today) { Id = 5 };
+            UsuarioConContraseñaDTO dto = new UsuarioConContraseñaDTO {
                 Id = 7,
                 Email = existing.Email,
                 Nombre = "Nuevo", Apellido = "User",
