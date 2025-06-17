@@ -15,7 +15,7 @@ public class Tarea
     private List<Tarea> _tareasDependencia = new List<Tarea>();
     private List<Tarea> _tareasSucesoras = new List<Tarea>();
     private List<Usuario> _usuariosAsignados  = new List<Usuario>();
-
+    private bool recursosForzados = false;
     private TimeSpan _holgura;
     public DateTime EarlyStart { get; set; }
     public DateTime LateStart { get; set; }
@@ -30,6 +30,7 @@ public class Tarea
         FechaInicio = fechaInicio;
         Duracion = duracion;
         EsCritica = esCritica;
+        RecursosForzados = false;
     }
     public int Id
     {
@@ -97,6 +98,8 @@ public class Tarea
     
     public List<Tarea> TareasDependencia => _tareasDependencia!;
     public List<Tarea> TareasSucesoras => _tareasSucesoras!;
+    
+    public bool RecursosForzados { get; set; }
     
     private void ModificarEstado(TipoEstadoTarea nuevoEstado, DateTime fecha)
     {   
@@ -202,6 +205,26 @@ public class Tarea
     public void EliminarSucesora(Tarea tarea)
     {
         TareasSucesoras.Remove(tarea);
+    }
+
+    public bool EstaCompletaoEjecutandose()
+    {
+        return EstadoActual.Valor == TipoEstadoTarea.Efectuada || EstadoActual.Valor == TipoEstadoTarea.Ejecutandose;    
+    }
+
+    public bool EstaBloqueada()
+    {
+        return EstadoActual.Valor == TipoEstadoTarea.Bloqueada;
+    }
+
+    public bool DependenciasEfectuadas()
+    {
+        return TareasDependencia.All(tarea => tarea.EstadoActual.Valor == TipoEstadoTarea.Efectuada);
+    }
+
+    public bool EstaEjecutandose()
+    {
+        return EstadoActual.Valor == TipoEstadoTarea.Ejecutandose;
     }
 }
 

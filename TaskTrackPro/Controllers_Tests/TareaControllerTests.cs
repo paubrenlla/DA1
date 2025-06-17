@@ -102,9 +102,9 @@ namespace Controllers_Tests
                 Duracion = TimeSpan.FromHours(5)
             };
 
-            _controller.ModificarTarea(7, dto);
+            _controller.ModificarTarea(7, dto, 1);
 
-            _mockService.Verify(s => s.ModificarTarea(7, dto), Times.Once);
+            _mockService.Verify(s => s.ModificarTarea(7, dto, 1), Times.Once);
         }
 
         [TestMethod]
@@ -591,6 +591,28 @@ namespace Controllers_Tests
             _controller.ActualizarEstadoTarea(estado, _dto2);
 
             _mockService.Verify(s => s.ActualizarEstadoTarea(estado, _dto2), Times.Once);
+        }
+        
+        [TestMethod]
+        public void PuedeForzarRecursos_DelegatesToService()
+        {
+            _mockService.Setup(s => s.PuedeForzarRecursos(_dto1)).Returns(true);
+        
+            bool puede = _controller.PuedeForzarRecursos(_dto1);
+
+            Assert.IsTrue(puede);
+            _mockService.Verify(s => s.PuedeForzarRecursos(_dto1), Times.Once);
+        }
+
+        [TestMethod]
+        public void ForzarRecursos_DelegatesToService()
+        {
+            int proyectoId = 5;
+            int tareaId = 42;
+
+            _controller.ForzarRecursos(proyectoId, tareaId);
+
+            _mockService.Verify(s => s.ForzarRecursos(proyectoId, tareaId), Times.Once);
         }
     }
 }

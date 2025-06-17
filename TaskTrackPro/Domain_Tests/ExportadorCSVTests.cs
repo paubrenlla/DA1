@@ -24,7 +24,7 @@ public class ExportadorCSVTests
 
         List<Proyecto> proyectos = new List<Proyecto>();
         Proyecto nuevo = new Proyecto("test", "descripcion", DateTime.Today);
-        nuevo.agregarTarea(tarea1); // ¡Añade la tarea al proyecto!
+        nuevo.TareasAsociadas.Add(tarea1);
         proyectos.Add(nuevo);
 
         List<AsignacionRecursoTarea> asignaciones = new List<AsignacionRecursoTarea>
