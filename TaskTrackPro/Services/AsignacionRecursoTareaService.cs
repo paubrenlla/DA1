@@ -111,7 +111,7 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
         Tarea tarea = _tareaRepo.GetById(tareaId);
         List<AsignacionRecursoTarea> asignacionesFiltradas = _asignacionRepo.GetByTarea(tareaId);
 
-        foreach (var asignacion in asignacionesFiltradas.ToList())
+        foreach (AsignacionRecursoTarea asignacion in asignacionesFiltradas.ToList())
         {
             _asignacionRepo.Remove(asignacion);
         }
