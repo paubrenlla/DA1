@@ -35,7 +35,7 @@
                 NavigationManager.NavigateTo("/Login");
             }
             usuarioLogeado = await SessionLogic.GetCurrentUser();
-            if (!Proyectos.UsuarioEsLiderDeAlgunProyecto(usuarioLogeado.Id) || !Usuarios.EsAdmin(usuarioLogeado.Id))
+            if (!Proyectos.UsuarioEsLiderDeAlgunProyecto(usuarioLogeado.Id) && !Usuarios.EsAdmin(usuarioLogeado.Id))
             {
                 NavigationManager.NavigateTo("/");
             }
