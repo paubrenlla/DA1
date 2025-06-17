@@ -315,9 +315,9 @@ public class ProyectoTests
         Tarea t3 = new Tarea("T3", "desc", inicio.AddHours(6), duracion, false);
 
         Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
-        proyecto.agregarTarea(t1);
-        proyecto.agregarTarea(t2);
-        proyecto.agregarTarea(t3);
+        proyecto.AgregarTarea(t1);
+        proyecto.AgregarTarea(t2);
+        proyecto.AgregarTarea(t3);
         
         t2.AgregarDependencia(t1);
         t3.AgregarDependencia(t2);
