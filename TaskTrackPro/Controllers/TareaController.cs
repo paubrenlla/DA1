@@ -28,9 +28,9 @@ namespace Controllers
             return _service.CrearTarea(proyectoId, dto);
         }
 
-        public void ModificarTarea(int tareaId, TareaDTO dto)
+        public void ModificarTarea(int tareaId, TareaDTO dto, int proyectoId)
         {
-            _service.ModificarTarea(tareaId, dto);
+            _service.ModificarTarea(tareaId, dto, proyectoId);
         }
 
         public void MarcarComoEjecutandose(int tareaId)
@@ -131,6 +131,16 @@ namespace Controllers
         public void ActualizarEstadoTarea(TipoEstadoTarea estado, TareaDTO tareaSeleccionada)
         {
             _service.ActualizarEstadoTarea(estado, tareaSeleccionada);
+        }
+
+        public bool PuedeForzarRecursos(TareaDTO tarea)
+        {
+            return _service.PuedeForzarRecursos(tarea);
+        }
+
+        public void ForzarRecursos(int proyectoId, int tareaId)
+        {
+            _service.ForzarRecursos(proyectoId, tareaId);
         }
     }
 }

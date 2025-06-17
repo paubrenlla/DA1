@@ -15,7 +15,7 @@ namespace Services_Tests
         private IDataAccessProyecto _repoProyectos;
         private IDataAccessUsuario _repoUsuarios;
         private IDataAccessAsignacionProyecto _repoAsignaciones;
-        private IDataAccessAsignacionRecursoTarea _asignacionRecurso;
+        private IDataAccessAsignacionRecursoTarea _repoAsignacionRecursoTarea;
 
         private IDataAccessTarea _repoTareas;
 
@@ -38,9 +38,11 @@ namespace Services_Tests
             _repoUsuarios = new UsuarioDataAccess(context);
             _repoProyectos = new ProyectoDataAccess(context);
             _repoAsignaciones = new AsignacionProyectoDataAccess(context);
-            _asignacionRecurso = new AsignacionRecursoTareaDataAccess(context);
 
-            _service = new ProyectoService(_repoProyectos, _repoUsuarios, _repoAsignaciones, _asignacionRecurso);
+            _repoAsignacionRecursoTarea = new AsignacionRecursoTareaDataAccess(context);
+
+            _service = new ProyectoService(_repoProyectos, _repoUsuarios, _repoAsignaciones,_repoAsignacionRecursoTarea);
+
 
             _usuario1 = new Usuario("u1@test.com", "Nombre1", "Apellido1", "Contraseña1!", new DateTime(1990, 1, 1));
             _usuario2 = new Usuario("u2@test.com", "Nombre2", "Apellido2", "Contraseña1!", new DateTime(1991, 1, 1));

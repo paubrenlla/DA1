@@ -18,6 +18,7 @@ namespace Services
         
         private readonly IEnumerable<ITareaObserver> _observers;
         private readonly NotificadorTarea _notificador;
+        private readonly IProyectoService _proyectoService;
 
         public TareaService(
             IDataAccessTarea tareaRepo,
@@ -25,7 +26,8 @@ namespace Services
             IDataAccessUsuario usuarioRepo,
             IAsignacionRecursoTareaService asignacionService,
             IRecursoService recursoService,
-            IEnumerable<ITareaObserver> observers)
+            IEnumerable<ITareaObserver> observers,
+            IProyectoService proyectoService)
         {
             _tareaRepo = tareaRepo;
             _proyectoRepo = proyectoRepo;
@@ -33,6 +35,7 @@ namespace Services
             _asignacionService = asignacionService;
             _recursoService = recursoService;
             _observers = observers;
+            _proyectoService = proyectoService;
         }
         public TareaDTO BuscarTareaPorId(int id)
         {
@@ -67,7 +70,7 @@ namespace Services
             proyecto.TareasAsociadas.Add(nuevaTarea);
 
             _tareaRepo.Add(nuevaTarea);
-            proyecto.CalcularRutaCritica();
+            _proyectoService.ObtenerRutaCritica(proyectoId);
             _tareaRepo.Update(nuevaTarea);
             
             foreach (var obs in _observers)
@@ -78,15 +81,21 @@ namespace Services
             return Convertidor.ATareaDTO(nuevaTarea);
         }
 
-        public void ModificarTarea(int tareaId, TareaDTO dto)
+        public void ModificarTarea(int tareaId, TareaDTO dto, int proyectoId)
         {
             Tarea tarea = _tareaRepo.GetById(tareaId);
+            DateTime fechaAnterior= tarea.FechaInicio;
+            TimeSpan duracionAnterior = tarea.Duracion;
             tarea.Modificar(
                 dto.Titulo,
                 dto.Descripcion,
                 dto.FechaInicio,
                 dto.Duracion);
             _tareaRepo.Update(tarea);
+            if (fechaAnterior != tarea.FechaInicio || duracionAnterior != tarea.Duracion)
+            {
+                _proyectoService.ObtenerRutaCritica(proyectoId);
+            }
         }
 
         public void MarcarComoEjecutandose(int tareaId)
@@ -132,6 +141,7 @@ namespace Services
             
             _tareaRepo.Update(tarea);
             _tareaRepo.Update(dependencia);
+            _proyectoService.ObtenerRutaCritica(proyectoId);
             foreach (var obs in _observers)
             {
                 obs.ModificacionDependencias(proyecto, tarea);
@@ -176,7 +186,7 @@ namespace Services
             Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
             proyecto.TareasAsociadas.Remove(tarea);
             _tareaRepo.Remove(tarea);
-            proyecto.CalcularRutaCritica();
+            _proyectoService.ObtenerRutaCritica(proyectoId);
             _proyectoRepo.Update(proyecto);
             foreach (var obs in _observers)
             {
@@ -243,6 +253,7 @@ namespace Services
             
             _tareaRepo.Update(tarea);
             _tareaRepo.Update(dependencia);
+            _proyectoService.ObtenerRutaCritica(proyectoId);
             
             foreach (var obs in _observers)
             {
@@ -314,6 +325,22 @@ namespace Services
             }
             Tarea tarea = _tareaRepo.GetById(tareaSeleccionada.Id);
             _tareaRepo.Update(tarea);
+        }
+
+        public bool PuedeForzarRecursos(TareaDTO dto)
+        {
+            Tarea tarea = _tareaRepo.GetById(dto.Id);
+            return tarea.DependenciasEfectuadas() && !tarea.RecursosForzados && tarea.EstadoActual.Valor == TipoEstadoTarea.Bloqueada;
+        }
+
+        public void ForzarRecursos(int proyectoId, int tareaId)
+        {
+            Tarea tarea = _tareaRepo.GetById(tareaId);
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
+            tarea.RecursosForzados = true;
+            _tareaRepo.Update(tarea);
+            _proyectoService.ObtenerRutaCritica(proyectoId);
+            _proyectoRepo.Update(proyecto);
         }
     }
 }

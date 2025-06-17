@@ -46,6 +46,7 @@ else
                     <th>Nombre</th>
                     <th>Descripción</th>
                     <th>Fecha de Inicio</th>
+                    <th>Fin Estimado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -56,6 +57,7 @@ else
                         <td>@proyecto.Nombre</td>
                         <td>@proyecto.Descripcion</td>
                         <td>@proyecto.FechaInicio.ToShortDateString()</td>
+                        <td>@proyecto.FinEstimado.ToString()</td>
                         <td>
                             <div class="btn-group" role="group">
                                 <a class="btn btn-primary btn-sm" href="proyectos/@proyecto.Id/tareas">Ver Tareas</a>

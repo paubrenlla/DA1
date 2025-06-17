@@ -17,12 +17,12 @@ namespace Services
             IDataAccessProyecto proyectoRepo,
             IDataAccessUsuario usuarioRepo,
             IDataAccessAsignacionProyecto asignacionRepo,
-            IDataAccessAsignacionRecursoTarea asignacionRecursoTarea)
+            IDataAccessAsignacionRecursoTarea asignacionRecursoTareaRepo)
         {
             _proyectoRepo = proyectoRepo;
             _usuarioRepo = usuarioRepo;
             _asignacionRepo = asignacionRepo;
-            _asignacionRecursoTareaRepo = asignacionRecursoTarea;
+            _asignacionRecursoTareaRepo = asignacionRecursoTareaRepo;
         }
 
         public ProyectoDTO GetById(int id)
@@ -153,9 +153,10 @@ namespace Services
         public List<TareaDTO> ObtenerRutaCritica(int proyectoId)
         {
             Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
-            List<Tarea> criticas = proyecto.CalcularRutaCritica();
+            List<Tarea> criticas = proyecto.CalcularRutaCritica(_asignacionRecursoTareaRepo.GetAll());
             if(criticas.Count == 0)
                 throw new Exception("Este proyecto no tiene tareas");
+            _proyectoRepo.Update(proyecto);
             return criticas.Select(Convertidor.ATareaDTO).ToList();
         }
 

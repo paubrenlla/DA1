@@ -125,7 +125,7 @@ else
         {
             TimeSpan nuevaDuracion = new TimeSpan(dias, horas, 0, 0);
             tareaDto.Duracion = nuevaDuracion;
-            TareaController.ModificarTarea(idTarea, tareaDto);
+            TareaController.ModificarTarea(idTarea, tareaDto, idProyecto);
             NavigationManager.NavigateTo($"/proyectos/{idProyecto}/tareas");
         }
         catch (Exception ex)
