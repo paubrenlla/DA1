@@ -100,8 +100,21 @@ namespace Controllers
         public string Exportar(string dato)
         {
             return _service.Exportar(dato);
-            
         }
         
+        public void AsignarLiderProyecto(int usuarioLiderId, int nuevoId)
+        {
+            _service.AsignarLiderDeProyecto(usuarioLiderId, nuevoId);
+        }
+
+        public UsuarioDTO GetLiderDeProyecto(int id)
+        {
+            return _service.GetLiderDeProyecto(id);
+        }
+
+        public bool UsuarioEsLiderDeProyecto(int usuarioId, int proyectoId)
+        {
+            return _service.UsuarioEsLiderDeProyecto(usuarioId, proyectoId);
+        }
     }
 }

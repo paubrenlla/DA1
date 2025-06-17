@@ -129,6 +129,19 @@ else
         mensajeError = string.Empty;
         try
         {
+            if (Proyectos.UsuarioEsLiderDeProyecto(miembro.Id, id))
+            {
+                mensajeError = "No se puede eliminar al líder del proyecto.";
+                return;
+            }
+
+            // Verificar si el usuario es administrador del proyecto
+            if (Proyectos.UsuarioEsAdminEnProyecto(miembro.Id, id))
+            {
+                mensajeError = "No se puede eliminar al administrador del proyecto.";
+                return;
+            }
+            
             Proyectos.EliminarMiembro(miembro.Id, id);
             Tareas.EliminarAUsuarioDeTareasDeProyecto(miembro.Id, id);
             listaDeMiembros = Proyectos.GetMiembrosDeProyecto(id);

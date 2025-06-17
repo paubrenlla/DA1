@@ -1,0 +1,421 @@
+@page "/proyectos/{idProyecto:int}/panel_recursos"
+@using Controllers
+@using DTOs
+@using Microsoft.IdentityModel.Tokens
+@using UserInterface.Data
+@inject ProyectoController Proyectos
+@inject AsignacionRecursoTareaControllers Asignaciones
+@inject TareaController Tareas
+@inject UsuarioController Usuarios
+@inject RecursoController Recursos
+@inject SessionLogic SessionLogic
+@inject NavigationManager NavigationManager
+
+<h3>Panel de Recursos - @nombreProyecto</h3>
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger">@mensajeError</div>
+}
+else
+{
+    <!-- Filtro de fecha -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Filtrar por Fecha</h5>
+        </div>
+        <div class="card-body">
+            <div class="row align-items-end">
+                <div class="col-md-4">
+                    <label for="fechaFiltro" class="form-label">Seleccionar Fecha:</label>
+                    <input type="date" id="fechaFiltro" class="form-control"
+                           @bind="fechaSeleccionada" @bind:after="ActualizarVistaRecursos" />
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-primary" @onclick="ActualizarVistaRecursos">
+                        <i class="fas fa-filter"></i> Aplicar Filtro
+                    </button>
+                    <button class="btn btn-secondary ms-2" @onclick="LimpiarFiltro">
+                        <i class="fas fa-times"></i> Ver Todo el Proyecto
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    @if (fechaSeleccionada.HasValue)
+                    {
+                        <div class="alert alert-info mb-0 py-2">
+                            <small><strong>Vista filtrada:</strong> @fechaSeleccionada.Value.ToString("dd/MM/yyyy")</small>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-secondary mb-0 py-2">
+                            <small><strong>Vista:</strong> Todo el proyecto</small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!recursosDelProyecto.IsNullOrEmpty())
+    {
+        <!-- Resumen general -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Resumen de Recursos @(fechaSeleccionada.HasValue ? $"- {fechaSeleccionada.Value.ToString("dd/MM/yyyy")}" : "")</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h6 class="text-primary">Total Recursos</h6>
+                            <h4>@recursosDelProyecto.Count</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h6 class="text-success">Disponibles</h6>
+                            <h4>@recursosDisponibles.Count</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h6 class="text-warning">En Máxima Capacidad</h6>
+                            <h4>@recursosConSobreutilizacion.Count</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h6 class="text-info">Tareas Activas</h6>
+                            <h4>@tareasActivasEnFecha.Count</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel detallado por recurso -->
+        <div class="accordion" id="accordionRecursos">
+            @foreach (RecursoDTO recurso in recursosDelProyecto)
+            {
+                List<AsignacionRecursoTareaDTO> todasAsignacionesRecurso = Asignaciones.ObtenerAsignacionesRecursoEnFecha(recurso.Id, fechaSeleccionada);
+                List<int> tareasDelProyectoIds = tareasDelProyecto.Select(t => t.Id).ToList();
+                List<AsignacionRecursoTareaDTO> asignacionesRecurso = todasAsignacionesRecurso
+                    .Where(a => tareasDelProyectoIds.Contains(a.Tarea.Id))
+                    .ToList();
+    
+                double nivelUso = CalcularNivelUsoEnFecha(recurso, asignacionesRecurso);
+                bool estaAbierto = recursosAbiertos.Contains(recurso.Id);
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading@(recurso.Id)">
+                        <button class="accordion-button @(estaAbierto ? "" : "collapsed")" type="button"
+                                @onclick="() => ToggleRecurso(recurso.Id)">
+                            <div class="d-flex justify-content-between w-100 me-3">
+                                <div>
+                                    <strong>@recurso.Nombre</strong>
+                                    <small class="text-muted ms-2">(@recurso.Tipo)</small>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <!-- Indicador de estado -->
+                                    @if (nivelUso > 100)
+                                    {
+                                        <span class="badge bg-danger me-2">Sobrecargado</span>
+                                    }
+                                    else if (nivelUso == 100)
+                                    {
+                                        <span class="badge bg-warning me-2">Máxima Capacidad</span>
+                                    }
+                                    else if (nivelUso >= 90)
+                                    {
+                                        <span class="badge bg-primary me-2">Cerca de Máxima</span>
+                                    }
+                                    else if (nivelUso >= 70)
+                                    {
+                                        <span class="badge bg-info me-2">Alto Uso</span>
+                                    }
+                                    else if (nivelUso > 0)
+                                    {
+                                        <span class="badge bg-success me-2">En Uso</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary me-2">Sin Uso</span>
+                                    }
+                                    <!-- Barra de uso -->
+                                    <div class="progress" style="width: 100px; height: 20px;">
+                                        <div class="progress-bar @GetColorClaseUso(nivelUso)"
+                                             role="progressbar"
+                                             style="width: @(Math.Min(nivelUso, 100))%"
+                                             aria-valuenow="@nivelUso"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
+                                            @nivelUso.ToString("F0")%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </button>
+                    </h2>
+                    <div id="collapse@(recurso.Id)" class="accordion-collapse collapse @(estaAbierto ? "show" : "")"
+                         aria-labelledby="heading@(recurso.Id)">
+                        <div class="accordion-body">
+                            <!-- Información del recurso -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <p><strong>Capacidad Total:</strong> @recurso.CantidadDelRecurso</p>
+                                    <p><strong>Cantidad Asignada @(fechaSeleccionada.HasValue ? "en la fecha" : "total"):</strong> @asignacionesRecurso.Sum(a => a.Cantidad)</p>
+                                    <p><strong>Disponible:</strong> @(recurso.CantidadDelRecurso - asignacionesRecurso.Sum(a => a.Cantidad))</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Nivel de Uso:</strong> @nivelUso.ToString("F1")%</p>
+                                    <p><strong>Estado:</strong>
+                                        @if (nivelUso > 100)
+                                        {
+                                            <span class="badge bg-danger me-2">Sobrecargado</span>
+                                        }
+                                        else if (nivelUso == 100)
+                                        {
+                                            <span class="badge bg-warning me-2">Máxima Capacidad</span>
+                                        }
+                                        else if (nivelUso >= 90)
+                                        {
+                                            <span class="badge bg-primary me-2">Cerca de Máxima</span>
+                                        }
+                                        else if (nivelUso >= 70)
+                                        {
+                                            <span class="badge bg-info me-2">Alto Uso</span>
+                                        }
+                                        else if (nivelUso > 0)
+                                        {
+                                            <span class="badge bg-success me-2">En Uso</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary me-2">Sin Uso</span>
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- Tareas activas en la fecha -->
+                            <h6>@(fechaSeleccionada.HasValue ? $"Tareas Activas el {fechaSeleccionada.Value.ToString("dd/MM/yyyy")}:" : "Todas las Tareas Asignadas:")</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                    <tr>
+                                        <th>Tarea</th>
+                                        <th>Fecha Inicio</th>
+                                        <th>Fecha Fin</th>
+                                        <th>Cantidad</th>
+                                        @if (fechaSeleccionada.HasValue)
+                                        {
+                                            <th>Estado</th>
+                                        }
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @if (!asignacionesRecurso.Any())
+                                    {
+                                        <tr>
+                                            <td colspan="@(fechaSeleccionada.HasValue ? "5" : "4")" class="text-center text-muted">
+                                                @(fechaSeleccionada.HasValue ? "No hay tareas activas en esta fecha" : "No hay asignaciones")
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        @foreach (AsignacionRecursoTareaDTO asignacion in asignacionesRecurso.OrderBy(a => a.Tarea.EarlyStart))
+                                        {
+                                            TareaDTO tarea = tareasDelProyecto.FirstOrDefault(t => t.Id == asignacion.Tarea.Id);
+                                            <tr>
+                                                <td>@(tarea?.Titulo ?? "Tarea no encontrada")</td>
+                                                <td>@asignacion.Tarea.EarlyStart.ToString("dd/MM/yyyy")</td>
+                                                <td>@asignacion.Tarea.EarlyFinish.ToString("dd/MM/yyyy")</td>
+                                                <td>@asignacion.Cantidad</td>
+                                                @if (fechaSeleccionada.HasValue)
+                                                {
+                                                    <td>
+                                                        <span class="badge bg-success">Activa</span>
+                                                    </td>
+                                                }
+                                            </tr>
+                                        }
+                                    }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <p>Este proyecto no tiene recursos asignados a tareas.</p>
+            <a href="/proyectos/@idProyecto/tareas" class="btn btn-primary">Gestionar Tareas</a>
+        </div>
+    }
+}
+
+@code {
+    [Parameter] public int idProyecto { get; set; }
+
+    private List<AsignacionRecursoTareaDTO> asignacionesDelProyecto = new();
+    private List<RecursoDTO> recursosDelProyecto = new();
+    private List<TareaDTO> tareasDelProyecto = new();
+    private List<TareaDTO> tareasActivasEnFecha = new();
+    private List<RecursoDTO> recursosDisponibles = new();
+    private List<RecursoDTO> recursosConSobreutilizacion = new();
+
+    private string mensajeError = string.Empty;
+    private string nombreProyecto = string.Empty;
+    private bool yaVerifiqué = false;
+    private UsuarioDTO usuarioActivo;
+
+    private DateTime? fechaSeleccionada = null;
+    
+    private HashSet<int> recursosAbiertos = new HashSet<int>();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!yaVerifiqué)
+        {
+            yaVerifiqué = true;
+            if (!await SessionLogic.IsUserActive()
+                && (!Usuarios.EsAdmin(SessionLogic.GetCurrentUser().Id)
+                    || Proyectos.UsuarioEsAdminEnProyecto(SessionLogic.GetCurrentUser().Id, idProyecto)))
+            {
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+            try
+            {
+                await CargarDatosPanel();
+                ActualizarAnalisisRecursos();
+            }
+            catch (Exception ex)
+            {
+                mensajeError = ex.Message;
+            }
+            StateHasChanged();
+        }
+    }
+
+    private void ToggleRecurso(int recursoId)
+    {
+        if (recursosAbiertos.Contains(recursoId))
+        {
+            recursosAbiertos.Remove(recursoId);
+        }
+        else
+        {
+            recursosAbiertos.Add(recursoId);
+        }
+    }
+
+    private async Task CargarDatosPanel()
+    {
+        ProyectoDTO proyecto = Proyectos.BuscarProyectoPorId(idProyecto);
+        nombreProyecto = proyecto?.Nombre ?? "Proyecto";
+
+        List<TareaDTO> tareasDeProyecto = Tareas.ListarTareasPorProyecto(idProyecto);
+
+        asignacionesDelProyecto.Clear();
+
+        foreach (TareaDTO tarea in tareasDeProyecto)
+        {
+            List<AsignacionRecursoTareaDTO> asignacionesTarea = Asignaciones.GetAsignacionesDeTarea(tarea.Id);
+            if (asignacionesTarea != null && asignacionesTarea.Any())
+            {
+                asignacionesDelProyecto.AddRange(asignacionesTarea);
+            }
+        }
+
+        tareasDelProyecto = Tareas.ListarTareasPorProyecto(idProyecto);
+
+        List<int> recursosIds = asignacionesDelProyecto.Select(a => a.Recurso.Id).Distinct().ToList();
+        recursosDelProyecto = new List<RecursoDTO>();
+
+        foreach (int recursoId in recursosIds)
+        {
+            RecursoDTO recurso = Recursos.GetById(recursoId);
+            if (recurso != null)
+                recursosDelProyecto.Add(recurso);
+        }
+    }
+
+    private async Task ActualizarVistaRecursos()
+    {
+        ActualizarAnalisisRecursos();
+        StateHasChanged();
+    }
+
+    private async Task LimpiarFiltro()
+    {
+        fechaSeleccionada = null;
+        ActualizarAnalisisRecursos();
+        StateHasChanged();
+    }
+
+    private void ActualizarAnalisisRecursos()
+    {
+        if (fechaSeleccionada.HasValue)
+        {
+            tareasActivasEnFecha = tareasDelProyecto
+                .Where(t => t.EarlyStart.Date <= fechaSeleccionada.Value.Date &&
+                            t.EarlyFinish.Date >= fechaSeleccionada.Value.Date)
+                .ToList();
+        }
+        else
+        {
+            tareasActivasEnFecha = tareasDelProyecto.ToList();
+        }
+
+        recursosDisponibles = new List<RecursoDTO>();
+        recursosConSobreutilizacion = new List<RecursoDTO>();
+    
+        foreach (RecursoDTO recurso in recursosDelProyecto)
+        {
+            List<AsignacionRecursoTareaDTO> todasAsignacionesRecurso = Asignaciones.ObtenerAsignacionesRecursoEnFecha(recurso.Id, fechaSeleccionada);
+        
+            List<int> tareasDelProyectoIds = tareasDelProyecto.Select(t => t.Id).ToList();
+            List<AsignacionRecursoTareaDTO> asignacionesRecursoProyecto = todasAsignacionesRecurso
+                .Where(a => tareasDelProyectoIds.Contains(a.Tarea.Id))
+                .ToList();
+        
+            double nivelUso = CalcularNivelUsoEnFecha(recurso, asignacionesRecursoProyecto);
+
+            if (nivelUso >= 100)
+            {
+                recursosConSobreutilizacion.Add(recurso);
+            }
+            else
+            {
+                recursosDisponibles.Add(recurso);
+            }
+        }
+    }
+
+    private double CalcularNivelUsoEnFecha(RecursoDTO recurso, List<AsignacionRecursoTareaDTO> asignaciones)
+    {
+        if (recurso.CantidadDelRecurso == 0) return 0;
+
+        int cantidadUsada = asignaciones.Sum(a => a.Cantidad);
+        return (double)cantidadUsada / recurso.CantidadDelRecurso * 100;
+    }
+
+    private string GetColorClaseUso(double nivelUso)
+    {
+        return nivelUso switch
+        {
+            >= 101 => "bg-danger",
+            >= 100 => "bg-warning",
+            >= 90 => "bg-primary",
+            >= 70 => "bg-info",
+            > 0 => "bg-success",
+            _ => "bg-secondary"
+        };
+    }
+}

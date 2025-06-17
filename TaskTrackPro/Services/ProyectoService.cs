@@ -167,5 +167,33 @@ namespace Services
             Exportador exportador = ExportadorFactory.Crear(valor);
             return exportador.Exportar(_proyectoRepo.GetAll(),_asignacionRecursoTareaRepo.GetAll());
         }
+        
+        public void AsignarLiderDeProyecto(int usuarioId, int proyectoId)
+        {
+            EliminarLiderAnterior(proyectoId);
+            
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
+            Usuario  usuario = _usuarioRepo.GetById(usuarioId);
+            AsignacionProyecto nuevoLider = new AsignacionProyecto(proyecto, usuario, Rol.Lider);
+            _asignacionRepo.Add(nuevoLider);
+        }
+        
+        private void EliminarLiderAnterior(int proyectoId)
+        {
+            AsignacionProyecto antiguoLider = _asignacionRepo.GetLiderProyecto(proyectoId);
+            if(antiguoLider is not null)
+                _asignacionRepo.Remove(antiguoLider);
+        }
+
+        public bool UsuarioEsLiderDeProyecto(int usuarioId, int proyectoId)
+        {
+            AsignacionProyecto asignacion = _asignacionRepo.GetLiderProyecto(proyectoId);
+            return asignacion.Usuario.Id == usuarioId &&  asignacion.Proyecto.Id == proyectoId;
+        }
+
+        public UsuarioDTO GetLiderDeProyecto(int id)
+        {
+            return Convertidor.AUsuarioDTO(_asignacionRepo.GetLiderProyecto(id).Usuario);
+        }
     }
 }

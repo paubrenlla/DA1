@@ -4,7 +4,6 @@
 
 @using DTOs
 @using Controllers
-@using Domain
 @using UserInterface.Data
 @inject UsuarioController Usuarios
 @inject ProyectoController Proyectos
@@ -34,6 +33,10 @@
         <input type="email" class="form-control" id="admin" @bind="correoAdminNuevo">
     </div>
 
+    <div class="form-group">
+        <label for="admin">Lider (correo)</label>
+        <input type="email" class="form-control" id="admin" @bind="correoLiderNuevo">
+    </div>
 
     <input type="submit" class="btn btn-primary" value="Guardar cambios" @onclick="GuardarCambios">
 </form>
@@ -46,7 +49,9 @@
     private string descripcionNueva;
     private DateTime fechaNueva;
     private string correoAdminNuevo;
+    private string correoLiderNuevo;
     private UsuarioDTO adminNuevo;
+    private UsuarioDTO liderNuevo;
     private string mensajeError;
 
     private ProyectoDTO proyectoACambiar;
@@ -76,10 +81,12 @@
                 }
 
                 adminNuevo = Proyectos.GetAdminDeProyecto(id);
+                liderNuevo = Proyectos.GetLiderDeProyecto(id);
                 nombre = proyectoACambiar.Nombre;
                 descripcionNueva = proyectoACambiar.Descripcion;
                 fechaNueva = proyectoACambiar.FechaInicio;
                 correoAdminNuevo = adminNuevo.Email;
+                correoLiderNuevo = liderNuevo.Email;
             }
             catch (Exception ex)
             {
@@ -99,7 +106,13 @@
             {;
                 Proyectos.AsignarAdminProyecto(administradorAAsignar.Id, id);
             }
-
+            
+            UsuarioDTO liderAAsignar = Usuarios.GetByEmail(correoLiderNuevo);
+            if (liderNuevo.Email != correoLiderNuevo && liderAAsignar != null)
+            {;
+                Proyectos.AsignarLiderProyecto(liderAAsignar.Id, id);
+            }
+            
             ProyectoDTO cambiosProyecto = new ProyectoDTO { Id = id, Nombre = nombre, Descripcion = descripcionNueva, FechaInicio = fechaNueva };
             Proyectos.ModificarProyecto(cambiosProyecto);
             NavigationManager.NavigateTo("/proyectos");

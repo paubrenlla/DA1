@@ -274,5 +274,53 @@ namespace Controllers_Tests
             CollectionAssert.AreEqual(_listaOrden, resultado);
             _mockService.Verify(s => s.TareasOrdenadasPorInicio(30), Times.Once);
         }
+        
+        [TestMethod]
+        public void AsignarLiderProyecto_LlamaServiceConParametrosCorrectos()
+        {
+            int usuarioLiderId = 15;
+            int nuevoId = 8;
+
+            _controller.AsignarLiderProyecto(usuarioLiderId, nuevoId);
+
+            _mockService.Verify(s => s.AsignarLiderDeProyecto(usuarioLiderId, nuevoId), Times.Once);
+        }
+
+        [TestMethod]
+        public void GetLiderDeProyecto_LlamaServiceYDevuelveUsuarioDTO()
+        {
+            int proyectoId = 456;
+            UsuarioDTO liderEsperado = new UsuarioDTO
+            {
+                Id = 25,
+                Nombre = "Líder",
+                Email = "lider@example.com"
+            };
+
+            _mockService
+                .Setup(s => s.GetLiderDeProyecto(proyectoId))
+                .Returns(liderEsperado);
+
+            UsuarioDTO resultado = _controller.GetLiderDeProyecto(proyectoId);
+
+            Assert.AreEqual(liderEsperado, resultado);
+            _mockService.Verify(s => s.GetLiderDeProyecto(proyectoId), Times.Once);
+        }
+
+        [TestMethod]
+        public void UsuarioEsLiderDeProyecto_DevuelveLoQueDevuelveService()
+        {
+            int usuarioId = 12;
+            int proyectoId = 88;
+
+            _mockService
+                .Setup(s => s.UsuarioEsLiderDeProyecto(usuarioId, proyectoId))
+                .Returns(true);
+
+            bool resultado = _controller.UsuarioEsLiderDeProyecto(usuarioId, proyectoId);
+
+            Assert.IsTrue(resultado);
+            _mockService.Verify(s => s.UsuarioEsLiderDeProyecto(usuarioId, proyectoId), Times.Once);
+        }
     }
 }

@@ -18,10 +18,6 @@ public class UsuarioService : IUsuarioService
         _serviceProyecto = serviceProyecto;
         _observers = new List<IUsuarioObserver>(initialObservers);
     }
-    public void Subscribe(IUsuarioObserver observer)
-    {
-        _observers.Add(observer);  
-    } 
 
     public UsuarioDTO GetById(int id)
     {
@@ -54,9 +50,8 @@ public class UsuarioService : IUsuarioService
         if(_serviceProyecto.UsuarioEsAdminDeAlgunProyecto(usuarioAEliminar.Id))
             throw new ArgumentException("El usuario es administrador de un proyecto");
         
-        
+        _serviceProyecto.EliminarAsignacionesDeUsuario(usuarioAEliminar.Id);
         _usuarioRepo.Remove(usuarioAEliminar);
-        // TODO Eliminar asignaciones de tarea cuando haga tarea service
     }
 
     public UsuarioDTO GetByEmail(string email)

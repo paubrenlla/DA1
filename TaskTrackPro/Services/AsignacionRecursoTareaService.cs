@@ -150,4 +150,18 @@ public class AsignacionRecursoTareaService : IAsignacionRecursoTareaService
     {
         return _asignacionRepo.GetByTarea(idTarea).Select(Convertidor.AAsignacionRecursoTareaDTO).ToList();
     }
+
+    public List<AsignacionRecursoTareaDTO> ObtenerAsignacionesRecursoEnFecha(int recursoId, DateTime? fechaSeleccionada)
+    {
+        List<AsignacionRecursoTarea> asignacionesRecurso = _asignacionRepo.GetByRecurso(recursoId);
+
+        if (fechaSeleccionada.HasValue)
+        {
+            asignacionesRecurso = asignacionesRecurso.Where(a =>
+                a.Tarea.EarlyStart.Date <= fechaSeleccionada.Value.Date &&
+                a.Tarea.EarlyFinish.Date >= fechaSeleccionada.Value.Date).ToList();
+        }
+
+        return asignacionesRecurso.Select(Convertidor.AAsignacionRecursoTareaDTO).ToList();
+    }
 }

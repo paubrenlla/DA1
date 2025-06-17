@@ -24,5 +24,6 @@ namespace Services
         
         bool VerificarRecursosDeTareaDisponibles(int TareaId);
         List<AsignacionRecursoTareaDTO>? GetAsignacionesDeTarea(int idTarea);
+        List<AsignacionRecursoTareaDTO> ObtenerAsignacionesRecursoEnFecha(int recursoId, DateTime? fechaSeleccionada);
     }
 }

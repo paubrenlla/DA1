@@ -32,6 +32,8 @@ namespace Services
         List<TareaDTO> TareasNoCriticas(int proyectoId);
         List<TareaDTO> TareasOrdenadasPorInicio(int proyectoId);
         String Exportar(string dato);
-        
+        void AsignarLiderDeProyecto(int usuarioId, int proyectoId);
+        bool UsuarioEsLiderDeProyecto(int usuarioId, int proyectoId);
+        UsuarioDTO GetLiderDeProyecto(int id);
     }
 }
