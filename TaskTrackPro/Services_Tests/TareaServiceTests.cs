@@ -42,7 +42,7 @@ public class TareaServiceTests
         _repoUsuarios = new UsuarioDataAccess(context);
         _observers = new List<ITareaObserver>();
 
-        var repoAsignaciones = new AsignacionRecursoTareaDataAccess(context);
+        AsignacionRecursoTareaDataAccess repoAsignaciones = new AsignacionRecursoTareaDataAccess(context);
         _recursoService = new RecursoService(
             new RecursoDataAccess(context),
             repoAsignaciones,
@@ -350,7 +350,7 @@ public class TareaServiceTests
 
         _service.EliminarUsuarioDeTarea(_usuarioEjemplo.Id, _tareaEjemplo.Id);
 
-        var tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
+        Tarea tareaGuardada = _repoTareas.GetById(_tareaEjemplo.Id);
         Assert.IsFalse(tareaGuardada.UsuariosAsignados.Contains(_usuarioEjemplo));
     }
 
