@@ -33,9 +33,11 @@ namespace Services
 
         public List<ProyectoDTO> GetAll()
         {
+            Console.WriteLine(_proyectoRepo.GetAll().ToString());
             return _proyectoRepo.GetAll()
                 .Select(Convertidor.AProyectoDTO)
                 .ToList();
+            
         }
 
         public ProyectoDTO CrearProyecto(ProyectoDTO dto)
@@ -67,6 +69,17 @@ namespace Services
         {
             List<AsignacionProyecto> asignaciones = _asignacionRepo.GetAll();
             return asignaciones.Any(a=> a.Usuario.Id == usuarioId && a.Rol == Rol.Administrador);
+        }
+
+        public bool UsuarioEsLiderDeAlgunProyecto(int usuarioId)
+        {
+            List<AsignacionProyecto> asignaciones = _asignacionRepo.GetAll();
+            return asignaciones.Any(a=> a.Usuario.Id == usuarioId && a.Rol == Rol.Lider);
+        }
+
+        public bool UsuarioEsLiderOAdminDeAlgunProyecto(int usuarioId)
+        {
+            return UsuarioEsAdminDeAlgunProyecto(usuarioId) || UsuarioEsLiderDeAlgunProyecto(usuarioId);
         }
 
         public List<ProyectoDTO> ProyectosDelUsuario(int usuarioId)
@@ -159,6 +172,40 @@ namespace Services
             Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
             List<Tarea> ordenadas = proyecto.TareasAsociadasPorInicio();
             return ordenadas.Select(Convertidor.ATareaDTO).ToList();
+        }
+
+        public string Exportar(string valor)
+        {
+            Exportador exportador = ExportadorFactory.Crear(valor);
+            return exportador.Exportar(_proyectoRepo.GetAll(),_asignacionRecursoTareaRepo.GetAll());
+        }
+        
+        public void AsignarLiderDeProyecto(int usuarioId, int proyectoId)
+        {
+            EliminarLiderAnterior(proyectoId);
+            
+            Proyecto proyecto = _proyectoRepo.GetById(proyectoId);
+            Usuario  usuario = _usuarioRepo.GetById(usuarioId);
+            AsignacionProyecto nuevoLider = new AsignacionProyecto(proyecto, usuario, Rol.Lider);
+            _asignacionRepo.Add(nuevoLider);
+        }
+        
+        private void EliminarLiderAnterior(int proyectoId)
+        {
+            AsignacionProyecto antiguoLider = _asignacionRepo.GetLiderProyecto(proyectoId);
+            if(antiguoLider is not null)
+                _asignacionRepo.Remove(antiguoLider);
+        }
+
+        public bool UsuarioEsLiderDeProyecto(int usuarioId, int proyectoId)
+        {
+            AsignacionProyecto asignacion = _asignacionRepo.GetLiderProyecto(proyectoId);
+            return asignacion.Usuario.Id == usuarioId &&  asignacion.Proyecto.Id == proyectoId;
+        }
+
+        public UsuarioDTO GetLiderDeProyecto(int id)
+        {
+            return Convertidor.AUsuarioDTO(_asignacionRepo.GetLiderProyecto(id).Usuario);
         }
     }
 }

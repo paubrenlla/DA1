@@ -96,5 +96,35 @@ namespace Controllers
         {
             return _service.TareasOrdenadasPorInicio(proyectoId);
         }
+
+        public string Exportar(string dato)
+        {
+            return _service.Exportar(dato);
+        }
+        
+        public void AsignarLiderProyecto(int usuarioLiderId, int nuevoId)
+        {
+            _service.AsignarLiderDeProyecto(usuarioLiderId, nuevoId);
+        }
+
+        public UsuarioDTO GetLiderDeProyecto(int id)
+        {
+            return _service.GetLiderDeProyecto(id);
+        }
+
+        public bool UsuarioEsLiderDeProyecto(int usuarioId, int proyectoId)
+        {
+            return _service.UsuarioEsLiderDeProyecto(usuarioId, proyectoId);
+        }
+
+        public bool UsuarioEsLiderOAdminDeAlgunProyecto(int usuarioId)
+        {
+            return _service.UsuarioEsLiderOAdminDeAlgunProyecto(usuarioId);
+        }
+
+        public bool UsuarioEsLiderDeAlgunProyecto(int usuarioLogeadoId)
+        {
+            return _service.UsuarioEsLiderDeAlgunProyecto(usuarioLogeadoId);
+        }
     }
 }

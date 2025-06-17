@@ -738,8 +738,6 @@ public class ProyectoTests
         Assert.AreEqual(hoy.AddDays(3), t2.EarlyStart);
         Assert.AreEqual(hoy.AddDays(5), t2.EarlyFinish);
     }
-
-
 }
 
 

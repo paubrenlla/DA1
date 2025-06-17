@@ -66,4 +66,9 @@ public class AsignacionRecursoTareaControllers
     {
         return _service.GetAsignacionesDeTarea(idTarea);
     }
+
+    public List<AsignacionRecursoTareaDTO> ObtenerAsignacionesRecursoEnFecha(int recursoId, DateTime? fechaSeleccionada)
+    {
+        return _service.ObtenerAsignacionesRecursoEnFecha(recursoId, fechaSeleccionada);
+    }
 }

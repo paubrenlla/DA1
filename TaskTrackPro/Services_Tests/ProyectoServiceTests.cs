@@ -1,7 +1,6 @@
 ﻿using DataAccess;
 using Domain;
 using Domain.Enums;
-using Domain.Observers;
 using DTOs;
 using IDataAcces;
 using Microsoft.EntityFrameworkCore;
@@ -39,9 +38,11 @@ namespace Services_Tests
             _repoUsuarios = new UsuarioDataAccess(context);
             _repoProyectos = new ProyectoDataAccess(context);
             _repoAsignaciones = new AsignacionProyectoDataAccess(context);
+
             _repoAsignacionRecursoTarea = new AsignacionRecursoTareaDataAccess(context);
 
             _service = new ProyectoService(_repoProyectos, _repoUsuarios, _repoAsignaciones,_repoAsignacionRecursoTarea);
+
 
             _usuario1 = new Usuario("u1@test.com", "Nombre1", "Apellido1", "Contraseña1!", new DateTime(1990, 1, 1));
             _usuario2 = new Usuario("u2@test.com", "Nombre2", "Apellido2", "Contraseña1!", new DateTime(1991, 1, 1));
@@ -268,6 +269,155 @@ namespace Services_Tests
             Assert.AreEqual(_t1.Id, orden[0].Id);
             Assert.AreEqual(_t2.Id, orden[1].Id);
             Assert.AreEqual(_t3.Id, orden[2].Id);
+        }
+        
+        [TestMethod]
+        public void AsignarLiderDeProyecto_AsignaCorrectamenteUnLider()
+        {
+            _service.AsignarLiderDeProyecto(_usuario1.Id, _proyecto1.Id);
+
+            List<AsignacionProyecto> asignaciones = _repoAsignaciones.UsuariosDelProyecto(_proyecto1.Id);
+            Assert.AreEqual(1, asignaciones.Count());
+            AsignacionProyecto asignacion = asignaciones.First();
+            Assert.AreEqual(_usuario1.Id, asignacion.Usuario.Id);
+            Assert.AreEqual(Rol.Lider, asignacion.Rol);
+        }
+
+        [TestMethod]
+        public void AsignarLiderDeProyecto_ReemplazaCorrectamenteElLiderAnterior()
+        {
+            _repoAsignaciones.Add(new AsignacionProyecto(_proyecto1, _usuario1, Rol.Lider));
+
+            _service.AsignarLiderDeProyecto(_usuario2.Id, _proyecto1.Id);
+
+            List<AsignacionProyecto> asignaciones = _repoAsignaciones.UsuariosDelProyecto(_proyecto1.Id).ToList();
+
+            Assert.AreEqual(1, asignaciones.Count);
+            Assert.AreEqual(_usuario2.Id, asignaciones[0].Usuario.Id);
+            Assert.AreEqual(Rol.Lider, asignaciones[0].Rol);
+        }
+
+        [TestMethod]
+        public void AsignarLiderDeProyecto_NoAfectaOtrosRoles()
+        {
+            _repoAsignaciones.Add(new AsignacionProyecto(_proyecto1, _usuario1, Rol.Administrador));
+            _repoAsignaciones.Add(new AsignacionProyecto(_proyecto1, _usuario2, Rol.Miembro));
+
+            _service.AsignarLiderDeProyecto(_usuario1.Id, _proyecto1.Id);
+
+            List<AsignacionProyecto> asignaciones = _repoAsignaciones.UsuariosDelProyecto(_proyecto1.Id).ToList();
+            
+            Assert.AreEqual(3, asignaciones.Count);
+            Assert.IsTrue(asignaciones.Any(a => a.Usuario.Id == _usuario1.Id && a.Rol == Rol.Administrador));
+            Assert.IsTrue(asignaciones.Any(a => a.Usuario.Id == _usuario2.Id && a.Rol == Rol.Miembro));
+            Assert.IsTrue(asignaciones.Any(a => a.Usuario.Id == _usuario1.Id && a.Rol == Rol.Lider));
+        }
+
+        [TestMethod]
+        public void UsuarioEsLiderDeProyecto_DevuelveTrueSiEsLider()
+        {
+            _repoAsignaciones.Add(new AsignacionProyecto(_proyecto1, _usuario1, Rol.Lider));
+            _repoAsignaciones.Add(new AsignacionProyecto(_proyecto2, _usuario2, Rol.Lider));
+
+            Assert.IsTrue(_service.UsuarioEsLiderDeProyecto(_usuario1.Id, _proyecto1.Id));
+            Assert.IsFalse(_service.UsuarioEsLiderDeProyecto(_usuario2.Id, _proyecto1.Id));
+            Assert.IsFalse(_service.UsuarioEsLiderDeProyecto(_usuario1.Id, _proyecto2.Id));
+        }
+
+        [TestMethod]
+        public void UsuarioEsLiderDeProyecto_DevuelveFalseSiNoEsLider()
+        {
+            _repoAsignaciones.Add(new AsignacionProyecto(_proyecto1, _usuario1, Rol.Administrador));
+            _repoAsignaciones.Add(new AsignacionProyecto(_proyecto1, _usuario2, Rol.Lider));
+            _repoAsignaciones.Add(new AsignacionProyecto(_proyecto1, _usuario2, Rol.Miembro));
+
+            Assert.IsFalse(_service.UsuarioEsLiderDeProyecto(_usuario1.Id, _proyecto1.Id));
+        }
+
+        [TestMethod]
+        public void GetLiderDeProyecto_DevuelveElLiderCorrectamente()
+        {
+            AsignacionProyecto asignLider = new AsignacionProyecto(_proyecto1, _usuario2, Rol.Lider);
+            _repoAsignaciones.Add(asignLider);
+
+            UsuarioDTO liderDTO = _service.GetLiderDeProyecto(_proyecto1.Id);
+
+            Assert.IsNotNull(liderDTO);
+            Assert.AreEqual(_usuario2.Id, liderDTO.Id);
+            Assert.AreEqual(_usuario2.Nombre, liderDTO.Nombre);
+            Assert.AreEqual(_usuario2.Apellido, liderDTO.Apellido);
+            Assert.AreEqual(_usuario2.Email, liderDTO.Email);
+        }
+        
+        [TestMethod]
+        public void UsuarioEsLiderDeAlgunProyectoDevuelveTrueSiEsLiderDeAlgunProyecto()
+        {
+            AsignacionProyecto asignLider = new AsignacionProyecto(_proyecto1, _usuario1, Rol.Lider);
+            _repoAsignaciones.Add(asignLider);
+
+            Assert.IsTrue(_service.UsuarioEsLiderDeAlgunProyecto(_usuario1.Id));
+            Assert.IsFalse(_service.UsuarioEsLiderDeAlgunProyecto(_usuario2.Id));
+        }
+
+        [TestMethod]
+        public void UsuarioEsLiderDeAlgunProyectoDevuelveFalseSiNoEsLiderDeNingunProyecto()
+        {
+            AsignacionProyecto asignMiembro = new AsignacionProyecto(_proyecto1, _usuario1, Rol.Miembro);
+            AsignacionProyecto asignAdmin = new AsignacionProyecto(_proyecto2, _usuario1, Rol.Administrador);
+            _repoAsignaciones.Add(asignMiembro);
+            _repoAsignaciones.Add(asignAdmin);
+
+            Assert.IsFalse(_service.UsuarioEsLiderDeAlgunProyecto(_usuario1.Id));
+        }
+
+        [TestMethod]
+        public void UsuarioEsLiderDeAlgunProyectoDevuelveFalseSiUsuarioNoTieneAsignaciones()
+        {
+            Assert.IsFalse(_service.UsuarioEsLiderDeAlgunProyecto(_usuario1.Id));
+        }
+
+        [TestMethod]
+        public void UsuarioEsLiderOAdminDeAlgunProyectoDevuelveTrueSiEsAdmin()
+        {
+            AsignacionProyecto asignAdmin = new AsignacionProyecto(_proyecto1, _usuario1, Rol.Administrador);
+            _repoAsignaciones.Add(asignAdmin);
+
+            Assert.IsTrue(_service.UsuarioEsLiderOAdminDeAlgunProyecto(_usuario1.Id));
+        }
+
+        [TestMethod]
+        public void UsuarioEsLiderOAdminDeAlgunProyectoDevuelveTrueSiEsLider()
+        {
+            AsignacionProyecto asignLider = new AsignacionProyecto(_proyecto1, _usuario1, Rol.Lider);
+            _repoAsignaciones.Add(asignLider);
+
+            Assert.IsTrue(_service.UsuarioEsLiderOAdminDeAlgunProyecto(_usuario1.Id));
+        }
+
+        [TestMethod]
+        public void UsuarioEsLiderOAdminDeAlgunProyectoDevuelveTrueSiEsAmbos()
+        {
+            AsignacionProyecto asignAdmin = new AsignacionProyecto(_proyecto1, _usuario1, Rol.Administrador);
+            AsignacionProyecto asignLider = new AsignacionProyecto(_proyecto2, _usuario1, Rol.Lider);
+            _repoAsignaciones.Add(asignAdmin);
+            _repoAsignaciones.Add(asignLider);
+
+            Assert.IsTrue(_service.UsuarioEsLiderOAdminDeAlgunProyecto(_usuario1.Id));
+        }
+
+        [TestMethod]
+        public void UsuarioEsLiderOAdminDeAlgunProyectoDevuelveFalseSiSoloEsMiembro()
+        {
+            AsignacionProyecto asignMiembro = new AsignacionProyecto(_proyecto1, _usuario1, Rol.Miembro);
+            _repoAsignaciones.Add(asignMiembro);
+
+            Assert.IsFalse(_service.UsuarioEsLiderOAdminDeAlgunProyecto(_usuario1.Id));
+        }
+
+        [TestMethod]
+        public void UsuarioEsLiderOAdminDeAlgunProyectoDevuelveFalseSiNoTieneAsignaciones()
+        {
+            Assert.IsFalse(_service.UsuarioEsLiderOAdminDeAlgunProyecto(_usuario1.Id));
         }
     }
 }

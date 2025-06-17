@@ -1,0 +1,94 @@
+@page "/exportar"
+@using System.IO
+@using Controllers
+@using DTOs
+@using UserInterface.Data
+@inject ProyectoController Proyectos
+@inject UsuarioController Usuarios
+@inject IJSRuntime JS
+@inject SessionLogic SessionLogic
+@inject NavigationManager NavigationManager
+
+
+    <div>
+        <h1>
+            <button class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" @onclick="DescargarJSON">Exportar JSON</button>
+        </h1>
+
+        <h1>
+            <button class="btn btn-success btn-sm" style="float: right; margin-right: 40px;" @onclick="DescargarCSV">Exportar CSV</button>
+        </h1>
+    </div>
+
+
+@code {
+    private bool yaVerifiqueSesion = false;
+    UsuarioDTO usuarioLogeado;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var isUserActive = await SessionLogic.IsUserActive();
+        if (firstRender && !yaVerifiqueSesion)
+        {
+            if (!isUserActive)
+            {
+                NavigationManager.NavigateTo("/Login");
+            }
+            usuarioLogeado = await SessionLogic.GetCurrentUser();
+            if (!Proyectos.UsuarioEsLiderDeAlgunProyecto(usuarioLogeado.Id) && !Usuarios.EsAdmin(usuarioLogeado.Id))
+            {
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                StateHasChanged();
+            }
+        }
+    }
+    
+    private async Task DescargarJSON()
+    {
+        // 1. Generar el JSON y guardarlo (o obtenerlo como string)
+        string rutaArchivoJSON = Proyectos.Exportar("json");
+
+        if (!string.IsNullOrEmpty(rutaArchivoJSON))
+        {
+            byte[] fileBytes = await File.ReadAllBytesAsync(rutaArchivoJSON);
+            string fileName = Path.GetFileName(rutaArchivoJSON);
+            string base64String = Convert.ToBase64String(fileBytes);
+            await JS.InvokeVoidAsync("eval", 
+                $@"var link = document.createElement('a');
+               link.href = 'data:application/json;base64,{base64String}';
+               link.download = '{fileName}';
+               document.body.appendChild(link);
+               link.click();
+               document.body.removeChild(link);"
+            );
+        }
+    }
+    
+    
+    private async Task DescargarCSV()
+    {
+        string rutaArchivoCSV = Proyectos.Exportar("csv");
+
+        if (!string.IsNullOrEmpty(rutaArchivoCSV))
+        {
+            byte[] fileBytes = await File.ReadAllBytesAsync(rutaArchivoCSV);
+            string fileName = Path.GetFileName(rutaArchivoCSV);
+            string base64String = Convert.ToBase64String(fileBytes);
+            await JS.InvokeVoidAsync("eval", 
+                $@"var link = document.createElement('a');
+               link.href = 'data:application/json;base64,{base64String}';
+               link.download = '{fileName}';
+               document.body.appendChild(link);
+               link.click();
+               document.body.removeChild(link);"
+            );
+        }
+    }
+    
+}
+
+
+

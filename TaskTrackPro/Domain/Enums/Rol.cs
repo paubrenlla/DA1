@@ -3,5 +3,6 @@
 public enum Rol
 {
     Administrador,
-    Miembro
+    Miembro,
+    Lider
 }

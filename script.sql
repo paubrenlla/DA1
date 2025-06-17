@@ -92,7 +92,7 @@ VALUES (1,2),(3,4);
 
 -- 9. Asignaciones Proyecto-Usuario
 INSERT INTO [AsignacionesProyecto] (ProyectoId, UsuarioId, Rol)
-VALUES (1,2,1),(1,3,0),(2,3,0);
+VALUES (1,2,1),(1,3,0),(1,1,2),(2,3,0),(2,2,1),(2,1,2);
 
 -- 10. Asignaciones Usuario-Tarea
 INSERT INTO [UsuarioTarea] (TareasAsignadasId, UsuariosAsignadosId)

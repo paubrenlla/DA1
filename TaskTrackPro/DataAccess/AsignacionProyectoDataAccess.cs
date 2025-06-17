@@ -90,5 +90,12 @@ namespace DataAccess
                 .ToList();
         }
 
+        public AsignacionProyecto GetLiderProyecto(int proyectoId)
+        {
+            return _context.AsignacionesProyecto
+                .Include(a => a.Usuario)
+                .Include(a => a.Proyecto)
+                .FirstOrDefault(a => a.Proyecto.Id == proyectoId && a.Rol == Rol.Lider);
+        }
     }
 }

@@ -38,6 +38,11 @@
         <input type="text" class="form-control" id="admin" @bind="correoAdmin" />
     </div>
 
+    <div class="form-group">
+        <label for="admin">Usuario lider del proyecto (correo)</label>
+        <input type="text" class="form-control" id="admin" @bind="correoLider" />
+    </div>
+
     <input type="submit" class="btn btn-primary" value="Agregar" @onclick="CrearProyecto">
 </form>
 
@@ -45,7 +50,8 @@
     private string nombre;
     private string descripcion;
     private DateTime fecha;
-    private string correoAdmin; 
+    private string correoAdmin;
+    private string correoLider;
     private string mensajeError;
     private bool yaVerifiqueSesion = false;
 
@@ -73,9 +79,11 @@
         {
             ProyectoDTO proyectoNuevo = new ProyectoDTO { Nombre = nombre, Descripcion = descripcion, FechaInicio = fecha};
             UsuarioDTO usuarioAdmin = Usuarios.GetByEmail(correoAdmin);
+            UsuarioDTO usuarioLider = Usuarios.GetByEmail(correoLider);
             
             ProyectoDTO nuevo = Proyectos.AgregarProyecto(proyectoNuevo);
             Proyectos.AsignarAdminProyecto(usuarioAdmin.Id, nuevo.Id);
+            Proyectos.AsignarLiderProyecto(usuarioLider.Id, nuevo.Id);
             NavigationManager.NavigateTo("/proyectos");
         }
         catch (Exception ex)
