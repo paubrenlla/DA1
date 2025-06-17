@@ -232,7 +232,7 @@ namespace Controllers_Tests
         public void ListarUsuariosDeTarea_ConTareaExistente_DevuelveListaUsuarios()
         {
             int tareaId = 1;
-            var usuariosEsperados = new List<UsuarioDTO>
+            List<UsuarioDTO> usuariosEsperados = new List<UsuarioDTO>
             {
                 new UsuarioDTO { Id = 1, Nombre = "Usuario 1", Email = "u1@test.com" },
                 new UsuarioDTO { Id = 2, Nombre = "Usuario 2", Email = "u2@test.com" }
@@ -240,7 +240,7 @@ namespace Controllers_Tests
     
             _mockService.Setup(s => s.ListarUsuariosDeTarea(tareaId)).Returns(usuariosEsperados);
             
-            var resultado = _controller.ListarUsuariosDeTarea(tareaId);
+            List<UsuarioDTO> resultado = _controller.ListarUsuariosDeTarea(tareaId);
 
             Assert.IsNotNull(resultado);
             Assert.AreEqual(2, resultado.Count);
@@ -252,12 +252,12 @@ namespace Controllers_Tests
         public void ListarUsuariosDeTarea_ConTareaSinUsuarios_DevuelveListaVacia()
         {
             int tareaId = 2;
-            var listaVacia = new List<UsuarioDTO>();
+            List<UsuarioDTO> listaVacia = new List<UsuarioDTO>();
     
             _mockService.Setup(s => s.ListarUsuariosDeTarea(tareaId))
                 .Returns(listaVacia);
 
-            var resultado = _controller.ListarUsuariosDeTarea(tareaId);
+            List<UsuarioDTO> resultado = _controller.ListarUsuariosDeTarea(tareaId);
 
             Assert.IsNotNull(resultado);
             Assert.AreEqual(0, resultado.Count);
@@ -272,7 +272,7 @@ namespace Controllers_Tests
             _mockService.Setup(s => s.ListarUsuariosDeTarea(tareaId))
                 .Returns((List<UsuarioDTO>)null);
 
-            var resultado = _controller.ListarUsuariosDeTarea(tareaId);
+            List<UsuarioDTO> resultado = _controller.ListarUsuariosDeTarea(tareaId);
 
             Assert.IsNull(resultado);
             _mockService.Verify(s => s.ListarUsuariosDeTarea(tareaId), Times.Once);
@@ -304,7 +304,7 @@ namespace Controllers_Tests
         public void ObtenerDependenciasDeTarea_ConTareaConDependencias_DevuelveListaDependencias()
         {
             int tareaId = 1;
-            var dependenciasEsperadas = new List<TareaDTO>
+            List<TareaDTO> dependenciasEsperadas = new List<TareaDTO>
             {
                 new TareaDTO { Id = 3, Titulo = "Dependencia 1", Descripcion = "Desc Dep 1" },
                 new TareaDTO { Id = 4, Titulo = "Dependencia 2", Descripcion = "Desc Dep 2" }
@@ -325,7 +325,7 @@ namespace Controllers_Tests
         public void ObtenerDependenciasDeTarea_ConTareaSinDependencias_DevuelveListaVacia()
         {
             int tareaId = 2;
-            var listaVacia = new List<TareaDTO>();
+            List<TareaDTO> listaVacia = new List<TareaDTO>();
 
             _mockService.Setup(s => s.ObtenerDependenciasDeTarea(tareaId))
                 .Returns(listaVacia);
@@ -367,7 +367,7 @@ namespace Controllers_Tests
         {
             int usuarioId = 7;
             int proyectoId = 3;
-            var tareasEsperadas = new List<TareaDTO> { _dto1, _dto2 };
+            List<TareaDTO> tareasEsperadas = new List<TareaDTO> { _dto1, _dto2 };
 
             _mockService.Setup(s => s.ListarTareasDelUsuario(usuarioId, proyectoId))
                 .Returns(tareasEsperadas);
@@ -383,7 +383,7 @@ namespace Controllers_Tests
         {
             int usuarioId = 8;
             int proyectoId = 4;
-            var listaVacia = new List<TareaDTO>();
+            List<TareaDTO> listaVacia = new List<TareaDTO>();
 
             _mockService.Setup(s => s.ListarTareasDelUsuario(usuarioId, proyectoId))
                 .Returns(listaVacia);
@@ -428,7 +428,7 @@ namespace Controllers_Tests
         {
             int tareaSeleccionadaId = 1;
             int proyectoId = 5;
-            var tareasDisponibles = new List<TareaDTO>
+            List<TareaDTO> tareasDisponibles = new List<TareaDTO>
             {
                 new TareaDTO { Id = 10, Titulo = "Tarea Disponible 1" },
                 new TareaDTO { Id = 11, Titulo = "Tarea Disponible 2" }
@@ -450,7 +450,7 @@ namespace Controllers_Tests
         {
             int tareaSeleccionadaId = 2;
             int proyectoId = 6;
-            var listaVacia = new List<TareaDTO>();
+            List<TareaDTO> listaVacia = new List<TareaDTO>();
 
             _mockService.Setup(s => s.ObtenerTareasParaAgregarDependencia(tareaSeleccionadaId, proyectoId))
                 .Returns(listaVacia);

@@ -73,7 +73,7 @@ namespace Services
             _proyectoService.ObtenerRutaCritica(proyectoId);
             _tareaRepo.Update(nuevaTarea);
             
-            foreach (var obs in _observers)
+            foreach (ITareaObserver obs in _observers)
             {
                 obs.TareaAgregada(proyecto, nuevaTarea);
             }
@@ -141,8 +141,9 @@ namespace Services
             
             _tareaRepo.Update(tarea);
             _tareaRepo.Update(dependencia);
+
             _proyectoService.ObtenerRutaCritica(proyectoId);
-            foreach (var obs in _observers)
+            foreach (ITareaObserver obs in _observers)
             {
                 obs.ModificacionDependencias(proyecto, tarea);
             }
@@ -176,7 +177,7 @@ namespace Services
         
         public void EliminarTarea(int proyectoId, int tareaId)
         {
-            var dto = new TareaDTO { Id = tareaId };
+            TareaDTO dto = new TareaDTO { Id = tareaId };
             if (TieneSucesoras(dto))
                 throw new InvalidOperationException("No se puede eliminar: la tarea tiene sucesoras.");
             if (TieneDependencias(dto))
@@ -188,7 +189,7 @@ namespace Services
             _tareaRepo.Remove(tarea);
             _proyectoService.ObtenerRutaCritica(proyectoId);
             _proyectoRepo.Update(proyecto);
-            foreach (var obs in _observers)
+            foreach (ITareaObserver obs in _observers)
             {
                 obs.TareaEliminada(proyecto, tarea);
             }
@@ -255,7 +256,7 @@ namespace Services
             _tareaRepo.Update(dependencia);
             _proyectoService.ObtenerRutaCritica(proyectoId);
             
-            foreach (var obs in _observers)
+            foreach (ITareaObserver obs in _observers)
             {
                 obs.ModificacionDependencias(proyecto, tarea);
             }

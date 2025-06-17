@@ -40,7 +40,7 @@ public class UsuarioTests
         Assert.AreEqual(nuevoMail, u.Email);
         Assert.AreEqual(nuevoNombre, u.Nombre);
         Assert.AreEqual(nuevoApellido, u.Apellido);
-        Assert.AreEqual(Usuario.EncriptarPassword(nuevoPwd), u.Pwd);
+        Assert.AreEqual(EncriptadorContrasena.EncriptarPassword(nuevoPwd), u.Pwd);
         Assert.AreEqual(nuevoFechaNacimiento, u.FechaNacimiento);
     }
     
@@ -306,7 +306,7 @@ public class UsuarioTests
     public void ValidarMetodoEncriptacion()
     {
         string cadenaEncriptada = "RXNWYWxpZGExIQ==";
-        string cadenaEncriptadaPorUsuario= Usuario.EncriptarPassword("EsValida1!");
+        string cadenaEncriptadaPorUsuario= EncriptadorContrasena.EncriptarPassword("EsValida1!");
         Assert.AreEqual(cadenaEncriptada, cadenaEncriptadaPorUsuario);
     }
     
@@ -337,7 +337,7 @@ public class UsuarioTests
 
         usuario.ResetearContraseña();
         
-        string defaultPwdEncriptada = Usuario.EncriptarPassword(Usuario.CONTRASEÑA_DEFAULT);
+        string defaultPwdEncriptada = EncriptadorContrasena.EncriptarPassword(Usuario.CONTRASEÑA_DEFAULT);
         
         Assert.AreEqual(defaultPwdEncriptada, usuario.Pwd);
     }
@@ -346,9 +346,9 @@ public class UsuarioTests
     public void EncriptarYDesencriptarConstraseñaDevuelveConstraseñaOriginal()
     {
         string contraseñaOriginal = "1ContraseñaSegura!";
-        string contraseñaEncriptada = Usuario.EncriptarPassword(contraseñaOriginal);
+        string contraseñaEncriptada = EncriptadorContrasena.EncriptarPassword(contraseñaOriginal);
         
-        string desencriptado = Usuario.DesencriptarPassword(contraseñaEncriptada);
+        string desencriptado = EncriptadorContrasena.DesencriptarPassword(contraseñaEncriptada);
         
         Assert.AreEqual(contraseñaOriginal, desencriptado);
     }

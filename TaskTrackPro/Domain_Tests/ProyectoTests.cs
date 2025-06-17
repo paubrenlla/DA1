@@ -81,7 +81,7 @@ public class ProyectoTests
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
 
-        var tarea = new Tarea("Tarea de prueba", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
+        Tarea tarea = new Tarea("Tarea de prueba", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
         
         proyecto.AgregarTarea(tarea);
         
@@ -99,7 +99,7 @@ public class ProyectoTests
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
 
-        var tarea = new Tarea("Tarea de prueba", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
+        Tarea tarea = new Tarea("Tarea de prueba", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
         
         proyecto.AgregarTarea(tarea);
         proyecto.AgregarTarea(tarea);
@@ -139,11 +139,10 @@ public class ProyectoTests
         DateTime fechaInicio = DateTime.Today;
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
-        var tarea = new Tarea("Tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
-        var tarea2 = new Tarea("Otra tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
-        var tarea3 = new Tarea("Ootra tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
-        var tarea4 = new Tarea("Oootra tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
-        
+        Tarea tarea = new Tarea("Tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
+        Tarea tarea2 = new Tarea("Otra tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
+        Tarea tarea3 = new Tarea("Ootra tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
+        Tarea tarea4 = new Tarea("Oootra tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
         
         proyecto.AgregarTarea(tarea);
         proyecto.AgregarTarea(tarea2);
@@ -168,7 +167,7 @@ public class ProyectoTests
         DateTime fechaInicio = DateTime.Today;
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
-        var tarea = new Tarea("Tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
+        Tarea tarea = new Tarea("Tarea a eliminar", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
         
         proyecto.EliminarTarea(tarea);
     }
@@ -253,8 +252,8 @@ public class ProyectoTests
 
         Proyecto proyecto = new Proyecto(nombre, descripcion, fechaInicio);
         
-        var tarea = new Tarea("Tarea ", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
-        var tareaDependencia = new Tarea("Dependencia", "Desc", DateTime.Today, VALID_TIMESPAN, false);
+        Tarea tarea = new Tarea("Tarea ", "Descripción", DateTime.Today, VALID_TIMESPAN, false);
+        Tarea tareaDependencia = new Tarea("Dependencia", "Desc", DateTime.Today, VALID_TIMESPAN, false);
         
         proyecto.AgregarTarea(tarea);
         proyecto.AgregarTarea(tareaDependencia);
@@ -269,10 +268,10 @@ public class ProyectoTests
     [TestMethod]
     public void CalcularEarlyTimes_TareaSinPredecesores()
     {
-        var hoy = DateTime.Today;
-        var proyecto = new Proyecto("Test", "Descripción", hoy);
+        DateTime hoy = DateTime.Today;
+        Proyecto proyecto = new Proyecto("Test", "Descripción", hoy);
 
-        var tarea = new Tarea("T1", "Desc", hoy, TimeSpan.FromDays(3), false);
+        Tarea tarea = new Tarea("T1", "Desc", hoy, TimeSpan.FromDays(3), false);
 
         proyecto.AgregarTarea(tarea);
 
@@ -285,11 +284,11 @@ public class ProyectoTests
     [TestMethod]
     public void CalcularEarlyTimes_TareaConPredecesor()
     {
-        var hoy = DateTime.Today;
-        var proyecto = new Proyecto("Test", "Desc", hoy);
+        DateTime hoy = DateTime.Today;
+        Proyecto proyecto = new Proyecto("Test", "Desc", hoy);
 
-        var t1 = new Tarea("T1", "Desc", hoy, TimeSpan.FromDays(3), false);
-        var t2 = new Tarea("T2", "Desc", hoy, TimeSpan.FromDays(2), false);
+        Tarea t1 = new Tarea("T1", "Desc", hoy, TimeSpan.FromDays(3), false);
+        Tarea t2 = new Tarea("T2", "Desc", hoy, TimeSpan.FromDays(2), false);
 
         proyecto.AgregarTarea(t1);
         proyecto.AgregarTarea(t2);
@@ -308,17 +307,17 @@ public class ProyectoTests
     [TestMethod]
     public void CalcularTiemposTardios_ConTareasLineales_CalculaCorrectamente()
     {
-        var inicio = DateTime.Today.AddDays(1);
-        var duracion = TimeSpan.FromHours(2);
+        DateTime inicio = DateTime.Today.AddDays(1);
+        TimeSpan duracion = TimeSpan.FromHours(2);
 
-        var t1 = new Tarea("T1", "desc", inicio, duracion, false);
-        var t2 = new Tarea("T2", "desc", inicio.AddHours(3), duracion, false);
-        var t3 = new Tarea("T3", "desc", inicio.AddHours(6), duracion, false);
+        Tarea t1 = new Tarea("T1", "desc", inicio, duracion, false);
+        Tarea t2 = new Tarea("T2", "desc", inicio.AddHours(3), duracion, false);
+        Tarea t3 = new Tarea("T3", "desc", inicio.AddHours(6), duracion, false);
 
-        var proyecto = new Proyecto("Proyecto", "desc", inicio);
-        proyecto.AgregarTarea(t1);
-        proyecto.AgregarTarea(t2);
-        proyecto.AgregarTarea(t3);
+        Proyecto proyecto = new Proyecto("Proyecto", "desc", inicio);
+        proyecto.agregarTarea(t1);
+        proyecto.agregarTarea(t2);
+        proyecto.agregarTarea(t3);
         
         t2.AgregarDependencia(t1);
         t3.AgregarDependencia(t2);
@@ -374,9 +373,9 @@ public class ProyectoTests
     public void AsignarUsuarioATarea_UsuarioMiembro_TareaEnProyecto_AsignaCorrectamente()
     {
 
-        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
-        var usuario = new Usuario("test@test.com", "Test", "Usuario", "Contra*seña123", DateTime.Now);
-        var tarea = new Tarea("Tarea Test", "Descripción", DateTime.Now, TimeSpan.FromHours(5), false);
+        Proyecto proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        Usuario usuario = new Usuario("test@test.com", "Test", "Usuario", "Contra*seña123", DateTime.Now);
+        Tarea tarea = new Tarea("Tarea Test", "Descripción", DateTime.Now, TimeSpan.FromHours(5), false);
         AsignacionProyecto asignacionProyecto = new AsignacionProyecto(proyecto, usuario, Rol.Miembro);
 
         proyecto.agregarMiembro(asignacionProyecto);
@@ -389,9 +388,9 @@ public class ProyectoTests
     [TestMethod]
     public void AsignarUsuarioATarea_UsuarioNoMiembro_LanzaExcepcion()
     {
-        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
-        var usuario = new Usuario("test@test.com", "Test", "Usuario", "Contr*aseña123", DateTime.Now);
-        var tarea = new Tarea("Tarea Test", "Descripción", DateTime.Now, TimeSpan.FromHours(5), false);
+        Proyecto proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        Usuario usuario = new Usuario("test@test.com", "Test", "Usuario", "Contr*aseña123", DateTime.Now);
+        Tarea tarea = new Tarea("Tarea Test", "Descripción", DateTime.Now, TimeSpan.FromHours(5), false);
     
         proyecto.AgregarTarea(tarea);
 
@@ -401,9 +400,9 @@ public class ProyectoTests
     [TestMethod]
     public void AsignarUsuarioATarea_UsuarioYaAsignado_LanzaExcepcion()
     {
-        var proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
-        var usuario = new Usuario("test@test.com", "Test", "Usuario", "Contr*aseña123", DateTime.Now);
-        var tarea = new Tarea("Tarea Test", "Descripción", DateTime.Now, TimeSpan.FromHours(5), false);
+        Proyecto proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
+        Usuario usuario = new Usuario("test@test.com", "Test", "Usuario", "Contr*aseña123", DateTime.Now);
+        Tarea tarea = new Tarea("Tarea Test", "Descripción", DateTime.Now, TimeSpan.FromHours(5), false);
         AsignacionProyecto asignacionProyecto = new AsignacionProyecto(proyecto, usuario, Rol.Miembro);
 
         proyecto.agregarMiembro(asignacionProyecto);
@@ -412,18 +411,6 @@ public class ProyectoTests
 
         Assert.ThrowsException<ArgumentException>(() => proyecto.AsignarUsuarioATarea(usuario, tarea));
     }
-
-    // [TestMethod]
-    // public void AsignarAdminAlProyecto()
-    // {
-    //
-    //     Proyecto proyecto = new Proyecto("Proyecto Test", "Descripción", DateTime.Now);
-    //     Usuario usuario = new Usuario("admin@test.com", "Admin", "User", "paASD*ss1", DateTime.Now);
-    //     proyecto.AsignarAdmin(usuario); 
-    //     Assert.AreEqual("admin@test.com",usuario.Email);
-    //     Assert.IsTrue(proyecto.EsAdmin(usuario));
-    //     Assert.AreEqual(0, proyecto.Miembros.Count);
-    // }
     
     [TestMethod]
     public void ModificarUnProyectoCorrectamente()
@@ -530,7 +517,6 @@ public class ProyectoTests
         DateTime inicioVerdadero = proyecto.InicioVerdadero();
         
         Assert.AreEqual(inicioVerdadero, inicio);
-        
     }
     
     [TestMethod]
@@ -558,7 +544,6 @@ public class ProyectoTests
         int diasTotales = proyecto.CalcularDiasTotales();
         
         Assert.AreEqual(diasTotales, 1);
-        
     }
     
     [TestMethod]
@@ -616,10 +601,8 @@ public class ProyectoTests
         Assert.AreEqual(2, tareasDelUsuario.Count);
         Assert.AreEqual(t1, tareasDelUsuario[0]);
         Assert.AreEqual(t2, tareasDelUsuario[1]);
-
     }
     
-
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void EliminarMiembro_DeberiaLanzarExcepcion_SiUsuarioNoEsMiembro()
@@ -739,5 +722,3 @@ public class ProyectoTests
         Assert.AreEqual(hoy.AddDays(5), t2.EarlyFinish);
     }
 }
-
-

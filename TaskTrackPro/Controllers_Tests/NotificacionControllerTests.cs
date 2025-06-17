@@ -64,7 +64,7 @@ namespace Controllers_Tests
                 .Setup(s => s.GetById(1))
                 .Returns(_dto1);
 
-            var resultado = _controller.GetById(1);
+            NotificacionDTO resultado = _controller.GetById(1);
 
             Assert.AreEqual(_dto1, resultado);
             _mockService.Verify(s => s.GetById(1), Times.Once);
@@ -77,7 +77,7 @@ namespace Controllers_Tests
                 .Setup(s => s.GetById(99))
                 .Returns((NotificacionDTO?)null);
 
-            var resultado = _controller.GetById(99);
+            NotificacionDTO resultado = _controller.GetById(99);
 
             Assert.IsNull(resultado);
             _mockService.Verify(s => s.GetById(99), Times.Once);
@@ -86,13 +86,13 @@ namespace Controllers_Tests
         [TestMethod]
         public void GetAll_DevuelveTodasLasNotificaciones()
         {
-            var listaEsperada = new List<NotificacionDTO> { _dto1, _dto2 };
+            List<NotificacionDTO> listaEsperada = new List<NotificacionDTO> { _dto1, _dto2 };
             
             _mockService
                 .Setup(s => s.GetAll())
                 .Returns(listaEsperada);
 
-            var resultado = _controller.GetAll();
+            List<NotificacionDTO> resultado = _controller.GetAll();
 
             CollectionAssert.AreEqual(listaEsperada, resultado);
             _mockService.Verify(s => s.GetAll(), Times.Once);
@@ -101,14 +101,13 @@ namespace Controllers_Tests
         [TestMethod]
         public void NotificacionesNoLeidas_DevuelveNotificacionesNoLeidasParaUsuario()
         {
-            // Aunque el DTO no tiene propiedad Leida, asumimos que el servicio filtra
-            var listaEsperada = new List<NotificacionDTO> { _dto1 };
+            List<NotificacionDTO> listaEsperada = new List<NotificacionDTO> { _dto1 };
             
             _mockService
                 .Setup(s => s.NotificacionesNoLeidas(_usuarioDto))
                 .Returns(listaEsperada);
 
-            var resultado = _controller.NotificacionesNoLeidas(_usuarioDto);
+            List<NotificacionDTO> resultado = _controller.NotificacionesNoLeidas(_usuarioDto);
 
             CollectionAssert.AreEqual(listaEsperada, resultado);
             _mockService.Verify(s => s.NotificacionesNoLeidas(_usuarioDto), Times.Once);

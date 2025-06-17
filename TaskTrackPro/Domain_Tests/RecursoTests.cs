@@ -156,84 +156,6 @@ public class RecursoTests
         Assert.AreEqual(5, recurso.CantidadEnUso);
     }
     
-    // [TestMethod]
-    // public void EsExclusivo_DeberiaRetornarFalse_CuandoNoPerteneceAningunProyecto()
-    // {
-    //     Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
-    //     
-    //     bool resultado = recurso.EsExclusivo();
-    //
-    //     Assert.IsFalse(resultado);
-    // }
-    //
-    // [TestMethod]
-    // public void EsExclusivo_DeberiaRetornarTrue_CuandoPerteneceASoloUnProyecto()
-    // {
-    //     Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
-    //     Tarea tarea = new Tarea("Tarea", "descripcion", DateTime.Now, VALID_TIMESPAN, false); 
-    //     
-    //     recurso.AgregarRecursoATarea(tarea);
-    //     bool resultado = recurso.EsExclusivo();
-    //
-    //     Assert.IsTrue(resultado);
-    // }
-    //
-    // [TestMethod]
-    // public void EsExclusivo_DeberiaRetornarFalse_CuandoPerteneceAMultiplesProyectos()
-    // {
-    //     Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
-    //     
-    //     Proyecto proyecto1 = new Proyecto("Proyecto1", "descripcion", DateTime.Now);
-    //     Tarea tarea1 = new Tarea("Tarea1 ", "descripcion", DateTime.Now, VALID_TIMESPAN, false); 
-    //     proyecto1.AgregarTarea(tarea1);
-    //     
-    //     Proyecto proyecto2 = new Proyecto("Proyecto2", "descripcion", DateTime.Now);
-    //     Tarea tarea2 = new Tarea("Tarea2 ", "descripcion", DateTime.Now, VALID_TIMESPAN, false); 
-    //     proyecto2.AgregarTarea(tarea2);
-    //     
-    //     recurso.AgregarRecursoATarea(tarea1);
-    //     recurso.AgregarRecursoATarea(tarea2);
-    //     
-    //     bool resultado = recurso.EsExclusivo();
-    //
-    //     Assert.IsFalse(resultado);
-    // }
-    //
-    // [TestMethod]
-    // public void QuitarRecursoATarea_DeberiaRemoverLaTarea_SiPertenece()
-    // {
-    //     Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
-    //     Tarea tarea = new Tarea("Tarea1", "descripcion", DateTime.Now, VALID_TIMESPAN, false);
-    //
-    //     recurso.AgregarRecursoATarea(tarea);
-    //     Assert.IsTrue(recurso.TareasQueLoUsan.Contains(tarea));
-    //
-    //     recurso.QuitarRecursoATarea(tarea);
-    //
-    //     Assert.IsFalse(recurso.TareasQueLoUsan.Contains(tarea));
-    // }
-    //
-    // [TestMethod]
-    // public void QuitarRecursoATarea_NoDeberiaHacerNada_SiNoPertenece()
-    // {
-    //     Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
-    //     Tarea tareaNoAsociada = new Tarea("TareaNoAsociada", "descripcion", DateTime.Now, VALID_TIMESPAN, false);
-    //
-    //     recurso.QuitarRecursoATarea(tareaNoAsociada);
-    //
-    //     Assert.AreEqual(0, recurso.TareasQueLoUsan.Count);
-    // }
-    //
-    // [TestMethod]
-    // public void QuitarRecursoATarea_NoDeberiaLanzarExcepcion_SiSeLlamaConNull()
-    // {
-    //     Recurso recurso = new Recurso("Proyector", "Equipo", "Proyector HD", false, 10);
-    //
-    //     recurso.QuitarRecursoATarea(null);
-    //
-    //     Assert.AreEqual(0, recurso.TareasQueLoUsan.Count);
-    // }
-    
     [TestMethod]
     public void Modificar_RecursoActualizaTodosLosCamposCorrectamente()
     {
@@ -297,27 +219,27 @@ public class RecursoTests
     [TestMethod]
     public void EstaEnUso_DeberiaRetornarFalse_CuandoCantidadEnUsoEsCero()
     {
-        var recurso = new Recurso("Proyector", "Tecnología", "Proyector HD", true, 5);
-        var resultado = recurso.EstaEnUso();
+        Recurso recurso = new Recurso("Proyector", "Tecnología", "Proyector HD", true, 5);
+        bool resultado = recurso.EstaEnUso();
         Assert.IsFalse(resultado);
     }
 
     [TestMethod]
     public void EstaEnUso_DeberiaRetornarTrue_CuandoCantidadEnUsoEsMayorACero()
     {
-        var recurso = new Recurso("Notebook", "Tecnología", "Notebook Dell", true, 5);
+        Recurso recurso = new Recurso("Notebook", "Tecnología", "Notebook Dell", true, 5);
         recurso.ConsumirRecurso(2);
-        var resultado = recurso.EstaEnUso();
+        bool resultado = recurso.EstaEnUso();
         Assert.IsTrue(resultado);
     }
 
     [TestMethod]
     public void EstaEnUso_DeberiaRetornarFalse_SiSeLiberaTodoElRecurso()
     {
-        var recurso = new Recurso("Monitor", "Tecnología", "Monitor LED", true, 3);
+        Recurso recurso = new Recurso("Monitor", "Tecnología", "Monitor LED", true, 3);
         recurso.ConsumirRecurso(3);
         recurso.LiberarRecurso(3);
-        var resultado = recurso.EstaEnUso();
+        bool resultado = recurso.EstaEnUso();
         Assert.IsFalse(resultado);
     }
 

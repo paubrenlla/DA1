@@ -125,7 +125,7 @@ public class Tarea
         {
             return;
         }
-        if (VerificarDependenciasCompletadas() /* && VerificarRecursosDisponibles() */)
+        if (VerificarDependenciasCompletadas())
         {
             ModificarEstado(TipoEstadoTarea.Pendiente, DateTime.Now);
             return;

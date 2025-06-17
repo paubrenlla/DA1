@@ -24,7 +24,7 @@ public static class Convertidor
             Nombre = u.Nombre,
             Apellido = u.Apellido,
             FechaNacimiento = u.FechaNacimiento,
-            Contraseña = Usuario.DesencriptarPassword(u.Pwd)
+            Contraseña = EncriptadorContrasena.DesencriptarPassword(u.Pwd)
         };
     }
     

@@ -18,9 +18,9 @@ public class ExportadorTests
     public void Exportar_DeberiaRetornarStringNoVacio()
     {
         var exportador = new ExportadorConcreto();
-        var proyectos = new List<Proyecto>();
-        var asignaciones = new List<AsignacionRecursoTarea>();
-        var resultado = exportador.Exportar(proyectos, asignaciones);
+        List<Proyecto> proyectos = new List<Proyecto>();
+        List<AsignacionRecursoTarea> asignaciones = new List<AsignacionRecursoTarea>();
+        string resultado = exportador.Exportar(proyectos, asignaciones);
         Assert.IsFalse(string.IsNullOrEmpty(resultado));
     }
 }

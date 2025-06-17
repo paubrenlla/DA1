@@ -305,7 +305,7 @@ namespace Services_Tests
             AsignacionRecursoTarea asignacion = new AsignacionRecursoTarea(_recurso1, tarea, 2);
             _repoAsignaciones.Add(asignacion);
 
-            var resultado = _service.ObtenerAsignacionesRecursoEnFecha(_recurso1.Id, inicio.AddDays(1)); // 16 de junio
+            List<AsignacionRecursoTareaDTO> resultado = _service.ObtenerAsignacionesRecursoEnFecha(_recurso1.Id, inicio.AddDays(1));
 
             Assert.AreEqual(1, resultado.Count);
         }
@@ -314,7 +314,7 @@ namespace Services_Tests
         public void ObtenerAsignacionesRecursoEnFecha_DevuelveVaciaSiFechaFueraDeRango()
         {
             DateTime fechaTarea = new DateTime(2025, 6, 10);
-            TimeSpan duracion = new TimeSpan(2, 0, 0, 0); // Tarea del 10 al 12
+            TimeSpan duracion = new TimeSpan(2, 0, 0, 0);
 
             Tarea tarea = new Tarea("Tarea fuera de rango", "Desc", fechaTarea, duracion, false);
             _repoTareas.Add(tarea);
@@ -322,7 +322,7 @@ namespace Services_Tests
             AsignacionRecursoTarea asignacion = new AsignacionRecursoTarea(_recurso1, tarea, 1);
             _repoAsignaciones.Add(asignacion);
 
-            DateTime fechaConsulta = new DateTime(2025, 6, 15); // Fuera del rango
+            DateTime fechaConsulta = new DateTime(2025, 6, 15);
             List<AsignacionRecursoTareaDTO> resultado = _service.ObtenerAsignacionesRecursoEnFecha(_recurso1.Id, fechaConsulta);
 
             Assert.AreEqual(0, resultado.Count);

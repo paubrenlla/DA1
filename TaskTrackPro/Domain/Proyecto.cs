@@ -46,8 +46,6 @@ public class Proyecto
         }
     }
 
-
-
     public Proyecto(string nombre, string descripcion, DateTime fechaInicio)
     {
         Nombre = nombre;
@@ -92,8 +90,6 @@ public class Proyecto
         if (AsignacionesDelProyecto.Contains(asignacion))
             throw new ArgumentException("Este usuario ya fué asignado al proyecto.");
         AsignacionesDelProyecto.Add(asignacion);
-       // Notificacion notificacion = new Notificacion("Ha sido agregado al proyecto: " + Nombre + ".");
-       // notificacion.AgregarUsuario(user);
     }
     
     public void EliminarMiembro(AsignacionProyecto asignacion)
@@ -306,19 +302,6 @@ public class Proyecto
         var notificacion = new Notificacion($"Ha sido agregado a la tarea {tarea.Titulo}.");
         notificacion.AgregarUsuario(usuario);
     }
-
-    
-    // public void AsignarAdmin(Usuario usuario)
-    // {
-    //     Admin = usuario;
-    //     Notificacion notificacion = new Notificacion("Eres administrador del proyecto " + Nombre + ".");
-    //     notificacion.AgregarUsuario(usuario);
-    // }
-    
-    // public bool EsAdmin(Usuario usuario)
-    // {
-    //     return usuario.Equals(Admin);
-    // }
     
     public void Modificar(string descripcionNueva, DateTime fechaInicioNueva)
     {

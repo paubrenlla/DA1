@@ -2,7 +2,6 @@
 using Domain.Enums;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace DataAccess_Tests
 {

@@ -1,6 +1,4 @@
-using DataAccess;
 using Domain;
-using Domain.Enums;
 using IDataAcces;
 using Moq;
 using Services.Observers;

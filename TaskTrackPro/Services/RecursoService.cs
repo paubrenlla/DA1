@@ -14,11 +14,11 @@ public class RecursoService : IRecursoService
     public RecursoService(
         IDataAccessRecurso recursoRepo,
         IDataAccessAsignacionRecursoTarea asignacionRepo,
-        IEnumerable<IRecursoObserver> observadores) // ← Agregar esto
+        IEnumerable<IRecursoObserver> observadores)
     {
         _recursoRepo = recursoRepo;
         _asignacionRepo = asignacionRepo;
-        _observadores = observadores.ToList(); // ← Cambiar esto
+        _observadores = observadores.ToList();
     }
     
     public RecursoDTO GetById(int idRecurso)

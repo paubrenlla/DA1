@@ -2,9 +2,8 @@ using Domain;
 
 namespace Domain_Tests;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
-using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
 public class ExportadorCSVTests
@@ -23,12 +22,12 @@ public class ExportadorCSVTests
         Tarea tarea1 = new Tarea(titulo, descripcion, fechaInicio, duracion, esCritica);
         Recurso recurso = new Recurso("Recurso Test", "tipo", "descripcion", true, 3);
 
-        var proyectos = new List<Proyecto>();
+        List<Proyecto> proyectos = new List<Proyecto>();
         Proyecto nuevo = new Proyecto("test", "descripcion", DateTime.Today);
         nuevo.TareasAsociadas.Add(tarea1);
         proyectos.Add(nuevo);
 
-        var asignaciones = new List<AsignacionRecursoTarea>
+        List<AsignacionRecursoTarea> asignaciones = new List<AsignacionRecursoTarea>
         {
             new AsignacionRecursoTarea 
             { 

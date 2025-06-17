@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using DataAccess;
 using Domain;
 using IDataAcces;
 using Microsoft.EntityFrameworkCore;

@@ -20,8 +20,7 @@ public class RecursoDataAccess :IDataAccessRecurso
         _context.Recursos.Add(recurso);
         _context.SaveChanges();
     }
-
-
+    
     public Recurso? GetById(int id)
     {
         Recurso recurso = _context.Recursos.Find(id);
@@ -32,7 +31,8 @@ public class RecursoDataAccess :IDataAccessRecurso
 
     public List<Recurso> GetAll()
     {
-        return _context.Recursos.AsNoTracking().ToList(); //Usamos AsNoTracking para no modificar nada en la DB
+        //Usamos AsNoTracking para no modificar nada en la DB
+        return _context.Recursos.AsNoTracking().ToList(); 
     }
     
     public void Update(Recurso recurso)
