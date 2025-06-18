@@ -1,22 +1,64 @@
 using Blazored.LocalStorage;
-using BusinessLogic;
+using Controllers;
+using DataAccess;
+using Domain.Observers;
+using DTOs;
+using IDataAcces;
+using IServices;
+using Microsoft.EntityFrameworkCore;
 using Presentacion.Components;
+using Services;
+using Services.Observers;
 using UserInterface.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<DB>(_ => new DB(precargarDatos: true));
+
+builder.Services.AddDbContext<SqlContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+builder.Services.AddScoped<IDataAccessUsuario, UsuarioDataAccess>();
+builder.Services.AddScoped<IDataAccessProyecto, ProyectoDataAccess>();
+builder.Services.AddScoped<IDataAccessTarea, TareaDataAccess>();
+builder.Services.AddScoped<IDataAccessRecurso, RecursoDataAccess>();
+builder.Services.AddScoped<IDataAccessAsignacionProyecto, AsignacionProyectoDataAccess>();
+builder.Services.AddScoped<IDataAccessAsignacionRecursoTarea, AsignacionRecursoTareaDataAccess>();
+builder.Services.AddScoped<IDataAccessNotificacion, NotificacionDataAccess>();
+
+builder.Services.AddScoped<IRecursoObserver, ActualizadorEstadoTareas>();
+
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IProyectoService, ProyectoService>();
+builder.Services.AddScoped<ITareaService, TareaService>();
+builder.Services.AddScoped<IRecursoService, RecursoService>();
+builder.Services.AddScoped<IAsignacionRecursoTareaService, AsignacionRecursoTareaService>();
+builder.Services.AddScoped<INotificacionService, NotificacionService>();
+
+builder.Services.AddScoped<IUsuarioObserver, NotificadorUsuario>();
+builder.Services.AddScoped<ITareaObserver, NotificadorTarea>();
+
+builder.Services.AddScoped<UsuarioController>();
+builder.Services.AddScoped<ProyectoController>();
+builder.Services.AddScoped<TareaController>();
+builder.Services.AddScoped<RecursoController>();
+builder.Services.AddScoped<AsignacionRecursoTareaControllers>();
+builder.Services.AddScoped<NotificacionController>();
+
 builder.Services.AddScoped<SessionLogic>();
 
-
-
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var ctx = scope.ServiceProvider.GetRequiredService<SqlContext>();
+    ctx.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

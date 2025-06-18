@@ -2,9 +2,11 @@
 
 <PageTitle>Editar Recurso</PageTitle>
 
-@using BusinessLogic
+@using Controllers
+@using DTOs
 @using UserInterface.Data
-@inject DB BaseDeDatos
+@inject RecursoController Recursos
+@inject UsuarioController Usuarios
 @inject NavigationManager NavigationManager
 @inject SessionLogic SessionLogic
 
@@ -55,9 +57,9 @@
     private bool compartirNuevo;
     private string mensajeError;
 
-    private Recurso recursoACambiar;
+    private RecursoDTO recursoACambiar;
     private bool yaVerifiqueSesion = false;
-    Usuario usuarioLogeado;
+    UsuarioDTO usuarioLogeado;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -65,21 +67,21 @@
         {
             yaVerifiqueSesion = true;
 
-            var activo = await SessionLogic.isUserActive();
+            var activo = await SessionLogic.IsUserActive();
             if (!activo)
             {
                 NavigationManager.NavigateTo("/Login");
                 return;
             }
             usuarioLogeado = await SessionLogic.GetCurrentUser();
-            if (!BaseDeDatos.UsuarioEsAdmin(usuarioLogeado))
+            if (!Usuarios.EsAdmin(usuarioLogeado.Id))
             {
                 NavigationManager.NavigateTo("/");
             }
 
             try
             {
-                recursoACambiar = BaseDeDatos.buscarRecursoPorId(id);
+                recursoACambiar = Recursos.GetById(id);
                 if (recursoACambiar == null)
                 {
                     mensajeError = $"Recurso con ID {id} no encontrado.";
@@ -105,7 +107,13 @@
     {
         try
         {
-            recursoACambiar.Modificar(nombreNuevo, tipoNuevo, descripcionNueva, cantidadRecurso, compartirNuevo);
+            recursoACambiar.Nombre = nombreNuevo;
+            recursoACambiar.Tipo = tipoNuevo;
+            recursoACambiar.Descripcion = descripcionNueva;
+            recursoACambiar.CantidadDelRecurso = cantidadRecurso;
+            recursoACambiar.SePuedeCompartir = compartirNuevo;
+
+            Recursos.ModificarRecurso(recursoACambiar);
             NavigationManager.NavigateTo("/recursos");
         }
         catch (Exception ex)

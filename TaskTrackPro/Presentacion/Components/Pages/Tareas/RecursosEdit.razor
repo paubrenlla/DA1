@@ -2,9 +2,10 @@
 
 <PageTitle>Editar Recurso</PageTitle>
 
-@using BusinessLogic
+@using DTOs
+@using Controllers
 @using UserInterface.Data
-@inject DB DataBase
+@inject RecursoController Recursos
 @inject NavigationManager NavigationManager
 @inject SessionLogic SessionLogic
 
@@ -61,7 +62,7 @@
     private bool compartirNuevo;
     private string mensajeError;
 
-    private Recurso recursoACambiar;
+    private RecursoDTO recursoACambiar;
     private bool yaVerifiqueSesion = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -70,7 +71,7 @@
         {
             yaVerifiqueSesion = true;
 
-            var activo = await SessionLogic.isUserActive();
+            var activo = await SessionLogic.IsUserActive();
             if (!activo)
             {
                 NavigationManager.NavigateTo("/Login");
@@ -79,7 +80,7 @@
 
             try
             {
-                recursoACambiar = DataBase.buscarRecursoPorId(idRecurso);
+                recursoACambiar = Recursos.GetById(idRecurso);
                 if (recursoACambiar == null)
                 {
                     mensajeError = $"Recurso con ID {idRecurso} no encontrado.";
@@ -105,7 +106,16 @@
     {
         try
         {
-            recursoACambiar.Modificar(nombreNuevo, tipoNuevo, descripcionNueva, cantidadRecurso, compartirNuevo);
+            RecursoDTO recursoACambiar = new RecursoDTO
+            {
+                Id = idRecurso,
+                Nombre = nombreNuevo, 
+                Tipo = tipoNuevo, 
+                Descripcion = descripcionNueva, 
+                CantidadDelRecurso = cantidadRecurso, 
+                SePuedeCompartir = compartirNuevo
+            };
+            Recursos.ModificarRecurso(recursoACambiar);
             NavigationManager.NavigateTo($"/proyectos/{idProyecto}/tareas/{idTarea}/recursos");
         }
         catch (Exception ex)
