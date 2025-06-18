@@ -1,7 +1,7 @@
 ﻿using Domain;
 using DTOs;
 
-namespace Services
+namespace IServices
 {
     public interface IProyectoService
     {

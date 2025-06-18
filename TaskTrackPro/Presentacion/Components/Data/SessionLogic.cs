@@ -1,6 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using DTOs;
-using Services;
+using IServices;
 
 namespace UserInterface.Data
 {
