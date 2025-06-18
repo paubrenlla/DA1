@@ -1,6 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using DTOs;
-using Services;
+using Controllers;
 
 namespace UserInterface.Data
 {
@@ -9,14 +9,14 @@ namespace UserInterface.Data
         private const string CURRENT_USER = "current_user";
 
         private readonly ILocalStorageService _localStorage;
-        private readonly IUsuarioService _usuarioService;
+        private readonly UsuarioController _usuarioController;
 
         public SessionLogic(
             ILocalStorageService localStorage,
-            IUsuarioService usuarioService)
+            UsuarioController usuarioController)
         {
             _localStorage = localStorage;
-            _usuarioService = usuarioService;
+            _usuarioController = usuarioController;
         }
 
         public async Task Login(string email, string contraseña)
@@ -26,7 +26,7 @@ namespace UserInterface.Data
                 throw new Exception("Credenciales inválidas");
             }
 
-            UsuarioDTO userDto = _usuarioService.BuscarUsuarioPorCorreoYContraseña(email, contraseña);
+            UsuarioDTO userDto = _usuarioController.BuscarUsuarioPorCorreoYContraseña(email, contraseña);
 
             if (userDto == null)
             {
@@ -55,7 +55,7 @@ namespace UserInterface.Data
                 return null;
             }
 
-            UsuarioDTO usuario = _usuarioService.GetById(stored.Id);
+            UsuarioDTO usuario = _usuarioController.GetById(stored.Id);
             return usuario;
         }
     }

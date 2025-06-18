@@ -1,7 +1,7 @@
 using DTOs;
 using Controllers;
 using Moq;
-using Services;
+using IServices;
 
 namespace Controllers_Tests
 {

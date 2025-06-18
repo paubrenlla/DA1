@@ -2,7 +2,7 @@
 using Controllers;
 using Domain.Enums;
 using Moq;
-using Services;
+using IServices;
 
 namespace Controllers_Tests
 {

@@ -1,7 +1,7 @@
 ﻿using Domain.Enums;
 using DTOs;
 
-namespace Services
+namespace IServices
 {
     public interface ITareaService
     {

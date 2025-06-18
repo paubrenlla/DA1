@@ -1,6 +1,6 @@
 using DTOs;
 
-namespace Services;
+namespace IServices;
 
 public interface INotificacionService
 {

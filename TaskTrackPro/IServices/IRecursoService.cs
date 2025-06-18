@@ -1,7 +1,7 @@
 using Domain.Observers;
 using DTOs;
 
-namespace Services;
+namespace IServices;
 
 public interface IRecursoService
 {

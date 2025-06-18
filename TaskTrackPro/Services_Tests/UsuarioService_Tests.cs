@@ -4,6 +4,7 @@ using DTOs;
 using IDataAcces;
 using Moq;
 using Services;
+using IServices;
 
 namespace Services_Tests
 {

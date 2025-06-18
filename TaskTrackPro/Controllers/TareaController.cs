@@ -1,5 +1,5 @@
 ﻿using DTOs;
-using Services;
+using IServices;
 using Domain.Enums;
 
 namespace Controllers

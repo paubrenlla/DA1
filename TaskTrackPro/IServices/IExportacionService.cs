@@ -1,4 +1,4 @@
-namespace Services;
+namespace IServices;
 
 public interface IExportacionService
 {
