@@ -26,18 +26,18 @@ docker compose up
     - **Contraseña**: `Contraseña123`  
     - Checkear las checkboxes de **Settings**
 
-    ![Configuración de conexión](Instalacion1.png)
+    ![Configuración de conexión](/Images/Instalacion1.png)
 
 4. Click en **Probar Conexión**
 5. Descargar todo lo que te pida
 6. Finalizar
 7. Navegar: `Databases -> TaskTrackProDB -> Schemas -> dbo`  
 
-    ![Explorador de esquema](Instalacion2.jpg)
+    ![Explorador de esquema](/Images/Instalacion2.jpg)
 
 8. Hacer click derecho sobre `dbo -> Editor SQL -> Script SQL`
 
-    ![Abrir editor SQL](Instalacion3.jpg)
+    ![Abrir editor SQL](/Images/Instalacion3.jpg)
 
 ---
 
